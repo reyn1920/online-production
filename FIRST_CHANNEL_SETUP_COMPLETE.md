@@ -142,6 +142,6 @@ Your first channel **"The Right Perspective"** has been successfully configured 
 
 ---
 
-*Generated: 2025-09-09*  
-*Setup Type: Audio-Only Content Pipeline*  
+*Generated: 2025-09-09*
+*Setup Type: Audio-Only Content Pipeline*
 *Status: Production Ready*

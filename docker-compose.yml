@@ -331,7 +331,7 @@ services:
       - "8000:8000"
     volumes:
       - .:/code
-    working_dir:/code
+    working_dir: /code
     networks:
       - trae-network
     healthcheck:
@@ -350,7 +350,7 @@ services:
       - "8080:8080"
     volumes:
       - .:/code
-    working_dir:/code
+    working_dir: /code
     networks:
       - trae-network
     healthcheck:

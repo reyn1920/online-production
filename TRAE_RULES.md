@@ -5,7 +5,7 @@
 **FULLY INTEGRATED AI PLATFORMS** - The following AI platforms have been completely integrated into Trae AI on this system and are used with every prompt:
 
 - **ChatGPT** (https://chatgpt.com/) - ✅ ACTIVE
-- **Google Gemini** (https://gemini.google.com/app) - ✅ ACTIVE  
+- **Google Gemini** (https://gemini.google.com/app) - ✅ ACTIVE
 - **Abacus AI** (https://apps.abacus.ai/chatllm/?appId=1024a18ebe) - ✅ ACTIVE
 
 ### Integration Usage
@@ -54,6 +54,8 @@ production-ready codebase in the Trae AI development environment with full AI pl
 - Local workspace for code generation and testing
 - Use `.env.local` for local configuration (Git ignored)
 - Run all services locally for development and debugging
+- **OLLAMA REQUIREMENT**: Ensure Ollama service is running and accessible
+- Verify required AI models are installed and functional
 
 ### Staging Environment
 
@@ -146,6 +148,8 @@ production-ready codebase in the Trae AI development environment with full AI pl
 - Never delete files marked in `tools/dnd/` directory
 - Maintain audit trails for all configuration changes
 - Version control all rule and configuration files
+- **PRESERVE OLLAMA INTEGRATION**: Never remove Ollama service, models, or configuration files
+- Maintain Ollama model directory and service configuration during deployments
 
 ### Audit Requirements
 
@@ -177,6 +181,8 @@ production-ready codebase in the Trae AI development environment with full AI pl
 - Set up alerts for critical system failures
 - Track deployment success/failure rates
 - Monitor security scan results
+- **OLLAMA SERVICE MONITORING**: Verify Ollama service status and model availability
+- Monitor Ollama API endpoint health (http://localhost:11434)
 
 ### Logging
 
@@ -219,8 +225,8 @@ production-ready codebase in the Trae AI development environment with full AI pl
 
 ---
 
-**Last Updated:** 2025-01-28  
-**Version:** 1.0  
+**Last Updated:** 2025-01-28
+**Version:** 1.0
 **Next Review:** 2025-04-28
 
 _This document is a living standard and should be reviewed and updated regularly to reflect current

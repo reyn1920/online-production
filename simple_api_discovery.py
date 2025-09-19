@@ -10,7 +10,7 @@ import sqlite3
 import requests
 import time
 from datetime import datetime
-from typing import Dict, List, Any
+from typing import Any
 
 
 class SimpleAPIDiscovery:
@@ -20,7 +20,7 @@ class SimpleAPIDiscovery:
         self.db_path = db_path
         self.discovered_apis = []
 
-    def discover_free_apis(self) -> List[Dict[str, Any]]:
+    def discover_free_apis(self) -> list[dict[str, Any]]:
         """Discover free APIs from PublicAPIs.org"""
         print("🔍 Discovering free APIs from PublicAPIs.org...")
 
@@ -39,7 +39,9 @@ class SimpleAPIDiscovery:
                     or "free" in api.get("Description", "").lower()
                 ]
 
-                print(f"✅ Found {len(free_apis)} free APIs out of {len(all_apis)} total")
+                print(
+                    f"✅ Found {len(free_apis)} free APIs out of {len(all_apis)} total"
+                )
                 return free_apis[:50]  # Limit to first 50 for processing
             else:
                 print(f"❌ Failed to fetch APIs: HTTP {response.status_code}")
@@ -49,7 +51,9 @@ class SimpleAPIDiscovery:
             print(f"❌ Error discovering APIs: {e}")
             return []
 
-    def categorize_apis(self, apis: List[Dict[str, Any]]) -> Dict[str, List[Dict[str, Any]]]:
+    def categorize_apis(
+        self, apis: list[dict[str, Any]]
+    ) -> dict[str, list[dict[str, Any]]]:
         """Categorize APIs by their category"""
         categorized = {}
 
@@ -61,7 +65,7 @@ class SimpleAPIDiscovery:
 
         return categorized
 
-    def save_to_database(self, apis: List[Dict[str, Any]]) -> int:
+    def save_to_database(self, apis: list[dict[str, Any]]) -> int:
         """Save discovered APIs to database"""
         print("💾 Saving APIs to database...")
 
@@ -84,10 +88,10 @@ class SimpleAPIDiscovery:
                             api.get("Category", "Other"),
                             api.get("Auth", "") != "",
                             api.get("HTTPS", False),
-                            api.get("Cors", "unknown")
-                        )
+                            api.get("Cors", "unknown"),
+                        ),
                     )
-#                     )
+                    #                     )
                     saved_count += 1
 
                 conn.commit()
@@ -104,7 +108,7 @@ class SimpleAPIDiscovery:
             config = {
                 "last_discovery": datetime.now().isoformat(),
                 "apis_discovered": api_count,
-                "discovery_status": "completed"
+                "discovery_status": "completed",
             }
 
             with open("config/api_discovery.json", "w") as f:
@@ -117,7 +121,7 @@ class SimpleAPIDiscovery:
             print(f"❌ Error updating config: {e}")
             return False
 
-    def generate_report(self) -> Dict[str, Any]:
+    def generate_report(self) -> dict[str, Any]:
         """Generate discovery report"""
         print("📊 Generating discovery report...")
 
@@ -170,7 +174,7 @@ class SimpleAPIDiscovery:
             print(f"❌ Error generating report: {e}")
             return {}
 
-    def run_discovery(self) -> Dict[str, Any]:
+    def run_discovery(self) -> dict[str, Any]:
         """Run complete API discovery process"""
         print("🚀 Starting API discovery process...")
         start_time = time.time()
@@ -214,15 +218,15 @@ class SimpleAPIDiscovery:
 
 def main():
     """Main function to run API discovery"""
-    print("=" * 50)
-    print("Simple API Discovery Tool")
-    print("=" * 50)
+    # DEBUG_REMOVED: print("=" * 50)
+    # DEBUG_REMOVED: print("Simple API Discovery Tool")
+    # DEBUG_REMOVED: print("=" * 50)
 
     discovery = SimpleAPIDiscovery()
     result = discovery.run_discovery()
 
     if result.get("success"):
-        print("\n🎉 API Discovery completed successfully!")
+        # DEBUG_REMOVED: print("\n🎉 API Discovery completed successfully!")
         print(f"📊 Total APIs: {result.get('apis_discovered', 0)}")
         print(f"📂 Categories: {', '.join(result.get('categories', []))}")
         print(f"⏱️  Duration: {result.get('duration', 0):.2f} seconds")

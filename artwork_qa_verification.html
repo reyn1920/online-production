@@ -263,15 +263,15 @@
             .main-content {
                 grid-template-columns: 1fr;
             }
-            
+
             .channel-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .artwork-samples {
                 grid-template-columns: repeat(2, 1fr);
             }
-            
+
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -332,7 +332,7 @@
             <!-- Visual Verification Section -->
             <div class="verification-section">
                 <h2 class="section-title">✅ Channel Visual Verification</h2>
-                
+
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-number" id="totalArtwork">847</div>
@@ -417,13 +417,13 @@
         function askQuestion() {
             const question = document.getElementById('questionInput').value.toLowerCase();
             const responseDiv = document.getElementById('qaResponse');
-            
+
             if (!question.trim()) {
                 responseDiv.innerHTML = '<p><strong>Please enter a question!</strong></p>';
                 return;
             }
 
-            let response = '<p><strong>Question:</strong> ' + document.getElementById('questionInput').value + '</p>';//Find matching response
+            let response = '<p><strong>Question:</strong> ' + document.getElementById('questionInput').value + '</p>'; //Find matching response
             let found = false;
             for (let key in qaDatabase) {
                 if (question.includes(key)) {
@@ -432,18 +432,18 @@
                     break;
                 }
             }
-            
+
             if (!found) {
                 response += '<p><strong>Answer:</strong> Our AI artwork system is fully production-ready with 95.5/100 quality score. We support all media types across 4 channels with 99.9% reliability. For specific questions, try keywords like: artwork, quality, generation, verification, channels, technical, cost, or speed.</p>';
             }
-            
+
             responseDiv.innerHTML = response;
             document.getElementById('questionInput').value = '';
         }
 
         function verifyChannel(channelName) {
             if (verificationInProgress) return;
-            
+
             verificationInProgress = true;
             const channelIndex = getChannelIndex(channelName);
             const button = document.getElementById(`verifyBtn${channelIndex}`);
@@ -451,28 +451,28 @@
             const statusText = document.getElementById(`statusText${channelIndex}`);
             const card = document.getElementById(`channel${channelIndex}`);
             const log = document.getElementById('verificationLog');
-            
+
             button.disabled = true;
             button.textContent = 'Verifying...';
-            statusText.textContent = 'Verifying...';//Add log entry
-            addLogEntry(`Starting verification for ${channelName}...`);//Simulate verification process
+            statusText.textContent = 'Verifying...'; //Add log entry
+            addLogEntry(`Starting verification for ${channelName}...`); //Simulate verification process
             setTimeout(() => {
                 addLogEntry(`✅ ${channelName}: Artwork quality verified (95.5/100)`);
                 addLogEntry(`✅ ${channelName}: Brand consistency confirmed`);
                 addLogEntry(`✅ ${channelName}: Technical specs validated`);
-                
+
                 status.classList.add('verified');
                 statusText.textContent = 'Verified ✅';
                 card.classList.add('verified');
                 button.textContent = 'Re-verify';
                 button.disabled = false;
-                
+
                 verifiedChannels++;
                 document.getElementById('verifiedCount').textContent = verifiedChannels;
-                
+
                 addLogEntry(`🎉 ${channelName} verification complete!`);
                 verificationInProgress = false;
-                
+
                 if (verifiedChannels === 4) {
                     addLogEntry('🚀 ALL CHANNELS VERIFIED - SYSTEM READY FOR PRODUCTION!');
                 }
@@ -501,12 +501,12 @@
             entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
             log.appendChild(entry);
             log.scrollTop = log.scrollHeight;
-        }//Allow Enter key to ask question
+        } //Allow Enter key to ask question
         document.getElementById('questionInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 askQuestion();
             }
-        });//Initialize with welcome message
+        }); //Initialize with welcome message
         setTimeout(() => {
             addLogEntry('🎨 Artwork Q&A and Verification System Ready');
             addLogEntry('📊 System Status: All pipelines operational');

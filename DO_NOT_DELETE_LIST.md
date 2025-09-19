@@ -6,6 +6,16 @@
 
 ## 🔒 **CRITICAL - NEVER DELETE**
 
+### ⚠️ **OLLAMA AI SERVICE - PRODUCTION CRITICAL**
+```
+# Ollama service must remain operational for production
+# Models represent significant download time and storage
+.ollama/                    # Ollama configuration and models
+ollama_integration.py       # Core integration code
+ollama_integration_backup*  # Backup integration files
+models/ollama/             # Model storage directory
+```
+
 ### Environment and Configuration
 ```
 .env.example
@@ -69,6 +79,17 @@ outputs/
 videos/
 static/
 ├── avatars/
+```
+
+### AI Services and Models
+```
+.ollama/
+├── models/
+├── logs/
+ollama_integration.py
+ollama_integration_backup*.py
+models/
+├── ollama/
 ```
 
 ### Authentication and Security

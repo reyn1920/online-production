@@ -445,15 +445,15 @@
             .main-content {
                 grid-template-columns: 1fr;
             }
-            
+
             .metrics-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .config-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .program-grid {
                 grid-template-columns: 1fr;
             }
@@ -472,7 +472,7 @@
             <!-- Control Panel -->
             <div class="control-panel">
                 <h2>Stream Controls</h2>
-                
+
                 <div class="control-group">
                     <label>Stream Status</label>
                     <div style="display: flex; align-items: center; gap: 15px;">
@@ -512,7 +512,7 @@
             <!-- Metrics Panel -->
             <div class="metrics-panel">
                 <h2>Revenue Metrics</h2>
-                
+
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <div class="metric-value" id="currentRevenue">$0.00</div>
@@ -547,7 +547,7 @@
             <div class="affiliate-programs">
                 <h2>Affiliate Programs</h2>
                 <p style="color: #666; margin-bottom: 20px;">Manage your affiliate marketing partnerships and track performance</p>
-                
+
                 <div class="program-grid" id="programGrid">
                     <!-- Programs will be loaded dynamically -->
                 </div>
@@ -556,23 +556,23 @@
             <!-- Configuration Section -->
             <div class="config-section">
                 <h2>Affiliate Configuration</h2>
-                
+
                 <div class="config-grid">
                     <div class="form-group">
                         <label>Default Commission Rate (%)</label>
                         <input type="number" id="commissionRate" value="8.0" step="0.1" min="0" max="100">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Target Conversion Rate (%)</label>
                         <input type="number" id="targetConversionRate" value="3.0" step="0.1" min="0" max="100">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Cookie Duration (days)</label>
                         <input type="number" id="cookieDuration" value="30" min="1" max="365">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Tracking Method</label>
                         <select id="trackingMethod">
@@ -582,12 +582,12 @@
                             <option value="hybrid">Hybrid Tracking</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Minimum Payout ($)</label>
                         <input type="number" id="minPayout" value="100" min="10" step="10">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Payout Schedule</label>
                         <select id="payoutSchedule">
@@ -727,7 +727,7 @@
                         <div class="program-name">${program.name}</div>
                         <div class="program-status status-${program.status}">${program.status}</div>
                     </div>
-                    
+
                     <div class="program-stats">
                         <div class="stat-item">
                             <div class="stat-value">$${program.revenue.toFixed(2)}</div>
@@ -746,10 +746,10 @@
                             <div class="stat-label">Conversions</div>
                         </div>
                     </div>
-                    
+
                     <div style="margin-top: 15px;">
                         <button class="btn" onclick="configureProgram('${program.id}')" style="width: 48%; margin-right: 4%;">⚙️ Configure</button>
-                        <button class="btn ${program.status === 'connected' ? 'btn-danger' : 'btn-success'}" 
+                        <button class="btn ${program.status === 'connected' ? 'btn-danger' : 'btn-success'}"
                                 onclick="toggleProgram('${program.id}')" style="width: 48%;">
                             ${program.status === 'connected' ? '🔌 Disconnect' : '🔗 Connect'}
                         </button>
@@ -763,14 +763,14 @@
             try {
                 const response = await fetch('/api/revenue/status');
                 const data = await response.json();
-                
+
                 if (data.success && data.streams.affiliate_marketing) {
                     const stream = data.streams.affiliate_marketing;
                     streamData.status = stream.status;
                     streamData.currentRevenue = stream.currentRevenue;
                     streamData.monthlyTarget = stream.monthlyTarget;
                     streamData.autoStart = stream.autoStart;
-                    
+
                     updateUI();
                 }
             } catch (error) {
@@ -804,7 +804,7 @@
             document.getElementById('monthlyTarget').textContent = '$' + streamData.monthlyTarget.toFixed(2);
             document.getElementById('conversionRate').textContent = streamData.conversionRate.toFixed(1) + '%';
             document.getElementById('totalClicks').textContent = streamData.totalClicks.toLocaleString();
-            
+
             // Update progress
             const progress = (streamData.currentRevenue/streamData.monthlyTarget) * 100;
             document.getElementById('progressFill').style.width = Math.min(progress, 100) + '%';
@@ -822,18 +822,18 @@
         async function startStream() {
             try {
                 showAlert('Starting Affiliate Marketing stream...', 'warning');
-                
+
                 const response = await fetch(`/api/revenue/start/${streamData.streamId}`, {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     streamData.status = 'starting';
                     updateUI();
                     showAlert(result.message, 'success');
-                    
+
                     // Poll for status updates
                     pollStreamStatus();
                 } else {
@@ -848,18 +848,18 @@
         async function stopStream() {
             try {
                 showAlert('Stopping Affiliate Marketing stream...', 'warning');
-                
+
                 const response = await fetch(`/api/revenue/stop/${streamData.streamId}`, {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     streamData.status = 'stopping';
                     updateUI();
                     showAlert(result.message, 'success');
-                    
+
                     // Poll for status updates
                     pollStreamStatus();
                 } else {
@@ -874,16 +874,16 @@
         async function runTests() {
             try {
                 showAlert('Running comprehensive affiliate tests...', 'warning');
-                
+
                 const testContainer = document.getElementById('testResultsContainer');
                 testContainer.innerHTML = '<div style="text-align: center;"><div class="loading"></div> Running tests...</div>';
-                
+
                 const response = await fetch(`/api/revenue/test/${streamData.streamId}`, {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     displayTestResults(result.results);
                     showAlert('Tests completed successfully', 'success');
@@ -900,12 +900,12 @@
         function displayTestResults(results) {
             const container = document.getElementById('testResultsContainer');
             container.innerHTML = '';
-            
+
             Object.keys(results).forEach(testName => {
                 const test = results[testName];
                 const testItem = document.createElement('div');
                 testItem.className = 'test-item';
-                
+
                 testItem.innerHTML = `
                     <div>
                         <strong>${testName}</strong>
@@ -914,7 +914,7 @@
                     </div>
                     <div class="test-status test-${test.status}">${test.status}</div>
                 `;
-                
+
                 container.appendChild(testItem);
             });
         }
@@ -939,10 +939,10 @@
             if (program) {
                 const apiKey = prompt(`Enter API Key for ${program.name}:`, program.apiKey);
                 const trackingId = prompt(`Enter Tracking ID for ${program.name}:`, program.trackingId);
-                
+
                 if (apiKey !== null) program.apiKey = apiKey;
                 if (trackingId !== null) program.trackingId = trackingId;
-                
+
                 showAlert(`${program.name} configuration updated`, 'success');
             }
         }
@@ -950,7 +950,7 @@
         function addAffiliateProgram() {
             const name = prompt('Enter affiliate program name:');
             const commissionRate = parseFloat(prompt('Enter commission rate (%):') || '5');
-            
+
             if (name) {
                 const newProgram = {
                     id: name.toLowerCase().replace(/\s+/g, '_'),
@@ -963,7 +963,7 @@
                     apiKey: '',
                     trackingId: ''
                 };
-                
+
                 streamData.programs.push(newProgram);
                 renderPrograms();
                 showAlert(`${name} added successfully`, 'success');
@@ -984,9 +984,9 @@
                         programs: streamData.programs
                     })
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     showAlert('Configuration saved successfully', 'success');
                 } else {
@@ -1009,7 +1009,7 @@
                         autoStart: streamData.autoStart
                     })
                 });
-                
+
                 if (!response.ok) {
                     console.error('Failed to update auto-start setting');
                 }
@@ -1023,19 +1023,19 @@
                 try {
                     const response = await fetch('/api/revenue/status');
                     const data = await response.json();
-                    
+
                     if (data.success && data.streams.affiliate_marketing) {
                         const stream = data.streams.affiliate_marketing;
                         const oldStatus = streamData.status;
                         streamData.status = stream.status;
                         streamData.currentRevenue = stream.currentRevenue;
-                        
+
                         updateUI();
-                        
+
                         // Stop polling if status is stable
                         if (stream.status === 'active' || stream.status === 'inactive' || stream.status === 'error') {
                             clearInterval(pollInterval);
-                            
+
                             if (stream.status === 'error') {
                                 showAlert('Stream error: ' + (stream.errorMessage || 'Unknown error'), 'error');
                             } else if (oldStatus !== stream.status) {
@@ -1065,14 +1065,14 @@
                 // Simulate clicks and conversions
                 const newClicks = Math.floor(Math.random() * 10);
                 const newConversions = Math.floor(Math.random() * 2);
-                
+
                 streamData.totalClicks += newClicks;
-                
+
                 // Update program stats
                 streamData.programs.forEach(program => {
                     if (program.status === 'connected') {
                         program.clicks += Math.floor(newClicks/streamData.programs.length);
-                        
+
                         if (Math.random() < 0.1) { // 10% chance of conversion
                             program.conversions += 1;
                             const revenue = Math.random() * 50 + 10; // $10-60 per conversion
@@ -1081,11 +1081,11 @@
                         }
                     }
                 });
-                
+
                 // Update conversion rate
-                streamData.conversionRate = streamData.totalClicks > 0 ? 
+                streamData.conversionRate = streamData.totalClicks > 0 ?
                     (streamData.programs.reduce((sum, p) => sum + p.conversions, 0) / streamData.totalClicks) * 100 : 0;
-                
+
                 updateUI();
                 renderPrograms();
             }
@@ -1096,9 +1096,9 @@
             const alert = document.createElement('div');
             alert.className = `alert alert-${type}`;
             alert.textContent = message;
-            
+
             container.appendChild(alert);
-            
+
             // Remove alert after 5 seconds
             setTimeout(() => {
                 if (alert.parentNode) {

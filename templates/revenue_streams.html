@@ -486,26 +486,26 @@
         function toggleStream(streamId) {
             const stream = revenueStreams[streamId];
             stream.isActive = !stream.isActive;
-            
+
             if (stream.isActive) {
                 startStream(streamId);
             } else {
                 stopStream(streamId);
             }
-            
+
             initializeRevenueStreams();
         }//Start individual stream
         async function startStream(streamId) {
             const stream = revenueStreams[streamId];
             console.log(`Starting ${stream.name}...`);
-            
+
             try {
                 const response = await fetch(`/api/revenue/start/${streamId}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ autoStart: stream.autoStart })
                 });
-                
+
                 if (response.ok) {
                     stream.isActive = true;
                     showNotification(`${stream.name} started successfully!`, 'success');
@@ -516,18 +516,18 @@
                 console.error(`Error starting ${stream.name}:`, error);
                 showNotification(`Failed to start ${stream.name}`, 'error');
             }
-            
+
             initializeRevenueStreams();
         }//Stop individual stream
         async function stopStream(streamId) {
             const stream = revenueStreams[streamId];
             console.log(`Stopping ${stream.name}...`);
-            
+
             try {
                 const response = await fetch(`/api/revenue/stop/${streamId}`, {
                     method: 'POST'
                 });
-                
+
                 if (response.ok) {
                     stream.isActive = false;
                     showNotification(`${stream.name} stopped successfully!`, 'success');
@@ -538,18 +538,18 @@
                 console.error(`Error stopping ${stream.name}:`, error);
                 showNotification(`Failed to stop ${stream.name}`, 'error');
             }
-            
+
             initializeRevenueStreams();
         }//Test individual stream
         async function testStream(streamId) {
             const stream = revenueStreams[streamId];
             console.log(`Testing ${stream.name}...`);
-            
+
             try {
                 const response = await fetch(`/api/revenue/test/${streamId}`, {
                     method: 'POST'
                 });
-                
+
                 const results = await response.json();
                 showTestResults(stream.name, results);
             } catch (error) {
@@ -560,7 +560,7 @@
         function configureStream(streamId) {
             const stream = revenueStreams[streamId];
             document.getElementById('modalTitle').textContent = `Configure ${stream.name}`;
-            
+
             const modalContent = document.getElementById('modalContent');
             modalContent.innerHTML = `
                 <div style="margin-bottom: 20px;">
@@ -581,7 +581,7 @@
                 </div>
                 <button class="btn btn-success" onclick="saveStreamConfig('${streamId}')">Save Configuration</button>
             `;
-            
+
             document.getElementById('configModal').style.display = 'block';
         }//Save stream configuration
         function saveStreamConfig(streamId) {
@@ -596,37 +596,37 @@
                     autoStart: stream.autoStart
                 })
             });
-            
+
             closeModal();
             initializeRevenueStreams();
             showNotification('Configuration saved successfully!', 'success');
         }//Start all active streams
         async function startAllStreams() {
             const activeStreams = Object.keys(revenueStreams).filter(id => revenueStreams[id].autoStart);
-            
+
             for (const streamId of activeStreams) {
                 await startStream(streamId);
             }
-            
+
             showNotification(`Started ${activeStreams.length} revenue streams`, 'success');
         }//Stop all streams
         async function stopAllStreams() {
             const activeStreams = Object.keys(revenueStreams).filter(id => revenueStreams[id].isActive);
-            
+
             for (const streamId of activeStreams) {
                 await stopStream(streamId);
             }
-            
+
             showNotification(`Stopped ${activeStreams.length} revenue streams`, 'success');
         }//Run comprehensive tests on all systems
         async function runGlobalTests() {
             console.log('Running global system tests...');
-            
+
             try {
                 const response = await fetch("/api/revenue/test/all', {
                     method: 'POST'
                 });
-                
+
                 const results = await response.json();
                 showTestResults('All Systems', results);
             } catch (error) {
@@ -647,7 +647,7 @@
                     `).join('')}
                 </div>
             `;
-            
+
             document.getElementById('testModal').style.display = 'block';
         }//Update total revenue display
         function updateTotalRevenue() {
@@ -668,9 +668,9 @@
                 animation: slideIn 0.3s ease;
             `;
             notification.textContent = message;
-            
+
             document.body.appendChild(notification);
-            
+
             setTimeout(() => {
                 notification.remove();
             }, 3000);
@@ -695,14 +695,14 @@
             try {
                 const response = await fetch("/api/revenue/status');
                 const data = await response.json();
-                
+
                 Object.keys(data.streams).forEach(streamId => {
                     if (revenueStreams[streamId]) {
                         revenueStreams[streamId].currentRevenue = data.streams[streamId].currentRevenue;
                         revenueStreams[streamId].isActive = data.streams[streamId].isActive;
                     }
                 });
-                
+
                 initializeRevenueStreams();
             } catch (error) {
                 console.error('Error updating revenue data:', error);

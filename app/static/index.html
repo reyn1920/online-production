@@ -2879,11 +2879,11 @@
           <div class="panel">
             <h2>🗺️ Mini Locator</h2>
             <div class="mini-locator-container">
-              <iframe 
-                src="/api/places/locator/mini" 
-                width="100%" 
-                height="400" 
-                frameborder="0" 
+              <iframe
+                src="/api/places/locator/mini"
+                width="100%"
+                height="400"
+                frameborder="0"
                 style="border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"
                 title="Mini Places Locator">
               </iframe>
@@ -3894,7 +3894,7 @@ Select a file from the project structure to view its content...</pre
         try {
           showNotification('Starting basic video generation...', 'info');
 
-          const response = await fetch("/api/basic-video/generate', {
+          const response = await fetch('/api/basic-video/generate', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -3920,7 +3920,7 @@ Select a file from the project structure to view its content...</pre
       }//Monetization functions
       async function toggleMonetization(feature, enabled) {
         try {
-          const response = await fetch("/api/monetization/toggle', {
+          const response = await fetch('/api/monetization/toggle', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -3968,7 +3968,7 @@ Select a file from the project structure to view its content...</pre
 
       async function refreshAgentStatus() {
         try {
-          const response = await fetch("/api/agents/status');//Check if response is actually JSON
+          const response = await fetch('/api/agents/status');//Check if response is actually JSON
           const contentType = response.headers.get('content-type');
           if (!contentType || !contentType.includes('application/json')) {
             console.warn('Agent API returned non-JSON response:', contentType);
@@ -3995,7 +3995,7 @@ Select a file from the project structure to view its content...</pre
 
       async function refreshDatabaseStats() {
         try {
-          const response = await fetch("/api/database/stats');//Check if response is actually JSON
+          const response = await fetch("/api/database/stats");//Check if response is actually JSON
           const contentType = response.headers.get('content-type');
           if (!contentType || !contentType.includes('application/json')) {
             console.warn('Database API returned non-JSON response:', contentType);
@@ -4022,7 +4022,7 @@ Select a file from the project structure to view its content...</pre
 
       async function refreshProjectStatus() {
         try {
-          const response = await fetch("/api/projects/status');//Check if response is actually JSON
+          const response = await fetch("/api/projects/status");//Check if response is actually JSON
           const contentType = response.headers.get('content-type');
           if (!contentType || !contentType.includes('application/json')) {
             console.warn('API returned non-JSON response:', contentType);
@@ -4049,7 +4049,7 @@ Select a file from the project structure to view its content...</pre
 
       async function refreshReportStatus() {
         try {
-          const response = await fetch("/api/reports/status');
+          const response = await fetch("/api/reports/status");
           const data = await response.json();
 
           if (response.ok) {
@@ -4062,7 +4062,7 @@ Select a file from the project structure to view its content...</pre
 
       async function checkHealth() {
         try {
-          const response = await fetch("/api/health');
+          const response = await fetch("/api/health");
           const data = await response.json();//Only update if health indicators exist in current view
           const indicator = document.getElementById('health-indicator');
           const status = document.getElementById('health-status');
@@ -4211,7 +4211,7 @@ Select a file from the project structure to view its content...</pre
       }//Agent Command Center functions
       async function controlAgent(agentId, action) {
         try {
-          const response = await fetch("/api/agents/control', {
+          const response = await fetch("/api/agents/control", {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -4337,7 +4337,7 @@ Select a file from the project structure to view its content...</pre
       }//Audience Management functions
       async function loadAudienceStats() {
         try {
-          const response = await fetch("/api/audience/stats');
+          const response = await fetch("/api/audience/stats");
           const data = await response.json();
 
           if (response.ok) {
@@ -4355,7 +4355,7 @@ Select a file from the project structure to view its content...</pre
 
       async function loadContacts() {
         try {
-          const response = await fetch("/api/audience/contacts');
+          const response = await fetch("/api/audience/contacts");
           const data = await response.json();
 
           if (response.ok) {
@@ -4395,7 +4395,7 @@ Select a file from the project structure to view its content...</pre
 
       async function loadSegments() {
         try {
-          const response = await fetch("/api/audience/segments');
+          const response = await fetch("/api/audience/segments");
           const data = await response.json();
 
           if (response.ok) {
@@ -4434,7 +4434,7 @@ Select a file from the project structure to view its content...</pre
 
       async function addContact(name, email) {
         try {
-          const response = await fetch("/api/audience/contacts', {
+          const response = await fetch("/api/audience/contacts", {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -4467,7 +4467,7 @@ Select a file from the project structure to view its content...</pre
         }
 
         try {
-          const response = await fetch("/api/audience/campaigns', {
+          const response = await fetch("/api/audience/campaigns", {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -4500,7 +4500,7 @@ Select a file from the project structure to view its content...</pre
         }
 
         try {
-          const response = await fetch("/api/audience/segments', {
+          const response = await fetch("/api/audience/segments", {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -4562,7 +4562,7 @@ Select a file from the project structure to view its content...</pre
         }
 
         try {
-          const response = await fetch("/api/database/query', {
+          const response = await fetch("/api/database/query", {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -4616,7 +4616,7 @@ Select a file from the project structure to view its content...</pre
       }//Digital Product Studio functions
       async function loadProjects() {
         try {
-          const response = await fetch("/api/projects');
+          const response = await fetch("/api/projects");
           const data = await response.json();
 
           if (response.ok) {
@@ -4708,7 +4708,7 @@ Select a file from the project structure to view its content...</pre
       async function createNewProject() {
         try {
           showNotification('Creating new project...', 'info');
-          const response = await fetch("/api/projects/create', {
+          const response = await fetch("/api/projects/create", {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -4836,7 +4836,7 @@ Select a file from the project structure to view its content...</pre
       }//Reporting Engine functions
       async function generateReport(reportType) {
         try {
-          const response = await fetch("/api/reports/generate', {
+          const response = await fetch("/api/reports/generate", {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -4867,7 +4867,7 @@ Select a file from the project structure to view its content...</pre
       }//Affiliate Command Center functions
       async function loadAffiliateStatus() {
         try {
-          const response = await fetch("/api/affiliates/status');
+          const response = await fetch("/api/affiliates/status");
           const data = await response.json();
 
           if (response.ok) {
@@ -4888,7 +4888,7 @@ Select a file from the project structure to view its content...</pre
 
       async function loadAffiliatePrograms() {
         try {
-          const response = await fetch("/api/affiliates/programs');
+          const response = await fetch("/api/affiliates/programs");
           const data = await response.json();
 
           if (response.ok) {
@@ -4946,7 +4946,7 @@ Select a file from the project structure to view its content...</pre
 
       async function loadAffiliateOpportunities() {
         try {
-          const response = await fetch("/api/affiliates/opportunities');
+          const response = await fetch("/api/affiliates/opportunities");
           const data = await response.json();
 
           if (response.ok) {
@@ -4988,7 +4988,7 @@ Select a file from the project structure to view its content...</pre
 
       async function loadAPIStatus() {
         try {
-          const response = await fetch("/api/apis/status');
+          const response = await fetch("/api/apis/status");
           const data = await response.json();
 
           if (response.ok) {
@@ -5089,7 +5089,7 @@ Select a file from the project structure to view its content...</pre
       }//API Command Center functions
       async function loadAPIKPIs() {
         try {
-          const response = await fetch("/api/apis/status');
+          const response = await fetch("/api/apis/status");
           const data = await response.json();
 
           if (response.ok) {
@@ -5111,7 +5111,7 @@ Select a file from the project structure to view its content...</pre
 
       async function loadAPIRegistry() {
         try {
-          const response = await fetch("/api/apis/registry');
+          const response = await fetch("/api/apis/registry");
           const data = await response.json();
 
           if (response.ok) {
@@ -5184,7 +5184,7 @@ Select a file from the project structure to view its content...</pre
 
       async function loadAPIOpportunities() {
         try {
-          const response = await fetch("/api/suggestions');
+          const response = await fetch("/api/suggestions");
           const data = await response.json();
 
           if (response.ok) {
@@ -5332,7 +5332,7 @@ Select a file from the project structure to view its content...</pre
 
       async function triggerAPIDiscovery() {
         try {
-          const response = await fetch("/api/discovery/trigger', {
+          const response = await fetch("/api/discovery/trigger", {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -5378,7 +5378,7 @@ Select a file from the project structure to view its content...</pre
       }//Creative Sandbox Functions
       async function loadChannels() {
         try {
-          const response = await fetch("/api/sandbox/channels');
+          const response = await fetch("/api/sandbox/channels");
           const data = await response.json();
 
           if (response.ok) {
@@ -5519,7 +5519,7 @@ Select a file from the project structure to view its content...</pre
 
         try {
           showNotification('Generating sample script...', 'info');
-          const response = await fetch("/api/sandbox/generate-script', {
+          const response = await fetch("/api/sandbox/generate-script", {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -5551,7 +5551,7 @@ Select a file from the project structure to view its content...</pre
 
         try {
           showNotification('Generating voice preview...', 'info');
-          const response = await fetch("/api/sandbox/generate-voice', {
+          const response = await fetch("/api/sandbox/generate-voice", {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -5593,7 +5593,7 @@ Select a file from the project structure to view its content...</pre
 
         try {
           showNotification('Generating avatar preview...', 'info');
-          const response = await fetch("/api/sandbox/generate-avatar', {
+          const response = await fetch("/api/sandbox/generate-avatar", {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -5637,7 +5637,7 @@ Select a file from the project structure to view its content...</pre
 
         try {
           showNotification('Generating full scene preview...', 'info');
-          const response = await fetch("/api/sandbox/generate-scene', {
+          const response = await fetch("/api/sandbox/generate-scene", {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -5683,7 +5683,7 @@ Select a file from the project structure to view its content...</pre
 
         try {
           showNotification('Sending to production queue...', 'info');
-          const response = await fetch("/api/sandbox/send-to-production', {
+          const response = await fetch("/api/sandbox/send-to-production", {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -5712,7 +5712,7 @@ Select a file from the project structure to view its content...</pre
 
       async function loadProductionQueue() {
         try {
-          const response = await fetch("/api/sandbox/production-queue');
+          const response = await fetch("/api/sandbox/production-queue");
           const data = await response.json();
 
           if (response.ok) {
@@ -5751,7 +5751,7 @@ Select a file from the project structure to view its content...</pre
       }//Code Backup & Export functions
       async function loadSystemFiles() {
         try {
-          const response = await fetch("/api/backup/files');
+          const response = await fetch("/api/backup/files");
           const data = await response.json();
 
           if (response.ok) {
@@ -5834,7 +5834,7 @@ Select a file from the project structure to view its content...</pre
 
       async function loadProjectStructure() {
         try {
-          const response = await fetch("/api/backup/project-structure');
+          const response = await fetch("/api/backup/project-structure");
           const data = await response.json();
 
           if (response.ok) {
@@ -5904,8 +5904,8 @@ Select a file from the project structure to view its content...</pre
             if (item.type === 'folder') {
               const icon = isExpanded ? '📂' : '📁';
               html += `
-                        <div class="file-tree-item folder ${isSelected ? 'selected' : ''}" 
-                             onclick="toggleFolder('${item.path}')" 
+                        <div class="file-tree-item folder ${isSelected ? 'selected' : ''}"
+                             onclick="toggleFolder('${item.path}')"
                              style="padding-left: ${depth * 20}px">
                             <span class="icon">${icon}</span>
                             ${key}
@@ -5918,8 +5918,8 @@ Select a file from the project structure to view its content...</pre
             } else {
               const icon = getFileIcon(key);
               html += `
-                        <div class="file-tree-item file ${isSelected ? 'selected' : ''}" 
-                             onclick="selectFile('${item.path}', '${key}')" 
+                        <div class="file-tree-item file ${isSelected ? 'selected' : ''}"
+                             onclick="selectFile('${item.path}', '${key}')"
                              style="padding-left: ${depth * 20}px">
                             <span class="icon">${icon}</span>
                             ${key}
@@ -6128,7 +6128,7 @@ Select a file from the project structure to view its content...</pre
 
       async function copyAllCodeToClipboard() {
         try {
-          const response = await fetch("/api/backup/all-code');
+          const response = await fetch("/api/backup/all-code");
           const data = await response.json();
 
           if (response.ok) {
@@ -6146,7 +6146,7 @@ Select a file from the project structure to view its content...</pre
         try {
           showNotification('Generating codebase ZIP...', 'info');
 
-          const response = await fetch("/api/backup/code');
+          const response = await fetch("/api/backup/code");
 
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -6181,7 +6181,7 @@ Select a file from the project structure to view its content...</pre
         statusDiv.innerHTML = '<div class="backup-status loading">Generating code backup...</div>';
 
         try {
-          const response = await fetch("/api/backup/generate-code', {
+          const response = await fetch("/api/backup/generate-code", {
             method: 'POST',
           });
           const data = await response.json();
@@ -6207,7 +6207,7 @@ Select a file from the project structure to view its content...</pre
         statusDiv.innerHTML = '<div class="backup-status loading">Generating data backup...</div>';
 
         try {
-          const response = await fetch("/api/backup/generate-data', {
+          const response = await fetch("/api/backup/generate-data", {
             method: 'POST',
           });
           const data = await response.json();
@@ -6256,7 +6256,7 @@ Select a file from the project structure to view its content...</pre
       }//Actions functionality
       async function loadActions() {
         try {
-          const response = await fetch("/api/actions');
+          const response = await fetch("/api/actions");
           const data = await response.json();
 
           if (response.ok) {
@@ -6378,7 +6378,7 @@ Select a file from the project structure to view its content...</pre
         statusDiv.style.display = 'block';
 
         try {
-          const response = await fetch("/api/report-center/generate', {
+          const response = await fetch("/api/report-center/generate", {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -6408,7 +6408,7 @@ Select a file from the project structure to view its content...</pre
 
       async function loadReports() {
         try {
-          const response = await fetch("/api/report-center/reports');
+          const response = await fetch("/api/report-center/reports");
           const data = await response.json();
 
           if (response.ok) {
@@ -6630,7 +6630,7 @@ Select a file from the project structure to view its content...</pre
           formDiv.style.display = 'none';
           statusDiv.innerHTML = '';
 
-          const response = await fetch("/api/config');
+          const response = await fetch("/api/config");
           const config = await response.json();
 
           if (response.ok) {//Populate form with current configuration
@@ -6667,7 +6667,7 @@ Select a file from the project structure to view its content...</pre
             config[checkbox.name] = checkbox.checked;
           });
 
-          const response = await fetch("/api/config/update', {
+          const response = await fetch("/api/config/update", {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -6860,7 +6860,7 @@ Select a file from the project structure to view its content...</pre
       }//Command Center API Functions
       async function refreshAPIStatus() {
         try {
-          const response = await fetch("/api/services');
+          const response = await fetch("/api/services");
           const data = await response.json();//Update API KPIs
           const apis = data.apis || [];
           const healthyApis = apis.filter(api => api.last_health_status === 'healthy').length;
@@ -6877,7 +6877,7 @@ Select a file from the project structure to view its content...</pre
 
       async function runHealthCheck() {
         try {//Trigger health check via system agent
-          const response = await fetch("/api/agents/system/health-check', {
+          const response = await fetch("/api/agents/system/health-check", {
             method: 'POST',
           });
           const data = await response.json();
@@ -6893,7 +6893,7 @@ Select a file from the project structure to view its content...</pre
 
       async function findNewOpportunities() {
         try {
-          const response = await fetch("/api/discovery/trigger', {
+          const response = await fetch("/api/discovery/trigger", {
             method: 'POST',
           });
           const data = await response.json();
@@ -6920,7 +6920,7 @@ Select a file from the project structure to view its content...</pre
         }
 
         try {
-          const response = await fetch("/api/services/add', {
+          const response = await fetch("/api/services/add", {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -6951,7 +6951,7 @@ Select a file from the project structure to view its content...</pre
         if (!newSecret) return;
 
         try {
-          const response = await fetch("/api/services/update_secret', {
+          const response = await fetch("/api/services/update_secret", {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -6977,7 +6977,7 @@ Select a file from the project structure to view its content...</pre
 
       async function toggleServiceActive(serviceId, currentStatus) {
         try {
-          const response = await fetch("/api/services/toggle_active', {
+          const response = await fetch("/api/services/toggle_active", {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -7034,7 +7034,7 @@ Select a file from the project structure to view its content...</pre
         document.getElementById('test-summary').style.display = 'none';
 
         try {//Start the smoke test
-          const response = await fetch("/api/smoke-test/run', {
+          const response = await fetch('/api/smoke-test/run', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -7137,7 +7137,7 @@ Select a file from the project structure to view its content...</pre
         }
 
         try {
-          const response = await fetch("/api/smoke-test/stop', {
+          const response = await fetch('/api/smoke-test/stop', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -7248,7 +7248,7 @@ Select a file from the project structure to view its content...</pre
           '<h3>🔍 Runtime Review + Archive in Progress...</h3><div class="review-progress">Running comprehensive audit and creating evidence bundle...</div>';
 
         try {//Run the runtime review with archive
-          const response = await fetch("/api/audit/runtime-review', {
+          const response = await fetch('/api/audit/runtime-review', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -7321,7 +7321,7 @@ Select a file from the project structure to view its content...</pre
 
       async function displayEvidenceList() {
         try {
-          const response = await fetch("/api/audit/evidence-list');
+          const response = await fetch('/api/audit/evidence-list');
           const evidenceData = await response.json();
 
           if (evidenceData.success && evidenceData.evidence_files.length > 0) {

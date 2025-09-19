@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-# Quick bracket checker to spot unmatched brackets
+#!/usr/bin/env python3
 import sys
 
-pairs = {'(':')','[':']','{':'}'}
+pairs = {"(": ")", "[": "]", "{": "}"}
 
 for path in sys.argv[1:]:
     stack = []
-    with open(path, 'r', encoding='utf-8', errors='ignore') as f:
+    with open(path, encoding="utf-8", errors="ignore") as f:
         for ln, line in enumerate(f, 1):
             # Simple approach: just check brackets without removing strings
             for ch in line:

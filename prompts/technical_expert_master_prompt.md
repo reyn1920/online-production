@@ -82,19 +82,19 @@ class DaVinciAutomation:
     def __init__(self):
         self.resolve = self.get_resolve_instance()
         self.project_manager = self.resolve.GetProjectManager()
-    
+
     def create_automated_timeline(self, script_data):
         # Automated timeline creation from script
         pass
-    
+
     def apply_color_grading_templates(self, scenes):
         # Batch color grading application
         pass
-    
+
     def generate_proxy_media(self, source_files):
         # Automated proxy generation
         pass
-    
+
     def export_with_custom_settings(self, timeline, settings):
         # Custom render queue management
         pass
@@ -107,19 +107,19 @@ class BlenderPipeline:
     def __init__(self):
         import bpy
         self.bpy = bpy
-    
+
     def create_scene_from_script(self, scene_data):
         # Automated scene creation
         pass
-    
+
     def animate_characters(self, character_data, dialogue):
         # Character animation with lip-sync
         pass
-    
+
     def render_batch_scenes(self, scenes, output_settings):
         # Batch rendering with progress tracking
         pass
-    
+
     def export_for_davinci(self, scene, export_path):
         # Seamless DaVinci Resolve integration
         pass
@@ -133,15 +133,15 @@ class AIContentEngine:
         self.openai_client = OpenAI()
         self.anthropic_client = Anthropic()
         self.elevenlabs_client = ElevenLabs()
-    
+
     def generate_video_script(self, prompt, style):
         # AI-powered script generation
         pass
-    
+
     def create_voice_narration(self, script, voice_id):
         # Voice synthesis with ElevenLabs
         pass
-    
+
     def analyze_content_performance(self, content_data):
         # AI-powered analytics
         pass
@@ -277,7 +277,7 @@ services:
       - ./assets:/workspace/assets
     environment:
       - RESOLVE_API_KEY=${RESOLVE_API_KEY}
-  
+
   blender-pipeline:
     build: ./blender-service
     volumes:
@@ -285,7 +285,7 @@ services:
       - ./assets:/workspace/assets
     environment:
       - BLENDER_EXECUTABLE=${BLENDER_PATH}
-  
+
   ai-engine:
     build: ./ai-service
     environment:

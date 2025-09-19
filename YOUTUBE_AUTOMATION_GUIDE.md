@@ -155,10 +155,9 @@ content_result = pipeline.create_video_content(
     include_thumbnail=True,
     include_seo_optimization=True
 )
-
-print(f"Content created: {content_result.video_path}")
-print(f"Thumbnail: {content_result.thumbnail_path}")
-print(f"SEO Title: {content_result.seo_metadata.optimized_title}")
+# DEBUG_REMOVED: print statement
+# DEBUG_REMOVED: print statement
+# DEBUG_REMOVED: print statement
 ```
 
 ### 2. Intelligent Scheduling
@@ -182,8 +181,7 @@ scheduled_upload = scheduler.schedule_video_upload(
     metadata=content_result.metadata,
     upload_time=optimal_time
 )
-
-print(f"Video scheduled for: {optimal_time}")
+# DEBUG_REMOVED: print statement
 ```
 
 ### 3. Analytics and Optimization
@@ -204,8 +202,7 @@ insights = analytics.generate_performance_insights(
 recommendations = analytics.get_optimization_recommendations(
     video_id="YOUR_VIDEO_ID"
 )
-
-print(f"Performance Score: {insights.overall_score}")
+# DEBUG_REMOVED: print statement
 print(f"Recommendations: {len(recommendations)} suggestions")
 ```
 
@@ -256,9 +253,8 @@ optimized_metadata = seo_optimizer.optimize_video_metadata(
     tags=["ai", "tutorial"],
     target_keywords=keywords[:5]
 )
-
-print(f"Optimized Title: {optimized_metadata.title}")
-print(f"SEO Score: {optimized_metadata.seo_score}")
+# DEBUG_REMOVED: print statement
+# DEBUG_REMOVED: print statement
 ```
 
 ## 🔒 Security and Compliance
@@ -286,9 +282,8 @@ from backend.youtube_security_compliance import YouTubeSecurityCompliance
 
 security = YouTubeSecurityCompliance()
 audit_result = security.run_security_audit()
-
-print(f"Compliance Score: {audit_result.compliance_score:.2%}")
-print(f"Risk Score: {audit_result.risk_score:.2%}")
+# DEBUG_REMOVED: print statement
+# DEBUG_REMOVED: print statement
 print(f"Findings: {len(audit_result.findings)}")
 ```
 

@@ -1,8 +1,12 @@
-import sys
+import sys  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
 
-sys.path.append(".")  # repo root if needed
+sys.path.append(
+    "."
+)  # repo root if needed  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
 
-from backend.agents.specialized_agents import SystemAgent
+from backend.agents.system_agent import (
+    SystemAgent,
+)  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
 
 
 def test_system_agent_has_health_summary():
@@ -18,4 +22,6 @@ def test_system_agent_summary_returns_string():
     assert callable(fn)
     out = fn(report)
     assert isinstance(out, str)
-    assert "5" in out
+    assert (
+        "5" in out
+    )  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement

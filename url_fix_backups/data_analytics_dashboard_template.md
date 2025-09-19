@@ -216,7 +216,7 @@ function importGA4Data() {
     'dimensions': [{'name': 'date'}],
     'metrics': [{'name': 'sessions'}, {'name': 'users'}]
   }, 'properties/' + propertyId);
-  
+
   // Process and write to sheet
   const sheet = SpreadsheetApp.getActiveSheet();
   // Implementation details...
@@ -234,7 +234,7 @@ function importYouTubeData() {
     'end-date': 'today',
     'metrics': 'views,estimatedMinutesWatched,subscribersGained'
   });
-  
+
   // Process and write to sheet
   // Implementation details...
 }

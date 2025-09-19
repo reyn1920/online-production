@@ -61,7 +61,7 @@ class PasteAvatarUI {
             });
 
             const result = await response.json();
-            
+
             if (result.success) {
                 // Dispatch success event
                 document.dispatchEvent(new CustomEvent('avatar:generated', {
@@ -83,7 +83,7 @@ class PasteAvatarUI {
     async handlePasteUpdate(data) {
         // Handle paste content updates for avatar integration
         console.log('Paste content updated:', data);
-        
+
         // If avatar is linked to paste content, regenerate
         if (data.autoRegenerate) {
             await this.handleAvatarGeneration({
@@ -110,7 +110,7 @@ class PasteAvatarUI {
             });
 
             const result = await response.json();
-            
+
             if (result.success) {
                 document.dispatchEvent(new CustomEvent('file:uploaded', {
                     detail: result
@@ -133,7 +133,7 @@ class PasteAvatarUI {
         try {
             const response = await fetch(`${this.pasteEndpoint}/downloads/list`);
             const result = await response.json();
-            
+
             return result.files || [];
         } catch (error) {
             console.error('Error fetching downloads files:', error);
@@ -159,7 +159,7 @@ class PasteAvatarUI {
             });
 
             const result = await response.json();
-            
+
             if (result.success) {
                 document.dispatchEvent(new CustomEvent('file:processed', {
                     detail: result

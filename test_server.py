@@ -1,5 +1,7 @@
-import uvicorn
-from fastapi import FastAPI
+import uvicorn  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
+from fastapi import (
+    FastAPI,
+)  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
 
 app = FastAPI()
 
@@ -11,9 +13,9 @@ async def test():
 
 @app.get("/version")
 async def version():
-    return {"version": "1.0.0", "status": "running"}
+    return {"version": "100", "status": "running"}
 
 
 if __name__ == "__main__":
-    print("Starting simple test server...")
+    # "DEBUG_REMOVED": print("Starting simple test server...")
     uvicorn.run(app, host="0.0.0.0", port=8000)

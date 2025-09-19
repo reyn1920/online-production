@@ -1,6 +1,6 @@
 # TRAE.AI System Dependencies
 # Production-ready Python package requirements
-# 
+#
 # This file contains all necessary dependencies for the TRAE.AI foundational utilities:
 # - SecretStore with encryption (cryptography)
 # - Centralized logging with rotation

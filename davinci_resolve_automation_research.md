@@ -130,21 +130,21 @@ project_manager = resolve.GetProjectManager()
 def automate_project_workflow(media_folder, output_folder):
     # Create new project
     project = project_manager.CreateProject("Automated_Project")
-    
+
     # Import media
     media_storage = resolve.GetMediaStorage()
     clips = media_storage.AddItemListToMediaPool(media_folder)
-    
+
     # Create timeline
     timeline = project.CreateTimeline("Auto_Timeline")
-    
+
     # Add clips to timeline
     for clip in clips:
         timeline.AppendToTimeline(clip)
-    
+
     # Apply automated color grading
     apply_auto_color_correction(timeline)
-    
+
     # Render output
     render_timeline(timeline, output_folder)
 ```

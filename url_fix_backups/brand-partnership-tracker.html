@@ -388,15 +388,15 @@
             .header h1 {
                 font-size: 2rem;
             }
-            
+
             .dashboard {
                 grid-template-columns: 1fr;
             }
-            
+
             .card {
                 padding: 20px;
             }
-            
+
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -419,7 +419,7 @@
                         Partnership Overview
                     </div>
                 </div>
-                
+
                 <div class="stats-grid">
                     <div class="stat-item">
                         <span class="stat-value">24</span>
@@ -438,7 +438,7 @@
                         <div class="stat-label">Total Reach</div>
                     </div>
                 </div>
-                
+
                 <button class="btn" onclick="openModal('addPartnershipModal')">Add New Partnership</button>
                 <button class="btn btn-secondary" onclick="generateReport()">Generate Report</button>
             </div>
@@ -451,7 +451,7 @@
                         ROI Analytics
                     </div>
                 </div>
-                
+
                 <div class="roi-chart">
                     <div class="chart-header">
                         <h3>Monthly Partnership ROI</h3>
@@ -479,7 +479,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div style="display: flex; justify-content: space-between; margin-top: 15px;">
                     <div>
                         <strong>Best Performing:</strong><br>
@@ -500,7 +500,7 @@
                         Partnership Pipeline
                     </div>
                 </div>
-                
+
                 <div class="pipeline-stage">
                     <div class="stage-header">
                         <div class="stage-title">🎯 Prospecting</div>
@@ -513,7 +513,7 @@
                         <div class="brand-chip">+9 more</div>
                     </div>
                 </div>
-                
+
                 <div class="pipeline-stage">
                     <div class="stage-header">
                         <div class="stage-title">💬 Negotiating</div>
@@ -526,7 +526,7 @@
                         <div class="brand-chip">+3 more</div>
                     </div>
                 </div>
-                
+
                 <div class="pipeline-stage">
                     <div class="stage-header">
                         <div class="stage-title">✅ Active</div>
@@ -550,7 +550,7 @@
                     </div>
                     <button class="btn btn-small" onclick="filterPartnerships()">Filter</button>
                 </div>
-                
+
                 <div class="partnership-list" id="partnershipList">
                     <!-- Partnership items will be populated by JavaScript -->
                 </div>
@@ -563,13 +563,13 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('addPartnershipModal')">&times;</span>
             <h2>Add New Partnership</h2>
-            
+
             <form id="partnershipForm">
                 <div class="form-group">
                     <label class="form-label">Brand Name</label>
                     <input type="text" class="form-input" id="brandName" placeholder="Enter brand name" required>
                 </div>
-                
+
                 <div class="form-group">
                     <label class="form-label">Partnership Type</label>
                     <select class="form-select" id="partnershipType" required>
@@ -581,27 +581,27 @@
                         <option value="event">Event Partnership</option>
                     </select>
                 </div>
-                
+
                 <div class="form-group">
                     <label class="form-label">Contract Value ($)</label>
                     <input type="number" class="form-input" id="contractValue" placeholder="Enter contract value" required>
                 </div>
-                
+
                 <div class="form-group">
                     <label class="form-label">Start Date</label>
                     <input type="date" class="form-input" id="startDate" required>
                 </div>
-                
+
                 <div class="form-group">
                     <label class="form-label">End Date</label>
                     <input type="date" class="form-input" id="endDate" required>
                 </div>
-                
+
                 <div class="form-group">
                     <label class="form-label">Deliverables</label>
                     <input type="text" class="form-input" id="deliverables" placeholder="e.g., 3 YouTube videos, 5 Instagram posts">
                 </div>
-                
+
                 <div class="form-group">
                     <label class="form-label">Status</label>
                     <select class="form-select" id="status" required>
@@ -610,7 +610,7 @@
                         <option value="completed">Completed</option>
                     </select>
                 </div>
-                
+
                 <button type="submit" class="btn">Add Partnership</button>
                 <button type="button" class="btn btn-secondary" onclick="closeModal('addPartnershipModal')">Cancel</button>
             </form>
@@ -690,14 +690,14 @@
         function renderPartnerships() {
             const container = document.getElementById('partnershipList');
             container.innerHTML = '';
-            
+
             partnerships.forEach(partnership => {
                 const item = document.createElement('div');
                 item.className = 'partnership-item';
-                
+
                 const statusClass = `status-${partnership.status}`;
                 const statusText = partnership.status.charAt(0).toUpperCase() + partnership.status.slice(1);
-                
+
                 item.innerHTML = `
                     <div class="partnership-header">
                         <div class="brand-name">${partnership.brandName}</div>
@@ -738,7 +738,7 @@
                         <button class="btn btn-secondary btn-small" onclick="trackPerformance(${partnership.id})">Track Performance</button>
                     </div>
                 `;
-                
+
                 container.appendChild(item);
             });
         }
@@ -786,7 +786,7 @@
         // Form submission
         document.getElementById('partnershipForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            
+
             const formData = {
                 id: partnerships.length + 1,
                 brandName: document.getElementById('brandName').value,
@@ -800,14 +800,14 @@
                 reach: 0,
                 engagement: 0
             };
-            
+
             partnerships.push(formData);
             renderPartnerships();
             closeModal('addPartnershipModal');
-            
+
             // Reset form
             this.reset();
-            
+
             showNotification(`✅ Partnership with ${formData.brandName} added successfully!`, 'success');
         });
 
@@ -827,9 +827,9 @@
                 max-width: 300px;
             `;
             notification.textContent = message;
-            
+
             document.body.appendChild(notification);
-            
+
             setTimeout(() => {
                 notification.style.animation = 'slideOutRight 0.3s ease';
                 setTimeout(() => {
@@ -845,7 +845,7 @@
                 from { transform: translateX(100%); opacity: 0; }
                 to { transform: translateX(0); opacity: 1; }
             }
-            
+
             @keyframes slideOutRight {
                 from { transform: translateX(0); opacity: 1; }
                 to { transform: translateX(100%); opacity: 0; }
@@ -855,7 +855,7 @@
 
         // Initialize the app
         renderPartnerships();
-        
+
         // Simulate real-time updates
         setInterval(() => {
             // Update some random metrics

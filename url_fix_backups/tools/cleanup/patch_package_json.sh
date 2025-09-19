@@ -42,9 +42,9 @@ log() {
     shift
     local message="$*"
     local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-    
+
     echo "[$timestamp] [$level] $message" >> "$LOG_FILE"
-    
+
     case "$level" in
         "ERROR")
             echo -e "${RED}[ERROR]${NC} $message" >&2
@@ -151,12 +151,12 @@ parse_args() {
 # Check prerequisites
 check_prerequisites() {
     log "INFO" "Checking prerequisites..."
-    
+
     # Check if package.json exists
     if [[ ! -f "$PACKAGE_JSON" ]]; then
         error_exit "package.json not found at $PACKAGE_JSON"
     fi
-    
+
     # Check for package managers
     local package_manager=""
     if command -v npm >/dev/null 2>&1; then
@@ -168,14 +168,14 @@ check_prerequisites() {
     else
         error_exit "No package manager found (npm, yarn, or pnpm required)"
     fi
-    
+
     log "INFO" "Using package manager: $package_manager"
-    
+
     # Check for jq (JSON processor)
     if ! command -v jq >/dev/null 2>&1; then
         log "WARN" "jq not found. Some features may be limited."
     fi
-    
+
     # Create backup directory
     if [[ "$BACKUP" == "true" ]]; then
         mkdir -p "$BACKUP_DIR"
@@ -187,15 +187,15 @@ create_backup() {
     if [[ "$BACKUP" == "false" ]]; then
         return 0
     fi
-    
+
     local timestamp=$(date '+%Y%m%d_%H%M%S')
     local backup_file="$BACKUP_DIR/package_json_$timestamp.json"
-    
+
     log "INFO" "Creating backup: $backup_file"
-    
+
     if [[ "$DRY_RUN" == "false" ]]; then
         cp "$PACKAGE_JSON" "$backup_file"
-        
+
         # Backup lock files if they exist
         if [[ -f "$PACKAGE_LOCK" ]]; then
             cp "$PACKAGE_LOCK" "$BACKUP_DIR/package-lock_$timestamp.json"
@@ -225,11 +225,11 @@ detect_package_manager() {
 # Validate package.json syntax
 validate_package_json() {
     log "INFO" "Validating package.json syntax..."
-    
+
     if ! jq empty "$PACKAGE_JSON" 2>/dev/null; then
         error_exit "Invalid JSON syntax in package.json"
     fi
-    
+
     # Check required fields
     local required_fields=("name" "version")
     for field in "${required_fields[@]}"; do
@@ -237,7 +237,7 @@ validate_package_json() {
             log "WARN" "Missing required field: $field"
         fi
     done
-    
+
     log "INFO" "package.json syntax is valid"
 }
 
@@ -246,30 +246,30 @@ fix_common_issues() {
     if [[ "$AUTO_FIX" == "false" ]]; then
         return 0
     fi
-    
+
     log "INFO" "Fixing common package.json issues..."
-    
+
     local temp_file=$(mktemp)
-    
+
     # Fix missing fields
     jq '. + {
         "private": (if .private == null then true else .private end),
         "license": (if .license == null then "UNLICENSED" else .license end),
         "engines": (if .engines == null then {"node": ">=14.0.0"} else .engines end)
     }' "$PACKAGE_JSON" > "$temp_file"
-    
+
     # Sort dependencies alphabetically
     jq '.dependencies = (.dependencies | to_entries | sort_by(.key) | from_entries) |
         .devDependencies = (.devDependencies | to_entries | sort_by(.key) | from_entries) |
         .peerDependencies = (.peerDependencies | to_entries | sort_by(.key) | from_entries)' \
         "$temp_file" > "${temp_file}.sorted"
-    
+
     if [[ "$DRY_RUN" == "false" ]]; then
         mv "${temp_file}.sorted" "$PACKAGE_JSON"
     else
         log "INFO" "[DRY RUN] Would fix common issues in package.json"
     fi
-    
+
     rm -f "$temp_file" "${temp_file}.sorted"
 }
 
@@ -278,11 +278,11 @@ optimize_package_json() {
     if [[ "$OPTIMIZE" == "false" ]]; then
         return 0
     fi
-    
+
     log "INFO" "Optimizing package.json structure..."
-    
+
     local temp_file=$(mktemp)
-    
+
     # Reorder fields in a logical structure
     jq '{
         name: .name,
@@ -315,14 +315,14 @@ optimize_package_json() {
         prettier: .prettier,
         jest: .jest
     } | with_entries(select(.value != null))' "$PACKAGE_JSON" > "$temp_file"
-    
+
     if [[ "$DRY_RUN" == "false" ]]; then
         mv "$temp_file" "$PACKAGE_JSON"
         log "INFO" "package.json structure optimized"
     else
         log "INFO" "[DRY RUN] Would optimize package.json structure"
     fi
-    
+
     rm -f "$temp_file"
 }
 
@@ -331,11 +331,11 @@ update_dependencies() {
     if [[ "$UPDATE_DEPS" == "false" ]]; then
         return 0
     fi
-    
+
     log "INFO" "Updating dependencies..."
-    
+
     local package_manager=$(detect_package_manager)
-    
+
     if [[ "$DRY_RUN" == "false" ]]; then
         case "$package_manager" in
             "npm")
@@ -359,12 +359,12 @@ run_security_audit() {
     if [[ "$SECURITY_AUDIT" == "false" ]]; then
         return 0
     fi
-    
+
     log "INFO" "Running security audit..."
-    
+
     local package_manager=$(detect_package_manager)
     local audit_output
-    
+
     case "$package_manager" in
         "npm")
             if audit_output=$(npm audit --json 2>/dev/null); then
@@ -403,11 +403,11 @@ fix_vulnerabilities() {
     if [[ "$FIX_VULNERABILITIES" == "false" ]]; then
         return 0
     fi
-    
+
     log "INFO" "Fixing security vulnerabilities..."
-    
+
     local package_manager=$(detect_package_manager)
-    
+
     if [[ "$DRY_RUN" == "false" ]]; then
         case "$package_manager" in
             "npm")
@@ -431,15 +431,15 @@ clean_install() {
     if [[ "$CLEAN_INSTALL" == "false" ]]; then
         return 0
     fi
-    
+
     log "INFO" "Performing clean install..."
-    
+
     local package_manager=$(detect_package_manager)
-    
+
     if [[ "$DRY_RUN" == "false" ]]; then
         # Remove node_modules and lock files
         rm -rf "$PROJECT_ROOT/node_modules"
-        
+
         case "$package_manager" in
             "npm")
                 rm -f "$PACKAGE_LOCK"
@@ -463,20 +463,20 @@ clean_install() {
 # Remove unused dependencies
 remove_unused_dependencies() {
     log "INFO" "Checking for unused dependencies..."
-    
+
     # This would integrate with the unused_scan.py script
     local unused_scan_script="$SCRIPT_DIR/unused_scan.py"
-    
+
     if [[ -f "$unused_scan_script" ]]; then
         local unused_deps
         unused_deps=$(python3 "$unused_scan_script" --target-dir "$PROJECT_ROOT" --output-format json | jq -r '.unused_items[] | select(.item_type == "dependency") | .name')
-        
+
         if [[ -n "$unused_deps" ]]; then
             log "INFO" "Found unused dependencies: $unused_deps"
-            
+
             if [[ "$AUTO_FIX" == "true" ]]; then
                 local package_manager=$(detect_package_manager)
-                
+
                 for dep in $unused_deps; do
                     if [[ "$DRY_RUN" == "false" ]]; then
                         case "$package_manager" in
@@ -507,16 +507,16 @@ remove_unused_dependencies() {
 # Generate report
 generate_report() {
     log "INFO" "Generating package.json analysis report..."
-    
+
     local report_file="$SCRIPT_DIR/package_analysis_$(date '+%Y%m%d_%H%M%S').txt"
-    
+
     {
         echo "Package.json Analysis Report"
         echo "============================"
         echo "Generated: $(date)"
         echo "Project: $PROJECT_ROOT"
         echo ""
-        
+
         # Basic info
         echo "PACKAGE INFORMATION:"
         echo "-------------------"
@@ -526,7 +526,7 @@ generate_report() {
             echo "Description: $(jq -r '.description // "N/A"' "$PACKAGE_JSON")"
             echo "License: $(jq -r '.license // "N/A"' "$PACKAGE_JSON")"
             echo ""
-            
+
             # Dependencies count
             echo "DEPENDENCIES:"
             echo "------------"
@@ -535,14 +535,14 @@ generate_report() {
             echo "Peer Dependencies: $(jq '.peerDependencies | length' "$PACKAGE_JSON" 2>/dev/null || echo "0")"
             echo ""
         fi
-        
+
         # Package manager info
         echo "PACKAGE MANAGER:"
         echo "---------------"
         echo "Detected: $(detect_package_manager)"
         echo "Lock file exists: $([[ -f "$PACKAGE_LOCK" || -f "$YARN_LOCK" || -f "$PNPM_LOCK" ]] && echo "Yes" || echo "No")"
         echo ""
-        
+
         # File sizes
         echo "FILE SIZES:"
         echo "----------"
@@ -559,11 +559,11 @@ generate_report() {
         if [[ -d "$PROJECT_ROOT/node_modules" ]]; then
             echo "node_modules: $(du -sh "$PROJECT_ROOT/node_modules" | cut -f1)"
         fi
-        
+
     } > "$report_file"
-    
+
     log "INFO" "Report saved to: $report_file"
-    
+
     if [[ "$VERBOSE" == "true" ]]; then
         cat "$report_file"
     fi
@@ -572,23 +572,23 @@ generate_report() {
 # Main execution
 main() {
     log "INFO" "Starting package.json patching process..."
-    
+
     # Initialize log file
     mkdir -p "$(dirname "$LOG_FILE")"
     echo "Package.json Patcher Log - $(date)" > "$LOG_FILE"
-    
+
     # Parse arguments
     parse_args "$@"
-    
+
     # Check prerequisites
     check_prerequisites
-    
+
     # Create backup
     create_backup
-    
+
     # Validate package.json
     validate_package_json
-    
+
     # Run operations
     fix_common_issues
     optimize_package_json
@@ -596,12 +596,12 @@ main() {
     update_dependencies
     run_security_audit
     clean_install
-    
+
     # Generate report
     generate_report
-    
+
     log "INFO" "Package.json patching completed successfully"
-    
+
     if [[ "$DRY_RUN" == "true" ]]; then
         log "INFO" "This was a dry run. No changes were made."
     fi

@@ -367,14 +367,14 @@ async def process_media_pipeline(input_data):
         # Run components in parallel where possible
         ollama_task = executor.submit(ollama_process, input_data)
         comfyui_task = executor.submit(comfyui_process, input_data)
-        
+
         # Wait for results
         ollama_result = await asyncio.wrap_future(ollama_task)
         comfyui_result = await asyncio.wrap_future(comfyui_task)
-        
+
         # Sequential processing for dependent tasks
         avatar_result = await linly_talker_process(ollama_result)
-        
+
         return combine_results(comfyui_result, avatar_result)
 ```
 

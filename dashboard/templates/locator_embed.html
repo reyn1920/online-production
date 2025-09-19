@@ -14,18 +14,18 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             height: 100vh;
             overflow: hidden;
         }
-        
+
         #map {
             width: 100%;
             height: 100vh;
         }
-        
+
         .search-control {
             position: absolute;
             top: 10px;
@@ -40,7 +40,7 @@
             align-items: center;
             max-width: 400px;
         }
-        
+
         .search-control input {
             padding: 8px 12px;
             border: 1px solid #ddd;
@@ -49,7 +49,7 @@
             flex: 1;
             min-width: 150px;
         }
-        
+
         .search-control button {
             background: #3498db;
             color: white;
@@ -60,16 +60,16 @@
             font-size: 14px;
             white-space: nowrap;
         }
-        
+
         .search-control button:hover {
             background: #2980b9;
         }
-        
+
         .search-control button:disabled {
             background: #bdc3c7;
             cursor: not-allowed;
         }
-        
+
         .results-popup {
             position: absolute;
             top: 60px;
@@ -83,37 +83,37 @@
             overflow-y: auto;
             display: none;
         }
-        
+
         .results-popup.show {
             display: block;
         }
-        
+
         .result-item {
             padding: 12px;
             border-bottom: 1px solid #eee;
             cursor: pointer;
             transition: background-color 0.2s;
         }
-        
+
         .result-item:hover {
             background: #f8f9fa;
         }
-        
+
         .result-item:last-child {
             border-bottom: none;
         }
-        
+
         .result-name {
             font-weight: 600;
             color: #2c3e50;
             margin-bottom: 4px;
         }
-        
+
         .result-address {
             color: #666;
             font-size: 13px;
         }
-        
+
         .close-results {
             position: absolute;
             top: 8px;
@@ -124,7 +124,7 @@
             cursor: pointer;
             color: #666;
         }
-        
+
         @media (max-width: 768px) {
             .search-control {
                 left: 5px;
@@ -133,11 +133,11 @@
                 flex-direction: column;
                 align-items: stretch;
             }
-            
+
             .search-control input {
                 min-width: auto;
             }
-            
+
             .results-popup {
                 left: 5px;
                 right: 5px;
@@ -153,14 +153,14 @@
         <input type="text" id="searchLocation" placeholder="Location...">
         <button id="searchBtn">Search</button>
     </div>
-    
+
     <div class="results-popup" id="resultsPopup">
         <button class="close-results" id="closeResults">&times;</button>
         <div id="resultsList"></div>
     </div>
-    
+
     <div id="map"></div>
-    
+
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
     <script>
@@ -169,18 +169,18 @@
                 this.map = null;
                 this.markers = [];
                 this.markerCluster = null;
-                
+
                 this.initMap();
                 this.bindEvents();
                 this.parseUrlParams();
             }
-            
+
             initMap() {//Get initial position from URL params or default to San Francisco
                 const urlParams = new URLSearchParams(window.location.search);
                 const lat = parseFloat(urlParams.get('lat')) || 37.7749;
                 const lng = parseFloat(urlParams.get('lng')) || -122.4194;
                 const zoom = parseInt(urlParams.get('zoom')) || 12;
-                
+
                 this.map = L.map('map').setView([lat, lng], zoom);//Add OpenStreetMap tiles
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '© OpenStreetMap contributors'
@@ -191,7 +191,7 @@
                 });
                 this.map.addLayer(this.markerCluster);
             }
-            
+
             parseUrlParams() {
                 const urlParams = new URLSearchParams(window.location.search);
                 const category = urlParams.get('cat');//If category is provided, auto-search
@@ -202,24 +202,24 @@
                     this.performSearch();
                 }
             }
-            
+
             bindEvents() {
                 document.getElementById('searchBtn').addEventListener('click', () => {
                     this.performSearch();
                 });
-                
+
                 document.getElementById('searchQuery').addEventListener('keypress', (e) => {
                     if (e.key === 'Enter') {
                         this.performSearch();
                     }
                 });
-                
+
                 document.getElementById('searchLocation').addEventListener('keypress', (e) => {
                     if (e.key === 'Enter') {
                         this.performSearch();
                     }
                 });
-                
+
                 document.getElementById('closeResults').addEventListener('click', () => {
                     document.getElementById('resultsPopup').classList.remove('show');
                 });//Close results when clicking on map
@@ -227,11 +227,11 @@
                     document.getElementById('resultsPopup').classList.remove('show');
                 });
             }
-            
+
             async performSearch() {
                 const query = document.getElementById('searchQuery').value.trim();
                 const location = document.getElementById('searchLocation').value.trim();
-                
+
                 if (!query) {
                     alert('Please enter a search query');
                     return;
@@ -241,21 +241,21 @@
                     const center = this.map.getCenter();
                     searchLocation = `${center.lat.toFixed(4)},${center.lng.toFixed(4)}`;
                 }
-                
+
                 const searchBtn = document.getElementById('searchBtn');
                 searchBtn.disabled = true;
                 searchBtn.textContent = 'Searching...';
-                
+
                 try {
                     const params = new URLSearchParams({
                         q: query,
                         location: searchLocation,
                         radius: '5000'
                     });
-                    
+
                     const response = await fetch(`/api/places/search?${params}`);
                     const data = await response.json();
-                    
+
                     if (response.ok) {
                         this.displayResults(data.results || []);
                         this.updateMapWithResults(data.results || []);
@@ -270,13 +270,13 @@
                     searchBtn.textContent = 'Search';
                 }
             }
-            
+
             displayResults(results) {
                 const resultsList = document.getElementById('resultsList');
                 const resultsPopup = document.getElementById('resultsPopup');
-                
+
                 resultsList.innerHTML = '';
-                
+
                 if (results.length === 0) {
                     resultsList.innerHTML = '<div class="result-item">No results found</div>';
                 } else {
@@ -287,23 +287,23 @@
                             <div class="result-name">${result.name || 'Unnamed Place'}</div>
                             <div class="result-address">${result.address || result.display_name || 'No address available'}</div>
                         `;
-                        
+
                         item.addEventListener('click', () => {
                             this.selectResult(index);
                             resultsPopup.classList.remove('show');
                         });
-                        
+
                         resultsList.appendChild(item);
                     });
                 }
-                
+
                 resultsPopup.classList.add('show');
             }
-            
+
             updateMapWithResults(results) {//Clear existing markers
                 this.markerCluster.clearLayers();
                 this.markers = [];
-                
+
                 if (results.length === 0) return;//Add markers for each result
                 results.forEach((result, index) => {
                     if (result.lat && result.lon) {
@@ -313,11 +313,11 @@
                                 ${result.address || result.display_name || ''}<br>
                                 <small>Provider: ${result.provider || 'Unknown'}</small>
                             `);
-                        
+
                         marker.on('click', () => {
                             this.selectResult(index);
                         });
-                        
+
                         this.markerCluster.addLayer(marker);
                         this.markers.push(marker);
                     }
@@ -327,7 +327,7 @@
                     this.map.fitBounds(group.getBounds().pad(0.1));
                 }
             }
-            
+
             selectResult(index) {//Open marker popup
                 if (this.markers[index]) {
                     this.markers[index].openPopup();

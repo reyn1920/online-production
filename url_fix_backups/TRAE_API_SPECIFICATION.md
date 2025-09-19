@@ -2,10 +2,10 @@
 
 ## API Base Information
 
-**Base URL**: `http://localhost:8080/api/v1`  
-**Protocol**: HTTP/1.1  
-**Authentication**: Bearer Token  
-**Content-Type**: `application/json`  
+**Base URL**: `http://localhost:8080/api/v1`
+**Protocol**: HTTP/1.1
+**Authentication**: Bearer Token
+**Content-Type**: `application/json`
 **API Version**: 1.0
 
 ## Authentication
@@ -751,6 +751,6 @@ client
 
 ---
 
-**API Version**: 1.0  
-**Last Updated**: January 2024  
+**API Version**: 1.0
+**Last Updated**: January 2024
 **Compatibility**: ChatGPT Integration v1.0+

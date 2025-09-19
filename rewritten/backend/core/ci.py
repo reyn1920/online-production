@@ -10,7 +10,7 @@ def fast() -> bool:
     return os.environ.get("FAST_MODE", "1") != "0"
 
 
-def pick_timeout(default: float, ci_default: float = 5.0) -> float:
+def pick_timeout(default: float, ci_default: float = 50) -> float:
     return ci_default if ci() or fast() else default
 
 

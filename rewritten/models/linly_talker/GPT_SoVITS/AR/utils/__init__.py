@@ -29,7 +29,7 @@ def get_newest_ckpt(string_list):
 
 def check_txt_file(file_path):
     try:
-        with open(file_path, "r") as file:
+        with open(file_path) as file:
             text = file.readline().strip()
         assert text.strip() != ""
         return text

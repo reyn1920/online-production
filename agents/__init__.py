@@ -3,11 +3,15 @@
 # This module contains the core agentic framework for TRAE.AI system.
 # It provides base classes and specialized agents for autonomous task execution.
 #
-# Author: TRAE.AI System
-# Version: 1.0.0
+# "Author": TRAE.AI System
+# "Version": 100
 
-from .base_agents import AuditorAgent, ExecutorAgent, PlannerAgent
-from .specialized_agents import (
+from .base_agents import (
+    AuditorAgent,
+    ExecutorAgent,
+    PlannerAgent,
+)  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
+from .specialized_agents import (  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
     ContentAgent,
     MarketingAgent,
     QAAgent,
@@ -26,5 +30,5 @@ __all__ = [
     "QAAgent",
 ]
 
-__version__ = "1.0.0"
+__version__ = "100"
 __author__ = "TRAE.AI System"

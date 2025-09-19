@@ -1,9 +1,7 @@
 #!/usr / bin / python
-# -*- encoding: utf - 8 -*-
 
 import logging
 import os.path as osp
-import sys
 import time
 
 import torch.distributed as dist

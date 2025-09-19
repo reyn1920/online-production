@@ -1,9 +1,9 @@
 # 🔐 MASTER SECURITY VAULT
 
-**Classification:** CONFIDENTIAL - INTERNAL USE ONLY  
-**Created:** January 9, 2025  
-**Last Updated:** January 9, 2025  
-**Owner:** Security Team  
+**Classification:** CONFIDENTIAL - INTERNAL USE ONLY
+**Created:** January 9, 2025
+**Last Updated:** January 9, 2025
+**Owner:** Security Team
 **Status:** ACTIVE MONITORING
 
 ---
@@ -151,7 +151,7 @@ python -c "from backend.secure_secret_store import SecretStore; print('✅ Succe
 postgres:
   environment:
     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    
+
 # Add to .env.development
 POSTGRES_PASSWORD=<secure_generated_password>
 ```
@@ -277,8 +277,8 @@ This document contains comprehensive security information and must be:
 - Reviewed by authorized personnel only
 - Protected according to data classification policies
 
-**Next Security Review:** January 16, 2025  
-**Document Classification:** CONFIDENTIAL  
+**Next Security Review:** January 16, 2025
+**Document Classification:** CONFIDENTIAL
 **Retention Period:** 1 Year (or until superseded)
 
 ---

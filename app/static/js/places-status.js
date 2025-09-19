@@ -26,7 +26,7 @@ class PlacesStatusDashboard {
 
   async fetchProviders() {
     try {
-      const response = await fetch("/places/providers');
+      const response = await fetch("/places/providers");
       const data = await response.json();//Store providers in a map for quick lookup
       this.providers.clear();
       data.providers.forEach(provider => {
@@ -50,7 +50,7 @@ class PlacesStatusDashboard {
   renderClinicGroup(group) {
     const groupDiv = document.createElement('div');
     groupDiv.className = 'clinic-group';
-    
+
     const header = document.createElement('h3');
     header.textContent = group.name;
     header.className = 'clinic-group-header';
@@ -62,25 +62,25 @@ class PlacesStatusDashboard {
     group.ids.forEach(providerId => {
       const status = this.getProviderStatus(providerId);
       const name = this.getProviderName(providerId);
-      
+
       const providerItem = document.createElement('div');
       providerItem.className = 'provider-item';
-      
+
       const statusDot = document.createElement('span');
       statusDot.className = dotClass(status);
-      
+
       const providerName = document.createElement('span');
       providerName.textContent = name;
       providerName.className = 'provider-name';
-      
+
       const statusText = document.createElement('span');
       statusText.textContent = status.toUpperCase();
       statusText.className = `status-text status-${status}`;
-      
+
       providerItem.appendChild(statusDot);
       providerItem.appendChild(providerName);
       providerItem.appendChild(statusText);
-      
+
       providersList.appendChild(providerItem);
     });
 
@@ -96,7 +96,7 @@ class PlacesStatusDashboard {
     }
 
     container.innerHTML = '';
-    
+
     const title = document.createElement('h2');
     title.textContent = 'Places & Clinic Services Status';
     title.className = 'places-status-title';
@@ -122,7 +122,7 @@ class PlacesStatusDashboard {
 
     const groupsContainer = document.createElement('div');
     groupsContainer.className = 'clinic-groups-container';
-    
+
     CLINIC_GROUPS.forEach(group => {
       const groupElement = this.renderClinicGroup(group);
       groupsContainer.appendChild(groupElement);
@@ -139,7 +139,7 @@ class PlacesStatusDashboard {
     if (this.refreshInterval) {
       clearInterval(this.refreshInterval);
     }
-    
+
     this.refreshInterval = setInterval(async () => {
       await this.fetchProviders();
       this.render();

@@ -4,7 +4,7 @@
 module.exports = {
   // Chrome installation configuration
   cacheDirectory: process.env.PUPPETEER_CACHE_DIR || './node_modules/.cache/puppeteer',
-  
+
   // Launch options for macOS compatibility
   launch: {
     headless: false,
@@ -23,7 +23,7 @@ module.exports = {
     timeout: 30000,
     slowMo: 100
   },
-  
+
   // Environment variables for Chrome setup
   env: {
     PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'false',

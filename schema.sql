@@ -1,6 +1,6 @@
 -- TRAE.AI Master Database Schema
 -- Production-ready SQLite database schema for right_perspective.db
--- 
+--
 -- This schema defines all core tables for the TRAE.AI system including:
 -- - Task queue management
 -- - API registry and monitoring
@@ -614,61 +614,61 @@ CREATE INDEX IF NOT EXISTS idx_audit_log_user ON audit_log(user_id);
 -- ============================================================================
 
 -- Update timestamps automatically
-CREATE TRIGGER IF NOT EXISTS update_task_queue_timestamp 
+CREATE TRIGGER IF NOT EXISTS update_task_queue_timestamp
     AFTER UPDATE ON task_queue
     BEGIN
         UPDATE task_queue SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
     END;
 
-CREATE TRIGGER IF NOT EXISTS update_api_registry_timestamp 
+CREATE TRIGGER IF NOT EXISTS update_api_registry_timestamp
     AFTER UPDATE ON api_registry
     BEGIN
         UPDATE api_registry SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
     END;
 
-CREATE TRIGGER IF NOT EXISTS update_author_personas_timestamp 
+CREATE TRIGGER IF NOT EXISTS update_author_personas_timestamp
     AFTER UPDATE ON author_personas
     BEGIN
         UPDATE author_personas SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
     END;
 
-CREATE TRIGGER IF NOT EXISTS update_hypocrisy_tracker_timestamp 
+CREATE TRIGGER IF NOT EXISTS update_hypocrisy_tracker_timestamp
     AFTER UPDATE ON hypocrisy_tracker
     BEGIN
         UPDATE hypocrisy_tracker SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
     END;
 
-CREATE TRIGGER IF NOT EXISTS update_affiliate_programs_timestamp 
+CREATE TRIGGER IF NOT EXISTS update_affiliate_programs_timestamp
     AFTER UPDATE ON affiliate_programs
     BEGIN
         UPDATE affiliate_programs SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
     END;
 
-CREATE TRIGGER IF NOT EXISTS update_affiliate_transactions_timestamp 
+CREATE TRIGGER IF NOT EXISTS update_affiliate_transactions_timestamp
     AFTER UPDATE ON affiliate_transactions
     BEGIN
         UPDATE affiliate_transactions SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
     END;
 
-CREATE TRIGGER IF NOT EXISTS update_channels_timestamp 
+CREATE TRIGGER IF NOT EXISTS update_channels_timestamp
     AFTER UPDATE ON channels
     BEGIN
         UPDATE channels SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
     END;
 
-CREATE TRIGGER IF NOT EXISTS update_avatars_timestamp 
+CREATE TRIGGER IF NOT EXISTS update_avatars_timestamp
     AFTER UPDATE ON avatars
     BEGIN
         UPDATE avatars SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
     END;
 
-CREATE TRIGGER IF NOT EXISTS update_evidence_timestamp 
+CREATE TRIGGER IF NOT EXISTS update_evidence_timestamp
     AFTER UPDATE ON evidence
     BEGIN
         UPDATE evidence SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
     END;
 
-CREATE TRIGGER IF NOT EXISTS update_system_config_timestamp 
+CREATE TRIGGER IF NOT EXISTS update_system_config_timestamp
     AFTER UPDATE ON system_config
     BEGIN
         UPDATE system_config SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
@@ -680,7 +680,7 @@ CREATE TRIGGER IF NOT EXISTS update_system_config_timestamp
 
 -- Active Tasks View
 CREATE VIEW IF NOT EXISTS active_tasks AS
-SELECT 
+SELECT
     task_id,
     task_type,
     priority,
@@ -689,13 +689,13 @@ SELECT
     scheduled_at,
     retry_count,
     max_retries
-FROM task_queue 
+FROM task_queue
 WHERE status IN ('pending', 'running')
 ORDER BY priority DESC, created_at ASC;
 
 -- Channel Performance Summary
 CREATE VIEW IF NOT EXISTS channel_performance_summary AS
-SELECT 
+SELECT
     c.channel_name,
     c.platform,
     c.subscriber_count,
@@ -711,7 +711,7 @@ GROUP BY c.id, c.channel_name, c.platform, c.subscriber_count;
 
 -- Evidence Quality Summary
 CREATE VIEW IF NOT EXISTS evidence_quality_summary AS
-SELECT 
+SELECT
     evidence_type,
     verification_status,
     COUNT(*) as count,
@@ -723,7 +723,7 @@ GROUP BY evidence_type, verification_status;
 
 -- API Health Dashboard
 CREATE VIEW IF NOT EXISTS api_health_dashboard AS
-SELECT 
+SELECT
     api_name,
     status,
     health_status,
@@ -815,14 +815,14 @@ INSERT OR IGNORE INTO api_registry (api_name, base_url, api_version, authenticat
 -- ============================================================================
 
 -- Verify all tables were created successfully
-SELECT 'Schema creation completed. Total tables: ' || COUNT(*) as status 
-FROM sqlite_master 
+SELECT 'Schema creation completed. Total tables: ' || COUNT(*) as status
+FROM sqlite_master
 WHERE type = 'table' AND name NOT LIKE 'sqlite_%';
 
 -- Display table summary
-SELECT 
+SELECT
     name as table_name,
-    CASE 
+    CASE
         WHEN name LIKE '%_log' OR name LIKE '%_history' THEN 'Logging/History'
         WHEN name IN ('task_queue', 'api_registry', 'api_request_logs') THEN 'System Core'
         WHEN name IN ('author_personas', 'hypocrisy_tracker') THEN 'Content Management'
@@ -833,7 +833,7 @@ SELECT
         WHEN name IN ('system_config', 'audit_log') THEN 'System Configuration'
         ELSE 'Other'
     END as category
-FROM sqlite_master 
+FROM sqlite_master
 WHERE type = 'table' AND name NOT LIKE 'sqlite_%'
 ORDER BY category, name;
 
@@ -1918,34 +1918,34 @@ CREATE INDEX IF NOT EXISTS idx_software_integration_checked ON software_integrat
 
 -- Insert the cloud software products mentioned by the user
 INSERT OR REPLACE INTO cloud_software (
-    software_name, display_name, category, provider, status, integration_type, 
+    software_name, display_name, category, provider, status, integration_type,
     authentication_method, capabilities, license_type, created_by, notes
-) VALUES 
-    ('lingo_blaster', 'Lingo Blaster', 'automation', 'Lingo Blaster Inc', 'active', 'rpa', 'username_password', 
+) VALUES
+    ('lingo_blaster', 'Lingo Blaster', 'automation', 'Lingo Blaster Inc', 'active', 'rpa', 'username_password',
      '["language_processing", "content_translation", "multilingual_support"]', 'subscription', 'system', 'Language processing and translation tool'),
-    
-    ('captionizer', 'Captionizer', 'video_editing', 'Captionizer Pro', 'active', 'api', 'api_key', 
+
+    ('captionizer', 'Captionizer', 'video_editing', 'Captionizer Pro', 'active', 'api', 'api_key',
      '["subtitle_generation", "caption_creation", "video_processing"]', 'subscription', 'system', 'Automated caption and subtitle generation'),
-    
-    ('thumbnail_blaster', 'Thumbnail Blaster', 'thumbnail_creation', 'Thumbnail Blaster', 'active', 'rpa', 'username_password', 
+
+    ('thumbnail_blaster', 'Thumbnail Blaster', 'thumbnail_creation', 'Thumbnail Blaster', 'active', 'rpa', 'username_password',
      '["thumbnail_creation", "image_editing", "template_processing"]', 'subscription', 'system', 'Automated thumbnail creation and editing'),
-    
-    ('speechelo', 'Speechelo', 'voice_generation', 'Speechelo', 'active', 'rpa', 'username_password', 
+
+    ('speechelo', 'Speechelo', 'voice_generation', 'Speechelo', 'active', 'rpa', 'username_password',
      '["text_to_speech", "voice_synthesis", "audio_generation"]', 'one_time', 'system', 'Text-to-speech voice generation software'),
-    
-    ('voice_generator', 'Voice Generator', 'voice_generation', 'Voice Generator Pro', 'active', 'api', 'api_key', 
+
+    ('voice_generator', 'Voice Generator', 'voice_generation', 'Voice Generator Pro', 'active', 'api', 'api_key',
      '["voice_synthesis", "custom_voices", "audio_processing"]', 'subscription', 'system', 'Advanced voice generation and synthesis'),
-    
-    ('background_music', 'Background Music', 'background_music', 'Music Library Pro', 'active', 'api', 'api_key', 
+
+    ('background_music', 'Background Music', 'background_music', 'Music Library Pro', 'active', 'api', 'api_key',
      '["music_library", "royalty_free_music", "audio_mixing"]', 'subscription', 'system', 'Royalty-free background music library'),
-    
-    ('voiceover_cash_machine', 'Voiceover Cash Machine', 'bonus_tools', 'Voiceover Cash Machine', 'active', 'manual', 'none', 
+
+    ('voiceover_cash_machine', 'Voiceover Cash Machine', 'bonus_tools', 'Voiceover Cash Machine', 'active', 'manual', 'none',
      '["voiceover_training", "business_strategies", "monetization"]', 'one_time', 'system', 'BONUS: Voiceover business training and strategies'),
-    
-    ('training', 'Training', 'training', 'Training Academy', 'active', 'manual', 'none', 
+
+    ('training', 'Training', 'training', 'Training Academy', 'active', 'manual', 'none',
      '["video_training", "tutorials", "skill_development"]', 'subscription', 'system', 'Comprehensive training modules and tutorials'),
-    
-    ('scriptelo', 'Scriptelo', 'script_writing', 'Scriptelo', 'active', 'rpa', 'username_password', 
+
+    ('scriptelo', 'Scriptelo', 'script_writing', 'Scriptelo', 'active', 'rpa', 'username_password',
      '["script_generation", "content_writing", "template_processing"]', 'subscription', 'system', 'Automated script writing and content generation');
 
 -- ============================================================================
@@ -2130,7 +2130,7 @@ CREATE INDEX IF NOT EXISTS idx_segment_memberships_segment ON segment_membership
 CREATE INDEX IF NOT EXISTS idx_segment_memberships_contact ON segment_memberships(contact_id);
 CREATE INDEX IF NOT EXISTS idx_segment_memberships_added ON segment_memberships(added_at);
 
-INSERT OR REPLACE INTO schema_metadata (version, description, checksum) 
+INSERT OR REPLACE INTO schema_metadata (version, description, checksum)
 VALUES ('1.0.0', 'Initial TRAE.AI master database schema', 'sha256:placeholder_checksum');
 
 -- Final status message

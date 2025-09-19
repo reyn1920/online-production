@@ -2,7 +2,7 @@
   "version": "1.0.0",
   "service_name": "RouteLL API Integration",
   "description": "Abacus.AI RouteLL API configuration with credit monitoring and optimization",
-  
+
   "api_settings": {
     "base_url": "https://routellm.abacus.ai/v1",
     "chat_completions_endpoint": "/chat/completions",
@@ -12,20 +12,20 @@
     "max_retries": 3,
     "retry_delay_seconds": 1
   },
-  
+
   "authentication": {
     "method": "bearer_token",
     "header_name": "Authorization",
     "header_format": "Bearer {api_key}",
     "content_type": "application/json"
   },
-  
+
   "credit_system": {
     "monthly_credits": 20000,
     "pro_tier_credits": 25000,
     "unlimited_models": [
       "GPT-5-Mini",
-      "GPT-4.1-Mini", 
+      "GPT-4.1-Mini",
       "Gemini 2.0 Flash",
       "DeepSeek R1",
       "Qwen",
@@ -46,7 +46,7 @@
       "95_percent": 19000
     }
   },
-  
+
   "monitoring": {
     "enabled": true,
     "track_usage": true,
@@ -67,7 +67,7 @@
       "timeout_seconds": 10
     }
   },
-  
+
   "rate_limiting": {
     "enabled": true,
     "requests_per_minute": 60,
@@ -76,7 +76,7 @@
     "backoff_strategy": "exponential",
     "max_backoff_seconds": 60
   },
-  
+
   "model_configuration": {
     "route-llm": {
       "name": "RouteLL Model",
@@ -102,7 +102,7 @@
       }
     }
   },
-  
+
   "response_format": {
     "json_mode": {
       "supported": true,
@@ -115,7 +115,7 @@
       "chunk_processing": true
     }
   },
-  
+
   "error_handling": {
     "retry_on_errors": [429, 500, 502, 503, 504],
     "fail_fast_errors": [400, 401, 403, 404],
@@ -130,7 +130,7 @@
       "log_level": "error"
     }
   },
-  
+
   "optimization": {
     "caching": {
       "enabled": true,
@@ -150,7 +150,7 @@
       "batch_timeout_seconds": 10
     }
   },
-  
+
   "integration": {
     "trae_ai_compatibility": true,
     "openai_sdk_compatible": true,
@@ -162,7 +162,7 @@
       "performance_monitor"
     ]
   },
-  
+
   "logging": {
     "level": "INFO",
     "format": "json",
@@ -174,7 +174,7 @@
     "max_log_size_mb": 100,
     "backup_count": 5
   },
-  
+
   "analytics": {
     "enabled": true,
     "track_model_usage": true,
@@ -185,7 +185,7 @@
     "weekly_reports": true,
     "export_format": "json"
   },
-  
+
   "security": {
     "api_key_rotation": {
       "enabled": false,
@@ -204,7 +204,7 @@
       "content_filtering": false
     }
   },
-  
+
   "fallback": {
     "enabled": true,
     "fallback_providers": [

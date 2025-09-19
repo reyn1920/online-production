@@ -591,27 +591,27 @@
             .main-content {
                 grid-template-columns: 1fr;
             }
-            
+
             .metrics-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .form-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .campaigns-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .subscribers-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .campaign-stats {
                 grid-template-columns: 1fr;
             }
-            
+
             .campaign-actions {
                 grid-template-columns: 1fr;
             }
@@ -630,7 +630,7 @@
             <!-- Control Panel -->
             <div class="control-panel">
                 <h2>Stream Controls</h2>
-                
+
                 <div class="control-group">
                     <label>Stream Status</label>
                     <div style="display: flex; align-items: center; gap: 15px;">
@@ -670,7 +670,7 @@
             <!-- Metrics Panel -->
             <div class="metrics-panel">
                 <h2>Email Metrics</h2>
-                
+
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <div class="metric-value" id="totalSubscribers">0</div>
@@ -705,7 +705,7 @@
             <div class="campaigns-section">
                 <h2>Email Campaigns</h2>
                 <p style="color: #666; margin-bottom: 20px;">Manage your email marketing campaigns and automation sequences</p>
-                
+
                 <div class="campaigns-grid" id="campaignsGrid">
                     <!-- Campaigns will be loaded dynamically -->
                 </div>
@@ -714,13 +714,13 @@
             <!-- New Campaign Form -->
             <div class="new-campaign-form" id="newCampaignForm" style="display: none;">
                 <h2>Create New Email Campaign</h2>
-                
+
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Campaign Name</label>
                         <input type="text" id="campaignName" placeholder="Enter campaign name">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Campaign Type</label>
                         <select id="campaignType">
@@ -732,7 +732,7 @@
                             <option value="abandoned_cart">Abandoned Cart</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Target Segment</label>
                         <select id="campaignSegment">
@@ -743,23 +743,23 @@
                             <option value="inactive_users">Inactive Users</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Send Date</label>
                         <input type="datetime-local" id="campaignSendDate">
                     </div>
-                    
+
                     <div class="form-group" style="grid-column: 1/-1;">
                         <label>Subject Line</label>
                         <input type="text" id="campaignSubject" placeholder="Enter email subject line">
                     </div>
-                    
+
                     <div class="form-group" style="grid-column: 1/-1;">
                         <label>Email Content</label>
                         <textarea id="campaignContent" placeholder="Enter email content..."></textarea>
                     </div>
                 </div>
-                
+
                 <div style="text-align: center; margin-top: 20px;">
                     <button class="btn btn-success" onclick="createCampaign()">✅ Create Campaign</button>
                     <button class="btn" onclick="hideNewCampaignForm()">❌ Cancel</button>
@@ -770,7 +770,7 @@
             <div class="subscribers-section">
                 <h2>Subscriber Segments</h2>
                 <p style="color: #666; margin-bottom: 20px;">Manage your subscriber segments and targeting</p>
-                
+
                 <div class="subscribers-grid" id="subscribersGrid">
                     <!-- Segments will be loaded dynamically -->
                 </div>
@@ -934,7 +934,7 @@
                 campaignCard.className = 'campaign-card';
                 campaignCard.innerHTML = `
                     ${campaign.automation ? '<div class="automation-badge">Automated</div>' : ''}
-                    
+
                     <div class="campaign-header">
                         <div>
                             <div class="campaign-title">${campaign.name}</div>
@@ -942,13 +942,13 @@
                         </div>
                         <div class="campaign-status status-${campaign.status}">${campaign.status}</div>
                     </div>
-                    
+
                     <div class="campaign-description">
                         <strong>Subject:</strong> ${campaign.subject}<br>
                         <strong>Segment:</strong> ${campaign.segment.replace('_', ' ')}<br>
                         <strong>Send Date:</strong> ${campaign.sendDate === 'auto' ? 'Automated' : new Date(campaign.sendDate).toLocaleString()}
                     </div>
-                    
+
                     <div class="campaign-stats">
                         <div class="stat-item">
                             <div class="stat-value">${campaign.sent.toLocaleString()}</div>
@@ -963,9 +963,9 @@
                             <div class="stat-label">Click Rate</div>
                         </div>
                     </div>
-                    
+
                     <div class="campaign-revenue">$${campaign.revenue.toFixed(2)}</div>
-                    
+
                     <div class="campaign-actions">
                         <button class="btn" onclick="editCampaign('${campaign.id}')" style="padding: 10px; font-size: 0.9rem;">
                             ✏️ Edit
@@ -991,7 +991,7 @@
                         <div class="segment-name">${segment.name}</div>
                         <div class="segment-count">${segment.count.toLocaleString()}</div>
                     </div>
-                    
+
                     <div class="segment-stats">
                         <div class="segment-stat">
                             <div class="segment-stat-value">${segment.openRate.toFixed(1)}%</div>
@@ -1002,12 +1002,12 @@
                             <div class="segment-stat-label">Click Rate</div>
                         </div>
                     </div>
-                    
+
                     <div style="text-align: center; margin-top: 15px;">
                         <div style="font-size: 1.2rem; font-weight: bold; color: #4CAF50;">$${segment.revenue.toFixed(2)}</div>
                         <div style="font-size: 0.9rem; color: #666;">Monthly Revenue</div>
                     </div>
-                    
+
                     <div style="text-align: center; margin-top: 15px;">
                         <button class="btn" onclick="createSegmentCampaign('${segment.id}')" style="padding: 8px 16px; font-size: 0.9rem;">
                             📧 Send Campaign
@@ -1022,7 +1022,7 @@
             try {
                 const response = await fetch("/api/revenue/status');
                 const data = await response.json();
-                
+
                 if (data.success && data.streams.email_marketing) {
                     const stream = data.streams.email_marketing;
                     streamData.status = stream.status;
@@ -1031,7 +1031,7 @@
                     streamData.openRate = stream.openRate;
                     streamData.clickRate = stream.clickRate;
                     streamData.autoStart = stream.autoStart;
-                    
+
                     updateUI();
                 }
             } catch (error) {
@@ -1068,13 +1068,13 @@
         async function startStream() {
             try {
                 showAlert('Starting Email Marketing stream...', 'warning');
-                
+
                 const response = await fetch(`/api/revenue/start/${streamData.streamId}`, {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     streamData.status = 'starting';
                     updateUI();
@@ -1092,13 +1092,13 @@
         async function stopStream() {
             try {
                 showAlert('Stopping Email Marketing stream...', 'warning');
-                
+
                 const response = await fetch(`/api/revenue/stop/${streamData.streamId}`, {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     streamData.status = 'stopping';
                     updateUI();
@@ -1116,16 +1116,16 @@
         async function runTests() {
             try {
                 showAlert('Running comprehensive email marketing tests...', 'warning');
-                
+
                 const testContainer = document.getElementById('testResultsContainer');
                 testContainer.innerHTML = '<div style="text-align: center;"><div class="loading"></div> Running tests...</div>';
-                
+
                 const response = await fetch(`/api/revenue/test/${streamData.streamId}`, {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     displayTestResults(result.results);
                     showAlert('Tests completed successfully', 'success');
@@ -1142,12 +1142,12 @@
         function displayTestResults(results) {
             const container = document.getElementById('testResultsContainer');
             container.innerHTML = '';
-            
+
             Object.keys(results).forEach(testName => {
                 const test = results[testName];
                 const testItem = document.createElement('div');
                 testItem.className = 'test-item';
-                
+
                 testItem.innerHTML = `
                     <div>
                         <strong>${testName}</strong>
@@ -1156,7 +1156,7 @@
                     </div>
                     <div class="test-status test-${test.status}">${test.status}</div>
                 `;
-                
+
                 container.appendChild(testItem);
             });
         }
@@ -1248,7 +1248,7 @@
             if (campaign) {
                 try {
                     showAlert(`Testing "${campaign.name}" campaign...`, 'warning');
-                    
+
                     const response = await fetch("/api/test/email-campaign', {
                         method: 'POST',
                         headers: {
@@ -1260,9 +1260,9 @@
                             content: campaign.content
                         })
                     });
-                    
+
                     const result = await response.json();
-                    
+
                     if (result.success) {
                         showAlert(`"${campaign.name}" campaign test passed successfully`, 'success');
                     } else {
@@ -1298,9 +1298,9 @@
                         subscriberGoal: streamData.subscriberGoal
                     })
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     showAlert('Configuration saved successfully', 'success');
                 } else {
@@ -1323,7 +1323,7 @@
                         autoStart: streamData.autoStart
                     })
                 });
-                
+
                 if (!response.ok) {
                     console.error('Failed to update auto-start setting');
                 }
@@ -1337,7 +1337,7 @@
                 try {
                     const response = await fetch("/api/revenue/status');
                     const data = await response.json();
-                    
+
                     if (data.success && data.streams.email_marketing) {
                         const stream = data.streams.email_marketing;
                         const oldStatus = streamData.status;
@@ -1346,11 +1346,11 @@
                         streamData.monthlyRevenue = stream.monthlyRevenue;
                         streamData.openRate = stream.openRate;
                         streamData.clickRate = stream.clickRate;
-                        
+
                         updateUI();//Stop polling if status is stable
                         if (stream.status === 'active' || stream.status === 'inactive' || stream.status === 'error') {
                             clearInterval(pollInterval);
-                            
+
                             if (stream.status === 'error') {
                                 showAlert('Stream error: ' + (stream.errorMessage || 'Unknown error'), 'error');
                             } else if (oldStatus !== stream.status) {
@@ -1381,7 +1381,7 @@
                         const newOpens = Math.floor(Math.random() * 50) + 10;
                         const newClicks = Math.floor(Math.random() * 10) + 2;
                         const newRevenue = Math.random() * 100 + 20;
-                        
+
                         campaign.opened = Math.min(campaign.sent, campaign.opened + newOpens);
                         campaign.clicked = Math.min(campaign.opened, campaign.clicked + newClicks);
                         campaign.revenue += newRevenue;
@@ -1391,7 +1391,7 @@
                 const newSubscribers = Math.floor(Math.random() * 20) + 5;
                 streamData.totalSubscribers += newSubscribers;
                 streamData.segments.find(s => s.id === 'all').count = streamData.totalSubscribers;
-                
+
                 updateUI();
                 renderCampaigns();
                 renderSegments();
@@ -1403,7 +1403,7 @@
             const alert = document.createElement('div');
             alert.className = `alert alert-${type}`;
             alert.textContent = message;
-            
+
             container.appendChild(alert);//Remove alert after 5 seconds
             setTimeout(() => {
                 if (alert.parentNode) {

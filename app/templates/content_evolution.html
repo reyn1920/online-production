@@ -532,7 +532,7 @@
 
       async function loadDashboardData() {
         try {
-          const response = await fetch("/api/content-evolution/dashboard');
+          const response = await fetch("/api/content-evolution/dashboard");
           if (!response.ok) {
             throw new Error('Failed to load dashboard data');
           }
@@ -721,7 +721,7 @@
           const contentId = document.getElementById('contentId').value;
           const targetFormat = document.getElementById('targetFormat').value;
 
-          const response = await fetch("/api/content-evolution/adapt', {
+          const response = await fetch("/api/content-evolution/adapt", {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -754,21 +754,21 @@
                     <p><strong>Original Format:</strong> ${adaptation.original_format || 'Unknown'}</p>
                     <p><strong>Target Format:</strong> ${adaptation.target_format || 'Unknown'}</p>
                     <p><strong>Expected Performance Lift:</strong> +${Math.round((adaptation.expected_performance_lift || 0) * 100)}%</p>
-                    
+
                     <h6 class="mt-3">Adaptation Rules:</h6>
                     <ul>
                         ${Object.entries(adaptation.adaptation_rules || {})
                           .map(([key, value]) => `<li><strong>${key}:</strong> ${value}</li>`)
                           .join('')}
                     </ul>
-                    
+
                     <h6 class="mt-3">Success Metrics:</h6>
                     <ul>
                         ${Object.entries(adaptation.success_metrics || {})
                           .map(([key, value]) => `<li><strong>${key}:</strong> ${value}</li>`)
                           .join('')}
                     </ul>
-                    
+
                     <div class="mt-3">
                         <small class="text-muted">Implementation Difficulty:</small>
                         <div class="confidence-meter mt-1">
@@ -783,7 +783,7 @@
 
       async function loadExperiments() {
         try {
-          const response = await fetch("/api/content-evolution/experiments');
+          const response = await fetch("/api/content-evolution/experiments");
           if (!response.ok) {
             throw new Error('Failed to load experiments');
           }

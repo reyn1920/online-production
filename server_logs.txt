@@ -248,11 +248,11 @@ INFO:trae_ai.app.bridge_to_system:SystemBridge initialized successfully
 05:06:43 | INFO     | trae_ai.agent.marketing & promotion agent | Bridge system functions initialized as secondary tools
 INFO:trae_ai.agent.marketing & promotion agent:Bridge system functions initialized as secondary tools
 INFO:backend.agents.web_automation_tools:Web Automation Agent initialized with moderate stealth level
-ERROR:backend.secret_store:Failed to retrieve secret TWITTER_API_KEY: 
-05:06:43 | ERROR    | trae_ai.twitter_integration | Failed to load Twitter credentials: Failed to retrieve secret: 
-ERROR:trae_ai.twitter_integration:Failed to load Twitter credentials: Failed to retrieve secret: 
-05:06:43 | ERROR    | trae_ai.orchestrator | ❌ Failed to initialize MarketingAgent: Credential loading failed: Failed to retrieve secret: 
-ERROR:trae_ai.orchestrator:❌ Failed to initialize MarketingAgent: Credential loading failed: Failed to retrieve secret: 
+ERROR:backend.secret_store:Failed to retrieve secret TWITTER_API_KEY:
+05:06:43 | ERROR    | trae_ai.twitter_integration | Failed to load Twitter credentials: Failed to retrieve secret:
+ERROR:trae_ai.twitter_integration:Failed to load Twitter credentials: Failed to retrieve secret:
+05:06:43 | ERROR    | trae_ai.orchestrator | ❌ Failed to initialize MarketingAgent: Credential loading failed: Failed to retrieve secret:
+ERROR:trae_ai.orchestrator:❌ Failed to initialize MarketingAgent: Credential loading failed: Failed to retrieve secret:
 05:06:43 | INFO     | trae_ai.agent.financial management agent | Agent Financial Management Agent (financial_agent) initialized
 INFO:trae_ai.agent.financial management agent:Agent Financial Management Agent (financial_agent) initialized
 INFO:backend.agents.web_automation_tools:Web Automation Agent initialized with moderate stealth level
@@ -261,9 +261,9 @@ INFO:backend.agents.financial_agent:Financial database tables created successful
 INFO:backend.agents.financial_agent:FinancialAgent initialized with profit_maximization strategy
 05:06:43 | INFO     | trae_ai.orchestrator | ✅ FinancialAgent initialized: Financial analysis and trading automation
 INFO:trae_ai.orchestrator:✅ FinancialAgent initialized: Financial analysis and trading automation
-ERROR:backend.secret_store:Failed to retrieve secret YOUTUBE_CLIENT_ID: 
-05:06:43 | ERROR    | trae_ai.youtube_integration | Failed to load YouTube credentials: Failed to retrieve secret: 
-ERROR:trae_ai.youtube_integration:Failed to load YouTube credentials: Failed to retrieve secret: 
+ERROR:backend.secret_store:Failed to retrieve secret YOUTUBE_CLIENT_ID:
+05:06:43 | ERROR    | trae_ai.youtube_integration | Failed to load YouTube credentials: Failed to retrieve secret:
+ERROR:trae_ai.youtube_integration:Failed to load YouTube credentials: Failed to retrieve secret:
 05:06:43 | WARNING  | trae_ai.youtube_integration | No access token available, service not initialized
 WARNING:trae_ai.youtube_integration:No access token available, service not initialized
 05:06:43 | INFO     | trae_ai.youtube_integration | YouTube integration initialized successfully

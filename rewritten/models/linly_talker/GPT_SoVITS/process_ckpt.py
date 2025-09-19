@@ -17,8 +17,8 @@ def savee(ckpt, name, epoch, steps, hps):
                 continue
             opt["weight"][key] = ckpt[key].half()
         opt["config"] = hps
-        opt["info"] = "%sepoch_ % siteration" % (epoch, steps)
-        torch.save(opt, "%s/%s.pth" % (hps.save_weight_dir, name))
+        opt["info"] = f"{epoch}epoch_ {steps: }iteration"
+        torch.save(opt, f"{hps.save_weight_dir}/{name}.pth")
         return "Success."
     except Exception:
         return traceback.format_exc()

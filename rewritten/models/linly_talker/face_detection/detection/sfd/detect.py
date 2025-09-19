@@ -28,15 +28,17 @@ def detect(net, img, device):
         FB, FC, FH, FW = ocls.size()  # feature map size
         stride = 2 ** (i + 2)  # 4,8,16,32,64,128
         anchor = stride * 4
-        poss = zip(*np.where(ocls[:, 1, :, :] > 0.05))
+        poss = zip(*np.where(ocls[:, 1, :, :] > 5))
         for Iindex, hindex, windex in poss:
             axc, ayc = stride / 2 + windex * stride, stride / 2 + hindex * stride
             score = ocls[0, 1, hindex, windex]
             loc = oreg[0, :, hindex, windex].contiguous().view(1, 4)
-            priors = torch.Tensor([[axc / 1.0, ayc / 1.0, stride * 4 / 1.0, stride * 4 / 1.0]])
-            variances = [0.1, 0.2]
+            priors = torch.Tensor(
+                [[axc / 10, ayc / 10, stride * 4 / 10, stride * 4 / 10]]
+            )
+            variances = [1, 2]
             box = decode(loc, priors, variances)
-            x1, y1, x2, y2 = box[0] * 1.0
+            x1, y1, x2, y2 = box[0] * 10
             # cv2.rectangle(imgshow,(int(x1),int(y1)),(int(x2),int(y2)),(0,0,255),1)
             bboxlist.append([x1, y1, x2, y2, score])
     bboxlist = np.array(bboxlist)
@@ -67,17 +69,17 @@ def batch_detect(net, imgs, device):
         FB, FC, FH, FW = ocls.size()  # feature map size
         stride = 2 ** (i + 2)  # 4,8,16,32,64,128
         anchor = stride * 4
-        poss = zip(*np.where(ocls[:, 1, :, :] > 0.05))
+        poss = zip(*np.where(ocls[:, 1, :, :] > 5))
         for Iindex, hindex, windex in poss:
             axc, ayc = stride / 2 + windex * stride, stride / 2 + hindex * stride
             score = ocls[:, 1, hindex, windex]
             loc = oreg[:, :, hindex, windex].contiguous().view(BB, 1, 4)
             priors = torch.Tensor(
-                [[axc / 1.0, ayc / 1.0, stride * 4 / 1.0, stride * 4 / 1.0]]
+                [[axc / 10, ayc / 10, stride * 4 / 10, stride * 4 / 10]]
             ).view(1, 1, 4)
-            variances = [0.1, 0.2]
+            variances = [1, 2]
             box = batch_decode(loc, priors, variances)
-            box = box[:, 0] * 1.0
+            box = box[:, 0] * 10
             # cv2.rectangle(imgshow,(int(x1),int(y1)),(int(x2),int(y2)),(0,0,255),1)
             bboxlist.append(torch.cat([box, score.unsqueeze(1)], 1).cpu().numpy())
     bboxlist = np.array(bboxlist)

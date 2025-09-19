@@ -33,22 +33,22 @@ jobs:
     name: Code Quality Gates
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request' || github.event.inputs.environment != 'production'
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Run ESLint (Code Quality)
         run: |
           if [ -f "package.json" ] && npm run lint --if-present; then
@@ -56,7 +56,7 @@ jobs:
           else
             echo "⚠️ No lint script found or linting failed"
           fi
-      
+
       - name: Run Prettier (Code Formatting)
         run: |
           if [ -f "package.json" ] && npm run format:check --if-present; then
@@ -68,19 +68,19 @@ jobs:
   security-scan:
     name: Security Vulnerability Scan
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Run CodeQL Analysis
         uses: github/codeql-action/init@v3
         with:
           languages: javascript
-      
+
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
-      
+
       - name: Scan for hardcoded secrets
         run: |
           echo "🔍 Scanning for potential hardcoded secrets..."
@@ -90,7 +90,7 @@ jobs:
           else
             echo "✅ No hardcoded secrets detected"
           fi
-      
+
       - name: Audit npm dependencies
         run: |
           npm audit --audit-level=high
@@ -100,20 +100,20 @@ jobs:
     name: Automated Test Suite
     runs-on: ubuntu-latest
     needs: [code-quality]
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Run unit tests
         run: |
           if [ -f "package.json" ] && npm test --if-present; then
@@ -121,12 +121,12 @@ jobs:
           else
             echo "⚠️ No test script found"
           fi
-      
+
       - name: Run build test
         run: |
           npm run build
           echo "✅ Build test successful"
-      
+
       - name: Test environment configuration
         run: |
           if [ -f "environment_config_manager.py" ]; then
@@ -140,29 +140,29 @@ jobs:
     runs-on: ubuntu-latest
     needs: [security-scan, automated-testing]
     if: github.event_name == 'pull_request' || github.event.inputs.environment == 'staging'
-    
+
     environment:
       name: staging
       url: ${{ steps.deploy.outputs.deploy-url }}
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Build application
         run: npm run build
         env:
           NODE_ENV: production
-      
+
       - name: Deploy to Netlify (Staging)
         id: deploy
         uses: nwtgck/actions-netlify@v3.0
@@ -176,7 +176,7 @@ jobs:
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-      
+
       - name: Run staging health checks
         run: |
           echo "🏥 Running staging environment health checks..."
@@ -189,26 +189,26 @@ jobs:
     runs-on: ubuntu-latest
     needs: [security-scan, automated-testing]
     if: github.event.inputs.environment == 'production' && github.ref == 'refs/heads/main'
-    
+
     environment:
       name: production
       url: ${{ steps.deploy.outputs.deploy-url }}
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
-      
+
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
-      
+
       - name: Pre-deployment validation
         run: |
           echo "🔍 Running pre-deployment validation..."
@@ -218,10 +218,10 @@ jobs:
             echo "❌ Live environment rules missing!"
             exit 1
           fi
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Run live deployment manager
         run: |
           echo "🚀 Executing live deployment process..."
@@ -246,7 +246,7 @@ jobs:
           GOOGLE_SEARCH_CONSOLE_KEY: ${{ secrets.GOOGLE_SEARCH_CONSOLE_KEY }}
           STRIPE_PUBLIC_KEY: ${{ secrets.STRIPE_PUBLIC_KEY }}
           STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
-      
+
       - name: Deploy to Netlify (Production)
         id: deploy
         uses: nwtgck/actions-netlify@v3.0
@@ -258,14 +258,14 @@ jobs:
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-      
+
       - name: Post-deployment health checks
         run: |
           echo "🏥 Running production health checks..."
           sleep 15
           # Add comprehensive health checks here
           echo "✅ Production deployment healthy and live!"
-      
+
       - name: Upload deployment artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -275,7 +275,7 @@ jobs:
             environment_setup_guide_*.json
             deployment_checklist_*.json
           retention-days: 30
-      
+
       - name: Notify deployment success
         run: |
           echo "🎉 LIVE DEPLOYMENT SUCCESSFUL!"
@@ -287,25 +287,25 @@ jobs:
     name: Emergency Rollback
     runs-on: ubuntu-latest
     if: failure() && github.event.inputs.environment == 'production'
-    
+
     steps:
       - name: Checkout previous stable version
         uses: actions/checkout@v4
         with:
           ref: 'HEAD~1'
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
-      
+
       - name: Emergency rollback deployment
         run: |
           echo "🚨 Initiating emergency rollback..."
           npm ci
           npm run build
-      
+
       - name: Deploy rollback to Netlify
         uses: nwtgck/actions-netlify@v3.0
         with:
@@ -316,7 +316,7 @@ jobs:
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-      
+
       - name: Notify rollback completion
         run: |
           echo "✅ Emergency rollback completed"

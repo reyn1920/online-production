@@ -1,5 +1,5 @@
 from starlette.requests import Request
-from starlette.responses import Response
+
 
 class LogHeadersMiddleware:
     def __init__(self, app):
@@ -15,7 +15,9 @@ class LogHeadersMiddleware:
             if message["type"] == "http.response.start":
                 hdrs = {k.decode(): v.decode() for k, v in message["headers"]}
                 endpoint = scope.get("endpoint")
-                print(f"[HDR] {request.method} {request.url.path} -> {hdrs} via {getattr(endpoint,'__name__',endpoint)}")
+                print(
+                    f"[HDR] {request.method} {request.url.path} -> {hdrs} via {getattr(endpoint,'__name__',endpoint)}"
+                )
             await send(message)
 
         await self.app(scope, receive, sender)

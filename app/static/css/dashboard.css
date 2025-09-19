@@ -537,11 +537,11 @@ body {
   .container {
     padding: 10px;/* Reduce complexity on mobile */contain: layout style;
   }
-  
+
   .dashboard-grid {
     grid-template-columns: 1fr;/* Optimize for mobile scrolling */-webkit-overflow-scrolling: touch;
   }
-  
+
   .metric-card {/* Reduce shadow complexity on mobile */box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   }/* Disable hover effects on touch devices */.btn-custom:hover,
   .nav-link:hover {
@@ -559,11 +559,11 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  
+
   .spinner {
     animation: none;
   }
-  
+
   .skeleton {
     animation: none;
     background: #f0f0f0;
@@ -866,16 +866,16 @@ body {
     margin: 1rem;
     max-height: 95vh;
   }
-  
+
   .avatar-controls {
     grid-template-columns: 1fr;
   }
-  
+
   .file-actions {
     flex-direction: column;
     gap: 0.25rem;
   }
-  
+
   .file-actions button {
     padding: 0.5rem;
     font-size: 0.75rem;

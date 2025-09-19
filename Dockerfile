@@ -22,8 +22,8 @@ RUN apt-get update && apt-get install -y \
 RUN pip install --upgrade pip setuptools wheel
 
 # Copy requirements file and install
-    COPY requirements-minimal.txt /code/
-    RUN pip install --no-cache-dir -r requirements-minimal.txt
+COPY requirements-minimal.txt /code/
+RUN pip install --no-cache-dir -r requirements-minimal.txt
 
 # Copy all code
 COPY . /code

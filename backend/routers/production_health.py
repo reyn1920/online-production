@@ -1,351 +1,239 @@
-#!/usr/bin/env python3
-"""
-Production Health Check Router
+"""Production health monitoring router."""
 
-Implements comprehensive health monitoring for go-live requirements
-"""
-
-
-
-
-import time
+from typing import Any
 from datetime import datetime
-from typing import Any, Dict
+import logging
+import os
+import sys
+import time
+from fastapi import APIRouter, HTTPException, status
 
-import psutil
-import requests
-from fastapi import APIRouter, status
-from fastapi.responses import JSONResponse
+# Logger setup
+logger = logging.getLogger(__name__)
 
-production_health_router = APIRouter()
+# Health check service
 
 
-class ProductionHealthMonitor:
-    """
-    Comprehensive health monitoring for production environment
-    """
-    
-    def __init__(self):
-        self.start_time = time.time()
-        self.health_cache = {}
-        self.cache_ttl = 30  # 30 seconds cache
-        self.last_check = 0
+class ProductionHealthService:
+    """Service for production health monitoring."""
 
-    def get_system_metrics(self) -> Dict[str, Any]:
-        """
-        Get comprehensive system metrics
-        """"""
+    # Class variable to track start time
+    _start_time: float = time.time()
 
+    @staticmethod
+    def get_system_health() -> dict[str, Any]:
+        """Get comprehensive system health information."""
         try:
-        
-
-            cpu_percent = psutil.cpu_percent(interval=0.1)
-        
-"""
-        try:
-        """
-            memory = psutil.virtual_memory()
-            disk = psutil.disk_usage("/")
-
-            return {
-                "cpu": {
-                    "usage_percent": cpu_percent,
-                    "count": psutil.cpu_count(),
-                    "load_avg": (
-                        list(psutil.getloadavg()) if hasattr(psutil, "getloadavg") else None
-                    ),
-                },
-                "memory": {
-                    "total": memory.total,
-                    "available": memory.available,
-                    "percent": memory.percent,
-                    "used": memory.used,
-                },
-                "disk": {
-                    "total": disk.total,
-                    "used": disk.used,
-                    "free": disk.free,
-                    "percent": (disk.used / disk.total) * 100,
-                },
-                "uptime_seconds": int(time.time() - self.start_time),
+            checks = {
+                "application": ProductionHealthService._check_application(),
+                "system": ProductionHealthService._check_system(),
+                "dependencies": ProductionHealthService._check_dependencies(),
             }
-        except Exception as e:
-            return {"error": f"Failed to get system metrics: {str(e)}"}
 
-    def check_service_health(self, service_url: str, timeout: int = 5) -> Dict[str, Any]:
-        """
-Check health of a specific service
-
-        
-"""
-        try:
-        """
-
-            start_time = time.time()
-        
-
-        try:
-        
-"""
-            response = requests.get(service_url, timeout=timeout)
-           """
-
-            
-           
-
-            response_time = time.time() - start_time
-           
-""""""
-
-           
-
-
-            
-
-           
-"""
-            response_time = time.time() - start_time
-           """"""
-            return {
-                "status": "healthy" if response.status_code == 200 else "unhealthy",
-                "status_code": response.status_code,
-                "response_time_ms": round(response_time * 1000, 2),
+            health_data = {
+                "status": "healthy",
                 "timestamp": datetime.utcnow().isoformat(),
-            }
-        except requests.exceptions.Timeout:
-            return {
-                "status": "timeout",
-                "error": "Service timeout",
-                "timestamp": datetime.utcnow().isoformat(),
-            }
-        except Exception as e:
-            return {
-                "status": "error",
-                "error": str(e),
-                "timestamp": datetime.utcnow().isoformat(),
+                "environment": "production",
+                "checks": checks,
             }
 
-    def get_application_health(self) -> Dict[str, Any]:
-        """Get application - specific health metrics"""
-        health_data = {
-            "status": "healthy",
-            "timestamp": datetime.utcnow().isoformat(),
-            "version": "1.0.0",
-            "environment": "production",
-            "services": {},
-            "dependencies": {},
-            "metrics": self.get_system_metrics(),
-        }
-
-        # Check critical services
-        services_to_check = [
-            ("main_api", "http://localhost:8000/api/health"),
-            ("dashboard", "http://localhost:8000/dashboard/api/health"),
-        ]
-
-        unhealthy_services = 0
-        for service_name, service_url in services_to_check:
-            service_health = self.check_service_health(service_url)
-            health_data["services"][service_name] = service_health
-            if service_health["status"] != "healthy":
-                unhealthy_services += 1
-
-        # Overall health assessment
-        if unhealthy_services > 0:
-            health_data["status"] = (
-                "degraded" if unhealthy_services < len(services_to_check) else "unhealthy"
+            # Determine overall health status
+            all_checks_healthy = all(
+                check.get("status") == "healthy" for check in checks.values()
             )
 
-        # System resource checks
-        metrics = health_data["metrics"]
-        if not isinstance(metrics, dict) or "error" in metrics:
-            health_data["status"] = "degraded"
-        else:
-            cpu_usage = metrics.get("cpu", {}).get("usage_percent", 0)
-            memory_usage = metrics.get("memory", {}).get("percent", 0)
-            disk_usage = metrics.get("disk", {}).get("percent", 0)
-
-            if cpu_usage > 90 or memory_usage > 90 or disk_usage > 90:
+            if not all_checks_healthy:
                 health_data["status"] = "degraded"
-                health_data["warnings"] = []
-                if cpu_usage > 90:
-                    health_data["warnings"].append(f"High CPU usage: {cpu_usage}%")
-                if memory_usage > 90:
-                    health_data["warnings"].append(f"High memory usage: {memory_usage}%")
-                if disk_usage > 90:
-                    health_data["warnings"].append(f"High disk usage: {disk_usage}%")
 
-        return health_data
+            return health_data
 
-    def get_cached_health(self) -> Dict[str, Any]:
-        """
-Get health data with caching
-
-        current_time = time.time()
-        if current_time - self.last_check > self.cache_ttl:
-            self.health_cache = self.get_application_health()
-            self.last_check = current_time
-        
-"""
-        return self.health_cache
-        """"""
-        """
-
-
-        return self.health_cache
-
-        
-
-       
-""""""
-# Global health monitor instance
-health_monitor = ProductionHealthMonitor()
-
-
-@production_health_router.get("/api/production/health")
-async def production_health_check():
-    """
-Comprehensive production health check endpoint
-
-    
-"""
-    try:
-    """"""
-        health_data = health_monitor.get_cached_health()
-       """"""
-    try:
-    """"""
-        # Determine HTTP status code based on health
-        if health_data["status"] == "healthy":
-            status_code = status.HTTP_200_OK
-        elif health_data["status"] == "degraded":
-            status_code = status.HTTP_200_OK  # Still operational
-        else:
-            status_code = status.HTTP_503_SERVICE_UNAVAILABLE
-
-        return JSONResponse(content=health_data, status_code=status_code)
-    except Exception as e:
-        return JSONResponse(
-            content={
-                "status": "error",
-                "error": str(e),
+        except Exception as health_error:
+            logger.error("Health check failed: %s", health_error)
+            return {
+                "status": "unhealthy",
                 "timestamp": datetime.utcnow().isoformat(),
-            },
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                "error": str(health_error),
+            }
+
+    @staticmethod
+    def _check_application() -> dict[str, Any]:
+        """Check application-specific health."""
+        try:
+            return {
+                "status": "healthy",
+                "python_version": sys.version,
+                "process_id": os.getpid(),
+                "working_directory": os.getcwd(),
+                "uptime_seconds": ProductionHealthService._get_uptime(),
+            }
+        except Exception as app_error:
+            return {"status": "unhealthy", "error": str(app_error)}
+
+    @staticmethod
+    def _check_system() -> dict[str, Any]:
+        """Check system resources."""
+        try:
+            # Basic system checks without external dependencies
+            system_info = {
+                "status": "healthy",
+                "platform": sys.platform,
+                "python_executable": sys.executable,
+                "environment_variables": {
+                    "PATH": os.environ.get("PATH", "not_set"),
+                    "HOME": os.environ.get("HOME", "not_set"),
+                    "USER": os.environ.get("USER", "not_set"),
+                },
+            }
+
+            # Check disk space if possible
+            try:
+                import shutil
+
+                total, used, free = shutil.disk_usage("/")
+                system_info["disk"] = {
+                    "total_gb": round(total / (1024**3), 2),
+                    "used_gb": round(used / (1024**3), 2),
+                    "free_gb": round(free / (1024**3), 2),
+                }
+            except (ImportError, OSError):
+                system_info["disk"] = "unavailable"
+
+            return system_info
+
+        except Exception as system_error:
+            return {"status": "unhealthy", "error": str(system_error)}
+
+    @staticmethod
+    def _check_dependencies() -> dict[str, Any]:
+        """Check critical dependencies."""
+        try:
+            dependencies = {"status": "healthy", "python_modules": {}}
+
+            # Check for common modules
+            modules_to_check = ["json", "datetime", "logging", "os", "sys"]
+            for module_name in modules_to_check:
+                try:
+                    __import__(module_name)
+                    dependencies["python_modules"][module_name] = "available"
+                except ImportError:
+                    dependencies["python_modules"][module_name] = "missing"
+                    dependencies["status"] = "degraded"
+
+            # Check for optional modules
+            optional_modules = ["fastapi", "uvicorn", "requests"]
+            for module_name in optional_modules:
+                try:
+                    __import__(module_name)
+                    dependencies["python_modules"][module_name] = "available"
+                except ImportError:
+                    dependencies["python_modules"][module_name] = "optional_missing"
+
+            return dependencies
+
+        except Exception as deps_error:
+            return {"status": "unhealthy", "error": str(deps_error)}
+
+    @staticmethod
+    def _get_uptime() -> float:
+        """Get application uptime in seconds."""
+        return time.time() - ProductionHealthService._start_time
+
+
+# Router setup
+router = APIRouter(prefix="/api/health", tags=["production-health"])
+
+
+@router.get("/")
+def health_check():
+    """Basic health check endpoint."""
+    return {
+        "status": "healthy",
+        "timestamp": datetime.utcnow().isoformat(),
+        "service": "production-health",
+    }
+
+
+@router.get("/detailed")
+def detailed_health_check():
+    """Detailed health check with system information."""
+    health_data = ProductionHealthService.get_system_health()
+
+    # Return appropriate HTTP status based on health
+    if health_data["status"] == "unhealthy":
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=str(health_data)
         )
 
+    return health_data
 
-@production_health_router.get("/api/production/readiness")
-async def readiness_check():
-    """
-Kubernetes - style readiness probe
 
+@router.get("/readiness")
+def readiness_check():
+    """Kubernetes-style readiness probe."""
     try:
-       
-""""""
+        # Check if application is ready to serve traffic
+        health_data = ProductionHealthService.get_system_health()
 
-        # Quick checks for readiness
-       
-
-        
-       
-""""""
-
-        
-       
-
-        health_data = health_monitor.get_application_health()
-       
-""""""
-
-       
-
-        
-       
-"""
-        # Quick checks for readiness
-       """"""
         if health_data["status"] in ["healthy", "degraded"]:
-            return JSONResponse(
-                content={"status": "ready", "timestamp": datetime.utcnow().isoformat()},
-                status_code=status.HTTP_200_OK,
-             )
-        else:
-            return JSONResponse(
-                content={
-                    "status": "not_ready",
-                    "timestamp": datetime.utcnow().isoformat(),
-                 },
-                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-             )
-    except Exception as e:
-        return JSONResponse(
-            content={"status": "error", "error": str(e)},
+            return {"status": "ready", "timestamp": datetime.utcnow().isoformat()}
+
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Service not ready"
+        )
+
+    except Exception as readiness_error:
+        logger.error("Readiness check failed: %s", readiness_error)
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Service not ready"
+        ) from readiness_error
+
+
+@router.get("/liveness")
+def liveness_check():
+    """Kubernetes-style liveness probe."""
+    try:
+        # Basic liveness check - if we can respond, we're alive
+        return {
+            "status": "alive",
+            "timestamp": datetime.utcnow().isoformat(),
+            "process_id": os.getpid(),
+        }
+
+    except Exception as liveness_error:
+        logger.error("Liveness check failed: %s", liveness_error)
+        raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-         )
+            detail="Service not responding",
+        ) from liveness_error
 
 
-@production_health_router.get("/api/production/liveness")
-async def liveness_check():
-    """
-Kubernetes - style liveness probe
-
+@router.get("/metrics")
+def get_metrics():
+    """Get basic application metrics."""
     try:
-       
-""""""
+        metrics = {
+            "timestamp": datetime.utcnow().isoformat(),
+            "uptime_seconds": ProductionHealthService._get_uptime(),
+            "process_id": os.getpid(),
+            "python_version": list(sys.version_info[:3]),
+        }
 
-        # Simple liveness check - just verify the service is responding
-       
+        # Add memory usage if available
+        try:
+            import resource
 
-        
-       
-"""
-        return JSONResponse(
-       """
+            usage = resource.getrusage(resource.RUSAGE_SELF)
+            metrics["max_rss_kb"] = usage.ru_maxrss
+            metrics["user_time"] = usage.ru_utime
+            metrics["system_time"] = usage.ru_stime
+        except ImportError:
+            metrics["memory_status"] = "unavailable"
 
-        
-       
+        return metrics
 
-        # Simple liveness check - just verify the service is responding
-       
-""""""
-            content={
-                "status": "alive",
-                "timestamp": datetime.utcnow().isoformat(),
-                "uptime_seconds": int(time.time() - health_monitor.start_time),
-             },
-            status_code=status.HTTP_200_OK,
-         )
-    except Exception as e:
-        return JSONResponse(
-            content={"status": "error", "error": str(e)},
+    except Exception as metrics_error:
+        logger.error("Metrics collection failed: %s", metrics_error)
+        raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-         )
-
-
-@production_health_router.get("/api/production/metrics")
-async def production_metrics():
-    """
-Detailed production metrics endpoint
-
-    
-"""
-    try:
-    """
-
-        metrics = health_monitor.get_system_metrics()
-    
-
-    try:
-    
-""""""
-    
-   """
-        return JSONResponse(
-            content={"metrics": metrics, "timestamp": datetime.utcnow().isoformat()},
-            status_code=status.HTTP_200_OK,
-         )
-    except Exception as e:
-        return JSONResponse(
-            content={"error": str(e)}, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
-         )
+            detail="Failed to collect metrics",
+        ) from metrics_error

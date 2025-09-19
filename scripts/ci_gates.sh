@@ -36,13 +36,13 @@ run_gate() {
     local gate_name="$1"
     local gate_command="$2"
     local description="$3"
-    
+
     GATE_COUNT=$((GATE_COUNT + 1))
     info "🚪 Gate $GATE_COUNT: $gate_name"
     echo "   Description: $description"
     echo "   Command: $gate_command"
     echo
-    
+
     if eval "$gate_command"; then
         log "✅ PASS: $gate_name"
         PASS_COUNT=$((PASS_COUNT + 1))
@@ -58,13 +58,13 @@ run_optional_gate() {
     local gate_name="$1"
     local gate_command="$2"
     local description="$3"
-    
+
     GATE_COUNT=$((GATE_COUNT + 1))
     info "🚪 Optional Gate $GATE_COUNT: $gate_name"
     echo "   Description: $description"
     echo "   Command: $gate_command"
     echo
-    
+
     if eval "$gate_command"; then
         log "✅ PASS: $gate_name"
         PASS_COUNT=$((PASS_COUNT + 1))

@@ -24,7 +24,7 @@ grafana_config:
   default_time_range: "1h"
   enable_anonymous_access: false
   theme: "dark"
-  
+
 # Alert Rules Configuration
 alert_rules:
   - name: "high_cpu_usage"
@@ -36,7 +36,7 @@ alert_rules:
     labels:
       team: "infrastructure"
       priority: "medium"
-      
+
   - name: "critical_cpu_usage"
     metric_name: "system_cpu_usage_percent"
     condition: "> 95"
@@ -46,7 +46,7 @@ alert_rules:
     labels:
       team: "infrastructure"
       priority: "high"
-      
+
   - name: "high_memory_usage"
     metric_name: "system_memory_usage_percent"
     condition: "> 85"
@@ -56,7 +56,7 @@ alert_rules:
     labels:
       team: "infrastructure"
       priority: "medium"
-      
+
   - name: "disk_space_low"
     metric_name: "system_disk_usage_percent"
     condition: "> 90"
@@ -66,7 +66,7 @@ alert_rules:
     labels:
       team: "infrastructure"
       priority: "high"
-      
+
   - name: "high_error_rate"
     metric_name: "errors_total"
     condition: "> 10"
@@ -76,7 +76,7 @@ alert_rules:
     labels:
       team: "development"
       priority: "high"
-      
+
   - name: "scraping_failures"
     metric_name: "scraping_requests_total{status='error'}"
     condition: "> 5"
@@ -86,7 +86,7 @@ alert_rules:
     labels:
       team: "development"
       priority: "medium"
-      
+
   - name: "low_cache_hit_rate"
     metric_name: "cache_hit_rate"
     condition: "< 50"
@@ -96,7 +96,7 @@ alert_rules:
     labels:
       team: "development"
       priority: "low"
-      
+
   - name: "api_discovery_failures"
     metric_name: "api_discovery_total{status='failed'}"
     condition: "> 3"
@@ -106,7 +106,7 @@ alert_rules:
     labels:
       team: "development"
       priority: "medium"
-      
+
   - name: "slow_api_validation"
     metric_name: "api_validation_duration_seconds"
     condition: "> 30"
@@ -116,7 +116,7 @@ alert_rules:
     labels:
       team: "development"
       priority: "medium"
-      
+
   - name: "queue_backlog"
     metric_name: "queue_size"
     condition: "> 1000"
@@ -134,54 +134,54 @@ custom_metrics:
     description: "Daily revenue tracking"
     labels: ["source", "currency", "region"]
     unit: "currency"
-    
+
   - name: "user_activity_events"
     metric_type: "counter"
     description: "User activity and engagement events"
     labels: ["event_type", "user_segment", "source"]
-    
+
   - name: "api_usage_by_client"
     metric_type: "counter"
     description: "API usage tracking by client"
     labels: ["client_id", "endpoint", "method"]
-    
+
   - name: "content_processing_time"
     metric_type: "histogram"
     description: "Time spent processing content"
     labels: ["content_type", "source"]
     buckets: [0.1, 0.5, 1.0, 2.5, 5.0, 10.0, 30.0, 60.0]
     unit: "seconds"
-    
+
   - name: "data_quality_score"
     metric_type: "gauge"
     description: "Data quality assessment score"
     labels: ["dataset", "source", "validation_type"]
     unit: "percentage"
-    
+
   - name: "automation_success_rate"
     metric_type: "gauge"
     description: "Success rate of automation tasks"
     labels: ["automation_type", "target"]
     unit: "percentage"
-    
+
   - name: "research_tasks_completed"
     metric_type: "counter"
     description: "Number of research tasks completed"
     labels: ["task_type", "priority", "status"]
-    
+
   - name: "web_scraping_efficiency"
     metric_type: "histogram"
     description: "Web scraping efficiency metrics"
     labels: ["target_site", "method"]
     buckets: [0.5, 1.0, 2.0, 5.0, 10.0, 30.0]
     unit: "seconds"
-    
+
   - name: "api_discovery_accuracy"
     metric_type: "gauge"
     description: "Accuracy of API discovery process"
     labels: ["source", "category"]
     unit: "percentage"
-    
+
   - name: "system_health_score"
     metric_type: "gauge"
     description: "Overall system health composite score"
@@ -198,13 +198,13 @@ notifications:
     password: "your-app-password"  # Use app password for Gmail
     from_address: "monitoring@yourcompany.com"
     to_addresses: ["admin@yourcompany.com"]
-    
+
   slack:
     enabled: false
     webhook_url: "https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK"
     channel: "#alerts"
     username: "MonitoringBot"
-    
+
   webhook:
     enabled: false
     url: "https://your-webhook-endpoint.com/alerts"
@@ -231,7 +231,7 @@ dashboards:
       - type: "network_io"
         title: "Network I/O"
         position: {x: 0, y: 16, w: 24, h: 8}
-        
+
   application:
     title: "Application Monitoring"
     refresh: "5s"
@@ -249,7 +249,7 @@ dashboards:
       - type: "cache_performance"
         title: "Cache Performance"
         position: {x: 12, y: 8, w: 12, h: 8}
-        
+
   business:
     title: "Business Metrics"
     refresh: "30s"
@@ -302,13 +302,13 @@ integrations:
     config_file: "./prometheus.yml"
     data_dir: "./prometheus_data"
     web_listen_address: "0.0.0.0:9090"
-    
+
   grafana:
     config_file: "./grafana.ini"
     data_dir: "./grafana_data"
     plugins_dir: "./grafana_plugins"
     provisioning_dir: "./grafana_provisioning"
-    
+
   alertmanager:
     config_file: "./alertmanager.yml"
     data_dir: "./alertmanager_data"
@@ -351,13 +351,13 @@ environments:
     scrape_interval: 5
     retention_days: 3
     enable_debug_metrics: true
-    
+
   staging:
     log_level: "INFO"
     scrape_interval: 10
     retention_days: 7
     enable_load_testing_metrics: true
-    
+
   production:
     log_level: "WARNING"
     scrape_interval: 15

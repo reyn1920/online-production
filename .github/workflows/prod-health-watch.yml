@@ -45,19 +45,19 @@ jobs:
               if resp.status_code != 200:
                   print(f'❌ Version endpoint failed: {resp.status_code}')
                   sys.exit(1)
-              
+
               version_data = resp.json()
               print(f'✅ Version endpoint OK: {version_data.get(\"service\", \"unknown\")}')
-              
+
               # Check metrics endpoint
               resp = requests.get(f'{PROD_URL}/api/metrics', timeout=15)
               if resp.status_code != 200:
                   print(f'❌ Metrics endpoint failed: {resp.status_code}')
                   sys.exit(1)
-              
+
               metrics_data = resp.json()
               print(f'✅ Metrics endpoint OK')
-              
+
               # Basic health indicators
               if 'system' in metrics_data:
                   system = metrics_data['system']
@@ -67,9 +67,9 @@ jobs:
                           print(f'⚠️  High memory usage: {memory_mb}MB')
                       else:
                           print(f'✅ Memory usage OK: {memory_mb}MB')
-              
+
               print(f'🎉 Production health check passed at {datetime.now().isoformat()}')
-              
+
           except requests.exceptions.Timeout:
               print('❌ Production service timeout')
               sys.exit(1)

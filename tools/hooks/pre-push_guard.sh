@@ -56,12 +56,12 @@ log_error() {
 init_prepush() {
     mkdir -p "$PROJECT_ROOT/.trae"
     touch "$LOG_FILE"
-    
+
     if [ "$TEST_MODE" = true ]; then
         log_info "Running in test mode"
         return 0
     fi
-    
+
     log_info "Starting pre-push checks..."
 }
 
@@ -70,18 +70,18 @@ check_target_branch() {
     if [ "$TEST_MODE" = true ]; then
         return 0
     fi
-    
+
     # Read from stdin (git pre-push hook format)
     while read local_ref local_sha remote_ref remote_sha; do
         local branch_name=$(echo "$remote_ref" | sed 's|refs/heads/||')
-        
+
         if [[ "$branch_name" == "main" || "$branch_name" == "master" ]]; then
             log_warning "Pushing to protected branch: $branch_name"
             log_info "Running enhanced security checks..."
             return 0
         fi
     done
-    
+
     log_info "Pushing to feature branch, running standard checks..."
     return 0
 }
@@ -90,7 +90,7 @@ check_target_branch() {
 deep_security_scan() {
     log_info "Running deep security scan..."
     local violations=0
-    
+
     # Enhanced secret patterns
     local secret_patterns=(
         "password\s*[:=]\s*['\"][^'\"]{8,}['\"]"  # Longer passwords
@@ -111,7 +111,7 @@ deep_security_scan() {
         "AKIA[0-9A-Z]{16}"  # AWS access key IDs
         "[0-9a-zA-Z/+]{40}"  # AWS secret access keys
     )
-    
+
     # Scan all files in the repository
     find "$PROJECT_ROOT" -type f \( -name "*.py" -o -name "*.js" -o -name "*.ts" -o -name "*.jsx" -o -name "*.tsx" -o -name "*.json" -o -name "*.yaml" -o -name "*.yml" -o -name "*.env*" -o -name "*.config" \) ! -path "*/node_modules/*" ! -path "*/.git/*" ! -path "*/.trae/*" | while read -r file; do
         for pattern in "${secret_patterns[@]}"; do
@@ -122,7 +122,7 @@ deep_security_scan() {
             fi
         done
     done
-    
+
     if [ $violations -gt 0 ]; then
         log_error "$violations potential secrets found in deep scan!"
         return 1
@@ -136,10 +136,10 @@ deep_security_scan() {
 check_env_files() {
     log_info "Checking environment files..."
     local issues=0
-    
+
     # Check for .env files that shouldn't be committed
     local env_files=("$PROJECT_ROOT/.env" "$PROJECT_ROOT/.env.local" "$PROJECT_ROOT/.env.production")
-    
+
     for env_file in "${env_files[@]}"; do
         if [ -f "$env_file" ]; then
             # Check if it's tracked by git
@@ -152,7 +152,7 @@ check_env_files() {
             fi
         fi
     done
-    
+
     # Check for .env.example or .env.template
     if [ ! -f "$PROJECT_ROOT/.env.example" ] && [ ! -f "$PROJECT_ROOT/.env.template" ]; then
         log_warning "No .env.example or .env.template found"
@@ -160,7 +160,7 @@ check_env_files() {
     else
         log_success "Environment template file found"
     fi
-    
+
     if [ $issues -gt 0 ]; then
         return 1
     else
@@ -171,20 +171,20 @@ check_env_files() {
 # Check build and deployment readiness
 check_build_readiness() {
     log_info "Checking build and deployment readiness..."
-    
+
     # Check for package.json and dependencies
     if [ -f "$PROJECT_ROOT/package.json" ]; then
         log_info "Found package.json, checking Node.js project..."
-        
+
         # Check if node_modules exists
         if [ ! -d "$PROJECT_ROOT/node_modules" ]; then
             log_warning "node_modules not found, dependencies may not be installed"
         fi
-        
+
         # Check for build script
         if grep -q '"build"' "$PROJECT_ROOT/package.json"; then
             log_success "Build script found in package.json"
-            
+
             # Try to run build if npm is available
             if command -v npm >/dev/null 2>&1; then
                 log_info "Testing build process..."
@@ -200,18 +200,18 @@ check_build_readiness() {
             log_warning "No build script found in package.json"
         fi
     fi
-    
+
     # Check for Python requirements
     if [ -f "$PROJECT_ROOT/requirements.txt" ]; then
         log_info "Found requirements.txt, checking Python project..."
-        
+
         # Check if virtual environment is recommended
         if [ -z "$VIRTUAL_ENV" ] && [ ! -f "$PROJECT_ROOT/.venv/bin/activate" ]; then
             log_warning "No virtual environment detected"
             log_info "Consider using a virtual environment for Python projects"
         fi
     fi
-    
+
     return 0
 }
 
@@ -219,14 +219,14 @@ check_build_readiness() {
 check_critical_files() {
     log_info "Checking for critical project files..."
     local missing_files=0
-    
+
     # List of critical files
     local critical_files=(
         "README.md"
         ".gitignore"
         "TRAE_RULES.md"
     )
-    
+
     for file in "${critical_files[@]}"; do
         if [ ! -f "$PROJECT_ROOT/$file" ]; then
             log_warning "Critical file missing: $file"
@@ -235,19 +235,19 @@ check_critical_files() {
             log_success "Critical file found: $file"
         fi
     done
-    
+
     if [ $missing_files -gt 0 ]; then
         log_warning "$missing_files critical files are missing"
         log_info "Consider creating these files before deployment"
     fi
-    
+
     return 0  # Don't fail on missing files, just warn
 }
 
 # Run comprehensive tests
 run_tests() {
     log_info "Running comprehensive tests..."
-    
+
     # Run Python tests if available
     if [ -f "$PROJECT_ROOT/pytest.ini" ] || [ -d "$PROJECT_ROOT/tests" ]; then
         if command -v pytest >/dev/null 2>&1; then
@@ -261,7 +261,7 @@ run_tests() {
             fi
         fi
     fi
-    
+
     # Run JavaScript tests if available
     if [ -f "$PROJECT_ROOT/package.json" ] && grep -q '"test"' "$PROJECT_ROOT/package.json"; then
         if command -v npm >/dev/null 2>&1; then
@@ -275,18 +275,18 @@ run_tests() {
             fi
         fi
     fi
-    
+
     return 0
 }
 
 # Check deployment configuration
 check_deployment_config() {
     log_info "Checking deployment configuration..."
-    
+
     # Check for Netlify configuration
     if [ -f "$PROJECT_ROOT/netlify.toml" ]; then
         log_success "Netlify configuration found"
-        
+
         # Validate basic structure
         if grep -q "\[build\]" "$PROJECT_ROOT/netlify.toml"; then
             log_success "Build configuration found in netlify.toml"
@@ -294,16 +294,16 @@ check_deployment_config() {
             log_warning "No build configuration in netlify.toml"
         fi
     fi
-    
+
     # Check for GitHub Actions
     if [ -d "$PROJECT_ROOT/.github/workflows" ]; then
         log_success "GitHub Actions workflows found"
-        
+
         # Count workflow files
         local workflow_count=$(find "$PROJECT_ROOT/.github/workflows" -name "*.yml" -o -name "*.yaml" | wc -l)
         log_info "Found $workflow_count workflow files"
     fi
-    
+
     return 0
 }
 

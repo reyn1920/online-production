@@ -604,27 +604,27 @@
             .main-content {
                 grid-template-columns: 1fr;
             }
-            
+
             .metrics-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .form-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .clients-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .services-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .client-stats {
                 grid-template-columns: 1fr;
             }
-            
+
             .client-actions {
                 grid-template-columns: 1fr;
             }
@@ -643,7 +643,7 @@
             <!-- Control Panel -->
             <div class="control-panel">
                 <h2>Stream Controls</h2>
-                
+
                 <div class="control-group">
                     <label>Stream Status</label>
                     <div style="display: flex; align-items: center; gap: 15px;">
@@ -683,7 +683,7 @@
             <!-- Metrics Panel -->
             <div class="metrics-panel">
                 <h2>Consulting Metrics</h2>
-                
+
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <div class="metric-value" id="activeClients">0</div>
@@ -718,7 +718,7 @@
             <div class="clients-section">
                 <h2>Active Clients</h2>
                 <p style="color: #666; margin-bottom: 20px;">Manage your consulting clients and projects</p>
-                
+
                 <div class="clients-grid" id="clientsGrid">
                     <!-- Clients will be loaded dynamically -->
                 </div>
@@ -727,13 +727,13 @@
             <!-- New Client Form -->
             <div class="new-client-form" id="newClientForm" style="display: none;">
                 <h2>Add New Client</h2>
-                
+
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Client Name</label>
                         <input type="text" id="clientName" placeholder="Enter client name">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Service Type</label>
                         <select id="clientService">
@@ -745,12 +745,12 @@
                             <option value="hr">HR Consulting</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Hourly Rate ($)</label>
                         <input type="number" id="clientRate" placeholder="150" min="50" max="1000">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Priority Level</label>
                         <select id="clientPriority">
@@ -759,23 +759,23 @@
                             <option value="low">Low Priority</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Project Start Date</label>
                         <input type="date" id="clientStartDate">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Estimated Hours</label>
                         <input type="number" id="clientHours" placeholder="40" min="1" max="1000">
                     </div>
-                    
+
                     <div class="form-group" style="grid-column: 1 / -1;">
                         <label>Project Description</label>
                         <textarea id="clientDescription" placeholder="Describe the consulting project..."></textarea>
                     </div>
                 </div>
-                
+
                 <div style="text-align: center; margin-top: 20px;">
                     <button class="btn btn-success" onclick="createClient()">✅ Add Client</button>
                     <button class="btn" onclick="hideNewClientForm()">❌ Cancel</button>
@@ -786,7 +786,7 @@
             <div class="services-section">
                 <h2>Consulting Services</h2>
                 <p style="color: #666; margin-bottom: 20px;">Your available consulting services and rates</p>
-                
+
                 <div class="services-grid" id="servicesGrid">
                     <!-- Services will be loaded dynamically -->
                 </div>
@@ -960,7 +960,7 @@
                 clientCard.className = 'client-card';
                 clientCard.innerHTML = `
                     <div class="priority-badge priority-${client.priority}">${client.priority}</div>
-                    
+
                     <div class="client-header">
                         <div>
                             <div class="client-name">${client.name}</div>
@@ -968,13 +968,13 @@
                         </div>
                         <div class="client-status status-${client.status}">${client.status}</div>
                     </div>
-                    
+
                     <div class="client-description">
                         <strong>Project:</strong> ${client.description}<br>
                         <strong>Start Date:</strong> ${new Date(client.startDate).toLocaleDateString()}<br>
                         <strong>Last Activity:</strong> ${new Date(client.lastActivity).toLocaleDateString()}
                     </div>
-                    
+
                     <div class="client-stats">
                         <div class="stat-item">
                             <div class="stat-value">${client.hoursWorked}</div>
@@ -989,9 +989,9 @@
                             <div class="stat-label">Hourly Rate</div>
                         </div>
                     </div>
-                    
+
                     <div class="client-revenue">$${client.revenue.toFixed(2)}</div>
-                    
+
                     <div class="client-actions">
                         <button class="btn" onclick="editClient('${client.id}')" style="padding: 10px; font-size: 0.9rem;">
                             ✏️ Edit
@@ -1017,7 +1017,7 @@
                         <div class="service-name">${service.name}</div>
                         <div class="service-rate">$${service.rate}/hr</div>
                     </div>
-                    
+
                     <div class="service-stats">
                         <div class="service-stat">
                             <div class="service-stat-value">${service.hoursThisMonth}</div>
@@ -1028,12 +1028,12 @@
                             <div class="service-stat-label">Active Clients</div>
                         </div>
                     </div>
-                    
+
                     <div style="text-align: center; margin-top: 15px;">
                         <div style="font-size: 1.2rem; font-weight: bold; color: #2196F3;">$${service.totalRevenue.toFixed(2)}</div>
                         <div style="font-size: 0.9rem; color: #666;">Total Revenue</div>
                     </div>
-                    
+
                     <div style="text-align: center; margin-top: 15px;">
                         <button class="btn" onclick="updateServiceRate('${service.id}')" style="padding: 8px 16px; font-size: 0.9rem;">
                             💰 Update Rate
@@ -1048,7 +1048,7 @@
             try {
                 const response = await fetch('/api/revenue/status');
                 const data = await response.json();
-                
+
                 if (data.success && data.streams.consulting_services) {
                     const stream = data.streams.consulting_services;
                     streamData.status = stream.status;
@@ -1057,7 +1057,7 @@
                     streamData.totalHours = stream.totalHours;
                     streamData.avgHourlyRate = stream.avgHourlyRate;
                     streamData.autoStart = stream.autoStart;
-                    
+
                     updateUI();
                 }
             } catch (error) {
@@ -1091,7 +1091,7 @@
             document.getElementById('monthlyRevenue').textContent = '$' + streamData.monthlyRevenue.toFixed(2);
             document.getElementById('totalHours').textContent = streamData.totalHours;
             document.getElementById('avgHourlyRate').textContent = '$' + Math.round(streamData.avgHourlyRate);
-            
+
             // Update revenue goal progress
             const goalPercent = Math.min(100, (streamData.monthlyRevenue/streamData.revenueGoal) * 100);
             document.getElementById('revenueGoalFill').style.width = goalPercent + '%';
@@ -1101,18 +1101,18 @@
         async function startStream() {
             try {
                 showAlert('Starting Consulting Services stream...', 'warning');
-                
+
                 const response = await fetch(`/api/revenue/start/${streamData.streamId}`, {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     streamData.status = 'starting';
                     updateUI();
                     showAlert(result.message, 'success');
-                    
+
                     // Poll for status updates
                     pollStreamStatus();
                 } else {
@@ -1127,18 +1127,18 @@
         async function stopStream() {
             try {
                 showAlert('Stopping Consulting Services stream...', 'warning');
-                
+
                 const response = await fetch(`/api/revenue/stop/${streamData.streamId}`, {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     streamData.status = 'stopping';
                     updateUI();
                     showAlert(result.message, 'success');
-                    
+
                     // Poll for status updates
                     pollStreamStatus();
                 } else {
@@ -1153,16 +1153,16 @@
         async function runTests() {
             try {
                 showAlert('Running comprehensive consulting services tests...', 'warning');
-                
+
                 const testContainer = document.getElementById('testResultsContainer');
                 testContainer.innerHTML = '<div style="text-align: center;"><div class="loading"></div> Running tests...</div>';
-                
+
                 const response = await fetch(`/api/revenue/test/${streamData.streamId}`, {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     displayTestResults(result.results);
                     showAlert('Tests completed successfully', 'success');
@@ -1179,12 +1179,12 @@
         function displayTestResults(results) {
             const container = document.getElementById('testResultsContainer');
             container.innerHTML = '';
-            
+
             Object.keys(results).forEach(testName => {
                 const test = results[testName];
                 const testItem = document.createElement('div');
                 testItem.className = 'test-item';
-                
+
                 testItem.innerHTML = `
                     <div>
                         <strong>${testName}</strong>
@@ -1193,7 +1193,7 @@
                     </div>
                     <div class="test-status test-${test.status}">${test.status}</div>
                 `;
-                
+
                 container.appendChild(testItem);
             });
         }
@@ -1268,7 +1268,7 @@
                     renderClients();
                     hideNewClientForm();
                     showAlert('Client added successfully', 'success');
-                    
+
                     // Update metrics
                     streamData.activeClients = streamData.clients.filter(c => c.status === 'active').length;
                     updateUI();
@@ -1288,11 +1288,11 @@
                 if (newRate && !isNaN(newRate) && newRate >= 50 && newRate <= 1000) {
                     client.hourlyRate = parseFloat(newRate);
                     client.revenue = client.hoursWorked * client.hourlyRate;
-                    
+
                     // Update totals
                     streamData.monthlyRevenue = streamData.clients.reduce((sum, c) => sum + c.revenue, 0);
                     streamData.avgHourlyRate = streamData.totalHours > 0 ? streamData.monthlyRevenue/streamData.totalHours : 0;
-                    
+
                     renderClients();
                     updateUI();
                     showAlert(`Hourly rate updated for "${client.name}"`, 'success');
@@ -1311,17 +1311,17 @@
                     client.hoursWorked += additionalHours;
                     client.revenue = client.hoursWorked * client.hourlyRate;
                     client.lastActivity = new Date().toISOString().split('T')[0];
-                    
+
                     if (client.status === 'pending') {
                         client.status = 'active';
                     }
-                    
+
                     // Update totals
                     streamData.totalHours = streamData.clients.reduce((sum, c) => sum + c.hoursWorked, 0);
                     streamData.monthlyRevenue = streamData.clients.reduce((sum, c) => sum + c.revenue, 0);
                     streamData.avgHourlyRate = streamData.totalHours > 0 ? streamData.monthlyRevenue/streamData.totalHours : 0;
                     streamData.activeClients = streamData.clients.filter(c => c.status === 'active').length;
-                    
+
                     // Update service stats
                     const service = streamData.services.find(s => s.id === client.service);
                     if (service) {
@@ -1329,7 +1329,7 @@
                         service.totalRevenue += additionalHours * client.hourlyRate;
                         service.activeClients = streamData.clients.filter(c => c.service === service.id && c.status === 'active').length;
                     }
-                    
+
                     renderClients();
                     renderServices();
                     updateUI();
@@ -1368,9 +1368,9 @@
                         revenueGoal: streamData.revenueGoal
                     })
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     showAlert('Configuration saved successfully', 'success');
                 } else {
@@ -1393,7 +1393,7 @@
                         autoStart: streamData.autoStart
                     })
                 });
-                
+
                 if (!response.ok) {
                     console.error('Failed to update auto-start setting');
                 }
@@ -1407,7 +1407,7 @@
                 try {
                     const response = await fetch('/api/revenue/status');
                     const data = await response.json();
-                    
+
                     if (data.success && data.streams.consulting_services) {
                         const stream = data.streams.consulting_services;
                         const oldStatus = streamData.status;
@@ -1416,13 +1416,13 @@
                         streamData.monthlyRevenue = stream.monthlyRevenue;
                         streamData.totalHours = stream.totalHours;
                         streamData.avgHourlyRate = stream.avgHourlyRate;
-                        
+
                         updateUI();
-                        
+
                         // Stop polling if status is stable
                         if (stream.status === 'active' || stream.status === 'inactive' || stream.status === 'error') {
                             clearInterval(pollInterval);
-                            
+
                             if (stream.status === 'error') {
                                 showAlert('Stream error: ' + (stream.errorMessage || 'Unknown error'), 'error');
                             } else if (oldStatus !== stream.status) {
@@ -1456,7 +1456,7 @@
                         client.hoursWorked = Math.min(client.estimatedHours, client.hoursWorked + additionalHours);
                         client.revenue = client.hoursWorked * client.hourlyRate;
                         client.lastActivity = new Date().toISOString().split('T')[0];
-                        
+
                         // Update service stats
                         const service = streamData.services.find(s => s.id === client.service);
                         if (service) {
@@ -1465,12 +1465,12 @@
                         }
                     }
                 });
-                
+
                 // Update totals
                 streamData.totalHours = streamData.clients.reduce((sum, c) => sum + c.hoursWorked, 0);
                 streamData.monthlyRevenue = streamData.clients.reduce((sum, c) => sum + c.revenue, 0);
                 streamData.avgHourlyRate = streamData.totalHours > 0 ? streamData.monthlyRevenue/streamData.totalHours : 0;
-                
+
                 updateUI();
                 renderClients();
                 renderServices();
@@ -1482,9 +1482,9 @@
             const alert = document.createElement('div');
             alert.className = `alert alert-${type}`;
             alert.textContent = message;
-            
+
             container.appendChild(alert);
-            
+
             // Remove alert after 5 seconds
             setTimeout(() => {
                 if (alert.parentNode) {

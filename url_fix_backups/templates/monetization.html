@@ -384,12 +384,12 @@
                     <label class="form-label">Title *</label>
                     <input type="text" class="form-input" name="title" required placeholder="Enter ebook title">
                 </div>
-                
+
                 <div class="form-group">
                     <label class="form-label">Content *</label>
                     <textarea class="form-textarea" name="content" required placeholder="Enter ebook content or outline"></textarea>
                 </div>
-                
+
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Author</label>
@@ -400,7 +400,7 @@
                         <input type="number" class="form-input" name="price" value="9.99" step="0.01" min="0">
                     </div>
                 </div>
-                
+
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Format</label>
@@ -415,7 +415,7 @@
                         <input type="url" class="form-input" name="cover_image_url" placeholder="https://example.com/cover.jpg">
                     </div>
                 </div>
-                
+
                 <button type="submit" class="btn">Generate Ebook</button>
             </form>
         </div>
@@ -428,24 +428,24 @@
                     <label class="form-label">Subject Line *</label>
                     <input type="text" class="form-input" name="subject" required placeholder="Enter newsletter subject">
                 </div>
-                
+
                 <div class="form-group">
                     <label class="form-label">Content *</label>
                     <textarea class="form-textarea" name="content" required placeholder="Enter newsletter content"></textarea>
                 </div>
-                
+
                 <div class="form-group">
                     <label class="form-label">Subscriber Emails (one per line)</label>
                     <textarea class="form-textarea" name="subscriber_list" placeholder="email1@example.com\nemail2@example.com"></textarea>
                 </div>
-                
+
                 <div class="form-group">
                     <label>
                         <input type="checkbox" name="include_affiliate_links" checked>
                         Include affiliate links
                     </label>
                 </div>
-                
+
                 <button type="submit" class="btn">Create & Send Newsletter</button>
             </form>
         </div>
@@ -458,7 +458,7 @@
                     <label class="form-label">Design Name *</label>
                     <input type="text" class="form-input" name="design_name" required placeholder="Enter design name">
                 </div>
-                
+
                 <div class="form-group">
                     <label class="form-label">Product Type *</label>
                     <select class="form-select" name="product_type" required>
@@ -470,12 +470,12 @@
                         <option value="sticker">Sticker</option>
                     </select>
                 </div>
-                
+
                 <div class="form-group">
                     <label class="form-label">Design Description *</label>
                     <textarea class="form-textarea" name="design_prompt" required placeholder="Describe the design you want to create"></textarea>
                 </div>
-                
+
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Price ($)</label>
@@ -489,7 +489,7 @@
                         </select>
                     </div>
                 </div>
-                
+
                 <button type="submit" class="btn">Create Merchandise</button>
             </form>
         </div>
@@ -502,12 +502,12 @@
                     <label class="form-label">Title *</label>
                     <input type="text" class="form-input" name="title" required placeholder="Enter blog post title">
                 </div>
-                
+
                 <div class="form-group">
                     <label class="form-label">Content *</label>
                     <textarea class="form-textarea" name="content" required placeholder="Enter blog post content"></textarea>
                 </div>
-                
+
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Platform</label>
@@ -521,14 +521,14 @@
                         <input type="text" class="form-input" name="seo_keywords" placeholder="keyword1, keyword2, keyword3">
                     </div>
                 </div>
-                
+
                 <div class="form-group">
                     <label>
                         <input type="checkbox" name="include_affiliate_links" checked>
                         Include affiliate links
                     </label>
                 </div>
-                
+
                 <button type="submit" class="btn">Publish Blog Post</button>
             </form>
         </div>
@@ -553,16 +553,16 @@
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
-            
+
             // Remove active class from all nav tabs
             document.querySelectorAll('.nav-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
-            
+
             // Show selected tab
             document.getElementById(tabName).classList.add('active');
             event.target.classList.add('active');
-            
+
             // Load data for specific tabs
             if (tabName === 'dashboard') {
                 loadDashboard();
@@ -575,19 +575,19 @@
                 // Load revenue stats
                 const statsResponse = await fetch('/api/monetization/revenue/stats');
                 const stats = await statsResponse.json();
-                
+
                 document.getElementById('totalRevenue').textContent = `$${stats.total_revenue.toLocaleString()}`;
                 document.getElementById('productsSold').textContent = stats.products_sold.toLocaleString();
                 document.getElementById('activeCampaigns').textContent = stats.active_campaigns;
                 document.getElementById('ebookRevenue').textContent = `$${stats.ebook_revenue.toLocaleString()}`;
-                
+
                 // Load products
                 const productsResponse = await fetch('/api/monetization/products');
                 const productsData = await productsResponse.json();
-                
+
                 const productList = document.getElementById('productList');
                 productList.innerHTML = '';
-                
+
                 productsData.products.forEach(product => {
                     const productCard = document.createElement('div');
                     productCard.className = 'product-card';
@@ -602,7 +602,7 @@
                     `;
                     productList.appendChild(productCard);
                 });
-                
+
             } catch (error) {
                 console.error('Error loading dashboard:', error);
             }
@@ -650,7 +650,7 @@
                 const submitButton = event.target.querySelector('button[type="submit"]');
                 submitButton.disabled = true;
                 submitButton.textContent = 'Processing...';
-                
+
                 // Convert FormData to object if needed
                 let requestData = data;
                 if (data instanceof FormData) {
@@ -663,7 +663,7 @@
                         }
                     }
                 }
-                
+
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: {
@@ -671,9 +671,9 @@
                     },
                     body: JSON.stringify(requestData)
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (response.ok) {
                     showAlert(`${taskName} started successfully! Job ID: ${result.job_id}`, 'success');
                     activeJobs.add(result.job_id);
@@ -682,7 +682,7 @@
                 } else {
                     showAlert(`Error: ${result.detail || 'Unknown error'}`, 'error');
                 }
-                
+
             } catch (error) {
                 showAlert(`Error: ${error.message}`, 'error');
             } finally {
@@ -695,14 +695,14 @@
         // Job polling
         function startJobPolling() {
             if (jobPollingInterval) return;
-            
+
             jobPollingInterval = setInterval(async () => {
                 if (activeJobs.size === 0) {
                     clearInterval(jobPollingInterval);
                     jobPollingInterval = null;
                     return;
                 }
-                
+
                 await updateJobStatuses();
             }, 2000);
         }
@@ -710,19 +710,19 @@
         async function updateJobStatuses() {
             const jobList = document.getElementById('jobList');
             const completedJobs = new Set();
-            
+
             if (activeJobs.size === 0) {
                 jobList.innerHTML = '<p>No jobs running. Start a task to see progress here.</p>';
                 return;
             }
-            
+
             jobList.innerHTML = '';
-            
+
             for (const jobId of activeJobs) {
                 try {
                     const response = await fetch(`/api/monetization/job/${jobId}`);
                     const job = await response.json();
-                    
+
                     const jobItem = document.createElement('div');
                     jobItem.className = 'job-item';
                     jobItem.innerHTML = `
@@ -741,16 +741,16 @@
                         ${job.result ? `<div style="color: #155724; margin-top: 10px;">✅ Completed successfully</div>` : ''}
                     `;
                     jobList.appendChild(jobItem);
-                    
+
                     if (job.status === 'completed' || job.status === 'failed') {
                         completedJobs.add(jobId);
                     }
-                    
+
                 } catch (error) {
                     console.error(`Error fetching job ${jobId}:`, error);
                 }
             }
-            
+
             // Remove completed jobs from active set after a delay
             setTimeout(() => {
                 completedJobs.forEach(jobId => activeJobs.delete(jobId));
@@ -766,9 +766,9 @@
             const alert = document.createElement('div');
             alert.className = `alert alert-${type}`;
             alert.textContent = message;
-            
+
             document.querySelector('.container').insertBefore(alert, document.querySelector('.nav-tabs'));
-            
+
             setTimeout(() => {
                 alert.remove();
             }, 5000);

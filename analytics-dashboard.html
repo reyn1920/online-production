@@ -16,20 +16,20 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             min-height: 100vh;
             color: #333;
         }
-        
+
         .dashboard-container {
             max-width: 1600px;
             margin: 0 auto;
             padding: 20px;
         }
-        
+
         .dashboard-header {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(15px);
@@ -42,7 +42,7 @@
             align-items: center;
             flex-wrap: wrap;
         }
-        
+
         .header-left h1 {
             font-size: 2.5rem;
             font-weight: 700;
@@ -51,18 +51,18 @@
             -webkit-text-fill-color: transparent;
             margin-bottom: 8px;
         }
-        
+
         .header-left p {
             color: #666;
             font-size: 1.1rem;
         }
-        
+
         .header-right {
             display: flex;
             gap: 15px;
             align-items: center;
         }
-        
+
         .time-selector {
             padding: 12px 20px;
             border: 2px solid #e0e0e0;
@@ -72,11 +72,11 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-        
+
         .time-selector:hover {
             border-color: #667eea;
         }
-        
+
         .refresh-btn {
             background: linear-gradient(45deg, #667eea, #764ba2);
             color: white;
@@ -90,19 +90,19 @@
             align-items: center;
             gap: 8px;
         }
-        
+
         .refresh-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
         }
-        
+
         .metrics-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 25px;
             margin-bottom: 30px;
         }
-        
+
         .metric-card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(15px);
@@ -113,7 +113,7 @@
             position: relative;
             overflow: hidden;
         }
-        
+
         .metric-card::before {
             content: '';
             position: absolute;
@@ -123,19 +123,19 @@
             height: 4px;
             background: linear-gradient(90deg, #667eea, #764ba2);
         }
-        
+
         .metric-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.12);
         }
-        
+
         .metric-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
         }
-        
+
         .metric-title {
             font-size: 0.9rem;
             color: #666;
@@ -143,7 +143,7 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        
+
         .metric-icon {
             width: 40px;
             height: 40px;
@@ -154,19 +154,19 @@
             font-size: 1.2rem;
             color: white;
         }
-        
+
         .revenue-icon { background: linear-gradient(45deg, #4ecdc4, #44a08d); }
         .views-icon { background: linear-gradient(45deg, #ff6b6b, #ee5a52); }
         .subscribers-icon { background: linear-gradient(45deg, #667eea, #764ba2); }
         .engagement-icon { background: linear-gradient(45deg, #f093fb, #f5576c); }
-        
+
         .metric-value {
             font-size: 2.5rem;
             font-weight: 700;
             color: #333;
             margin-bottom: 8px;
         }
-        
+
         .metric-change {
             display: flex;
             align-items: center;
@@ -174,22 +174,22 @@
             font-size: 0.9rem;
             font-weight: 500;
         }
-        
+
         .change-positive {
             color: #10b981;
         }
-        
+
         .change-negative {
             color: #ef4444;
         }
-        
+
         .charts-grid {
             display: grid;
             grid-template-columns: 2fr 1fr;
             gap: 25px;
             margin-bottom: 30px;
         }
-        
+
         .chart-card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(15px);
@@ -197,25 +197,25 @@
             padding: 30px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
         }
-        
+
         .chart-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 25px;
         }
-        
+
         .chart-title {
             font-size: 1.3rem;
             font-weight: 600;
             color: #333;
         }
-        
+
         .chart-controls {
             display: flex;
             gap: 10px;
         }
-        
+
         .chart-btn {
             padding: 8px 16px;
             border: 1px solid #e0e0e0;
@@ -225,25 +225,25 @@
             font-size: 0.8rem;
             transition: all 0.3s ease;
         }
-        
+
         .chart-btn.active {
             background: #667eea;
             color: white;
             border-color: #667eea;
         }
-        
+
         .chart-container {
             position: relative;
             height: 400px;
         }
-        
+
         .platform-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 25px;
             margin-bottom: 30px;
         }
-        
+
         .platform-card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(15px);
@@ -251,13 +251,13 @@
             padding: 25px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
         }
-        
+
         .platform-header {
             display: flex;
             align-items: center;
             margin-bottom: 20px;
         }
-        
+
         .platform-logo {
             width: 50px;
             height: 50px;
@@ -269,44 +269,44 @@
             font-size: 1.5rem;
             color: white;
         }
-        
+
         .youtube-logo { background: linear-gradient(45deg, #ff0000, #cc0000); }
         .tiktok-logo { background: linear-gradient(45deg, #000000, #ff0050); }
         .instagram-logo { background: linear-gradient(45deg, #e4405f, #833ab4); }
-        
+
         .platform-name {
             font-size: 1.2rem;
             font-weight: 600;
             color: #333;
         }
-        
+
         .platform-metrics {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 15px;
         }
-        
+
         .platform-metric {
             text-align: center;
             padding: 15px;
             background: #f8f9fa;
             border-radius: 12px;
         }
-        
+
         .platform-metric-value {
             font-size: 1.5rem;
             font-weight: 700;
             color: #333;
             margin-bottom: 5px;
         }
-        
+
         .platform-metric-label {
             font-size: 0.8rem;
             color: #666;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        
+
         .insights-section {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(15px);
@@ -314,13 +314,13 @@
             padding: 30px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
         }
-        
+
         .insights-header {
             display: flex;
             align-items: center;
             margin-bottom: 25px;
         }
-        
+
         .insights-icon {
             width: 50px;
             height: 50px;
@@ -333,24 +333,24 @@
             font-size: 1.5rem;
             color: white;
         }
-        
+
         .insights-title {
             font-size: 1.3rem;
             font-weight: 600;
             color: #333;
         }
-        
+
         .insight-item {
             display: flex;
             align-items: flex-start;
             padding: 15px 0;
             border-bottom: 1px solid #eee;
         }
-        
+
         .insight-item:last-child {
             border-bottom: none;
         }
-        
+
         .insight-icon {
             width: 30px;
             height: 30px;
@@ -362,21 +362,21 @@
             font-size: 0.8rem;
             flex-shrink: 0;
         }
-        
+
         .insight-positive { background: #dcfce7; color: #16a34a; }
         .insight-warning { background: #fef3c7; color: #d97706; }
         .insight-info { background: #dbeafe; color: #2563eb; }
-        
+
         .insight-content {
             flex: 1;
         }
-        
+
         .insight-text {
             font-size: 0.9rem;
             color: #333;
             line-height: 1.5;
         }
-        
+
         .insight-action {
             font-size: 0.8rem;
             color: #667eea;
@@ -384,28 +384,28 @@
             cursor: pointer;
             text-decoration: underline;
         }
-        
+
         @media (max-width: 1200px) {
             .charts-grid {
                 grid-template-columns: 1fr;
             }
         }
-        
+
         @media (max-width: 768px) {
             .dashboard-header {
                 flex-direction: column;
                 gap: 20px;
                 text-align: center;
             }
-            
+
             .metrics-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .platform-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .header-left h1 {
                 font-size: 2rem;
             }
@@ -414,12 +414,12 @@
 </head>
 <body>
     <div id="root"></div>
-    
+
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;//Real-time data fetching
         const fetchAnalyticsData = async () => {
             try {
-                const response = await fetch("/api/revenue/analytics');
+                const response = await fetch('/api/revenue/analytics');
                 if (!response.ok) {
                     throw new Error('Failed to fetch analytics data');
                 }
@@ -469,13 +469,13 @@
                  };
              }
          };
-        
+
         function AnalyticsDashboard() {
             const [data, setData] = useState(null);
             const [timeRange, setTimeRange] = useState('30d');
             const [activeChart, setActiveChart] = useState('revenue');
             const [isLoading, setIsLoading] = useState(true);
-            
+
             useEffect(() => {
                 const loadData = async () => {
                     setIsLoading(true);
@@ -485,12 +485,12 @@
                 };
                 loadData();
             }, []);
-            
+
             const revenueChartRef = useRef(null);
             const platformChartRef = useRef(null);
             const revenueChartInstance = useRef(null);
             const platformChartInstance = useRef(null);
-            
+
             useEffect(() => {
                 if (data) {
                     initializeCharts();
@@ -499,22 +499,22 @@
                     const updatedData = await fetchAnalyticsData();
                     setData(updatedData);
                 }, 30000);//Update every 30 seconds
-                
+
                 return () => clearInterval(interval);
             }, [data]);
-            
+
             useEffect(() => {
                 updateCharts();
             }, [data, activeChart]);
-            
+
             const initializeCharts = () => {//Revenue Chart
                 if (revenueChartRef.current) {
                     const ctx = revenueChartRef.current.getContext('2d');
-                    
+
                     if (revenueChartInstance.current) {
                         revenueChartInstance.current.destroy();
                     }
-                    
+
                     revenueChartInstance.current = new Chart(ctx, {
                         type: 'line',
                         data: {
@@ -555,11 +555,11 @@
                 }//Platform Distribution Chart
                 if (platformChartRef.current) {
                     const ctx = platformChartRef.current.getContext('2d');
-                    
+
                     if (platformChartInstance.current) {
                         platformChartInstance.current.destroy();
                     }
-                    
+
                     platformChartInstance.current = new Chart(ctx, {
                         type: 'doughnut',
                         data: {
@@ -594,11 +594,11 @@
                     });
                 }
             };
-            
+
             const updateCharts = () => {
                 if (revenueChartInstance.current) {
                     const chart = revenueChartInstance.current;
-                    
+
                     let newData, label, color;
                     switch(activeChart) {
                         case 'revenue':
@@ -626,7 +626,7 @@
                             label = 'Revenue ($)';
                             color = '#667eea';
                     }
-                    
+
                     chart.data.datasets[0].data = newData;
                     chart.data.datasets[0].label = label;
                     chart.data.datasets[0].borderColor = color;
@@ -634,14 +634,14 @@
                     chart.update('none');
                 }
             };
-            
+
             const refreshData = async () => {
                 setIsLoading(true);
                 const updatedData = await fetchAnalyticsData();
                 setData(updatedData);
                 setIsLoading(false);
             };
-            
+
             const formatNumber = (num) => {
                 if (num >= 1000000) {
                     return (num/1000000).toFixed(1) + 'M';
@@ -650,14 +650,14 @@
                 }
                 return num.toLocaleString();
             };
-            
+
             const formatCurrency = (num) => {
                 return new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'USD'
                 }).format(num);
             };
-            
+
             if (isLoading || !data) {
                 return (
                     <div className="dashboard-container">
@@ -670,7 +670,7 @@
                     </div>
                 );
             }
-            
+
             return (
                 <div className="dashboard-container">
                     <div className="dashboard-header">
@@ -679,7 +679,7 @@
                             <p>Real-time insights across all your monetization channels</p>
                         </div>
                         <div className="header-right">
-                            <select 
+                            <select
                                 className="time-selector"
                                 value={timeRange}
                                 onChange={(e) => setTimeRange(e.target.value)}
@@ -689,7 +689,7 @@
                                 <option value="90d">Last 90 days</option>
                                 <option value="1y">Last year</option>
                             </select>
-                            <button 
+                            <button
                                 className="refresh-btn"
                                 onClick={refreshData}
                                 disabled={isLoading}
@@ -699,7 +699,7 @@
                             </button>
                         </div>
                     </div>
-                    
+
                     <div className="metrics-grid">
                         <div className="metric-card">
                             <div className="metric-header">
@@ -714,7 +714,7 @@
                                 {Math.abs(data.overview.changes.revenue)}% vs last period
                             </div>
                         </div>
-                        
+
                         <div className="metric-card">
                             <div className="metric-header">
                                 <span className="metric-title">Total Views</span>
@@ -728,7 +728,7 @@
                                 {Math.abs(data.overview.changes.views)}% vs last period
                             </div>
                         </div>
-                        
+
                         <div className="metric-card">
                             <div className="metric-header">
                                 <span className="metric-title">Subscribers</span>
@@ -742,7 +742,7 @@
                                 {Math.abs(data.overview.changes.subscribers)}% vs last period
                             </div>
                         </div>
-                        
+
                         <div className="metric-card">
                             <div className="metric-header">
                                 <span className="metric-title">Avg Engagement</span>
@@ -757,31 +757,31 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div className="charts-grid">
                         <div className="chart-card">
                             <div className="chart-header">
                                 <h3 className="chart-title">Performance Trends</h3>
                                 <div className="chart-controls">
-                                    <button 
+                                    <button
                                         className={`chart-btn ${activeChart === 'revenue' ? 'active' : ''}`}
                                         onClick={() => setActiveChart('revenue')}
                                     >
                                         Revenue
                                     </button>
-                                    <button 
+                                    <button
                                         className={`chart-btn ${activeChart === 'views' ? 'active' : ''}`}
                                         onClick={() => setActiveChart('views')}
                                     >
                                         Views
                                     </button>
-                                    <button 
+                                    <button
                                         className={`chart-btn ${activeChart === 'subscribers' ? 'active' : ''}`}
                                         onClick={() => setActiveChart('subscribers')}
                                     >
                                         Subscribers
                                     </button>
-                                    <button 
+                                    <button
                                         className={`chart-btn ${activeChart === 'engagement' ? 'active' : ''}`}
                                         onClick={() => setActiveChart('engagement')}
                                     >
@@ -793,7 +793,7 @@
                                 <canvas ref={revenueChartRef}></canvas>
                             </div>
                         </div>
-                        
+
                         <div className="chart-card">
                             <div className="chart-header">
                                 <h3 className="chart-title">Revenue by Platform</h3>
@@ -803,7 +803,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div className="platform-grid">
                         <div className="platform-card">
                             <div className="platform-header">
@@ -831,7 +831,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div className="platform-card">
                             <div className="platform-header">
                                 <div className="platform-logo tiktok-logo">
@@ -858,7 +858,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div className="platform-card">
                             <div className="platform-header">
                                 <div className="platform-logo instagram-logo">
@@ -886,7 +886,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div className="insights-section">
                         <div className="insights-header">
                             <div className="insights-icon">
@@ -894,7 +894,7 @@
                             </div>
                             <h3 className="insights-title">AI-Powered Insights & Recommendations</h3>
                         </div>
-                        
+
                         {data.insights.map((insight, index) => (
                             <div key={index} className="insight-item">
                                 <div className={`insight-icon insight-${insight.type}`}>
@@ -913,7 +913,7 @@
                 </div>
             );
         }
-        
+
         ReactDOM.render(<AnalyticsDashboard/>, document.getElementById('root'));
     </script>
 </body>

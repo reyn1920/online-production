@@ -30,7 +30,7 @@ scrape_configs:
       - targets: ['localhost:9090']
     scrape_interval: 15s
     metrics_path: /metrics
-    
+
   # Our main application metrics
   - job_name: 'trae-ai-application'
     static_configs:
@@ -39,14 +39,14 @@ scrape_configs:
     metrics_path: /metrics
     scrape_timeout: 10s
     honor_labels: true
-    
+
   # System metrics via node_exporter (if available)
   - job_name: 'node-exporter'
     static_configs:
       - targets: ['localhost:9100']
     scrape_interval: 15s
     metrics_path: /metrics
-    
+
   # Web scraping service metrics
   - job_name: 'web-scraping-service'
     static_configs:
@@ -54,7 +54,7 @@ scrape_configs:
     scrape_interval: 30s
     metrics_path: /metrics
     scrape_timeout: 15s
-    
+
   # API discovery service metrics
   - job_name: 'api-discovery-service'
     static_configs:
@@ -62,7 +62,7 @@ scrape_configs:
     scrape_interval: 30s
     metrics_path: /metrics
     scrape_timeout: 15s
-    
+
   # Research agent metrics
   - job_name: 'research-agent'
     static_configs:
@@ -70,28 +70,28 @@ scrape_configs:
     scrape_interval: 60s
     metrics_path: /metrics
     scrape_timeout: 30s
-    
+
   # Database metrics (if using PostgreSQL with postgres_exporter)
   - job_name: 'postgres-exporter'
     static_configs:
       - targets: ['localhost:9187']
     scrape_interval: 30s
     metrics_path: /metrics
-    
+
   # Redis metrics (if using redis_exporter)
   - job_name: 'redis-exporter'
     static_configs:
       - targets: ['localhost:9121']
     scrape_interval: 30s
     metrics_path: /metrics
-    
+
   # Nginx metrics (if using nginx-prometheus-exporter)
   - job_name: 'nginx-exporter'
     static_configs:
       - targets: ['localhost:9113']
     scrape_interval: 30s
     metrics_path: /metrics
-    
+
   # Custom business metrics endpoint
   - job_name: 'business-metrics'
     static_configs:
@@ -99,11 +99,11 @@ scrape_configs:
     scrape_interval: 60s
     metrics_path: /business-metrics
     scrape_timeout: 30s
-    
+
   # Health check endpoints
   - job_name: 'health-checks'
     static_configs:
-      - targets: 
+      - targets:
         - 'localhost:8000'
         - 'localhost:8001'
         - 'localhost:8002'
@@ -111,7 +111,7 @@ scrape_configs:
     scrape_interval: 30s
     metrics_path: /health
     scrape_timeout: 10s
-    
+
   # Blackbox exporter for external service monitoring
   - job_name: 'blackbox'
     metrics_path: /probe
@@ -130,7 +130,7 @@ scrape_configs:
         target_label: instance
       - target_label: __address__
         replacement: 127.0.0.1:9115  # Blackbox exporter address
-        
+
   # File-based service discovery for dynamic targets
   - job_name: 'file-discovery'
     file_sd_configs:
@@ -138,26 +138,26 @@ scrape_configs:
         - 'targets/*.json'
         - 'targets/*.yml'
     refresh_interval: 30s
-    
+
   # Pushgateway for batch jobs and short-lived processes
   - job_name: 'pushgateway'
     static_configs:
       - targets: ['localhost:9091']
     honor_labels: true
-    
+
   # Custom scrapers for specific services
   - job_name: 'automation-services'
     static_configs:
       - targets: ['localhost:8005']
     scrape_interval: 60s
     metrics_path: /automation-metrics
-    
+
   - job_name: 'content-processing'
     static_configs:
       - targets: ['localhost:8006']
     scrape_interval: 45s
     metrics_path: /content-metrics
-    
+
   - job_name: 'ai-model-metrics'
     static_configs:
       - targets: ['localhost:8007']
@@ -191,24 +191,24 @@ storage:
     retention.time: 15d
     retention.size: 10GB
     wal-compression: true
-    
+
 # Web configuration
 web:
   listen-address: '0.0.0.0:9090'
   max-connections: 512
   read-timeout: 30s
-  
+
 # Runtime configuration
 runtime:
   gogc: 75  # Tune garbage collection for better performance
-  
+
 # Feature flags
 feature_flags:
   - name: "promql-at-modifier"
     enabled: true
   - name: "promql-negative-offset"
     enabled: true
-    
+
 # Tracing configuration (if using Jaeger)
 # tracing:
 #   endpoint: "http://localhost:14268/api/traces"
@@ -218,13 +218,13 @@ feature_flags:
 log:
   level: info
   format: logfmt
-  
+
 # Query configuration
 query:
   timeout: 2m
   max-concurrency: 20
   max-samples: 50000000
-  
+
 # Additional scrape configs for development/testing
 # These can be enabled/disabled based on environment
 # - job_name: 'development-services'
@@ -240,12 +240,12 @@ metric_relabel_configs:
   - source_labels: [__name__]
     regex: 'go_memstats_.*'
     action: drop
-    
+
   # Keep only specific HTTP status codes
   - source_labels: [__name__, code]
     regex: 'http_requests_total;[45]..'
     action: keep
-    
+
   # Rename metrics for consistency
   - source_labels: [__name__]
     regex: 'old_metric_name'

@@ -71,10 +71,10 @@ command_exists() {
 # Check system requirements
 check_requirements() {
     print_header "Checking System Requirements"
-    
+
     local missing_commands=()
     local required_commands=("python3" "pip3" "git")
-    
+
     for cmd in "${required_commands[@]}"; do
         if command_exists "$cmd"; then
             print_success "$cmd is available"
@@ -85,17 +85,17 @@ check_requirements() {
             log_error "Missing command: $cmd"
         fi
     done
-    
+
     if [ ${#missing_commands[@]} -gt 0 ]; then
         error_exit "Missing required commands: ${missing_commands[*]}"
     fi
-    
+
     # Check Python version
     local python_version
     python_version=$(python3 --version 2>&1 | cut -d' ' -f2)
     print_info "Python version: $python_version"
     log_info "Python version: $python_version"
-    
+
     # Check if we're in a virtual environment
     if [[ -n "${VIRTUAL_ENV:-}" ]]; then
         print_success "Running in virtual environment: $VIRTUAL_ENV"
@@ -109,15 +109,15 @@ check_requirements() {
 # Create backup
 create_backup() {
     print_header "Creating System Backup"
-    
+
     local backup_name="backup_$TIMESTAMP"
     local backup_path="$BACKUP_DIR/$backup_name"
-    
+
     log_info "Creating backup: $backup_name"
-    
+
     # Create backup directory
     mkdir -p "$backup_path"
-    
+
     # Backup critical files and directories
     local backup_items=(
         "app"
@@ -127,7 +127,7 @@ create_backup() {
         "README.md"
         ".env.example"
     )
-    
+
     for item in "${backup_items[@]}"; do
         local source_path="$PROJECT_ROOT/$item"
         if [[ -e "$source_path" ]]; then
@@ -139,7 +139,7 @@ create_backup() {
             log_warn "Missing backup item: $item"
         fi
     done
-    
+
     # Create backup manifest
     cat > "$backup_path/manifest.json" << EOF
 {
@@ -152,14 +152,14 @@ create_backup() {
     "backup_items": $(printf '%s\n' "${backup_items[@]}" | jq -R . | jq -s . 2>/dev/null || echo '[]')
 }
 EOF
-    
+
     print_success "Backup created: $backup_path"
     log_success "Backup created: $backup_path"
-    
+
     # Keep only last 10 backups
     local backup_count
     backup_count=$(find "$BACKUP_DIR" -maxdepth 1 -type d -name "backup_*" | wc -l)
-    
+
     if [[ $backup_count -gt 10 ]]; then
         print_info "Cleaning up old backups (keeping 10 most recent)"
         find "$BACKUP_DIR" -maxdepth 1 -type d -name "backup_*" -printf '%T@ %p\n' 2>/dev/null | \
@@ -171,31 +171,31 @@ EOF
 # Install dependencies
 install_dependencies() {
     print_header "Installing Dependencies"
-    
+
     cd "$PROJECT_ROOT"
-    
+
     # Install Python dependencies
     if [[ -f "requirements.txt" ]]; then
         print_info "Installing Python dependencies..."
         log_info "Installing Python dependencies from requirements.txt"
-        
+
         pip3 install -r requirements.txt --upgrade
-        
+
         print_success "Python dependencies installed"
         log_success "Python dependencies installed"
     else
         print_warning "No requirements.txt found"
         log_warn "No requirements.txt file found"
     fi
-    
+
     # Install Node.js dependencies if package.json exists
     if [[ -f "package.json" ]]; then
         if command_exists "npm"; then
             print_info "Installing Node.js dependencies..."
             log_info "Installing Node.js dependencies from package.json"
-            
+
             npm install
-            
+
             print_success "Node.js dependencies installed"
             log_success "Node.js dependencies installed"
         else
@@ -208,14 +208,14 @@ install_dependencies() {
 # Run security scan
 run_security_scan() {
     print_header "Running Security Scan"
-    
+
     cd "$PROJECT_ROOT"
-    
+
     # Run compliance validator if available
     if [[ -f "backend/security/compliance_validator.py" ]]; then
         print_info "Running compliance validation..."
         log_info "Running compliance validation"
-        
+
         if python3 backend/security/compliance_validator.py --base-dir . --output "$LOG_DIR/compliance_$TIMESTAMP.json"; then
             print_success "Compliance validation passed"
             log_success "Compliance validation passed"
@@ -228,12 +228,12 @@ run_security_scan() {
         print_warning "Compliance validator not found"
         log_warn "Compliance validator not available"
     fi
-    
+
     # Run security scanner if available
     if [[ -f "backend/security/security_scanner.py" ]]; then
         print_info "Running security scan..."
         log_info "Running security scan"
-        
+
         if python3 backend/security/security_scanner.py --target . --output "$LOG_DIR/security_scan_$TIMESTAMP.json"; then
             print_success "Security scan completed"
             log_success "Security scan completed"
@@ -250,31 +250,31 @@ run_security_scan() {
 # Run tests
 run_tests() {
     print_header "Running Tests"
-    
+
     cd "$PROJECT_ROOT"
-    
+
     local test_files=()
-    
+
     # Find test files
     if [[ -d "tests" ]]; then
         mapfile -t test_files < <(find tests -name "test_*.py" -o -name "*_test.py")
     fi
-    
+
     if [[ ${#test_files[@]} -eq 0 ]]; then
         print_warning "No test files found"
         log_warn "No test files found"
         return 0
     fi
-    
+
     print_info "Found ${#test_files[@]} test file(s)"
     log_info "Found ${#test_files[@]} test files"
-    
+
     local failed_tests=()
-    
+
     for test_file in "${test_files[@]}"; do
         print_info "Running: $test_file"
         log_info "Running test: $test_file"
-        
+
         if python3 "$test_file"; then
             print_success "Passed: $test_file"
             log_success "Test passed: $test_file"
@@ -284,7 +284,7 @@ run_tests() {
             failed_tests+=("$test_file")
         fi
     done
-    
+
     if [[ ${#failed_tests[@]} -gt 0 ]]; then
         print_error "${#failed_tests[@]} test(s) failed: ${failed_tests[*]}"
         log_error "Failed tests: ${failed_tests[*]}"
@@ -299,18 +299,18 @@ run_tests() {
 # Health check
 health_check() {
     print_header "System Health Check"
-    
+
     cd "$PROJECT_ROOT"
-    
+
     local health_issues=()
-    
+
     # Check critical files
     local critical_files=(
         "app/dashboard.py"
         "backend/core/secret_store_bridge.py"
         "requirements.txt"
     )
-    
+
     for file in "${critical_files[@]}"; do
         if [[ -f "$file" ]]; then
             print_success "Critical file exists: $file"
@@ -321,7 +321,7 @@ health_check() {
             health_issues+=("Missing file: $file")
         fi
     done
-    
+
     # Check directory structure
     local critical_dirs=(
         "app"
@@ -333,7 +333,7 @@ health_check() {
         "assets/releases"
         "tests"
     )
-    
+
     for dir in "${critical_dirs[@]}"; do
         if [[ -d "$dir" ]]; then
             print_success "Directory exists: $dir"
@@ -344,11 +344,11 @@ health_check() {
             health_issues+=("Missing directory: $dir")
         fi
     done
-    
+
     # Check Python imports
     print_info "Checking Python imports..."
     log_info "Checking Python imports"
-    
+
     local import_test="
 import sys
 sys.path.insert(0, '.')
@@ -360,7 +360,7 @@ except ImportError as e:
     print(f'Import error: {e}')
     sys.exit(1)
 "
-    
+
     if python3 -c "$import_test"; then
         print_success "Python imports OK"
         log_success "Python imports OK"
@@ -369,11 +369,11 @@ except ImportError as e:
         log_error "Python import issues detected"
         health_issues+=("Python import issues")
     fi
-    
+
     # Check disk space
     local disk_usage
     disk_usage=$(df "$PROJECT_ROOT" | awk 'NR==2 {print $5}' | sed 's/%//')
-    
+
     if [[ $disk_usage -lt 90 ]]; then
         print_success "Disk usage OK: ${disk_usage}%"
         log_info "Disk usage: ${disk_usage}%"
@@ -382,7 +382,7 @@ except ImportError as e:
         log_warn "High disk usage: ${disk_usage}%"
         health_issues+=("High disk usage: ${disk_usage}%")
     fi
-    
+
     # Summary
     if [[ ${#health_issues[@]} -eq 0 ]]; then
         print_success "System health check passed"
@@ -401,34 +401,34 @@ except ImportError as e:
 # Deploy system
 deploy() {
     print_header "Deploying TRAE.AI System"
-    
+
     log_info "Starting deployment process"
-    
+
     # Pre-deployment checks
     check_requirements || error_exit "Requirements check failed"
-    
+
     # Create backup
     create_backup || error_exit "Backup creation failed"
-    
+
     # Install dependencies
     install_dependencies || error_exit "Dependency installation failed"
-    
+
     # Run security scan
     if ! run_security_scan; then
         print_warning "Security scan had issues, but continuing deployment"
         log_warn "Security scan had issues, continuing deployment"
     fi
-    
+
     # Run tests
     if ! run_tests; then
         print_error "Tests failed, aborting deployment"
         log_error "Tests failed, aborting deployment"
         return 1
     fi
-    
+
     # Health check
     health_check || error_exit "Health check failed"
-    
+
     # Create deployment marker
     cat > "$PROJECT_ROOT/.deployment_info" << EOF
 {
@@ -440,10 +440,10 @@ deploy() {
     "status": "deployed"
 }
 EOF
-    
+
     print_success "Deployment completed successfully"
     log_success "Deployment completed successfully"
-    
+
     print_info "Deployment info saved to .deployment_info"
     print_info "Logs available at: $LOG_FILE"
 }
@@ -463,7 +463,7 @@ Commands:
   security-scan       Run security scan only
   test                Run tests only
   requirements        Check system requirements
-  
+
 Examples:
   $0 deploy                    # Full deployment
   $0 health                    # Health check only
@@ -478,13 +478,13 @@ EOF
 # Main execution
 main() {
     local command="${1:-}"
-    
+
     # Create log entry for script execution
     log_info "Phoenix Protocol started with command: ${command:-'none'}"
     log_info "Script version: 3.0"
     log_info "Project root: $PROJECT_ROOT"
     log_info "Log file: $LOG_FILE"
-    
+
     case "$command" in
         "deploy")
             deploy
@@ -526,7 +526,7 @@ main() {
             exit 1
             ;;
     esac
-    
+
     log_info "Phoenix Protocol completed for command: $command"
 }
 

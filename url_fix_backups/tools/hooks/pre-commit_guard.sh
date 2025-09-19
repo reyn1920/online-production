@@ -56,12 +56,12 @@ log_error() {
 init_precommit() {
     mkdir -p "$PROJECT_ROOT/.trae"
     touch "$LOG_FILE"
-    
+
     if [ "$TEST_MODE" = true ]; then
         log_info "Running in test mode"
         return 0
     fi
-    
+
     log_info "Starting pre-commit checks..."
 }
 
@@ -80,7 +80,7 @@ get_staged_files() {
 check_secrets() {
     log_info "Checking for secrets and sensitive data..."
     local violations=0
-    
+
     # Patterns to check for
     local secret_patterns=(
         "password\s*=\s*['\"][^'\"]+['\"]"  # password = "value"
@@ -92,7 +92,7 @@ check_secrets() {
         "ghp_[A-Za-z0-9]{36}"  # GitHub personal access tokens
         "gho_[A-Za-z0-9]{36}"  # GitHub OAuth tokens
     )
-    
+
     while IFS= read -r file; do
         if [ -f "$PROJECT_ROOT/$file" ]; then
             for pattern in "${secret_patterns[@]}"; do
@@ -104,7 +104,7 @@ check_secrets() {
             done
         fi
     done < <(get_staged_files)
-    
+
     if [ $violations -gt 0 ]; then
         log_error "$violations potential secrets found!"
         log_error "Please remove secrets and use environment variables instead"
@@ -119,7 +119,7 @@ check_secrets() {
 check_todos() {
     log_info "Checking for TODO/FIXME comments..."
     local todo_count=0
-    
+
     while IFS= read -r file; do
         if [ -f "$PROJECT_ROOT/$file" ]; then
             local todos=$(grep -inE "(TODO|FIXME|XXX|HACK)" "$PROJECT_ROOT/$file" | wc -l)
@@ -129,14 +129,14 @@ check_todos() {
             fi
         fi
     done < <(get_staged_files)
-    
+
     if [ $todo_count -gt 0 ]; then
         log_warning "Total: $todo_count TODO/FIXME comments found"
         log_info "Consider addressing these before committing"
     else
         log_success "No TODO/FIXME comments found"
     fi
-    
+
     return 0  # Don't fail on TODOs, just warn
 }
 
@@ -144,13 +144,13 @@ check_todos() {
 check_python_quality() {
     local python_files
     python_files=$(get_staged_files | grep -E "\.py$" || true)
-    
+
     if [ -z "$python_files" ]; then
         return 0
     fi
-    
+
     log_info "Checking Python code quality..."
-    
+
     # Check if flake8 is available
     if command -v flake8 >/dev/null 2>&1; then
         log_info "Running flake8..."
@@ -163,7 +163,7 @@ check_python_quality() {
     else
         log_warning "flake8 not available, skipping Python linting"
     fi
-    
+
     # Check for basic Python syntax
     while IFS= read -r file; do
         if [ -f "$PROJECT_ROOT/$file" ] && [[ "$file" == *.py ]]; then
@@ -173,7 +173,7 @@ check_python_quality() {
             fi
         fi
     done < <(get_staged_files)
-    
+
     log_success "Python syntax check passed"
     return 0
 }
@@ -182,13 +182,13 @@ check_python_quality() {
 check_js_quality() {
     local js_files
     js_files=$(get_staged_files | grep -E "\.(js|ts|jsx|tsx)$" || true)
-    
+
     if [ -z "$js_files" ]; then
         return 0
     fi
-    
+
     log_info "Checking JavaScript/TypeScript code quality..."
-    
+
     # Check if eslint is available
     if command -v eslint >/dev/null 2>&1; then
         log_info "Running ESLint..."
@@ -209,7 +209,7 @@ check_js_quality() {
     else
         log_warning "ESLint not available, skipping JavaScript linting"
     fi
-    
+
     return 0
 }
 
@@ -218,7 +218,7 @@ check_file_sizes() {
     log_info "Checking file sizes..."
     local large_files=0
     local max_size=1048576  # 1MB in bytes
-    
+
     while IFS= read -r file; do
         if [ -f "$PROJECT_ROOT/$file" ]; then
             local size=$(stat -f%z "$PROJECT_ROOT/$file" 2>/dev/null || stat -c%s "$PROJECT_ROOT/$file" 2>/dev/null || echo 0)
@@ -228,14 +228,14 @@ check_file_sizes() {
             fi
         fi
     done < <(get_staged_files)
-    
+
     if [ $large_files -gt 0 ]; then
         log_warning "$large_files large files found (>1MB)"
         log_info "Consider using Git LFS for large files"
     else
         log_success "No large files detected"
     fi
-    
+
     return 0  # Don't fail on large files, just warn
 }
 
@@ -243,7 +243,7 @@ check_file_sizes() {
 check_merge_conflicts() {
     log_info "Checking for merge conflict markers..."
     local conflicts=0
-    
+
     while IFS= read -r file; do
         if [ -f "$PROJECT_ROOT/$file" ]; then
             if grep -E "^(<{7}|={7}|>{7})" "$PROJECT_ROOT/$file" >/dev/null 2>&1; then
@@ -252,7 +252,7 @@ check_merge_conflicts() {
             fi
         fi
     done < <(get_staged_files)
-    
+
     if [ $conflicts -gt 0 ]; then
         log_error "$conflicts files contain merge conflict markers!"
         return 1

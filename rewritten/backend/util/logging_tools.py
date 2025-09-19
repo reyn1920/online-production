@@ -3,7 +3,7 @@ from functools import wraps
 
 
 def rate_limited_logger(logger, key_prefix="rl", period=60):
-    last = {}
+    last: {}
 
     def wrapper(level):
         def deco(fn):

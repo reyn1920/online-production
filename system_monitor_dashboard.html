@@ -144,7 +144,7 @@
 <body>
     <div class="dashboard">
         <h1 class="title">System Resource Monitor</h1>
-        
+
         <div class="metric cpu">
             <div class="metric-label">CPU Usage</div>
             <div class="progress-container">
@@ -176,7 +176,7 @@
                 this.updateInterval = 1000; // 1 second
                 this.isConnected = false;
                 this.lastUpdateTime = null;
-                
+
                 // DOM elements
                 this.elements = {
                     cpuProgress: document.getElementById('cpu-progress'),
@@ -188,7 +188,7 @@
                     status: document.getElementById('connection-status'),
                     lastUpdate: document.getElementById('last-update')
                 };
-                
+
                 this.init();
             }
 
@@ -213,7 +213,7 @@
                     }
 
                     const data = await response.json();
-                    
+
                     if (data.error) {
                         throw new Error(data.error);
                     }
@@ -227,31 +227,31 @@
 
             updateUI(data) {
                 const { cpu_percent, memory_percent } = data;
-                
+
                 // Update CPU
                 this.elements.cpuProgress.style.width = `${cpu_percent}%`;
                 this.elements.cpuText.textContent = `${cpu_percent}%`;
                 this.elements.cpuValue.textContent = `${cpu_percent}%`;
-                
+
                 // Update Memory
                 this.elements.memoryProgress.style.width = `${memory_percent}%`;
                 this.elements.memoryText.textContent = `${memory_percent}%`;
                 this.elements.memoryValue.textContent = `${memory_percent}%`;
-                
+
                 // Update connection status
                 this.updateConnectionStatus(true);
-                
+
                 // Update last update time
                 this.lastUpdateTime = new Date();
                 this.elements.lastUpdate.textContent = `Last updated: ${this.lastUpdateTime.toLocaleTimeString()}`;
-                
+
                 console.log(`Updated: CPU ${cpu_percent}%, Memory ${memory_percent}%`);
             }
 
             updateConnectionStatus(connected) {
                 this.isConnected = connected;
                 const statusElement = this.elements.status;
-                
+
                 if (connected) {
                     statusElement.textContent = 'Connected';
                     statusElement.className = 'status connected';
@@ -264,7 +264,7 @@
             handleError(error) {
                 console.error('System monitor error:', error);
                 this.updateConnectionStatus(false);
-                
+
                 // Show error in UI
                 this.elements.cpuValue.textContent = 'Error';
                 this.elements.memoryValue.textContent = 'Error';
@@ -281,10 +281,10 @@
 
             startMonitoring() {
                 console.log('Starting system monitoring...');
-                
+
                 // Initial update
                 this.updateStats();
-                
+
                 // Set up interval for continuous updates
                 setInterval(() => {
                     this.updateStats();

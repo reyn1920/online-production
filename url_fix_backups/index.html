@@ -70,7 +70,7 @@
         <div class="status">🟢 Production Ready</div>
         <h1>TRAE.AI Dashboard</h1>
         <p>Welcome to your AI-powered content creation and monetization platform</p>
-        
+
         <div class="dashboard-links">
             <a href="/app/static/index.html" class="dashboard-link">
                 📊 Main Dashboard
@@ -91,23 +91,23 @@
                 🤝 Brand Partnerships
             </a>
         </div>
-        
+
         <p style="margin-top: 2rem; font-size: 0.9rem; color: #888;">
             Server running on port 8080 | All systems operational
         </p>
     </div>
-    
+
     <script>
         // Auto-redirect to main dashboard after 3 seconds if no interaction
         let redirectTimer = setTimeout(() => {
             window.location.href = '/app/static/index.html';
         }, 5000);
-        
+
         // Cancel redirect if user interacts with page
         document.addEventListener('click', () => {
             clearTimeout(redirectTimer);
         });
-        
+
         document.addEventListener('keydown', () => {
             clearTimeout(redirectTimer);
         });

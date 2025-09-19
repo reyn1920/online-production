@@ -1,608 +1,574 @@
-#!/usr/bin/env python3
-""""""
-TRAE.AI Autonomous Content Empire - Orchestrator
-"""""""""
+"""Orchestrator Module
 
-This module contains the AutonomousOrchestrator class that coordinates all agents,
-manages the production pipeline, and ensures continuous operation.
-
-
-
+Provides task orchestration, workflow management, and agent coordination.
 """
 
-import json
-import os
-import sqlite3
-from dataclasses import dataclass
-from datetime import datetime
-from typing import Any, Dict, Optional
+import asyncio
+import logging
+from dataclasses import dataclass, field
+from enum import Enum
+import uuid
+from concurrent.futures import ThreadPoolExecutor
+from typing import Optional
+from typing import Any
+from typing import Callable
 
-# Import TRAE.AI components
-try:
-    from utils.logger import TraeLogger, get_logger
 
-except ImportError:
-    import logging
+class TaskStatus(Enum):
+    """Task execution status."""
 
-    def get_logger(name):
-        return logging.getLogger(name)
+    PENDING = "pending"
+    RUNNING = "running"
+    COMPLETED = "completed"
+    FAILED = "failed"
+    CANCELLED = "cancelled"
+    RETRYING = "retrying"
 
 
-try:
-    from backend.secret_store import SecretStore
+class TaskPriority(Enum):
+    """Task priority levels."""
 
-except ImportError:
+    LOW = 1
+    MEDIUM = 2
+    HIGH = 3
+    CRITICAL = 4
 
-    class SecretStore:
-        def __init__(self):
-            pass
 
-
-try:
-    from backend.task_queue_manager import TaskQueueManager
-
-except ImportError:
-
-    class TaskQueueManager:
-        def __init__(self):
-            pass
-
-        def get_tasks_for_agent(self, agent_name):
-            return []
-
-
-try:
-    from backend.agents.base_agents import AuditorAgent, ExecutorAgent, PlannerAgent
-
-except ImportError:
-
-    class PlannerAgent:
-        def __init__(self):
-            self.logger = get_logger(self.__class__.__name__)
-            self.active_plans = {}
-            self.logger.info("PlannerAgent initialized")
-
-        def create_plan(self, task_id: str, requirements: Dict[str, Any]) -> Dict[str, Any]:
-            """Create execution plan for a task"""
-            plan = {
-                "task_id": task_id,
-                "steps": [],
-                "estimated_duration": 0,
-                "resources_required": [],
-                "created_at": datetime.now().isoformat(),
-            }
-            self.active_plans[task_id] = plan
-            return plan
-
-    class ExecutorAgent:
-        def __init__(self):
-            self.logger = get_logger(self.__class__.__name__)
-            self.active_executions = {}
-            self.logger.info("ExecutorAgent initialized")
-
-        def execute_plan(self, plan: Dict[str, Any]) -> bool:
-            """Execute a given plan"""
-            task_id = plan.get("task_id")
-            self.active_executions[task_id] = {
-                "status": "running",
-                "started_at": datetime.now().isoformat(),
-            }
-            self.logger.info(f"Executing plan for task: {task_id}")
-            return True
-
-    class AuditorAgent:
-        def __init__(self):
-            self.logger = get_logger(self.__class__.__name__)
-            self.audit_history = []
-            self.logger.info("AuditorAgent initialized")
-
-        def audit_execution(self, task_id: str, execution_data: Dict[str, Any]) -> Dict[str, Any]:
-            """Audit task execution"""
-            audit_result = {
-                "task_id": task_id,
-                "status": "passed",
-                "issues": [],
-                "audited_at": datetime.now().isoformat(),
-             }
-            self.audit_history.append(audit_result)
-            return audit_result
-
-
-try:
-    from backend.agents.specialized_agents import (
-        ContentAgent,
-        MarketingAgent,
-        QAAgent,
-        ResearchAgent,
-        SystemAgent,
-     )
-except ImportError:
-
-    class SystemAgent:
-        def __init__(self):
-            pass
-
-    class ResearchAgent:
-        def __init__(self):
-            pass
-
-    class ContentAgent:
-        def __init__(self):
-            pass
-
-    class MarketingAgent:
-        def __init__(self):
-            pass
-
-    class QAAgent:
-        def __init__(self):
-            pass
-
-
-try:
-    from backend.agents.growth_agent import GrowthAgent
-
-except ImportError:
-
-    class GrowthAgent:
-        def __init__(self):
-            pass
-
-
-try:
-    from backend.agents.evolution_agent import EvolutionAgent
-except ImportError:
-
-    class EvolutionAgent:
-        def __init__(self, config=None):
-            pass
-
-
-try:
-    from backend.agents.financial_agent import FinancialAgent
-except ImportError:
-
-    class FinancialAgent:
-        def __init__(self):
-            pass
-
-
-try:
-    from backend.agents.stealth_automation_agent import StealthAutomationAgent
-
-except ImportError:
-
-    class StealthAutomationAgent:
-        def __init__(self, config=None):
-            pass
-
-
-try:
-    from backend.agents.strategic_advisor_agent import StrategicAdvisorAgent
-
-except ImportError:
-
-    class StrategicAdvisorAgent:
-        def __init__(self):
-            pass
-
-
-try:
-    from backend.integrations.ollama_integration import OllamaIntegration
-
-except ImportError:
-
-    class OllamaIntegration:
-        def __init__(self):
-            pass
-
-
-try:
-    from backend.api_orchestrator import APIOrchestrator, FailoverStrategy
-except ImportError:
-
-    class APIOrchestrator:
-        def __init__(self):
-            pass
-
-    class FailoverStrategy:
-        def __init__(self):
-            pass
-
-
-# Initialize logger
-logger = get_logger(__name__)
-
-# Global orchestrator instance for dashboard access
-_global_orchestrator = None
-
-
-def get_orchestrator_instance():
-    """
-Get the global orchestrator instance
-
-    
-"""
-    return _global_orchestrator
-    """"""
-    """
-
-
-    return _global_orchestrator
-
-    
-
-   
-""""""
-
-def set_orchestrator_instance(orchestrator):
-        """
-        Set the global orchestrator instance
-        """"""
-
-    
-   
-
-    global _global_orchestrator
-   
-""""""
-
-   
-
-    
-   
-"""
-    _global_orchestrator = orchestrator
-   """"""
-    
-   """
-
-    global _global_orchestrator
-   
-
-    
-   
-"""
 @dataclass
-class SystemMetrics:
-    """
-System performance metrics
+class TaskResult:
+    """Task execution result."""
+
+    task_id: str
+    status: TaskStatus
+    result: Optional[Any] = None
+    error: Optional[str] = None
+    execution_time: Optional[float] = None
+    timestamp: datetime = field(default_factory=datetime.now)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
-    timestamp: datetime
-    active_channels: int
-    total_revenue: float
-    growth_rate: float
-    cpu_usage: float
-    memory_usage: float
-    task_queue_size: int
-   
-""""""
+@dataclass
+class Task:
+    """Orchestrator task definition."""
 
-    agent_status: Dict[str, str]
-   
-
-    
-   
-"""
-class AutonomousOrchestrator:
-   """
-
-    
-   
-
-    TODO: Add documentation
-   
-""""""
-
-   
-
-    
-   
-"""
-    Master orchestrator for the TRAE.AI autonomous content empire.
-   """"""
-    
-   """
-
-    This class coordinates all autonomous agents, manages the production pipeline,
-        and ensures continuous operation of the content empire system.
-   
-
-    
-   
-"""
-    def __init__(self, config_path: str = "config.json"):
-        """Initialize the autonomous orchestrator"""
-        logger.info("Initializing AutonomousOrchestrator...")
-
-        # Core configuration
-        self.config = self._load_config()
-        self.running = False
-        self.db_path = "data/trae_production.db"
-
-        # Initialize core components
-        self.secret_store = SecretStore()
-        self.task_queue = TaskQueueManager()
-
-        # Initialize API orchestrator with error handling
-        try:
-            self.api_orchestrator = APIOrchestrator(db_path="right_perspective.db")
-        except Exception as e:
-            logger.warning(f"APIOrchestrator initialization failed: {e}. Using mock orchestrator.")
-            self.api_orchestrator = None
-
-        # Initialize database
-        self._init_database()
-
-        # Initialize agents
-        self._init_agents()
-
-        # Autonomous operation tracking
-        self.last_niche_expansion = datetime.now()
-        self.last_format_scan = datetime.now()
-        self.last_financial_analysis = datetime.now()
-        self.quarterly_report_due = self._calculate_next_quarter()
-
-        # System metrics
-        self.metrics_history = []
-        self.agent_threads = {}
-
-        # Phase 6 autonomous operations
-        self._initialize_phase6_operations()
-
-        # Agent status tracking
-        self.agent_status = {
-            "growth": "initialized",
-            "evolution": "initialized",
-            "financial": "initialized",
-            "stealth_automation": "initialized",
-            "strategic_advisor": "initialized",
-            "marketing": "initialized",
-         }
-
-        logger.info("AutonomousOrchestrator initialization complete")
-
-    def update_agent_status(self, agent_name: str, status: str, task_id: Optional[str] = None):
-        """Update agent status for monitoring"""
-        self.agent_status[agent_name] = {
-            "status": status,
-            "last_update": datetime.now().isoformat(),
-            "task_id": task_id,
-         }
-
-    def _load_config(self) -> Dict[str, Any]:
-        """
-Load system configuration
-
-        
-"""
-        try:
-        """"""
-            if os.path.exists("config.json"):
-                with open("config.json", "r") as f:
-        """
-        try:
-        """
-                    config = json.load(f)
-                logger.info("Configuration loaded from config.json")
-                return config
-        except Exception as e:
-            logger.warning(f"Could not load config.json: {e}")
-
-        # Default configuration
-        default_config = {
-            "system": {
-                "max_concurrent_tasks": 10,
-                "health_check_interval": 300,
-                "metrics_collection_interval": 60,
-                "auto_scaling_enabled": True,
-             },
-            "agents": {
-                "growth_agent_interval": 3600,
-                "evolution_agent_interval": 7200,
-                "financial_agent_interval": 1800,
-                "strategic_advisor_interval": 86400,
-             },
-            "autonomous_operations": {
-                "niche_expansion_threshold": 0.8,
-                "format_evolution_threshold": 0.7,
-                "financial_optimization_threshold": 0.9,
-                "proactive_mode": True,
-             },
-         }
-
-        logger.info("Using default configuration")
-        return default_config
-
-    def _init_database(self):
-        """Initialize production database"""
-        try:
-            os.makedirs("data", exist_ok=True)
-
-            conn = sqlite3.connect(self.db_path)
-            cursor = conn.cursor()
-
-            # Create performance metrics table
-            cursor.execute(
-                """"""
-
-                CREATE TABLE IF NOT EXISTS performance_metrics (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        metric_name TEXT NOT NULL,
-                        metric_type TEXT NOT NULL,
-                        value REAL NOT NULL,
-                        unit TEXT,
-                        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-                 )
-           
-
-            
-           
-""""""
-
-             
-            
-
-             )
-            
-""""""
-
-            conn.commit()
-            conn.close()
-            
-
-             
-            
-"""
-             )
-            """"""
-            logger.info("Production database initialized")
-
-        except Exception as e:
-            logger.error(f"Database initialization failed: {e}")
-            raise
-
-    def _init_agents(self):
-        """Initialize all autonomous agents"""
-        try:
-            # Core agents
-            self.agents = {
-                "planner": PlannerAgent(),
-                "executor": ExecutorAgent(),
-                "auditor": AuditorAgent(),
-             }
-
-            # Specialized agents
-            specialized_agents = {
-                "system": SystemAgent(),
-                "research": ResearchAgent(),
-                "content": ContentAgent(),
-                "marketing": MarketingAgent(),
-                "qa": QAAgent(),
-             }
-
-            self.agents.update(specialized_agents)
-
-            # Phase 6 autonomous agents
-            evolution_config = {
-                "trend_monitoring": True,
-                "format_detection": True,
-                "tool_generation": True,
-                "self_improvement": True,
-                "innovation_tracking": True,
-                "platform_analysis": True,
-                "platforms": ["youtube", "tiktok", "instagram", "twitter", "linkedin"],
-                "trend_threshold": 0.7,
-                "monitoring_interval": 1800,
-             }
-
-            stealth_config = {
-                "stealth_level": "moderate",
-                "automation_mode": "stealth_medium",
-                "detection_threshold": 0.3,
-                "session_timeout": 3600,
-                "max_concurrent_sessions": 3,
-             }
-
-            self.autonomous_agents = {
-                "growth": GrowthAgent(),
-                "evolution": EvolutionAgent(evolution_config),
-                "financial": FinancialAgent(),
-                "stealth_automation": StealthAutomationAgent(stealth_config),
-                "strategic_advisor": StrategicAdvisorAgent(),
-             }
-
-            self.agents.update(self.autonomous_agents)
-
-            logger.info(f"Initialized {len(self.agents)} agents successfully")
-
-        except Exception as e:
-            logger.error(f"Agent initialization failed: {e}")
-            raise
-
-    def _calculate_next_quarter(self) -> datetime:
-        """
-Calculate next quarterly report date
-
-        now = datetime.now()
-       
-""""""
-
-        current_quarter = (now.month - 1) // 3 + 1
-       
-
-        
-       
-""""""
+    id: str
+    name: str
+    handler: Callable
+    args: tuple = field(default_factory=tuple)
+    kwargs: dict[str, Any] = field(default_factory=dict)
+    priority: TaskPriority = TaskPriority.MEDIUM
+    max_retries: int = 3
+    retry_delay: float = 1.0
+    timeout: Optional[float] = None
+    dependencies: list[str] = field(default_factory=list)
+    status: TaskStatus = TaskStatus.PENDING
+    created_at: datetime = field(default_factory=datetime.now)
+    started_at: Optional[datetime] = None
+    completed_at: Optional[datetime] = None
+    retry_count: int = 0
+    result: Optional[TaskResult] = None
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
-        
+class WorkflowStatus(Enum):
+    """Workflow execution status."""
 
-       
+    PENDING = "pending"
+    RUNNING = "running"
+    COMPLETED = "completed"
+    FAILED = "failed"
+    CANCELLED = "cancelled"
 
-        current_quarter = (now.month - 1) // 3 + 1
-       
-""""""
 
-        if current_quarter == 4:
-            next_quarter_start = datetime(now.year + 1, 1, 1)
-        else:
-            next_quarter_month = current_quarter * 3 + 1
-            next_quarter_start = datetime(now.year, next_quarter_month, 1)
+@dataclass
+class Workflow:
+    """Workflow definition containing multiple tasks."""
 
-        return next_quarter_start
+    id: str
+    name: str
+    tasks: list[Task] = field(default_factory=list)
+    status: WorkflowStatus = WorkflowStatus.PENDING
+    created_at: datetime = field(default_factory=datetime.now)
+    started_at: Optional[datetime] = None
+    completed_at: Optional[datetime] = None
+    metadata: dict[str, Any] = field(default_factory=dict)
 
-    def _initialize_phase6_operations(self):
-        """
-        Initialize Phase 6 autonomous operations
-        """
-        logger.info("Initializing Phase 6 autonomous operations...")
 
-        # Growth agent configuration
-        self.growth_config = {
-            "niche_expansion_enabled": True,
-            "proactive_domination": True,
-            "competitive_analysis": True,
-         }
+class TaskOrchestrator:
+    """Main orchestrator for managing tasks and workflows."""
 
-        # Evolution agent configuration
-        self.evolution_config = {
-            "format_scanning_enabled": True,
-            "trend_adaptation": True,
-            "content_optimization": True,
-         }
+    def __init__(self, max_workers: int = 10, max_concurrent_tasks: int = 50):
+        self.logger = logging.getLogger(__name__)
+        self.max_workers = max_workers
+        self.max_concurrent_tasks = max_concurrent_tasks
 
-        # Financial agent configuration
-        self.financial_config = {
-            "revenue_optimization": True,
-            "cost_management": True,
-            "affiliate_monitoring": True,
-         }
+        # Task management
+        self.tasks: dict[str, Task] = {}
+        self.workflows: dict[str, Workflow] = {}
+        self.task_queue: asyncio.Queue = asyncio.Queue()
+        self.running_tasks: dict[str, asyncio.Task] = {}
 
-        logger.info("Phase 6 operations initialized")
+        # Execution control
+        self.executor = ThreadPoolExecutor(max_workers=max_workers)
+        self.is_running = False
+        self.worker_tasks: list[asyncio.Task] = []
 
-    def get_status(self) -> Dict[str, Any]:
-        """Get current orchestrator status"""
-        return {
-            "running": self.running,
-            "agents": self.agent_status,
-            "last_niche_expansion": self.last_niche_expansion.isoformat(),
-            "last_format_scan": self.last_format_scan.isoformat(),
-            "last_financial_analysis": self.last_financial_analysis.isoformat(),
-            "quarterly_report_due": self.quarterly_report_due.isoformat(),
-            "metrics_count": len(self.metrics_history),
-         }
+        # Event handlers
+        self.event_handlers: dict[str, list[Callable]] = {
+            "task_started": [],
+            "task_completed": [],
+            "task_failed": [],
+            "workflow_started": [],
+            "workflow_completed": [],
+            "workflow_failed": [],
+        }
 
     async def start(self):
-        """Start the orchestrator"""
-        logger.info("Starting AutonomousOrchestrator...")
-        self.running = True
-        set_orchestrator_instance(self)
-        return True
+        """Start the orchestrator."""
+        if self.is_running:
+            return
+
+        self.is_running = True
+        self.logger.info("Starting task orchestrator")
+
+        # Start worker tasks
+        for i in range(self.max_workers):
+            worker_task = asyncio.create_task(self._worker(f"worker-{i}"))
+            self.worker_tasks.append(worker_task)
+
+        # Start monitoring task
+        monitor_task = asyncio.create_task(self._monitor_tasks())
+        self.worker_tasks.append(monitor_task)
 
     async def stop(self):
-        """Stop the orchestrator"""
-        logger.info("Stopping AutonomousOrchestrator...")
-        self.running = False
+        """Stop the orchestrator."""
+        if not self.is_running:
+            return
+
+        self.is_running = False
+        self.logger.info("Stopping task orchestrator")
+
+        # Cancel all worker tasks
+        for worker_task in self.worker_tasks:
+            worker_task.cancel()
+
+        # Wait for workers to finish
+        await asyncio.gather(*self.worker_tasks, return_exceptions=True)
+        self.worker_tasks.clear()
+
+        # Cancel running tasks
+        for task_id, running_task in self.running_tasks.items():
+            running_task.cancel()
+            self.tasks[task_id].status = TaskStatus.CANCELLED
+
+        self.running_tasks.clear()
+        self.executor.shutdown(wait=True)
+
+    def add_task(
+        self,
+        name: str,
+        handler: Callable,
+        args: tuple = (),
+        kwargs: Optional[dict[str, Any]] = None,
+        priority: TaskPriority = TaskPriority.MEDIUM,
+        max_retries: int = 3,
+        retry_delay: float = 1.0,
+        timeout: Optional[float] = None,
+        dependencies: Optional[list[str]] = None,
+        metadata: Optional[dict[str, Any]] = None,
+    ) -> str:
+        """Add a task to the orchestrator."""
+        task_id = str(uuid.uuid4())
+
+        task = Task(
+            id=task_id,
+            name=name,
+            handler=handler,
+            args=args,
+            kwargs=kwargs or {},
+            priority=priority,
+            max_retries=max_retries,
+            retry_delay=retry_delay,
+            timeout=timeout,
+            dependencies=dependencies or [],
+            metadata=metadata or {},
+        )
+
+        self.tasks[task_id] = task
+
+        # Queue task if dependencies are satisfied
+        if self._are_dependencies_satisfied(task):
+            asyncio.create_task(self._queue_task(task))
+
+        self.logger.info(f"Added task {task_id}: {name}")
+        return task_id
+
+    def create_workflow(
+        self, name: str, metadata: Optional[dict[str, Any]] = None
+    ) -> str:
+        """Create a new workflow."""
+        workflow_id = str(uuid.uuid4())
+
+        workflow = Workflow(id=workflow_id, name=name, metadata=metadata or {})
+
+        self.workflows[workflow_id] = workflow
+        self.logger.info(f"Created workflow {workflow_id}: {name}")
+        return workflow_id
+
+    def add_task_to_workflow(self, workflow_id: str, task_id: str):
+        """Add a task to a workflow."""
+        if workflow_id not in self.workflows:
+            raise ValueError(f"Workflow {workflow_id} not found")
+
+        if task_id not in self.tasks:
+            raise ValueError(f"Task {task_id} not found")
+
+        workflow = self.workflows[workflow_id]
+        task = self.tasks[task_id]
+
+        if task not in workflow.tasks:
+            workflow.tasks.append(task)
+            self.logger.info(f"Added task {task_id} to workflow {workflow_id}")
+
+    async def execute_workflow(self, workflow_id: str) -> bool:
+        """Execute a workflow."""
+        if workflow_id not in self.workflows:
+            raise ValueError(f"Workflow {workflow_id} not found")
+
+        workflow = self.workflows[workflow_id]
+        workflow.status = WorkflowStatus.RUNNING
+        workflow.started_at = datetime.now()
+
+        await self._emit_event("workflow_started", workflow)
+
+        try:
+            # Execute tasks in dependency order
+            for task in workflow.tasks:
+                if not self._are_dependencies_satisfied(task):
+                    continue
+
+                await self._queue_task(task)
+
+            # Wait for all workflow tasks to complete
+            workflow_tasks = [t for t in workflow.tasks]
+            while workflow_tasks:
+                completed_tasks = []
+                for task in workflow_tasks:
+                    if task.status in [
+                        TaskStatus.COMPLETED,
+                        TaskStatus.FAILED,
+                        TaskStatus.CANCELLED,
+                    ]:
+                        completed_tasks.append(task)
+
+                for task in completed_tasks:
+                    workflow_tasks.remove(task)
+
+                if workflow_tasks:
+                    await asyncio.sleep(0.1)
+
+            # Check if all tasks completed successfully
+            failed_tasks = [t for t in workflow.tasks if t.status == TaskStatus.FAILED]
+            if failed_tasks:
+                workflow.status = WorkflowStatus.FAILED
+                await self._emit_event("workflow_failed", workflow)
+                return False
+            else:
+                workflow.status = WorkflowStatus.COMPLETED
+                workflow.completed_at = datetime.now()
+                await self._emit_event("workflow_completed", workflow)
+                return True
+
+        except Exception as e:
+            workflow.status = WorkflowStatus.FAILED
+            workflow.completed_at = datetime.now()
+            self.logger.error(f"Workflow {workflow_id} failed: {e}")
+            await self._emit_event("workflow_failed", workflow)
+            return False
+
+    def get_task_status(self, task_id: str) -> Optional[TaskStatus]:
+        """Get the status of a task."""
+        task = self.tasks.get(task_id)
+        return task.status if task else None
+
+    def get_workflow_status(self, workflow_id: str) -> Optional[WorkflowStatus]:
+        """Get the status of a workflow."""
+        workflow = self.workflows.get(workflow_id)
+        return workflow.status if workflow else None
+
+    def get_task_result(self, task_id: str) -> Optional[TaskResult]:
+        """Get the result of a task."""
+        task = self.tasks.get(task_id)
+        return task.result if task else None
+
+    def cancel_task(self, task_id: str) -> bool:
+        """Cancel a task."""
+        if task_id not in self.tasks:
+            return False
+
+        task = self.tasks[task_id]
+
+        if task_id in self.running_tasks:
+            self.running_tasks[task_id].cancel()
+            del self.running_tasks[task_id]
+
+        task.status = TaskStatus.CANCELLED
+        task.completed_at = datetime.now()
+
+        self.logger.info(f"Cancelled task {task_id}")
         return True
+
+    def cancel_workflow(self, workflow_id: str) -> bool:
+        """Cancel a workflow and all its tasks."""
+        if workflow_id not in self.workflows:
+            return False
+
+        workflow = self.workflows[workflow_id]
+        workflow.status = WorkflowStatus.CANCELLED
+        workflow.completed_at = datetime.now()
+
+        # Cancel all workflow tasks
+        for task in workflow.tasks:
+            self.cancel_task(task.id)
+
+        self.logger.info(f"Cancelled workflow {workflow_id}")
+        return True
+
+    def add_event_handler(self, event_type: str, handler: Callable):
+        """Add an event handler."""
+        if event_type in self.event_handlers:
+            self.event_handlers[event_type].append(handler)
+
+    def get_statistics(self) -> dict[str, Any]:
+        """Get orchestrator statistics."""
+        total_tasks = len(self.tasks)
+        completed_tasks = len(
+            [t for t in self.tasks.values() if t.status == TaskStatus.COMPLETED]
+        )
+        failed_tasks = len(
+            [t for t in self.tasks.values() if t.status == TaskStatus.FAILED]
+        )
+        running_tasks = len(
+            [t for t in self.tasks.values() if t.status == TaskStatus.RUNNING]
+        )
+        pending_tasks = len(
+            [t for t in self.tasks.values() if t.status == TaskStatus.PENDING]
+        )
+
+        total_workflows = len(self.workflows)
+        completed_workflows = len(
+            [w for w in self.workflows.values() if w.status == WorkflowStatus.COMPLETED]
+        )
+        failed_workflows = len(
+            [w for w in self.workflows.values() if w.status == WorkflowStatus.FAILED]
+        )
+        running_workflows = len(
+            [w for w in self.workflows.values() if w.status == WorkflowStatus.RUNNING]
+        )
+
+        return {
+            "orchestrator_status": "running" if self.is_running else "stopped",
+            "tasks": {
+                "total": total_tasks,
+                "completed": completed_tasks,
+                "failed": failed_tasks,
+                "running": running_tasks,
+                "pending": pending_tasks,
+            },
+            "workflows": {
+                "total": total_workflows,
+                "completed": completed_workflows,
+                "failed": failed_workflows,
+                "running": running_workflows,
+            },
+            "workers": {
+                "max_workers": self.max_workers,
+                "active_workers": len(self.worker_tasks),
+            },
+        }
+
+    async def _worker(self, worker_name: str):
+        """Worker coroutine for processing tasks."""
+        self.logger.info(f"Started worker: {worker_name}")
+
+        while self.is_running:
+            try:
+                # Get task from queue with timeout
+                task = await asyncio.wait_for(self.task_queue.get(), timeout=1.0)
+
+                if len(self.running_tasks) >= self.max_concurrent_tasks:
+                    # Put task back in queue if at capacity
+                    await self.task_queue.put(task)
+                    await asyncio.sleep(0.1)
+                    continue
+
+                # Execute task
+                execution_task = asyncio.create_task(self._execute_task(task))
+                self.running_tasks[task.id] = execution_task
+
+                # Don't await here - let task run concurrently
+
+            except asyncio.TimeoutError:
+                # No tasks in queue, continue
+                continue
+            except Exception as e:
+                self.logger.error(f"Worker {worker_name} error: {e}")
+                await asyncio.sleep(1.0)
+
+        self.logger.info(f"Stopped worker: {worker_name}")
+
+    async def _execute_task(self, task: Task):
+        """Execute a single task."""
+        task.status = TaskStatus.RUNNING
+        task.started_at = datetime.now()
+
+        await self._emit_event("task_started", task)
+
+        start_time = datetime.now()
+
+        try:
+            # Execute task with timeout
+            if asyncio.iscoroutinefunction(task.handler):
+                if task.timeout:
+                    result = await asyncio.wait_for(
+                        task.handler(*task.args, **task.kwargs), timeout=task.timeout
+                    )
+                else:
+                    result = await task.handler(*task.args, **task.kwargs)
+            else:
+                # Run sync function in executor
+                if task.timeout:
+                    result = await asyncio.wait_for(
+                        asyncio.get_event_loop().run_in_executor(
+                            self.executor,
+                            lambda: task.handler(*task.args, **task.kwargs),
+                        ),
+                        timeout=task.timeout,
+                    )
+                else:
+                    result = await asyncio.get_event_loop().run_in_executor(
+                        self.executor, lambda: task.handler(*task.args, **task.kwargs)
+                    )
+
+            # Task completed successfully
+            execution_time = (datetime.now() - start_time).total_seconds()
+
+            task.status = TaskStatus.COMPLETED
+            task.completed_at = datetime.now()
+            task.result = TaskResult(
+                task_id=task.id,
+                status=TaskStatus.COMPLETED,
+                result=result,
+                execution_time=execution_time,
+            )
+
+            await self._emit_event("task_completed", task)
+            self.logger.info(f"Task {task.id} completed successfully")
+
+        except Exception as e:
+            execution_time = (datetime.now() - start_time).total_seconds()
+            error_msg = str(e)
+
+            # Handle retries
+            if task.retry_count < task.max_retries:
+                task.retry_count += 1
+                task.status = TaskStatus.RETRYING
+
+                self.logger.warning(
+                    f"Task {task.id} failed, retrying ({task.retry_count}/{
+                        task.max_retries
+                    }): {error_msg}"
+                )
+
+                # Schedule retry
+                await asyncio.sleep(task.retry_delay)
+                await self._queue_task(task)
+            else:
+                # Task failed permanently
+                task.status = TaskStatus.FAILED
+                task.completed_at = datetime.now()
+                task.result = TaskResult(
+                    task_id=task.id,
+                    status=TaskStatus.FAILED,
+                    error=error_msg,
+                    execution_time=execution_time,
+                )
+
+                await self._emit_event("task_failed", task)
+                self.logger.error(f"Task {task.id} failed permanently: {error_msg}")
+
+        finally:
+            # Remove from running tasks
+            if task.id in self.running_tasks:
+                del self.running_tasks[task.id]
+
+    async def _queue_task(self, task: Task):
+        """Queue a task for execution."""
+        await self.task_queue.put(task)
+
+    def _are_dependencies_satisfied(self, task: Task) -> bool:
+        """Check if task dependencies are satisfied."""
+        for dep_id in task.dependencies:
+            if dep_id not in self.tasks:
+                return False
+
+            dep_task = self.tasks[dep_id]
+            if dep_task.status != TaskStatus.COMPLETED:
+                return False
+
+        return True
+
+    async def _monitor_tasks(self):
+        """Monitor tasks and handle dependency resolution."""
+        while self.is_running:
+            try:
+                # Check for tasks with satisfied dependencies
+                for task in self.tasks.values():
+                    if (
+                        task.status == TaskStatus.PENDING
+                        and self._are_dependencies_satisfied(task)
+                    ):
+                        await self._queue_task(task)
+
+                await asyncio.sleep(1.0)
+
+            except Exception as e:
+                self.logger.error(f"Task monitor error: {e}")
+                await asyncio.sleep(5.0)
+
+    async def _emit_event(self, event_type: str, data: Any):
+        """Emit an event to registered handlers."""
+        if event_type in self.event_handlers:
+            for handler in self.event_handlers[event_type]:
+                try:
+                    if asyncio.iscoroutinefunction(handler):
+                        await handler(data)
+                    else:
+                        handler(data)
+                except Exception as e:
+                    self.logger.error(f"Event handler error for {event_type}: {e}")
+
+
+# Global orchestrator instance
+orchestrator = TaskOrchestrator()
+
+
+# Convenience functions
+async def add_task(name: str, handler: Callable, **kwargs) -> str:
+    """Add a task to the global orchestrator."""
+    return orchestrator.add_task(name, handler, **kwargs)
+
+
+async def create_workflow(name: str, **kwargs) -> str:
+    """Create a workflow in the global orchestrator."""
+    return orchestrator.create_workflow(name, **kwargs)
+
+
+async def execute_workflow(workflow_id: str) -> bool:
+    """Execute a workflow in the global orchestrator."""
+    return await orchestrator.execute_workflow(workflow_id)
+
+
+def get_orchestrator_stats() -> dict[str, Any]:
+    """Get global orchestrator statistics."""
+    return orchestrator.get_statistics()

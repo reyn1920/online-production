@@ -1,656 +1,273 @@
-#!/usr/bin/env python3
-""""""
+"""API Discovery routes for exposing available endpoints and documentation."""
 
-
-
-API Discovery Routes
-Backend endpoints for API discovery and management
-
-""""""
-
-import asyncio
-import json
+from typing import Optional
 import logging
-import os
-import sqlite3
-import sys
-from datetime import datetime
-from functools import wraps
 
-from flask import Blueprint, jsonify, request
-
-# Add the backend services directory to the path
-sys.path.append(os.path.join(os.path.dirname(__file__), "..", "services"))
-
+# Proper FastAPI imports
 try:
-    from api_discovery_service import APICandidate, APIDiscoveryService
-
+    from fastapi import APIRouter, HTTPException, status
+    from pydantic import BaseModel
 except ImportError:
-    print("Warning: APIDiscoveryService not found. Make sure the service is properly installed.")
-    APIDiscoveryService = None
-    APICandidate = None
+    # Simple fallback classes for missing dependencies
+    class APIRouter:
+        def __init__(self, **kwargs):
+            self.routes = []
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
+        def get(self, path: str, **kwargs):
+            def decorator(func):
+                self.routes.append({"method": "GET", "path": path, "func": func})
+                return func
+
+            return decorator
+
+        def post(self, path: str, **kwargs):
+            def decorator(func):
+                self.routes.append({"method": "POST", "path": path, "func": func})
+                return func
+
+            return decorator
+
+    class HTTPException(Exception):
+        def __init__(self, status_code: int, detail: str):
+            self.status_code = status_code
+            self.detail = detail
+            super().__init__(detail)
+
+    class BaseModel:
+        def __init__(self, **kwargs):
+            for k, v in kwargs.items():
+                setattr(self, k, v)
+
+    class status:
+        HTTP_500_INTERNAL_SERVER_ERROR = 500
+        HTTP_404_NOT_FOUND = 404
+        HTTP_200_OK = 200
+
+
+# Logger setup
 logger = logging.getLogger(__name__)
 
-# Create blueprint
-api_discovery_bp = Blueprint("api_discovery", __name__, url_prefix="/api")
+# Pydantic Models
 
 
-def require_auth(f):
-    """Simple authentication decorator"""
-
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        auth_header = request.headers.get("Authorization")
-        if not auth_header or not auth_header.startswith("Bearer "):
-            return jsonify({"error": "Authentication required"}), 401
-
-        token = auth_header.split(" ")[1]
-        # In production, validate the token properly
-        if token not in ["demo - token", "valid - token"]:
-            return jsonify({"error": "Invalid token"}), 401
-
-        return f(*args, **kwargs)
-
-    return decorated_function
+class APIEndpoint(BaseModel):
+    def __init__(
+        self,
+        path: str = "",
+        method: str = "",
+        description: str = "",
+        tags: Optional[list[str]] = None,
+        **kwargs,
+    ):
+        self.path = path
+        self.method = method
+        self.description = description
+        self.tags = tags or []
+        super().__init__(**kwargs)
 
 
-@api_discovery_bp.route("/discover - apis", methods=["POST"])
-@require_auth
-def discover_apis():
-    """
-Discover APIs for specified channel(s)
+class APIDiscoveryResponse(BaseModel):
+    def __init__(
+        self,
+        service_name: str = "",
+        version: str = "",
+        endpoints: Optional[list[APIEndpoint]] = None,
+        health_check: str = "",
+        **kwargs,
+    ):
+        self.service_name = service_name
+        self.version = version
+        self.endpoints = endpoints or []
+        self.health_check = health_check
+        super().__init__(**kwargs)
 
-    
-"""
-    try:
-    """
 
-        data = request.get_json() or {}
-    
+class ServiceInfo(BaseModel):
+    def __init__(
+        self,
+        name: str = "",
+        status: str = "",
+        version: str = "",
+        uptime: Optional[str] = None,
+        **kwargs,
+    ):
+        self.name = name
+        self.status = status
+        self.version = version
+        self.uptime = uptime
+        super().__init__(**kwargs)
 
-    try:
-    
-"""
-        channel = data.get("channel", "all")
 
-        if not APIDiscoveryService:
-            return (
-                jsonify(
-                    {
-                        "error": "API Discovery Service not available",
-                        "apis": get_mock_apis(channel),
-                     }
-                 ),
-                200,
-             )
+# Service Class
 
-        # Run the async discovery service
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
 
+class APIDiscoveryService:
+    """Service for API discovery and documentation."""
+
+    @staticmethod
+    def get_available_endpoints() -> list[APIEndpoint]:
+        """Get all available API endpoints."""
         try:
-
-            async def run_discovery():
-                async with APIDiscoveryService() as service:
-                    if channel == "all":
-                        results = await service.discover_all_channels()
-                    else:
-                        candidates = await service.discover_apis_for_channel(channel)
-                        results = {channel: candidates}
-
-                    # Convert APICandidate objects to dictionaries
-                    serialized_results = {}
-                    for ch, apis in results.items():
-                        serialized_results[ch] = [
-                            {
-                                "name": api.name,
-                                "url": api.url,
-                                "signup_url": api.signup_url,
-                                "category": api.category,
-                                "cost_model": api.cost_model,
-                                "description": api.description,
-                                "features": api.features,
-                                "rate_limits": api.rate_limits,
-                                "documentation_url": api.documentation_url,
-                                "score": api.score,
-                                "discovered_at": api.discovered_at,
-                                "channel": api.channel,
-                             }
-                            for api in apis
-                         ]
-
-                    return serialized_results
-
-            results = loop.run_until_complete(run_discovery())
-
-            return jsonify(
-                {
-                    "success": True,
-                    "apis": results,
-                    "timestamp": datetime.now().isoformat(),
-                 }
-             )
-
-        finally:
-            loop.close()
-
-    except Exception as e:
-        logger.error(f"Error in discover_apis: {e}")
-        return (
-            jsonify({"error": str(e), "apis": get_mock_apis(channel)}),
-            200,
-#         )  # Return mock data instead of error
-
-
-@api_discovery_bp.route("/free - apis", methods=["GET"])
-@require_auth
-def get_free_apis():
-    """
-Get all free and freemium APIs
-
-    
-"""
-    try:
-    """"""
-        if not APIDiscoveryService:
-    """
-
-    try:
-    
-
-   
-""""""
-            return jsonify({"success": True, "apis": get_mock_free_apis()})
-
-        # Get from database
-        db_path = os.path.join(os.path.dirname(__file__), "..", "..", "intelligence.db")
-
-        with sqlite3.connect(db_path) as conn:
-            conn.row_factory = sqlite3.Row
-            cursor = conn.execute(
-                """"""
-
-                SELECT * FROM discovered_apis
-                WHERE cost_model IN ('free', 'freemium')
-                ORDER BY score DESC, name ASC
-           
-
-            
-           
-""""""
-
-             
-            
-
-             )
-            
-""""""
-            apis = []
-            for row in cursor.fetchall():
-                api_dict = dict(row)
-                # Parse features JSON
-                try:
-                    api_dict["features"] = json.loads(api_dict["features"] or "[]")
-                except (json.JSONDecodeError, TypeError):
-                    api_dict["features"] = []
-                apis.append(api_dict)
-
-        # If no APIs in database, return mock data
-        if not apis:
-            apis = get_mock_free_apis()
-
-        return jsonify({"success": True, "apis": apis})
-
-    except Exception as e:
-        logger.error(f"Error in get_free_apis: {e}")
-        return jsonify({"success": True, "apis": get_mock_free_apis()})
-
-
-@api_discovery_bp.route("/channel - apis/<channel>", methods=["GET"])
-@require_auth
-def get_channel_apis(channel):
-    """
-Get APIs for a specific channel
-
-    
-"""
-    try:
-    """
-        limit = request.args.get("limit", 10, type=int)
-    """
-
-    try:
-    
-
-   
-""""""
-        if not APIDiscoveryService:
-            return jsonify({"success": True, "apis": get_mock_channel_apis(channel, limit)})
-
-        # Get from database
-        db_path = os.path.join(os.path.dirname(__file__), "..", "..", "intelligence.db")
-
-        with sqlite3.connect(db_path) as conn:
-            conn.row_factory = sqlite3.Row
-            cursor = conn.execute(
-                """"""
-
-                SELECT * FROM discovered_apis
-                WHERE channel = ?
-                ORDER BY score DESC, cost_model = 'free' DESC
-                LIMIT ?
-            
-,
-"""
-                (channel, limit),
-            """
-
-             
-            
-
-             )
-            
-""""""
-            apis = []
-            for row in cursor.fetchall():
-                api_dict = dict(row)
-                try:
-                    api_dict["features"] = json.loads(api_dict["features"] or "[]")
-                except (json.JSONDecodeError, TypeError):
-                    api_dict["features"] = []
-                apis.append(api_dict)
-
-        if not apis:
-            apis = get_mock_channel_apis(channel, limit)
-
-        return jsonify({"success": True, "channel": channel, "apis": apis})
-
-    except Exception as e:
-        logger.error(f"Error in get_channel_apis: {e}")
-        return jsonify(
-            {
-                "success": True,
-                "channel": channel,
-                "apis": get_mock_channel_apis(channel, 5),
-             }
-         )
-
-
-@api_discovery_bp.route("/api - stats", methods=["GET"])
-@require_auth
-def get_api_stats():
-    """
-Get API discovery statistics
-
-    
-"""
-    try:
-    """
-        db_path = os.path.join(os.path.dirname(__file__), "..", "..", "intelligence.db")
-    """
-
-    try:
-    
-
-   
-""""""
-        with sqlite3.connect(db_path) as conn:
-            # Total APIs
-            total_cursor = conn.execute("SELECT COUNT(*) as count FROM discovered_apis")
-            total_apis = total_cursor.fetchone()[0]
-
-            # Free APIs
-            free_cursor = conn.execute(
-                """"""
-
-                SELECT COUNT(*) as count FROM discovered_apis
-                WHERE cost_model IN ('free', 'freemium')
-           
-
-            
-           
-""""""
-
-             
-            
-
-             )
-            
-""""""
-
-           
-
-            
-           
-"""
-            free_apis = free_cursor.fetchone()[0]
-           """"""
-             
-            """
-
-             )
-            
-
-             
-            
-"""
-            # Average score
-            avg_cursor = conn.execute("SELECT AVG(score) as avg_score FROM discovered_apis")
-            avg_score = avg_cursor.fetchone()[0] or 0.0
-
-            # Channels with APIs
-            channels_cursor = conn.execute(
-                """"""
-
-                SELECT COUNT(DISTINCT channel) as count FROM discovered_apis
-           
-
-            
-           
-""""""
-
-             
-            
-
-             )
-            
-""""""
-
-           
-
-            
-           
-"""
-            channels_count = channels_cursor.fetchone()[0]
-           """"""
-             
-            """
-
-             )
-            
-
-             
-            
-"""
-            # Recent discoveries
-            recent_cursor = conn.execute(
-               """
-
-                
-               
-
-                SELECT COUNT(*) as count FROM discovered_apis
-                WHERE date(discovered_at) = date('now')
-            
-""""""
-
-            
-
-             
-            
-"""
-             )
-            """"""
-            
-           """
-
-            recent_discoveries = recent_cursor.fetchone()[0]
-           
-
-            
-           
-""""""
-
-             
-            
-
-             )
-            
-""""""
-        return jsonify(
-            {
-                "success": True,
-                "stats": {
-                    "total_apis": total_apis,
-                    "free_apis": free_apis,
-                    "avg_score": round(avg_score, 1),
-                    "channels_count": channels_count,
-                    "recent_discoveries": recent_discoveries,
-                 },
-             }
-         )
-
-    except Exception as e:
-        logger.error(f"Error in get_api_stats: {e}")
-        return jsonify(
-            {
-                "success": True,
-                "stats": {
-                    "total_apis": 0,
-                    "free_apis": 0,
-                    "avg_score": 0.0,
-                    "channels_count": 8,
-                    "recent_discoveries": 0,
-                 },
-             }
-         )
-
-
-@api_discovery_bp.route("/search - history", methods=["GET"])
-@require_auth
-def get_search_history():
-    """
-Get API search history
-
-    
-"""
-    try:
-    """
-        limit = request.args.get("limit", 20, type=int)
-    """
-
-    try:
-    
-
-   
-""""""
-        db_path = os.path.join(os.path.dirname(__file__), "..", "..", "intelligence.db")
-
-        with sqlite3.connect(db_path) as conn:
-            conn.row_factory = sqlite3.Row
-            cursor = conn.execute(
-                """"""
-
-                SELECT * FROM api_search_history
-                ORDER BY search_date DESC
-                LIMIT ?
-            
-,
-"""
-                (limit,),
-            """
-
-             
-            
-
-             )
-            
-""""""
-            history = [dict(row) for row in cursor.fetchall()]
-
-        return jsonify({"success": True, "history": history})
-
-    except Exception as e:
-        logger.error(f"Error in get_search_history: {e}")
-        return jsonify({"success": True, "history": []})
-
-
-# Mock data functions for when the service is not available
-
-
-def get_mock_apis(channel):
-    """Return mock API data for testing"""
-    mock_data = {
-        "youtube": [
-            {
-                "name": "YouTube Data API v3",
-                "url": "https://developers.google.com/youtube/v3",
-                "signup_url": "https://console.cloud.google.com/",
-                "category": "social",
-                "cost_model": "free",
-                "description": "Access YouTube data including videos, channels, playlists, \"
-#     and more",
-                "features": [
-                    "video analytics",
-                    "channel data",
-                    "playlist management",
-                    "search",
-                 ],
-                "rate_limits": "10,000 requests per day",
-                "documentation_url": "https://developers.google.com/youtube/v3",
-                "score": 8.5,
-                "discovered_at": datetime.now().isoformat(),
-                "channel": "youtube",
-             },
-            {
-                "name": "YouTube Analytics API",
-                "url": "https://developers.google.com/youtube/analytics",
-                "signup_url": "https://console.cloud.google.com/",
-                "category": "analytics",
-                "cost_model": "free",
-                "description": "Retrieve YouTube Analytics reports for your channel",
-                "features": ["revenue data", "view analytics", "audience insights"],
-                "rate_limits": "50,000 requests per day",
-                "documentation_url": "https://developers.google.com/youtube/analytics",
-                "score": 8.0,
-                "discovered_at": datetime.now().isoformat(),
-                "channel": "youtube",
-             },
-         ],
-        "email": [
-            {
-                "name": "SendGrid API",
-                "url": "https://sendgrid.com/docs/api - reference/",
-                "signup_url": "https://signup.sendgrid.com/",
-                "category": "email",
-                "cost_model": "freemium",
-                "description": "Email delivery service with powerful APIs",
-                "features": [
-                    "transactional email",
-                    "marketing campaigns",
-                    "analytics",
-                    "templates",
-                 ],
-                "rate_limits": "100 emails/day free",
-                "documentation_url": "https://sendgrid.com/docs/",
-                "score": 7.8,
-                "discovered_at": datetime.now().isoformat(),
-                "channel": "email",
-             }
-         ],
-        "affiliate": [
-            {
-                "name": "Amazon Associates API",
-                "url": "https://webservices.amazon.com/paapi5/documentation/",
-                "signup_url": "https://affiliate - program.amazon.com/",
-                "category": "affiliate",
-                "cost_model": "free",
-                "description": "Amazon Product Advertising API for affiliate marketing",
-                "features": ["product data", "pricing", "affiliate links", "reviews"],
-                "rate_limits": "8640 requests per day",
-                "documentation_url": "https://webservices.amazon.com/paapi5/documentation/",
-                "score": 9.0,
-                "discovered_at": datetime.now().isoformat(),
-                "channel": "affiliate",
-             }
-         ],
-     }
-
-    if channel == "all":
-        return mock_data
-    else:
-        return {channel: mock_data.get(channel, [])}
-
-
-def get_mock_free_apis():
-    """Return mock free API data"""
-    return [
-        {
-            "name": "YouTube Data API v3",
-            "url": "https://developers.google.com/youtube/v3",
-            "signup_url": "https://console.cloud.google.com/",
-            "category": "social",
-            "cost_model": "free",
-            "description": "Access YouTube data including videos, channels, playlists",
-            "features": ["video analytics", "channel data", "playlist management"],
-            "rate_limits": "10,000 requests per day",
-            "documentation_url": "https://developers.google.com/youtube/v3",
-            "score": 8.5,
-            "discovered_at": datetime.now().isoformat(),
-            "channel": "youtube",
-         },
-        {
-            "name": "Twitter API v2",
-            "url": "https://developer.twitter.com/en/docs/twitter - api",
-            "signup_url": "https://developer.twitter.com/",
-            "category": "social",
-            "cost_model": "freemium",
-            "description": "Access Twitter data and functionality",
-            "features": ["tweet data", "user profiles", "trends"],
-            "rate_limits": "500,000 tweets/month free",
-            "documentation_url": "https://developer.twitter.com/en/docs",
-            "score": 7.5,
-            "discovered_at": datetime.now().isoformat(),
-            "channel": "twitter",
-         },
-        {
-            "name": "Amazon Associates API",
-            "url": "https://webservices.amazon.com/paapi5/documentation/",
-            "signup_url": "https://affiliate - program.amazon.com/",
-            "category": "affiliate",
-            "cost_model": "free",
-            "description": "Amazon Product Advertising API",
-            "features": ["product data", "pricing", "affiliate links"],
-            "rate_limits": "8640 requests per day",
-            "documentation_url": "https://webservices.amazon.com/paapi5/documentation/",
-            "score": 9.0,
-            "discovered_at": datetime.now().isoformat(),
-            "channel": "affiliate",
-         },
-     ]
-
-
-def get_mock_channel_apis(channel, limit):
-    """Return mock API data for a specific channel"""
-    all_mock = get_mock_apis("all")
-    channel_apis = all_mock.get(channel, [])
-    return channel_apis[:limit]
-
-
-# Error handlers
-@api_discovery_bp.errorhandler(404)
-def not_found(error):
-    return jsonify({"error": "Endpoint not found"}), 404
-
-
-@api_discovery_bp.errorhandler(500)
-def internal_error(error):
-    return jsonify({"error": "Internal server error"}), 500
-
-
-if __name__ == "__main__":
-    # Test the routes
-
-    from flask import Flask
-
-    app = Flask(__name__)
-    app.register_blueprint(api_discovery_bp)
-
-    @app.route("/")
-    def index():
-        return jsonify({"message": "API Discovery Service is running"})
-
-    app.run(debug=True, port=5001)
+            # Define available endpoints
+            endpoints = [
+                APIEndpoint(
+                    path="/api/health",
+                    method="GET",
+                    description="Health check endpoint",
+                    tags=["health"],
+                ),
+                APIEndpoint(
+                    path="/api/channels",
+                    method="GET",
+                    description="Get all channels",
+                    tags=["channels"],
+                ),
+                APIEndpoint(
+                    path="/api/channels",
+                    method="POST",
+                    description="Create a new channel",
+                    tags=["channels"],
+                ),
+                APIEndpoint(
+                    path="/api/channels/{channel_id}",
+                    method="GET",
+                    description="Get a specific channel",
+                    tags=["channels"],
+                ),
+                APIEndpoint(
+                    path="/api/channels/{channel_id}",
+                    method="PUT",
+                    description="Update a channel",
+                    tags=["channels"],
+                ),
+                APIEndpoint(
+                    path="/api/channels/{channel_id}",
+                    method="DELETE",
+                    description="Delete a channel",
+                    tags=["channels"],
+                ),
+                APIEndpoint(
+                    path="/api/pets",
+                    method="GET",
+                    description="Get all pets",
+                    tags=["pets"],
+                ),
+                APIEndpoint(
+                    path="/api/pets",
+                    method="POST",
+                    description="Create a new pet",
+                    tags=["pets"],
+                ),
+                APIEndpoint(
+                    path="/api/pets/{pet_id}",
+                    method="GET",
+                    description="Get a specific pet",
+                    tags=["pets"],
+                ),
+                APIEndpoint(
+                    path="/api/pets/{pet_id}",
+                    method="PUT",
+                    description="Update a pet",
+                    tags=["pets"],
+                ),
+                APIEndpoint(
+                    path="/api/pets/{pet_id}",
+                    method="DELETE",
+                    description="Delete a pet",
+                    tags=["pets"],
+                ),
+                APIEndpoint(
+                    path="/api/upload",
+                    method="POST",
+                    description="Upload files",
+                    tags=["upload"],
+                ),
+                APIEndpoint(
+                    path="/api/discovery",
+                    method="GET",
+                    description="API discovery endpoint",
+                    tags=["discovery"],
+                ),
+            ]
+
+            return endpoints
+        except Exception as e:
+            logger.error(f"Error getting available endpoints: {e}")
+            raise HTTPException(
+                status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to get endpoints"
+            )
+
+    @staticmethod
+    def get_service_info() -> ServiceInfo:
+        """Get service information."""
+        try:
+            return ServiceInfo(
+                name="Online Production API",
+                status="healthy",
+                version="1.0.0",
+                uptime="Available",
+            )
+        except Exception as e:
+            logger.error(f"Error getting service info: {e}")
+            raise HTTPException(
+                status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to get service info"
+            )
+
+    @staticmethod
+    def get_api_discovery() -> APIDiscoveryResponse:
+        """Get complete API discovery information."""
+        try:
+            service_info = APIDiscoveryService.get_service_info()
+            endpoints = APIDiscoveryService.get_available_endpoints()
+
+            return APIDiscoveryResponse(
+                service_name=service_info.name,
+                version=service_info.version,
+                endpoints=endpoints,
+                health_check="/api/health",
+            )
+        except Exception as e:
+            logger.error(f"Error getting API discovery: {e}")
+            raise HTTPException(
+                status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to get API discovery"
+            )
+
+
+# API Router
+router = APIRouter(prefix="/api", tags=["discovery"])
+
+
+@router.get("/discovery", response_model=APIDiscoveryResponse)
+def get_api_discovery():
+    """Get API discovery information including all available endpoints."""
+    return APIDiscoveryService.get_api_discovery()
+
+
+@router.get("/endpoints", response_model=list[APIEndpoint])
+def get_endpoints():
+    """Get list of all available endpoints."""
+    return APIDiscoveryService.get_available_endpoints()
+
+
+@router.get("/service-info", response_model=ServiceInfo)
+def get_service_info():
+    """Get service information."""
+    return APIDiscoveryService.get_service_info()
+
+
+@router.get("/docs")
+def get_api_docs():
+    """Get API documentation."""
+    return {
+        "message": "API Documentation",
+        "swagger_ui": "/docs",
+        "redoc": "/redoc",
+        "openapi_json": "/openapi.json",
+        "discovery": "/api/discovery",
+    }
+
+
+@router.get("/health")
+def health_check():
+    """Health check endpoint for API discovery service."""
+    return {"status": "healthy", "service": "api-discovery"}

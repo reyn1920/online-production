@@ -197,7 +197,7 @@ const MOCK_PROVIDERS: Omit<AIProvider, 'id'>[] = [
 // Generate 100+ providers by expanding the base set
 const generateProviders = (): AIProvider[] => {
   const providers: AIProvider[] = [];
-  
+
   // Add base providers
   MOCK_PROVIDERS.forEach((provider, index) => {
     providers.push({
@@ -205,7 +205,7 @@ const generateProviders = (): AIProvider[] => {
       id: `provider_${String(index + 1).padStart(3, '0')}`,
     });
   });
-  
+
   // Generate additional providers to reach 100+
   const additionalProviders = [
     'DeepL Translate', 'IBM Watson', 'Microsoft Cognitive', 'AWS Comprehend',
@@ -238,11 +238,11 @@ const generateProviders = (): AIProvider[] => {
     'FAQ Generator', 'Chatbot Response', 'Customer Support', 'Sales Copy',
     'Landing Page', 'Ad Copy', 'Video Script', 'Podcast Script',
   ];
-  
+
   additionalProviders.forEach((name, index) => {
     const baseIndex = index % MOCK_PROVIDERS.length;
     const baseProvider = MOCK_PROVIDERS[baseIndex];
-    
+
     providers.push({
       ...baseProvider,
       id: `provider_${String(providers.length + 1).padStart(3, '0')}`,
@@ -255,7 +255,7 @@ const generateProviders = (): AIProvider[] => {
       responseTime: ['fast', 'medium', 'slow'][Math.floor(Math.random() * 3)] as any,
     });
   });
-  
+
   return providers;
 };
 
@@ -264,10 +264,10 @@ const aiReducer = (state: AIState, action: AIAction): AIState => {
   switch (action.type) {
     case 'SET_LOADING':
       return { ...state, loading: action.payload };
-    
+
     case 'SET_ERROR':
       return { ...state, error: action.payload, loading: false };
-    
+
     case 'SET_PROVIDERS':
       return {
         ...state,
@@ -276,7 +276,7 @@ const aiReducer = (state: AIState, action: AIAction): AIState => {
         loading: false,
         error: null,
       };
-    
+
     case 'UPDATE_PROVIDER':
       const updatedProviders = state.providers.map(provider =>
         provider.id === action.payload.id
@@ -288,13 +288,13 @@ const aiReducer = (state: AIState, action: AIAction): AIState => {
         providers: updatedProviders,
         activeProviders: updatedProviders.filter(p => p.isActive),
       };
-    
+
     case 'ADD_REQUEST':
       return {
         ...state,
         requests: [action.payload, ...state.requests.slice(0, 99)], // Keep last 100 requests
       };
-    
+
     case 'UPDATE_REQUEST':
       return {
         ...state,
@@ -304,10 +304,10 @@ const aiReducer = (state: AIState, action: AIAction): AIState => {
             : request
         ),
       };
-    
+
     case 'SET_QUOTA_USAGE':
       return { ...state, quotaUsage: action.payload };
-    
+
     case 'UPDATE_QUOTA':
       return {
         ...state,
@@ -319,7 +319,7 @@ const aiReducer = (state: AIState, action: AIAction): AIState => {
           },
         },
       };
-    
+
     default:
       return state;
   }
@@ -334,23 +334,23 @@ const mockAIApi = {
     await new Promise(resolve => setTimeout(resolve, 500));
     return generateProviders();
   },
-  
+
   generateContent: async (providerId: string, prompt: string, options: any = {}): Promise<string> => {
     await new Promise(resolve => setTimeout(resolve, Math.random() * 2000 + 1000));
-    
+
     // Simulate different types of responses
     const responses = [
       `Generated content for: "${prompt}"\n\nThis is a high-quality AI-generated response that demonstrates the capabilities of the ${providerId} provider.`,
       `AI Response: ${prompt}\n\nHere's a comprehensive answer that showcases advanced AI reasoning and creativity.`,
       `Content created successfully using ${providerId}:\n\n${prompt}\n\nThis response includes relevant details and maintains high quality standards.`,
     ];
-    
+
     return responses[Math.floor(Math.random() * responses.length)];
   },
-  
+
   aggregateResults: async (prompt: string, providers: string[], strategy: string): Promise<any> => {
     await new Promise(resolve => setTimeout(resolve, 3000));
-    
+
     return {
       strategy,
       prompt,
@@ -377,7 +377,7 @@ export const AIContextProvider: React.FC<{ children: ReactNode }> = ({ children 
       dispatch({ type: 'SET_LOADING', payload: true });
       const providers = await mockAIApi.getProviders();
       dispatch({ type: 'SET_PROVIDERS', payload: providers });
-      
+
       // Initialize quota usage
       const quotaUsage: Record<string, { used: number; limit: number }> = {};
       providers.forEach(provider => {
@@ -414,20 +414,20 @@ export const AIContextProvider: React.FC<{ children: ReactNode }> = ({ children 
           const qualityScore = { basic: 1, good: 2, excellent: 3, premium: 4 };
           return qualityScore[current.quality] > qualityScore[best.quality] ? current : best;
         });
-      
+
       case 'speed':
         return providers.reduce((best, current) => {
           const speedScore = { slow: 1, medium: 2, fast: 3 };
           return speedScore[current.responseTime] > speedScore[best.responseTime] ? current : best;
         });
-      
+
       case 'availability':
         return providers.reduce((best, current) => {
           const currentUsage = getQuotaUsage(current.id);
           const bestUsage = getQuotaUsage(best.id);
           return currentUsage.percentage < bestUsage.percentage ? current : best;
         });
-      
+
       default:
         return providers[0];
     }
@@ -463,9 +463,9 @@ export const AIContextProvider: React.FC<{ children: ReactNode }> = ({ children 
 
     try {
       dispatch({ type: 'UPDATE_REQUEST', payload: { id: request.id, updates: { status: 'processing' } } });
-      
+
       const result = await mockAIApi.generateContent(providerId, prompt, options);
-      
+
       dispatch({ type: 'UPDATE_REQUEST', payload: {
         id: request.id,
         updates: {
@@ -474,7 +474,7 @@ export const AIContextProvider: React.FC<{ children: ReactNode }> = ({ children 
           completedAt: new Date().toISOString(),
         },
       }});
-      
+
       // Update quota usage
       const currentUsage = state.quotaUsage[providerId] || { used: 0, limit: provider.rateLimit.requestsPerDay };
       dispatch({ type: 'UPDATE_QUOTA', payload: {
@@ -482,7 +482,7 @@ export const AIContextProvider: React.FC<{ children: ReactNode }> = ({ children 
         used: currentUsage.used + 1,
         limit: currentUsage.limit,
       }});
-      
+
       return result;
     } catch (error) {
       dispatch({ type: 'UPDATE_REQUEST', payload: {
@@ -493,7 +493,7 @@ export const AIContextProvider: React.FC<{ children: ReactNode }> = ({ children 
           completedAt: new Date().toISOString(),
         },
       }});
-      
+
       throw error;
     }
   };
@@ -520,7 +520,7 @@ export const AIContextProvider: React.FC<{ children: ReactNode }> = ({ children 
   const isProviderAvailable = (providerId: string): boolean => {
     const provider = state.providers.find(p => p.id === providerId);
     if (!provider || !provider.isActive) return false;
-    
+
     const usage = getQuotaUsage(providerId);
     return usage.percentage < 95; // Consider unavailable if >95% quota used
   };
@@ -553,11 +553,11 @@ export const AIContextProvider: React.FC<{ children: ReactNode }> = ({ children 
 // Hook to use AI context
 export const useAI = (): AIContextType => {
   const context = useContext(AIContext);
-  
+
   if (context === undefined) {
     throw new Error('useAI must be used within an AIProvider');
   }
-  
+
   return context;
 };
 

@@ -260,11 +260,11 @@
             .header h1 {
                 font-size: 2rem;
             }
-            
+
             .dashboard {
                 grid-template-columns: 1fr;
             }
-            
+
             .card {
                 padding: 20px;
             }
@@ -285,7 +285,7 @@
                     <div class="card-icon">📅</div>
                     <div class="card-title">Seasonal Content Planner</div>
                 </div>
-                
+
                 <div class="seasonal-calendar">
                     <div class="season-item active" data-season="winter">
                         ❄️ Winter<br><small>Dec-Feb</small>
@@ -300,12 +300,12 @@
                         🍂 Fall<br><small>Sep-Nov</small>
                     </div>
                 </div>
-                
+
                 <div class="automation-status">
                     <span>🤖 AI Content Generation: Active</span>
                     <div class="status-indicator"></div>
                 </div>
-                
+
                 <button class="btn" onclick="generateSeasonalContent()">Generate Content Calendar</button>
                 <button class="btn btn-secondary" onclick="openModal('seasonalModal')">View Schedule</button>
             </div>
@@ -316,7 +316,7 @@
                     <div class="card-icon">🖼️</div>
                     <div class="card-title">AI Thumbnail Generator</div>
                 </div>
-                
+
                 <div class="ai-tools-grid">
                     <div class="tool-card">
                         <h4>Thumbnail.AI</h4>
@@ -339,7 +339,7 @@
                         <button class="btn" onclick="generateThumbnails('pikzels')">Generate</button>
                     </div>
                 </div>
-                
+
                 <div class="progress-bar">
                     <div class="progress-fill" style="width: 75%"></div>
                 </div>
@@ -352,7 +352,7 @@
                     <div class="card-icon">⚡</div>
                     <div class="card-title">Automation Pipeline</div>
                 </div>
-                
+
                 <div class="content-preview">
                     <div>🔄 Auto-scheduling seasonal content...</div>
                     <div>🎨 Generating holiday-themed thumbnails...</div>
@@ -360,7 +360,7 @@
                     <div>🏷️ Optimizing hashtags for seasonal trends...</div>
                     <div>📊 Analyzing competitor seasonal strategies...</div>
                 </div>
-                
+
                 <button class="btn" onclick="startAutomation()">Start Full Automation</button>
                 <button class="btn btn-secondary" onclick="pauseAutomation()">Pause Pipeline</button>
             </div>
@@ -371,7 +371,7 @@
                     <div class="card-icon">🎭</div>
                     <div class="card-title">Seasonal Channel Branding</div>
                 </div>
-                
+
                 <div class="ai-tools-grid">
                     <div class="tool-card">
                         <h4>Channel Art AI</h4>
@@ -384,7 +384,7 @@
                         <button class="btn" onclick="animateLogo()">Animate</button>
                     </div>
                 </div>
-                
+
                 <div class="automation-status">
                     <span>🎨 Seasonal Branding: Ready to Deploy</span>
                     <div class="status-indicator"></div>
@@ -397,7 +397,7 @@
                     <div class="card-icon">📈</div>
                     <div class="card-title">Seasonal Performance</div>
                 </div>
-                
+
                 <div style="margin: 20px 0;">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
                         <span>Holiday Content CTR:</span>
@@ -416,7 +416,7 @@
                         <strong>47 Hours/Week</strong>
                     </div>
                 </div>
-                
+
                 <button class="btn" onclick="viewDetailedAnalytics()">View Full Report</button>
             </div>
 
@@ -426,7 +426,7 @@
                     <div class="card-icon">💡</div>
                     <div class="card-title">AI Content Ideas</div>
                 </div>
-                
+
                 <div id="contentIdeas">
                     <div style="background: #f0f4ff; padding: 15px; border-radius: 10px; margin: 10px 0;">
                         <strong>🎄 "Christmas Tech Setup Tour 2025"</strong>
@@ -441,7 +441,7 @@
                         <p>Trending: +124% search volume</p>
                     </div>
                 </div>
-                
+
                 <button class="btn" onclick="generateMoreIdeas()">Generate More Ideas</button>
             </div>
         </div>
@@ -452,7 +452,7 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('seasonalModal')">&times;</span>
             <h2>🎄 Winter Content Schedule</h2>
-            
+
             <div class="thumbnail-grid">
                 <div class="thumbnail-preview">Christmas Tech Review</div>
                 <div class="thumbnail-preview">Holiday Giveaway</div>
@@ -461,7 +461,7 @@
                 <div class="thumbnail-preview">Holiday Shopping Guide</div>
                 <div class="thumbnail-preview">Year-End Recap</div>
             </div>
-            
+
             <h3>Automated Features:</h3>
             <ul style="margin: 20px 0; padding-left: 20px;">
                 <li>✅ Seasonal thumbnail generation with holiday themes</li>
@@ -470,12 +470,13 @@
                 <li>✅ Seasonal channel art updates</li>
                 <li>✅ Content performance tracking and optimization</li>
             </ul>
-            
+
             <button class="btn" onclick="deploySeasonalContent()">Deploy All Content</button>
         </div>
     </div>
 
-    <script>//Seasonal content data
+    <script>
+        // Seasonal content data
         const seasonalContent = {
             winter: {
                 themes: ['Christmas', 'New Year', 'Winter Tech', 'Holiday Shopping'],
@@ -520,7 +521,9 @@
         };
 
         let currentSeason = 'winter';
-        let automationActive = false;//Season selection
+        let automationActive = false;
+
+        // Season selection
         document.querySelectorAll('.season-item').forEach(item => {
             item.addEventListener('click', function() {
                 document.querySelectorAll('.season-item').forEach(i => i.classList.remove('active'));
@@ -533,7 +536,7 @@
         function updateSeasonalContent() {
             const content = seasonalContent[currentSeason];
             const ideasContainer = document.getElementById('contentIdeas');
-            
+
             ideasContainer.innerHTML = content.ideas.map(idea => `
                 <div style="background: #f0f4ff; padding: 15px; border-radius: 10px; margin: 10px 0;">
                     <strong>${idea}</strong>
@@ -543,7 +546,9 @@
         }
 
         function generateSeasonalContent() {
-            showNotification('🎨 Generating seasonal content calendar...', 'success');//Simulate AI content generation
+            showNotification('🎨 Generating seasonal content calendar...', 'success');
+
+            // Simulate AI content generation
             setTimeout(() => {
                 showNotification('✅ Seasonal content calendar generated successfully!', 'success');
                 updateProgressBar(100);
@@ -557,8 +562,10 @@
                 'canva': 'Canva AI',
                 'pikzels': 'Pikzels AI'
             };
-            
-            showNotification(`🖼️ Generating thumbnails with ${toolNames[tool]}...`, 'info');//Simulate thumbnail generation
+
+            showNotification(`🖼️ Generating thumbnails with ${toolNames[tool]}...`, 'info');
+
+            // Simulate thumbnail generation
             setTimeout(() => {
                 showNotification(`✅ ${Math.floor(Math.random() * 10 + 5)} seasonal thumbnails generated!`, 'success');
             }, 1500);
@@ -566,9 +573,11 @@
 
         function startAutomation() {
             if (automationActive) return;
-            
+
             automationActive = true;
-            showNotification('🚀 Starting full automation pipeline...', 'info');//Simulate automation steps
+            showNotification('🚀 Starting full automation pipeline...', 'info');
+
+            // Simulate automation steps
             const steps = [
                 '🔍 Analyzing seasonal trends...',
                 '🎨 Generating thumbnails...',
@@ -577,7 +586,7 @@
                 '🏷️ Optimizing hashtags...',
                 '✅ Automation pipeline active!'
             ];
-            
+
             steps.forEach((step, index) => {
                 setTimeout(() => {
                     showNotification(step, index === steps.length - 1 ? 'success' : 'info');
@@ -612,7 +621,7 @@
                 '🎵 Seasonal Music Playlists',
                 '🍽️ Holiday Recipe Tech'
             ];
-            
+
             const ideasContainer = document.getElementById('contentIdeas');
             newIdeas.forEach(idea => {
                 const div = document.createElement('div');
@@ -623,12 +632,14 @@
                 `;
                 ideasContainer.appendChild(div);
             });
-            
+
             showNotification('💡 Generated 4 new seasonal content ideas!', 'success');
         }
 
         function viewDetailedAnalytics() {
-            showNotification('📊 Opening detailed analytics dashboard...', 'info');//In a real app, this would open the analytics dashboard
+            showNotification('📊 Opening detailed analytics dashboard...', 'info');
+
+            // In a real app, this would open the analytics dashboard
         }
 
         function deploySeasonalContent() {
@@ -667,35 +678,41 @@
                 max-width: 300px;
             `;
             notification.textContent = message;
-            
+
             document.body.appendChild(notification);
-            
+
             setTimeout(() => {
                 notification.style.animation = 'slideOutRight 0.3s ease';
                 setTimeout(() => {
                     document.body.removeChild(notification);
                 }, 300);
             }, 3000);
-        }//Add CSS animations
+        }
+
+        // Add CSS animations
         const style = document.createElement('style');
         style.textContent = `
             @keyframes slideInRight {
                 from { transform: translateX(100%); opacity: 0; }
                 to { transform: translateX(0); opacity: 1; }
             }
-            
+
             @keyframes slideOutRight {
                 from { transform: translateX(0); opacity: 1; }
                 to { transform: translateX(100%); opacity: 0; }
             }
-            
+
             @keyframes slideIn {
                 from { transform: translateY(-20px); opacity: 0; }
                 to { transform: translateY(0); opacity: 1; }
             }
         `;
-        document.head.appendChild(style);//Initialize with winter content
-        updateSeasonalContent();//Simulate some initial progress
+        document.head.appendChild(style);
+
+        // Initialize with winter content
+        updateSeasonalContent();
+
+        // Simulate some initial progress
         setTimeout(() => updateProgressBar(75), 1000);
     </script>
 </body>

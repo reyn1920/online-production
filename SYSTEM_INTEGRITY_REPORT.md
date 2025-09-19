@@ -104,7 +104,7 @@ credentials.
 
 ---
 
-**Test Suite**: `test_system_integrity.py`  
-**Execution Date**: September 4, 2025  
-**Test Duration**: ~4 seconds  
+**Test Suite**: `test_system_integrity.py`
+**Execution Date**: September 4, 2025
+**Test Duration**: ~4 seconds
 **Overall Result**: ✅ **PASS** (6 passed, 2 skipped)

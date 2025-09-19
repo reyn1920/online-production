@@ -6,290 +6,289 @@ This logline captures the protagonist (an unconventional climate activist), cent
 
 Scene 1: INT. LATE AFTERNOON)
 A scene unfolds with careful attention to detail and atmosphere.
-SCENE HEADER: 
-ACTION LINE: 
-PARENTHETICALS: 
-DIALOGUE: 
-SCENE HEADER: 
-ACTION LINE: 
-DIALOGUE: 
+SCENE HEADER:
+ACTION LINE:
+PARENTHETICALS:
+DIALOGUE:
+SCENE HEADER:
+ACTION LINE:
+DIALOGUE:
 
 Scene 2: INT. UNKNOWN LOCATION
 * Key dialogue points: "I can't believe how slow the government is moving on this. It's like they don't care that the world is ending." - Maya
-SCENE 2: 
-MAYA: 
-EVAN: 
-MAYA: 
-ZOE: 
-MAYA: 
-JENNINGS: 
-MAYA: 
-JENNINGS: 
-MAYA: 
-JENNINGS: 
-MAYA: 
-EVAN: 
-ZOE: 
-MAYA: 
-JENNINGS: 
-MAYA: 
+SCENE 2:
+MAYA:
+EVAN:
+MAYA:
+ZOE:
+MAYA:
+JENNINGS:
+MAYA:
+JENNINGS:
+MAYA:
+JENNINGS:
+MAYA:
+EVAN:
+ZOE:
+MAYA:
+JENNINGS:
+MAYA:
 
 Scene 3: INT. MORNING)
 A scene unfolds with careful attention to detail and atmosphere.
-SCENE 3: 
-FADE IN:: 
-MAYA: 
-JASON: 
-LUCY: 
-MAYA: 
-JASON: 
-LUCY: 
-JENNY: 
-MAYA: 
-JENNY: 
-MAYA: 
+SCENE 3:
+FADE IN::
+MAYA:
+JASON:
+LUCY:
+MAYA:
+JASON:
+LUCY:
+JENNY:
+MAYA:
+JENNY:
+MAYA:
 
 Scene 4: INT. UNKNOWN LOCATION
 * Key dialogue points: "I know it seems like a drop in the bucket, but every little bit counts." - Maya
-SCENE 4: 
-MAYA: 
-CUT TO:: 
-BRENT: 
-LILY: 
-SARAH: 
-BRENT: 
-LILY: 
-SARAH: 
+SCENE 4:
+MAYA:
+CUT TO::
+BRENT:
+LILY:
+SARAH:
+BRENT:
+LILY:
+SARAH:
 
 Scene 5: INT. AFTERNOON)
 A scene unfolds with careful attention to detail and atmosphere.
-SCENE 5: 
-MAYA: 
-JEN: 
-LEON: 
-ZOE: 
-MAYA: 
-JEN: 
-MAYA: 
-LEON: 
-MAYA: 
-ZOE: 
-MAYA: 
-JEN: 
-MAYA: 
-LEON: 
-MAYA: 
-ZOE: 
+SCENE 5:
+MAYA:
+JEN:
+LEON:
+ZOE:
+MAYA:
+JEN:
+MAYA:
+LEON:
+MAYA:
+ZOE:
+MAYA:
+JEN:
+MAYA:
+LEON:
+MAYA:
+ZOE:
 
 Scene 6: INT. UNKNOWN LOCATION
 * Key dialogue points: "I'm sorry, but we can't just throw money at every cause that comes along." - Government Official
-SCENE 6: 
-CUT TO:: 
-MAYA: 
-CUT TO:: 
-JASON: 
-MAYA: 
-JASON: 
-MAYA: 
-JASON: 
-CUT TO:: 
-SARA: 
-MAYA: 
-SARA: 
-MAYA: 
-JASON: 
-MAYA: 
-CUT TO:: 
-LUCY: 
-MAYA: 
-LUCY: 
+SCENE 6:
+CUT TO::
+MAYA:
+CUT TO::
+JASON:
+MAYA:
+JASON:
+MAYA:
+JASON:
+CUT TO::
+SARA:
+MAYA:
+SARA:
+MAYA:
+JASON:
+MAYA:
+CUT TO::
+LUCY:
+MAYA:
+LUCY:
 
 Scene 7: INT. NIGHT)
 A scene unfolds with careful attention to detail and atmosphere.
-SCENE 7: 
-MAYA: 
-JACK: 
-SARAH: 
-MAYA: 
-JOURNALIST: 
-MAYA: 
-JACK: 
-SARAH: 
-MAYA: 
+SCENE 7:
+MAYA:
+JACK:
+SARAH:
+MAYA:
+JOURNALIST:
+MAYA:
+JACK:
+SARAH:
+MAYA:
 
 Scene 8: INT. UNKNOWN LOCATION
 * Key dialogue points: "Is any of this even worth it?" - Maya
-SCENE 8: 
-MAYA: 
-ENGINEER: 
-YOUNG ACTIVIST: 
-JOURNALIST: 
-MAYA: 
-ENGINEER: 
-YOUNG ACTIVIST: 
-JOURNALIST: 
-MAYA: 
+SCENE 8:
+MAYA:
+ENGINEER:
+YOUNG ACTIVIST:
+JOURNALIST:
+MAYA:
+ENGINEER:
+YOUNG ACTIVIST:
+JOURNALIST:
+MAYA:
 
 Scene 9: INT. AFTERNOON)
 A scene unfolds with careful attention to detail and atmosphere.
-SCENE 9: 
-MAYA: 
-ENGINEER: 
-YOUNG ACTIVIST: 
-JOURNALIST: 
-MAYA: 
-ENGINEER: 
-YOUNG ACTIVIST: 
-JOURNALIST: 
-MAYA: 
+SCENE 9:
+MAYA:
+ENGINEER:
+YOUNG ACTIVIST:
+JOURNALIST:
+MAYA:
+ENGINEER:
+YOUNG ACTIVIST:
+JOURNALIST:
+MAYA:
 
 Scene 10: INT. UNKNOWN LOCATION
 * Key dialogue points: "We need to make our voices heard!" - Maya
-SCENE 10: 
-MAYA: 
-AHMED: 
-MAYA: 
-LILY: 
-MAYA: 
-JEN: 
-MAYA: 
-AHMED: 
-LILY: 
-MAYA: 
-JEN: 
-MAYA: 
-JEN: 
+SCENE 10:
+MAYA:
+AHMED:
+MAYA:
+LILY:
+MAYA:
+JEN:
+MAYA:
+AHMED:
+LILY:
+MAYA:
+JEN:
+MAYA:
+JEN:
 
 Scene 11: INT. MORNING)
 A scene unfolds with careful attention to detail and atmosphere.
-SCENE 11: 
-MAYA (CAPS): 
-MAYA: 
-JIMMY: 
-MAYA: 
-SARAH: 
-JIMMY: 
-(NOTE: 
+SCENE 11:
+MAYA (CAPS):
+MAYA:
+JIMMY:
+MAYA:
+SARAH:
+JIMMY:
+(NOTE:
 
 Scene 12: INT. UNKNOWN LOCATION
 * Key dialogue points: "These ideas may seem unconventional, but they have the potential to make a real difference." - Maya
-SCENE 12: 
-MAYA: 
-SARAH: 
-MAYA: 
-JIM: 
-MAYA: 
-LEA: 
-MAYA: 
-MAYA: 
-SARAH: 
-JIM: 
-LEA: 
+SCENE 12:
+MAYA:
+SARAH:
+MAYA:
+JIM:
+MAYA:
+LEA:
+MAYA:
+MAYA:
+SARAH:
+JIM:
+LEA:
 
 Scene 13: INT. AFTERNOON)
 A scene unfolds with careful attention to detail and atmosphere.
-SCENE 13: 
-MAYA: 
-ENGINEER: 
-MAYA: 
-ENGINEER: 
-MAYA: 
-ACTIVIST: 
-ACTIVIST: 
-MAYA: 
-JOURNALIST: 
-FADE IN:: 
-MAYA: 
-ENGINEER: 
-ACTIVIST: 
-JOURNALIST: 
+SCENE 13:
+MAYA:
+ENGINEER:
+MAYA:
+ENGINEER:
+MAYA:
+ACTIVIST:
+ACTIVIST:
+MAYA:
+JOURNALIST:
+FADE IN::
+MAYA:
+ENGINEER:
+ACTIVIST:
+JOURNALIST:
 
 Scene 14: INT. UNKNOWN LOCATION
 * Key dialogue points: "These ideas are too risky. We can't just throw money at every cause that comes along." - Decision-Maker
-SCENE 14: 
-MAYA: 
-DECISION-MAKER: 
-MAYA: 
-ENGINEER 1: 
-MAYA: 
-JOURNALIST: 
-MAYA: 
-YOUNG ACTIVIST: 
-DECISION-MAKER: 
-MAYA: 
+SCENE 14:
+MAYA:
+DECISION-MAKER:
+MAYA:
+ENGINEER 1:
+MAYA:
+JOURNALIST:
+MAYA:
+YOUNG ACTIVIST:
+DECISION-MAKER:
+MAYA:
 
 Scene 15: INT. EVENING)
 A scene unfolds with careful attention to detail and atmosphere.
-SCENE 15: 
-NAME: 
-NAME: 
-NAME: 
-MAYA (CAPS): 
-ENGINEER: 
-YOUNG ACTIVIST: 
-JOURNALIST: 
-MAYA: 
-ENGINEER: 
-YOUNG ACTIVIST: 
-JOURNALIST: 
-MAYA: 
-MAYA: 
+SCENE 15:
+NAME:
+NAME:
+NAME:
+MAYA (CAPS):
+ENGINEER:
+YOUNG ACTIVIST:
+JOURNALIST:
+MAYA:
+ENGINEER:
+YOUNG ACTIVIST:
+JOURNALIST:
+MAYA:
+MAYA:
 
 Scene 16: INT. UNKNOWN LOCATION
 * Key dialogue points: "We have a responsibility to act on this crisis, and these solutions offer real potential for change." - Maya
-SCENE 16: 
-MAYA: 
-SARA: 
-JEN: 
-KEVIN: 
-MAYA: 
-ACTION LINE: 
-MAYA: 
-SARA: 
-JEN: 
-KEVIN: 
-MAYA: 
-DIALOGUE:: 
-SCENE 16: 
-FADE IN:: 
-MAYA: 
-DIALOGUE:: 
-SARA: 
-JEN: 
-KEVIN: 
-MAYA: 
+SCENE 16:
+MAYA:
+SARA:
+JEN:
+KEVIN:
+MAYA:
+ACTION LINE:
+MAYA:
+SARA:
+JEN:
+KEVIN:
+MAYA:
+DIALOGUE::
+SCENE 16:
+FADE IN::
+MAYA:
+DIALOGUE::
+SARA:
+JEN:
+KEVIN:
+MAYA:
 
 Scene 17: INT. AFTERNOON)
 A scene unfolds with careful attention to detail and atmosphere.
-SCENE 17: 
-SCENE HEADER: 
-ACTION LINE: 
-MAYA: 
-MAYA: 
-DR. RAVI: 
-MAYA: 
-EMILY: 
-SARAH: 
-SCENE HEADER: 
-MAYA: 
-DR. RAVI: 
-EMILY: 
-SARAH: 
+SCENE 17:
+SCENE HEADER:
+ACTION LINE:
+MAYA:
+MAYA:
+DR. RAVI:
+MAYA:
+EMILY:
+SARAH:
+SCENE HEADER:
+MAYA:
+DR. RAVI:
+EMILY:
+SARAH:
 
 Scene 18: INT. UNKNOWN LOCATION
 * Key dialogue points: "This is just the beginning. We have a long way to go, but we're on the right track." - May
-SCENE 18: 
-MAYA: 
-ENGINEER 1: 
-MAYA: 
-JOURNALIST: 
-MAYA: 
-ENGINEER 2: 
-MAYA: 
-JOURNALIST: 
-MAYA: 
-ENGINEER 1: 
-MAYA: 
-JOURNALIST: 
-MAYA: 
-
+SCENE 18:
+MAYA:
+ENGINEER 1:
+MAYA:
+JOURNALIST:
+MAYA:
+ENGINEER 2:
+MAYA:
+JOURNALIST:
+MAYA:
+ENGINEER 1:
+MAYA:
+JOURNALIST:
+MAYA:

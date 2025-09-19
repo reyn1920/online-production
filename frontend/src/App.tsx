@@ -80,19 +80,19 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <Navbar 
+      <Navbar
         onMenuClick={() => setSidebarOpen(!sidebarOpen)}
         sidebarOpen={sidebarOpen}
       />
-      
+
       <div className="flex">
-        <Sidebar 
+        <Sidebar
           isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
           isMobile={isMobile}
         />
-        
-        <main 
+
+        <main
           className={`flex-1 transition-all duration-300 ease-in-out ${
             sidebarOpen && !isMobile ? 'ml-64' : 'ml-0'
           }`}
@@ -120,7 +120,7 @@ const App: React.FC = () => {
                     <Routes>
                       {/* Public Routes */}
                       <Route path="/login" element={<LoginPage />} />
-                      
+
                       {/* Protected Routes */}
                       <Route
                         path="/"
@@ -132,7 +132,7 @@ const App: React.FC = () => {
                           </ProtectedRoute>
                         }
                       />
-                      
+
                       <Route
                         path="/dashboard"
                         element={
@@ -143,7 +143,7 @@ const App: React.FC = () => {
                           </ProtectedRoute>
                         }
                       />
-                      
+
                       <Route
                         path="/channels"
                         element={
@@ -154,7 +154,7 @@ const App: React.FC = () => {
                           </ProtectedRoute>
                         }
                       />
-                      
+
                       <Route
                         path="/channels/create"
                         element={
@@ -165,7 +165,7 @@ const App: React.FC = () => {
                           </ProtectedRoute>
                         }
                       />
-                      
+
                       <Route
                         path="/channels/:channelId"
                         element={
@@ -176,7 +176,7 @@ const App: React.FC = () => {
                           </ProtectedRoute>
                         }
                       />
-                      
+
                       <Route
                         path="/ai/generate"
                         element={
@@ -187,7 +187,7 @@ const App: React.FC = () => {
                           </ProtectedRoute>
                         }
                       />
-                      
+
                       <Route
                         path="/api/orchestrator"
                         element={
@@ -198,7 +198,7 @@ const App: React.FC = () => {
                           </ProtectedRoute>
                         }
                       />
-                      
+
                       <Route
                         path="/analytics"
                         element={
@@ -209,7 +209,7 @@ const App: React.FC = () => {
                           </ProtectedRoute>
                         }
                       />
-                      
+
                       <Route
                         path="/settings"
                         element={
@@ -220,7 +220,7 @@ const App: React.FC = () => {
                           </ProtectedRoute>
                         }
                       />
-                      
+
                       <Route
                         path="/profile"
                         element={
@@ -231,11 +231,11 @@ const App: React.FC = () => {
                           </ProtectedRoute>
                         }
                       />
-                      
+
                       {/* Catch all route */}
                       <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>
-                    
+
                     {/* Global Toast Notifications */}
                     <Toaster
                       position="top-right"

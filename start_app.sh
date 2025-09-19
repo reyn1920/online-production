@@ -51,16 +51,16 @@ is_running() {
 # Start the application
 start_app() {
     log "🚀 Starting TRAE.AI Application System..."
-    
+
     # Change to project directory
     cd "$PROJECT_DIR"
-    
+
     # Check if already running
     if is_running; then
         warn "Application is already running (PID: $(cat "$PID_FILE"))"
         return 0
     fi
-    
+
     # Start Ollama if not running
     if ! pgrep -f "ollama serve" >/dev/null; then
         log "🤖 Starting Ollama service..."
@@ -82,42 +82,42 @@ start_app() {
     else
         log "✅ Ollama is already running"
     fi
-    
+
     # Start Chrome with essential tabs if not running
     if ! pgrep -f "Google Chrome" >/dev/null; then
         log "🌐 Starting Chrome with essential tabs..."
         open -a "Google Chrome"
         sleep 2
-        
+
         # Open essential tabs
         open -u "http://localhost:8000"
         open -u "http://localhost:9000"
         open -u "https://github.com"
         open -u "https://netlify.com"
         open -u "https://openai.com"
-        
+
         log "✅ Chrome started with essential tabs"
     else
         log "✅ Chrome is already running"
     fi
-    
+
     # Activate virtual environment if it exists
     if [ -d "venv" ]; then
         log "Activating virtual environment..."
         source venv/bin/activate
     fi
-    
+
     # Start the system manager
     log "Starting system manager..."
     python3 startup_system.py --mode production > "$LOG_FILE" 2>&1 &
     local pid=$!
-    
+
     # Save PID
     echo $pid > "$PID_FILE"
-    
+
     # Wait a moment and check if it started successfully
     sleep 3
-    
+
     if ps -p "$pid" >/dev/null 2>&1; then
         log "✅ Application started successfully (PID: $pid)"
         log "🌐 Application should be available at: http://localhost:8000"
@@ -136,43 +136,43 @@ start_app() {
 # Stop the application
 stop_app() {
     log "🛑 Stopping TRAE.AI Application..."
-    
+
     if ! is_running; then
         warn "Application is not running"
         return 0
     fi
-    
+
     local pid=$(cat "$PID_FILE")
-    
+
     # Send SIGTERM for graceful shutdown
     log "Sending graceful shutdown signal to PID $pid..."
     kill -TERM "$pid" 2>/dev/null || true
-    
+
     # Wait for graceful shutdown
     local count=0
     while [ $count -lt 30 ] && ps -p "$pid" >/dev/null 2>&1; do
         sleep 1
         count=$((count + 1))
     done
-    
+
     # Force kill if still running
     if ps -p "$pid" >/dev/null 2>&1; then
         warn "Graceful shutdown failed, force killing..."
         kill -KILL "$pid" 2>/dev/null || true
         sleep 2
     fi
-    
+
     # Kill any remaining processes
     pkill -f "startup_system.py" 2>/dev/null || true
     pkill -f "uvicorn.*main:app" 2>/dev/null || true
-    
+
     # Clean up PID file
     rm -f "$PID_FILE"
-    
+
     # Optionally stop Ollama (commented out to keep it running for other uses)
     # log "🤖 Stopping Ollama service..."
     # pkill -f "ollama serve" 2>/dev/null || true
-    
+
     log "✅ Application stopped"
     info "ℹ️  Note: Ollama and Chrome are left running for continued use"
 }
@@ -188,15 +188,15 @@ restart_app() {
 # Show application status
 status_app() {
     echo -e "\n${BLUE}=== TRAE.AI Application Status ===${NC}"
-    
+
     if is_running; then
         local pid=$(cat "$PID_FILE")
         log "✅ Application is running (PID: $pid)"
-        
+
         # Show process info
         echo -e "\n${BLUE}Process Information:${NC}"
         ps -p "$pid" -o pid,ppid,pcpu,pmem,etime,command || true
-        
+
         # Check if web server is responding
         echo -e "\n${BLUE}Service Health:${NC}"
         if curl -s -o/dev/null -w "%{http_code}" http://localhost:8000/health | grep -q "200"; then
@@ -204,15 +204,15 @@ status_app() {
         else
             warn "⚠️ Web server is not responding"
         fi
-        
+
         # Show recent logs
         echo -e "\n${BLUE}Recent Logs (last 10 lines):${NC}"
         tail -n 10 "$LOG_FILE" 2>/dev/null || echo "No logs available"
-        
+
     else
         warn "❌ Application is not running"
     fi
-    
+
     # Show system resources
     echo -e "\n${BLUE}System Resources:${NC}"
     echo "CPU Usage: $(top -l 1 | grep "CPU usage" | awk '{print $3}' | sed 's/%//')%"
@@ -238,9 +238,9 @@ show_logs() {
 # Install as system service (macOS LaunchAgent)
 install_service() {
     log "📦 Installing TRAE.AI as system service..."
-    
+
     local plist_file="$HOME/Library/LaunchAgents/com.traeai.app.plist"
-    
+
     cat > "$plist_file" << EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -266,10 +266,10 @@ install_service() {
 </dict>
 </plist>
 EOF
-    
+
     # Load the service
     launchctl load "$plist_file"
-    
+
     log "✅ Service installed and loaded"
     log "   Service will start automatically on login"
     log "   Control with: launchctl start/stop com.traeai.app"
@@ -278,13 +278,13 @@ EOF
 # Uninstall system service
 uninstall_service() {
     log "🗑️ Uninstalling TRAE.AI system service..."
-    
+
     local plist_file="$HOME/Library/LaunchAgents/com.traeai.app.plist"
-    
+
     # Unload and remove
     launchctl unload "$plist_file" 2>/dev/null || true
     rm -f "$plist_file"
-    
+
     log "✅ Service uninstalled"
 }
 

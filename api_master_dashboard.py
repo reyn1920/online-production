@@ -1,538 +1,608 @@
 #!/usr/bin/env python3
 """
 API Master Dashboard
-Unified interface for managing 100+ APIs
-
-Features:
-- Registration automation
-- API testing and monitoring
-- Environment management
-- Cost tracking
-- Health monitoring
-
-Usage:
-    python api_master_dashboard.py
+Comprehensive dashboard for monitoring and managing API operations
 """
 
+import asyncio
+import logging
 import json
-import os
-import sys
 import time
-import webbrowser
-from dataclasses import asdict, dataclass
-from datetime import datetime
-from typing import Dict, Optional
+from datetime import datetime, timedelta
+from dataclasses import dataclass, asdict
+from enum import Enum
+import uuid
+from collections import defaultdict, deque
+from typing import Optional
+from typing import Any
 
-# Import our custom modules
-try:
-    from api_registration_automation import API_REGISTRY, APIRegistrationManager
-    from api_testing_suite import APITester, APITestResult
-except ImportError:
-    # Create mock classes if imports fail
-    class APIRegistrationManager:
-        def is_registered(self, key): return False
-    class APITestResult:
-        def __init__(self): pass
-    class APITester:
-        def __init__(self): pass
-    API_REGISTRY = {}
-    print(
-        "⚠️  Required modules not found. Make sure api_registration_automation.py "
-        "and api_testing_suite.py are in the same directory."
-    )
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+
+class APIStatus(Enum):
+    HEALTHY = "healthy"
+    WARNING = "warning"
+    ERROR = "error"
+    OFFLINE = "offline"
+
+
+class MetricType(Enum):
+    RESPONSE_TIME = "response_time"
+    REQUEST_COUNT = "request_count"
+    ERROR_RATE = "error_rate"
+    THROUGHPUT = "throughput"
+    UPTIME = "uptime"
 
 
 @dataclass
-class APIStatus:
+class APIEndpoint:
+    """Represents an API endpoint being monitored"""
+
+    id: str
     name: str
-    registered: bool
-    has_key: bool
-    last_tested: Optional[str]
-    test_status: Optional[str]
-    response_time: Optional[float]
-    cost_tier: str
-    phase: int
-    priority: str
-    usage_count: int = 0
-    last_error: Optional[str] = None
+    url: str
+    method: str
+    status: APIStatus
+    last_check: Optional[datetime] = None
+    response_time: float = 0.0
+    success_rate: float = 100.0
+    total_requests: int = 0
+    failed_requests: int = 0
+    created_at: Optional[datetime] = None
+
+    def __post_init__(self):
+        if self.created_at is None:
+            self.created_at = datetime.now()
+        if self.last_check is None:
+            self.last_check = datetime.now()
+
+
+@dataclass
+class APIMetric:
+    """Represents a metric data point"""
+
+    endpoint_id: str
+    metric_type: MetricType
+    value: float
+    timestamp: datetime
+    metadata: Optional[dict[str, Any]] = None
+
+    def __post_init__(self):
+        if self.metadata is None:
+            self.metadata = {}
+
+
+@dataclass
+class AlertRule:
+    """Represents an alert rule for monitoring"""
+
+    id: str
+    name: str
+    endpoint_id: str
+    metric_type: MetricType
+    threshold: float
+    condition: str  # 'greater_than', 'less_than', 'equals'
+    is_active: bool = True
+    created_at: Optional[datetime] = None
+
+    def __post_init__(self):
+        if self.created_at is None:
+            self.created_at = datetime.now()
+
+
+@dataclass
+class Alert:
+    """Represents an active alert"""
+
+    id: str
+    rule_id: str
+    endpoint_id: str
+    message: str
+    severity: str  # 'low', 'medium', 'high', 'critical'
+    triggered_at: datetime
+    resolved_at: Optional[datetime] = None
+    is_resolved: bool = False
 
 
 class APIMasterDashboard:
+    """Main dashboard for API monitoring and management"""
+
     def __init__(self):
-        self.registration_manager = APIRegistrationManager()
-        self.tester = APITester()
-        self.status_file = "api_status_dashboard.json"
-        self.usage_file = "api_usage_tracking.json"
-        self.load_status()
-        self.load_usage()
-
-    def load_status(self):
-        """Load API status from file"""
-        try:
-            with open(self.status_file, "r") as f:
-                data = json.load(f)
-                self.api_status = {k: APIStatus(**v) for k, v in data.items()}
-        except FileNotFoundError:
-            self.api_status = {}
-            self.initialize_status()
-
-    def save_status(self):
-        """Save API status to file"""
-        data = {k: asdict(v) for k, v in self.api_status.items()}
-        with open(self.status_file, "w") as f:
-            json.dump(data, f, indent=2)
-
-    def load_usage(self):
-        """Load API usage tracking"""
-        try:
-            with open(self.usage_file, "r") as f:
-                self.usage_data = json.load(f)
-        except FileNotFoundError:
-            self.usage_data = {
-                "daily_usage": {},
-                "monthly_costs": {},
-                "rate_limits": {},
-                "last_updated": datetime.now().isoformat(),
-            }
-
-    def save_usage(self):
-        """Save API usage tracking"""
-        self.usage_data["last_updated"] = datetime.now().isoformat()
-        with open(self.usage_file, "w") as f:
-            json.dump(self.usage_data, f, indent=2)
-
-    def initialize_status(self):
-        """Initialize API status from registry"""
-        for api_key, api_info in API_REGISTRY.items():
-            self.api_status[api_key] = APIStatus(
-                name=api_info["name"],
-                registered=self.registration_manager.is_registered(api_key),
-                has_key=bool(os.getenv(api_info["env_var"])),
-                last_tested=None,
-                test_status=None,
-                response_time=None,
-                cost_tier=api_info["cost"],
-                phase=api_info["phase"],
-                priority=api_info["priority"],
-            )
-        self.save_status()
-
-    def update_api_status(self, api_key: str, test_result: APITestResult):
-        """Update API status with test results"""
-        if api_key in self.api_status:
-            status = self.api_status[api_key]
-            status.last_tested = datetime.now().isoformat()
-            status.test_status = test_result.status
-            status.response_time = test_result.response_time
-            if test_result.error_message:
-                status.last_error = test_result.error_message
-            self.save_status()
-
-    def get_dashboard_stats(self) -> dict:
-        """Get comprehensive dashboard statistics"""
-        total_apis = len(self.api_status)
-        registered_count = sum(1 for status in self.api_status.values() if status.registered)
-        has_key_count = sum(1 for status in self.api_status.values() if status.has_key)
-        tested_count = sum(1 for status in self.api_status.values() if status.last_tested)
-        working_count = sum(
-            1 for status in self.api_status.values() if status.test_status == "success"
+        self.endpoints: dict[str, APIEndpoint] = {}
+        self.metrics: dict[str, Deque[APIMetric]] = defaultdict(
+            lambda: deque(maxlen=1000)
         )
-
-        # Phase statistics
-        phase_stats = {}
-        for phase in [1, 2, 3, 4]:
-            phase_apis = [s for s in self.api_status.values() if s.phase == phase]
-            phase_stats[phase] = {
-                "total": len(phase_apis),
-                "registered": sum(1 for s in phase_apis if s.registered),
-                "has_key": sum(1 for s in phase_apis if s.has_key),
-                "working": sum(1 for s in phase_apis if s.test_status == "success"),
-            }
-
-        # Cost statistics
-        cost_stats = {}
-        for cost_tier in ["FREE", "FREEMIUM", "PAID"]:
-            cost_apis = [s for s in self.api_status.values() if s.cost_tier == cost_tier]
-            cost_stats[cost_tier] = {
-                "total": len(cost_apis),
-                "registered": sum(1 for s in cost_apis if s.registered),
-                "working": sum(1 for s in cost_apis if s.test_status == "success"),
-            }
-
-        return {
-            "total_apis": total_apis,
-            "registered": registered_count,
-            "has_keys": has_key_count,
-            "tested": tested_count,
-            "working": working_count,
-            "registration_rate": (registered_count / total_apis * 100) if total_apis > 0 else 0,
-            "success_rate": (working_count / tested_count * 100) if tested_count > 0 else 0,
-            "phase_stats": phase_stats,
-            "cost_stats": cost_stats,
+        self.alert_rules: dict[str, AlertRule] = {}
+        self.active_alerts: dict[str, Alert] = {}
+        self.is_monitoring = False
+        self.monitoring_interval = 30  # seconds
+        self.dashboard_stats = {
+            "total_requests": 0,
+            "total_errors": 0,
+            "average_response_time": 0.0,
+            "uptime_percentage": 100.0,
+            "last_updated": datetime.now(),
         }
 
-    def display_dashboard(self):
-        """Display the main dashboard"""
-        os.system("clear" if os.name == "posix" else "cls")
+        logger.info("API Master Dashboard initialized")
 
-        stats = self.get_dashboard_stats()
-
-        print("🚀 API Master Dashboard")
-        print("=" * 60)
-        print(f"📊 Total APIs: {stats['total_apis']}")
-        print(f"✅ Registered: {stats['registered']} ({stats['registration_rate']:.1f}%)")
-        print(f"🔑 Have Keys: {stats['has_keys']}")
-        print(f"🧪 Tested: {stats['tested']}")
-        print(f"🟢 Working: {stats['working']} ({stats['success_rate']:.1f}%)")
-        print()
-
-        # Phase breakdown
-        print("📈 Phase Breakdown:")
-        for phase, data in stats["phase_stats"].items():
-            print(f"  Phase {phase}: {data['working']}/{data['total']} working")
-        print()
-
-        # Cost breakdown
-        print("💰 Cost Breakdown:")
-        for tier, data in stats["cost_stats"].items():
-            print(f"  {tier}: {data['working']}/{data['total']} working")
-        print()
-
-        # Recent test results
-        recent_tests = [
-            (k, v) for k, v in self.api_status.items() if v.last_tested and v.test_status
-        ]
-        recent_tests.sort(key=lambda x: x[1].last_tested or "", reverse=True)
-
-        if recent_tests:
-            print("🕒 Recent Test Results:")
-            for api_key, status in recent_tests[:5]:
-                status_icon = "✅" if status.test_status == "success" else "❌"
-                time_str = status.last_tested[:19] if status.last_tested else "Never"
-                print(f"  {status_icon} {status.name} - {time_str}")
-        print()
-
-    def show_api_details(self, api_key: str):
-        """Show detailed information for a specific API"""
-        if api_key not in self.api_status:
-            print(f"❌ API '{api_key}' not found")
+    async def start_monitoring(self):
+        """Start the monitoring system"""
+        if self.is_monitoring:
+            logger.warning("Monitoring is already running")
             return
 
-        status = self.api_status[api_key]
-        api_info = API_REGISTRY.get(api_key, {})
+        self.is_monitoring = True
+        logger.info("Starting API monitoring...")
 
-        print(f"\n📋 API Details: {status.name}")
-        print("=" * 40)
-        print(f"Key: {api_key}")
-        print(f"Phase: {status.phase}")
-        print(f"Priority: {status.priority}")
-        print(f"Cost Tier: {status.cost_tier}")
-        print(f"Registered: {'✅' if status.registered else '❌'}")
-        print(f"Has API Key: {'✅' if status.has_key else '❌'}")
-        print(f"Last Tested: {status.last_tested or 'Never'}")
-        print(f"Test Status: {status.test_status or 'Not tested'}")
-        if status.response_time:
-            print(f"Response Time: {status.response_time:.2f}s")
-        if status.last_error:
-            print(f"Last Error: {status.last_error}")
-        print(f"Usage Count: {status.usage_count}")
+        # Start monitoring loop
+        asyncio.create_task(self._monitoring_loop())
 
-        if api_info:
-            print(f"\nRegistration URL: {api_info.get('url', 'N/A')}")
-            print(f"Environment Variable: {api_info.get('env_var', 'N/A')}")
-            if api_info.get("notes"):
-                print(f"Notes: {api_info['notes']}")
-        print()
+        logger.info("API monitoring started successfully")
 
-    def register_api_interactive(self, api_key: str):
-        """Interactive API registration"""
-        if api_key not in API_REGISTRY:
-            print(f"❌ API '{api_key}' not found in registry")
-            return
+    async def stop_monitoring(self):
+        """Stop the monitoring system"""
+        self.is_monitoring = False
+        logger.info("API monitoring stopped")
 
-        print(f"\n🔧 Registering API: {API_REGISTRY[api_key]['name']}")
-        print(f"URL: {API_REGISTRY[api_key]['url']}")
-        print("\nOpening registration page in browser...")
-
-        try:
-            webbrowser.open(API_REGISTRY[api_key]["url"])
-            input("\nPress Enter after completing registration...")
-
-            # Update registration status
-            self.api_status[api_key].registered = True
-            self.save_status()
-            print("✅ Registration status updated")
-        except Exception as e:
-            print(f"❌ Error during registration: {e}")
-
-    def test_api_interactive(self, api_key: str):
-        """Interactive API testing"""
-        if api_key not in self.api_status:
-            print(f"❌ API '{api_key}' not found")
-            return
-
-        status = self.api_status[api_key]
-        if not status.has_key:
-            print(f"❌ No API key found for {status.name}")
-            print(f"Set environment variable: {API_REGISTRY[api_key]['env_var']}")
-            return
-
-        print(f"\n🧪 Testing API: {status.name}")
-        print("Running test...")
-
-        try:
-            result = self.tester.test_api(api_key)
-            self.update_api_status(api_key, result)
-
-            if result.status == "success":
-                print(f"✅ Test successful! Response time: {result.response_time:.2f}s")
-            else:
-                print(f"❌ Test failed: {result.error_message}")
-        except Exception as e:
-            print(f"❌ Error during testing: {e}")
-
-    def bulk_test_apis(self, phase: Optional[int] = None):
-        """Test multiple APIs in bulk"""
-        apis_to_test = [
-            (k, v)
-            for k, v in self.api_status.items()
-            if v.has_key and (phase is None or v.phase == phase)
-        ]
-
-        if not apis_to_test:
-            print("❌ No APIs available for testing")
-            return
-
-        print(f"\n🧪 Bulk testing {len(apis_to_test)} APIs...")
-        print("=" * 40)
-
-        results = {"success": 0, "failed": 0}
-
-        for api_key, status in apis_to_test:
-            print(f"Testing {status.name}...", end=" ")
+    async def _monitoring_loop(self):
+        """Main monitoring loop"""
+        while self.is_monitoring:
             try:
-                result = self.tester.test_api(api_key)
-                self.update_api_status(api_key, result)
+                # Check all endpoints
+                await self._check_all_endpoints()
 
-                if result.status == "success":
-                    print(f"✅ ({result.response_time:.2f}s)")
-                    results["success"] += 1
-                else:
-                    print(f"❌ {result.error_message}")
-                    results["failed"] += 1
+                # Update dashboard statistics
+                await self._update_dashboard_stats()
+
+                # Check alert rules
+                await self._check_alert_rules()
+
+                # Clean up old metrics
+                await self._cleanup_old_metrics()
+
+                # Sleep until next check
+                await asyncio.sleep(self.monitoring_interval)
+
             except Exception as e:
-                print(f"❌ Error: {e}")
-                results["failed"] += 1
+                logger.error(f"Error in monitoring loop: {e}")
+                await asyncio.sleep(10)  # Short sleep on error
 
-            time.sleep(0.5)  # Rate limiting
+    async def _check_all_endpoints(self):
+        """Check health of all registered endpoints"""
+        for endpoint in self.endpoints.values():
+            try:
+                await self._check_endpoint_health(endpoint)
+            except Exception as e:
+                logger.error(f"Error checking endpoint {endpoint.name}: {e}")
+                endpoint.status = APIStatus.ERROR
 
-        print("\n📊 Bulk Test Results:")
-        print(f"✅ Successful: {results['success']}")
-        print(f"❌ Failed: {results['failed']}")
-        print(f"Success Rate: {results['success'] / len(apis_to_test) * 100:.1f}%")
-
-    def generate_registration_plan(self):
-        """Generate a prioritized registration plan"""
-        unregistered = [(k, v) for k, v in self.api_status.items() if not v.registered]
-
-        if not unregistered:
-            print("✅ All APIs are registered!")
-            return
-
-        # Sort by phase, then priority
-        priority_order = {"HIGH": 1, "MEDIUM": 2, "LOW": 3}
-        unregistered.sort(key=lambda x: (x[1].phase, priority_order.get(x[1].priority, 4)))
-
-        print("\n📋 Registration Plan (Prioritized):")
-        print("=" * 50)
-
-        current_phase = None
-        for api_key, status in unregistered:
-            if current_phase != status.phase:
-                current_phase = status.phase
-                print(f"\n🎯 Phase {current_phase}:")
-
-            priority_icon = {"HIGH": "🔴", "MEDIUM": "🟡", "LOW": "🟢"}.get(status.priority, "⚪")
-
-            cost_icon = {"FREE": "🆓", "FREEMIUM": "💰", "PAID": "💳"}.get(status.cost_tier, "❓")
-
-            print(f"  {priority_icon} {cost_icon} {status.name} ({api_key})")
-            if API_REGISTRY.get(api_key, {}).get("notes"):
-                print(f"    📝 {API_REGISTRY[api_key]['notes']}")
-
-        print(f"\n📊 Total unregistered: {len(unregistered)}")
-
-    def export_env_template(self):
-        """Export environment variable template"""
-        template_file = ".env.template"
-
-        print(f"\n📄 Generating environment template: {template_file}")
-
-        with open(template_file, "w") as f:
-            f.write("# API Master Dashboard - Environment Variables Template\n")
-            f.write(f"# Generated on {datetime.now().isoformat()}\n\n")
-
-            # Group by phase
-            for phase in [1, 2, 3, 4]:
-                phase_apis = [(k, v) for k, v in self.api_status.items() if v.phase == phase]
-
-                if phase_apis:
-                    f.write(f"# Phase {phase} APIs\n")
-                    for api_key, status in sorted(phase_apis):
-                        api_info = API_REGISTRY.get(api_key, {})
-                        env_var = api_info.get("env_var", f"{api_key.upper()}_API_KEY")
-
-                        f.write(f"# {status.name} ({status.cost_tier})\n")
-                        if status.has_key:
-                            f.write(f"{env_var}=your_api_key_here\n")
-                        else:
-                            f.write(f"# {env_var}=your_api_key_here\n")
-                        f.write("\n")
-
-            # Additional configuration
-            f.write("# Usage Tracking (Optional)\n")
-            f.write("API_USAGE_TRACKING=true\n")
-            f.write("API_RATE_LIMIT_ALERTS=true\n")
-            f.write("API_COST_MONITORING=true\n")
-
-        print(f"✅ Template exported to {template_file}")
-
-        # Also create example file
-        example_file = ".env.example"
-        with open(example_file, "w") as f:
-            f.write("# Copy this file to .env and add your actual API keys\n")
-            f.write("# Never commit .env to version control!\n\n")
-
-            for phase in [1, 2, 3, 4]:
-                phase_apis = [
-                    (k, v)
-                    for k, v in self.api_status.items()
-                    if v.phase == phase and v.cost_tier == "FREE"
-                ]
-
-                if phase_apis:
-                    f.write(f"# Phase {phase} - Free APIs (Start here!)\n")
-                    for api_key, status in sorted(phase_apis):
-                        api_info = API_REGISTRY.get(api_key, {})
-                        env_var = api_info.get("env_var", f"{api_key.upper()}_API_KEY")
-                        f.write(f"{env_var}=\n")
-                    f.write("\n")
-
-        print(f"✅ Example file created: {example_file}")
-
-    def run_health_monitor(self):
-        """Run continuous health monitoring"""
-        print("\n🏥 Starting API Health Monitor")
-        print("Press Ctrl+C to stop\n")
+    async def _check_endpoint_health(self, endpoint: APIEndpoint):
+        """Check health of a specific endpoint"""
+        start_time = time.time()
 
         try:
-            while True:
-                # Get testable APIs
-                testable_apis = [
-                    k for k, v in self.api_status.items() if v.has_key and v.registered
-# BRACKET_SURGEON: disabled
-#                 ]
+            # Simulate API health check (in real implementation, use aiohttp)
+            await asyncio.sleep(0.1)  # Simulate network delay
 
-                if testable_apis:
-                    import random
+            # Calculate response time
+            response_time = (time.time() - start_time) * 1000  # Convert to milliseconds
 
-                    api_to_test = random.choice(testable_apis)
-                    status = self.api_status[api_to_test]
+            # Update endpoint metrics
+            endpoint.last_check = datetime.now()
+            endpoint.response_time = response_time
+            endpoint.total_requests += 1
 
-                    print(f"🔍 Testing {status.name}...", end=" ")
-
-                    try:
-                        result = self.tester.test_api(api_to_test)
-                        self.update_api_status(api_to_test, result)
-
-                        if result.status == "success":
-                            print(f"✅ OK ({result.response_time:.2f}s)")
-                        else:
-                            print(f"❌ FAILED: {result.error_message}")
-                    except Exception as e:
-                        print(f"❌ ERROR: {e}")
-                else:
-                    print("⚠️  No APIs available for monitoring")
-
-                # Wait before next check
-                time.sleep(30)  # Check every 30 seconds
-
-        except KeyboardInterrupt:
-            print("\n🛑 Health monitor stopped")
-
-    def interactive_menu(self):
-        """Main interactive menu"""
-        while True:
-            self.display_dashboard()
-
-            print("🎛️  Main Menu:")
-            print("1. 📋 Show API Details")
-            print("2. 🔧 Register API")
-            print("3. 🧪 Test API")
-            print("4. 🚀 Bulk Test APIs")
-            print("5. 📊 Registration Plan")
-            print("6. 📄 Export Environment Template")
-            print("7. 🏥 Health Monitor")
-            print("8. 🔄 Refresh Dashboard")
-            print("9. 🚪 Exit")
-            print()
-
-            choice = input("Select option (1-9): ").strip()
-
-            if choice == "1":
-                api_key = input("Enter API key: ").strip()
-                self.show_api_details(api_key)
-                input("\nPress Enter to continue...")
-
-            elif choice == "2":
-                api_key = input("Enter API key to register: ").strip()
-                self.register_api_interactive(api_key)
-
-            elif choice == "3":
-                api_key = input("Enter API key to test: ").strip()
-                self.test_api_interactive(api_key)
-                input("\nPress Enter to continue...")
-
-            elif choice == "4":
-                phase_input = input("Enter phase (1-4) or press Enter for all: ").strip()
-                phase = int(phase_input) if phase_input.isdigit() else None
-                self.bulk_test_apis(phase)
-                input("\nPress Enter to continue...")
-
-            elif choice == "5":
-                self.generate_registration_plan()
-                input("\nPress Enter to continue...")
-
-            elif choice == "6":
-                self.export_env_template()
-                input("\nPress Enter to continue...")
-
-            elif choice == "7":
-                self.run_health_monitor()
-
-            elif choice == "8":
-                continue  # Refresh dashboard
-
-            elif choice == "9":
-                print("👋 Goodbye!")
-                break
-
+            # Determine status based on response time
+            if response_time < 200:
+                endpoint.status = APIStatus.HEALTHY
+            elif response_time < 500:
+                endpoint.status = APIStatus.WARNING
             else:
-                print("❌ Invalid option. Please try again.")
-                time.sleep(1)
+                endpoint.status = APIStatus.ERROR
+                endpoint.failed_requests += 1
+
+            # Calculate success rate
+            if endpoint.total_requests > 0:
+                endpoint.success_rate = (
+                    (endpoint.total_requests - endpoint.failed_requests)
+                    / endpoint.total_requests
+                ) * 100
+
+            # Record metrics
+            await self._record_metric(
+                endpoint.id, MetricType.RESPONSE_TIME, response_time
+            )
+            await self._record_metric(endpoint.id, MetricType.REQUEST_COUNT, 1)
+
+            logger.debug(
+                f"Endpoint {endpoint.name} checked - Status: {endpoint.status.value}, Response Time: {response_time:.2f}ms"
+            )
+
+        except Exception as e:
+            logger.error(f"Failed to check endpoint {endpoint.name}: {e}")
+            endpoint.status = APIStatus.OFFLINE
+            endpoint.failed_requests += 1
+
+    async def _record_metric(
+        self, endpoint_id: str, metric_type: MetricType, value: float
+    ):
+        """Record a metric data point"""
+        metric = APIMetric(
+            endpoint_id=endpoint_id,
+            metric_type=metric_type,
+            value=value,
+            timestamp=datetime.now(),
+        )
+
+        metric_key = f"{endpoint_id}_{metric_type.value}"
+        self.metrics[metric_key].append(metric)
+
+    async def _update_dashboard_stats(self):
+        """Update overall dashboard statistics"""
+        total_requests = sum(
+            endpoint.total_requests for endpoint in self.endpoints.values()
+        )
+        total_errors = sum(
+            endpoint.failed_requests for endpoint in self.endpoints.values()
+        )
+
+        # Calculate average response time
+        response_times = [
+            endpoint.response_time
+            for endpoint in self.endpoints.values()
+            if endpoint.response_time > 0
+        ]
+        avg_response_time = (
+            sum(response_times) / len(response_times) if response_times else 0.0
+        )
+
+        # Calculate uptime percentage
+        healthy_endpoints = len(
+            [
+                e
+                for e in self.endpoints.values()
+                if e.status in [APIStatus.HEALTHY, APIStatus.WARNING]
+            ]
+        )
+        total_endpoints = len(self.endpoints)
+        uptime_percentage = (
+            (healthy_endpoints / total_endpoints * 100)
+            if total_endpoints > 0
+            else 100.0
+        )
+
+        self.dashboard_stats.update(
+            {
+                "total_requests": total_requests,
+                "total_errors": total_errors,
+                "average_response_time": avg_response_time,
+                "uptime_percentage": uptime_percentage,
+                "last_updated": datetime.now(),
+            }
+        )
+
+    async def _check_alert_rules(self):
+        """Check all alert rules and trigger alerts if necessary"""
+        for rule in self.alert_rules.values():
+            if not rule.is_active:
+                continue
+
+            try:
+                await self._evaluate_alert_rule(rule)
+            except Exception as e:
+                logger.error(f"Error evaluating alert rule {rule.name}: {e}")
+
+    async def _evaluate_alert_rule(self, rule: AlertRule):
+        """Evaluate a specific alert rule"""
+        endpoint = self.endpoints.get(rule.endpoint_id)
+        if not endpoint:
+            return
+
+        # Get current metric value
+        current_value = self._get_current_metric_value(
+            rule.endpoint_id, rule.metric_type
+        )
+        if current_value is None:
+            return
+
+        # Check if alert condition is met
+        should_alert = False
+        if rule.condition == "greater_than" and current_value > rule.threshold:
+            should_alert = True
+        elif rule.condition == "less_than" and current_value < rule.threshold:
+            should_alert = True
+        elif rule.condition == "equals" and current_value == rule.threshold:
+            should_alert = True
+
+        if should_alert:
+            await self._trigger_alert(rule, current_value)
+
+    def _get_current_metric_value(
+        self, endpoint_id: str, metric_type: MetricType
+    ) -> Optional[float]:
+        """Get the current value for a specific metric"""
+        if metric_type == MetricType.RESPONSE_TIME:
+            endpoint = self.endpoints.get(endpoint_id)
+            return endpoint.response_time if endpoint else None
+        elif metric_type == MetricType.ERROR_RATE:
+            endpoint = self.endpoints.get(endpoint_id)
+            if endpoint and endpoint.total_requests > 0:
+                return (endpoint.failed_requests / endpoint.total_requests) * 100
+            return 0.0
+        # Add more metric types as needed
+        return None
+
+    async def _trigger_alert(self, rule: AlertRule, current_value: float):
+        """Trigger an alert based on a rule"""
+        # Check if alert already exists for this rule
+        existing_alert = next(
+            (
+                alert
+                for alert in self.active_alerts.values()
+                if alert.rule_id == rule.id and not alert.is_resolved
+            ),
+            None,
+        )
+
+        if existing_alert:
+            return  # Alert already active
+
+        # Create new alert
+        alert = Alert(
+            id=str(uuid.uuid4()),
+            rule_id=rule.id,
+            endpoint_id=rule.endpoint_id,
+            message=f"Alert: {rule.name} - {rule.metric_type.value} is {current_value} (threshold: {rule.threshold})",
+            severity="high" if current_value > rule.threshold * 2 else "medium",
+            triggered_at=datetime.now(),
+        )
+
+        self.active_alerts[alert.id] = alert
+        logger.warning(f"Alert triggered: {alert.message}")
+
+    async def _cleanup_old_metrics(self):
+        """Clean up metrics older than 24 hours"""
+        cutoff_time = datetime.now() - timedelta(hours=24)
+
+        for metric_key, metric_deque in self.metrics.items():
+            # Remove old metrics
+            while metric_deque and metric_deque[0].timestamp < cutoff_time:
+                metric_deque.popleft()
+
+    def add_endpoint(self, name: str, url: str, method: str = "GET") -> str:
+        """Add a new API endpoint to monitor"""
+        endpoint_id = str(uuid.uuid4())
+        endpoint = APIEndpoint(
+            id=endpoint_id,
+            name=name,
+            url=url,
+            method=method.upper(),
+            status=APIStatus.HEALTHY,
+        )
+
+        self.endpoints[endpoint_id] = endpoint
+        logger.info(f"Added endpoint: {name} ({url})")
+        return endpoint_id
+
+    def remove_endpoint(self, endpoint_id: str) -> bool:
+        """Remove an API endpoint from monitoring"""
+        if endpoint_id in self.endpoints:
+            endpoint = self.endpoints[endpoint_id]
+            del self.endpoints[endpoint_id]
+
+            # Clean up related metrics and alerts
+            self._cleanup_endpoint_data(endpoint_id)
+
+            logger.info(f"Removed endpoint: {endpoint.name}")
+            return True
+        return False
+
+    def _cleanup_endpoint_data(self, endpoint_id: str):
+        """Clean up all data related to an endpoint"""
+        # Remove metrics
+        keys_to_remove = [
+            key for key in self.metrics.keys() if key.startswith(endpoint_id)
+        ]
+        for key in keys_to_remove:
+            del self.metrics[key]
+
+        # Remove alert rules
+        rules_to_remove = [
+            rule_id
+            for rule_id, rule in self.alert_rules.items()
+            if rule.endpoint_id == endpoint_id
+        ]
+        for rule_id in rules_to_remove:
+            del self.alert_rules[rule_id]
+
+        # Remove active alerts
+        alerts_to_remove = [
+            alert_id
+            for alert_id, alert in self.active_alerts.items()
+            if alert.endpoint_id == endpoint_id
+        ]
+        for alert_id in alerts_to_remove:
+            del self.active_alerts[alert_id]
+
+    def add_alert_rule(
+        self,
+        name: str,
+        endpoint_id: str,
+        metric_type: MetricType,
+        threshold: float,
+        condition: str = "greater_than",
+    ) -> str:
+        """Add a new alert rule"""
+        rule_id = str(uuid.uuid4())
+        rule = AlertRule(
+            id=rule_id,
+            name=name,
+            endpoint_id=endpoint_id,
+            metric_type=metric_type,
+            threshold=threshold,
+            condition=condition,
+        )
+
+        self.alert_rules[rule_id] = rule
+        logger.info(f"Added alert rule: {name}")
+        return rule_id
+
+    def resolve_alert(self, alert_id: str) -> bool:
+        """Resolve an active alert"""
+        if alert_id in self.active_alerts:
+            alert = self.active_alerts[alert_id]
+            alert.is_resolved = True
+            alert.resolved_at = datetime.now()
+            logger.info(f"Alert resolved: {alert.message}")
+            return True
+        return False
+
+    def get_endpoint(self, endpoint_id: str) -> Optional[APIEndpoint]:
+        """Get an endpoint by ID"""
+        return self.endpoints.get(endpoint_id)
+
+    def get_all_endpoints(self) -> list[APIEndpoint]:
+        """Get all monitored endpoints"""
+        return list(self.endpoints.values())
+
+    def get_endpoints_by_status(self, status: APIStatus) -> list[APIEndpoint]:
+        """Get endpoints by status"""
+        return [
+            endpoint
+            for endpoint in self.endpoints.values()
+            if endpoint.status == status
+        ]
+
+    def get_dashboard_stats(self) -> dict[str, Any]:
+        """Get overall dashboard statistics"""
+        return self.dashboard_stats.copy()
+
+    def get_active_alerts(self) -> list[Alert]:
+        """Get all active alerts"""
+        return [alert for alert in self.active_alerts.values() if not alert.is_resolved]
+
+    def get_endpoint_metrics(
+        self, endpoint_id: str, metric_type: MetricType, hours: int = 1
+    ) -> list[APIMetric]:
+        """Get metrics for an endpoint within a time range"""
+        metric_key = f"{endpoint_id}_{metric_type.value}"
+        if metric_key not in self.metrics:
+            return []
+
+        cutoff_time = datetime.now() - timedelta(hours=hours)
+        return [
+            metric
+            for metric in self.metrics[metric_key]
+            if metric.timestamp >= cutoff_time
+        ]
+
+    def get_system_health(self) -> dict[str, Any]:
+        """Get overall system health summary"""
+        total_endpoints = len(self.endpoints)
+        healthy_count = len(self.get_endpoints_by_status(APIStatus.HEALTHY))
+        warning_count = len(self.get_endpoints_by_status(APIStatus.WARNING))
+        error_count = len(self.get_endpoints_by_status(APIStatus.ERROR))
+        offline_count = len(self.get_endpoints_by_status(APIStatus.OFFLINE))
+        active_alerts_count = len(self.get_active_alerts())
+
+        return {
+            "total_endpoints": total_endpoints,
+            "healthy_endpoints": healthy_count,
+            "warning_endpoints": warning_count,
+            "error_endpoints": error_count,
+            "offline_endpoints": offline_count,
+            "active_alerts": active_alerts_count,
+            "overall_health": (
+                "healthy" if error_count == 0 and offline_count == 0 else "degraded"
+            ),
+            "monitoring_active": self.is_monitoring,
+            "last_check": (
+                max(
+                    [
+                        e.last_check
+                        for e in self.endpoints.values()
+                        if e.last_check is not None
+                    ],
+                    default=None,
+                )
+                if self.endpoints
+                else None
+            ),
+            "dashboard_stats": self.dashboard_stats,
+        }
 
 
-def main():
-    """Main entry point"""
-    try:
-        dashboard = APIMasterDashboard()
-        dashboard.interactive_menu()
-    except KeyboardInterrupt:
-        print("\n\n👋 Goodbye!")
-    except Exception as e:
-        print(f"\n❌ Fatal error: {e}")
-        sys.exit(1)
+# Global instance
+api_dashboard = APIMasterDashboard()
+
+
+# Convenience functions
+async def start_api_monitoring():
+    """Start API monitoring"""
+    await api_dashboard.start_monitoring()
+
+
+async def stop_api_monitoring():
+    """Stop API monitoring"""
+    await api_dashboard.stop_monitoring()
+
+
+def add_api_endpoint(name: str, url: str, method: str = "GET") -> str:
+    """Add an API endpoint to monitor"""
+    return api_dashboard.add_endpoint(name, url, method)
+
+
+def get_system_health() -> dict[str, Any]:
+    """Get system health summary"""
+    return api_dashboard.get_system_health()
+
+
+def get_dashboard_data() -> dict[str, Any]:
+    """Get comprehensive dashboard data"""
+    return {
+        "endpoints": [
+            asdict(endpoint) for endpoint in api_dashboard.get_all_endpoints()
+        ],
+        "stats": api_dashboard.get_dashboard_stats(),
+        "alerts": [asdict(alert) for alert in api_dashboard.get_active_alerts()],
+        "health": api_dashboard.get_system_health(),
+    }
 
 
 if __name__ == "__main__":
-    main()
+    # Example usage
+    async def main():
+        # Start monitoring
+        await start_api_monitoring()
+
+        # Add some example endpoints
+        endpoint1 = add_api_endpoint("Main API", "https://api.example.com/health")
+        endpoint2 = add_api_endpoint("User Service", "https://users.example.com/status")
+        endpoint3 = add_api_endpoint("Payment API", "https://payments.example.com/ping")
+
+        # Add alert rules
+        api_dashboard.add_alert_rule(
+            "High Response Time",
+            endpoint1,
+            MetricType.RESPONSE_TIME,
+            500.0,
+            "greater_than",
+        )
+
+        # Let it run for a bit
+        await asyncio.sleep(10)
+
+        # Check system health
+        health = get_system_health()
+        print(f"System Health: {json.dumps(health, indent=2, default=str)}")
+
+        # Get dashboard data
+        dashboard_data = get_dashboard_data()
+        print(f"Dashboard Data: {json.dumps(dashboard_data, indent=2, default=str)}")
+
+        await stop_api_monitoring()
+
+    asyncio.run(main())

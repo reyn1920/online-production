@@ -43,7 +43,9 @@ class _freq_encoder(Function):
         B, input_dim, degree, output_dim = ctx.dims
 
         grad_inputs = torch.zeros_like(inputs)
-        _backend.freq_encode_backward(grad, outputs, B, input_dim, degree, output_dim, grad_inputs)
+        _backend.freq_encode_backward(
+            grad, outputs, B, input_dim, degree, output_dim, grad_inputs
+        )
 
         return grad_inputs, None, None
 
@@ -52,7 +54,7 @@ freq_encode = _freq_encoder.apply
 
 
 class FreqEncoder(nn.Module):
-    def __init__(self, input_dim=3, degree=4):
+    def __init__(self, input_dim: 3, degree=4):
         super().__init__()
 
         self.input_dim = input_dim

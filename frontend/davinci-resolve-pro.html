@@ -338,11 +338,11 @@
             .main-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .tabs {
                 flex-direction: column;
             }
-            
+
             .status-bar {
                 flex-direction: column;
                 gap: 10px;
@@ -383,7 +383,7 @@
                     <div class="tab active" onclick="switchTab('projects', 'create')">Create Project</div>
                     <div class="tab" onclick="switchTab('projects', 'list')">Project List</div>
                 </div>
-                
+
                 <div class="tab-content active" id="projects-create">
                     <form id="create-project-form">
                         <div class="form-group">
@@ -413,7 +413,7 @@
                         <button type="submit" class="btn btn-primary">Create Project</button>
                     </form>
                 </div>
-                
+
                 <div class="tab-content" id="projects-list">
                     <div class="project-list" id="project-list">
                         <!-- Projects will be loaded here -->
@@ -430,7 +430,7 @@
                     <div class="tab" onclick="switchTab('voice', 'batch')">Batch Clone</div>
                     <div class="tab" onclick="switchTab('voice', 'samples')">Voice Samples</div>
                 </div>
-                
+
                 <div class="tab-content active" id="voice-single">
                     <form id="voice-clone-form">
                         <div class="form-group">
@@ -454,7 +454,7 @@
                         <button type="submit" class="btn btn-primary">Generate Voice</button>
                     </form>
                 </div>
-                
+
                 <div class="tab-content" id="voice-batch">
                     <form id="batch-voice-form">
                         <div class="form-group">
@@ -470,7 +470,7 @@
                         <button type="submit" class="btn btn-primary">Generate Batch</button>
                     </form>
                 </div>
-                
+
                 <div class="tab-content" id="voice-samples">
                     <div class="voice-samples" id="voice-samples-grid">
                         <!-- Voice samples will be loaded here -->
@@ -486,14 +486,14 @@
                     <div class="tab active" onclick="switchTab('color', 'presets')">Presets</div>
                     <div class="tab" onclick="switchTab('color', 'apply')">Apply Grade</div>
                 </div>
-                
+
                 <div class="tab-content active" id="color-presets">
                     <div class="color-presets" id="color-presets-grid">
                         <!-- Color presets will be loaded here -->
                     </div>
                     <button class="btn btn-secondary" onclick="loadColorPresets()">Refresh Presets</button>
                 </div>
-                
+
                 <div class="tab-content" id="color-apply">
                     <form id="color-grade-form">
                         <div class="form-group">
@@ -553,7 +553,7 @@
                     </div>
                     <button type="submit" class="btn btn-primary">Start Render</button>
                 </form>
-                
+
                 <div id="render-progress" style="display: none;">
                     <h4>Render Progress</h4>
                     <div class="progress-bar">
@@ -571,21 +571,21 @@
                     <div class="tab" onclick="switchTab('system', 'logs')">Activity Logs</div>
                     <div class="tab" onclick="switchTab('system', 'assets')">Asset Management</div>
                 </div>
-                
+
                 <div class="tab-content active" id="system-summary">
                     <div id="integration-summary">
                         <!-- Integration summary will be loaded here -->
                     </div>
                     <button class="btn btn-secondary" onclick="loadIntegrationSummary()">Refresh Summary</button>
                 </div>
-                
+
                 <div class="tab-content" id="system-logs">
                     <div class="log-output" id="activity-logs">
                         <!-- Activity logs will appear here -->
                     </div>
                     <button class="btn btn-secondary" onclick="clearLogs()">Clear Logs</button>
                 </div>
-                
+
                 <div class="tab-content" id="system-assets">
                     <div id="asset-list">
                         <!-- Asset list will be loaded here -->
@@ -634,14 +634,14 @@
             try {
                 const response = await fetch("/api/davinci/status');
                 const status = await response.json();
-                
-                updateStatusIndicator('resolve-status', 'resolve-status-text', 
+
+                updateStatusIndicator('resolve-status', 'resolve-status-text',
                     status.resolve_installed, status.resolve_installed ? 'Installed' : 'Not Found');
-                updateStatusIndicator('api-status', 'api-status-text', 
+                updateStatusIndicator('api-status', 'api-status-text',
                     status.api_available, status.api_available ? 'Available' : 'Unavailable');
-                updateStatusIndicator('voice-status', 'voice-status-text', 
+                updateStatusIndicator('voice-status', 'voice-status-text',
                     status.voice_integration_available, status.voice_integration_available ? 'Ready' : 'Unavailable');
-                    
+
                 logActivity('System status refreshed');
             } catch (error) {
                 console.error('Error refreshing status:', error);
@@ -652,7 +652,7 @@
         function updateStatusIndicator(indicatorId, textId, isOnline, text) {
             const indicator = document.getElementById(indicatorId);
             const textElement = document.getElementById(textId);
-            
+
             indicator.className = `status-indicator ${isOnline ? 'online' : ''}`;
             textElement.textContent = text;
         }//Voice samples management
@@ -666,7 +666,7 @@
                 voiceSelects.forEach(selectId => {
                     const select = document.getElementById(selectId);
                     select.innerHTML = '<option value="">Select a voice...</option>';
-                    
+
                     data.samples.forEach(sample => {
                         const option = document.createElement('option');
                         option.value = sample.name;
@@ -682,7 +682,7 @@
                         grid.appendChild(sampleDiv);
                     });
                 });
-                
+
                 logActivity(`Loaded ${data.samples.length} voice samples`);
             } catch (error) {
                 console.error('Error loading voice samples:', error);
@@ -693,13 +693,13 @@
             try {
                 const response = await fetch("/api/davinci/color/presets');
                 const data = await response.json();
-                
+
                 const grid = document.getElementById('color-presets-grid');
                 const select = document.getElementById('grade-preset');
-                
+
                 grid.innerHTML = '';
                 select.innerHTML = '<option value="">Select a preset...</option>';
-                
+
                 Object.entries(data.presets).forEach(([key, preset]) => {//Add to grid
                     const presetDiv = document.createElement('div');
                     presetDiv.className = 'color-preset';
@@ -713,7 +713,7 @@
                     option.textContent = preset.name;
                     select.appendChild(option);
                 });
-                
+
                 logActivity(`Loaded ${Object.keys(data.presets).length} color presets`);
             } catch (error) {
                 console.error('Error loading color presets:', error);
@@ -724,10 +724,10 @@
             try {
                 const response = await fetch("/api/davinci/projects');
                 const data = await response.json();
-                
+
                 const list = document.getElementById('project-list');
                 list.innerHTML = '';
-                
+
                 data.projects.forEach(project => {
                     const projectDiv = document.createElement('div');
                     projectDiv.className = 'project-item';
@@ -743,7 +743,7 @@
                     `;
                     list.appendChild(projectDiv);
                 });
-                
+
                 logActivity(`Loaded ${data.projects.length} projects`);
             } catch (error) {
                 console.error('Error loading projects:', error);
@@ -754,7 +754,7 @@
             try {
                 const response = await fetch("/api/davinci/summary');
                 const data = await response.json();
-                
+
                 const summary = document.getElementById('integration-summary');
                 summary.innerHTML = `
                     <div class="alert alert-${data.system_status.resolve_installed ? 'success' : 'warning'}">
@@ -763,20 +763,20 @@
                         <p>API Integration: ${data.system_status.api_available ? 'Available' : 'Unavailable'}</p>
                         <p>Voice Integration: ${data.system_status.voice_integration ? 'Ready' : 'Unavailable'}</p>
                     </div>
-                    
+
                     <h4>Available Capabilities</h4>
                     <ul>
-                        ${Object.entries(data.capabilities).map(([key, value]) => 
+                        ${Object.entries(data.capabilities).map(([key, value]) =>
                             `<li>${key.replace('_', ' ').toUpperCase()}: ${value ? '✅' : '❌'}</li>`
                         ).join('')}
                     </ul>
-                    
+
                     <h4>Supported Formats</h4>
                     <p><strong>Video:</strong> ${data.supported_formats.video.join(', ')}</p>
                     <p><strong>Audio:</strong> ${data.supported_formats.audio.join(', ')}</p>
                     <p><strong>Image:</strong> ${data.supported_formats.image.join(', ')}</p>
                 `;
-                
+
                 logActivity('Integration summary loaded');
             } catch (error) {
                 console.error('Error loading integration summary:', error);
@@ -790,14 +790,14 @@
                 const data = Object.fromEntries(formData.entries());//Parse resolution
                 data.resolution = data.resolution.split(',').map(Number);
                 data.frame_rate = parseFloat(data.frame_rate);
-                
+
                 try {
                     const response = await fetch("/api/davinci/projects', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(data)
                     });
-                    
+
                     const result = await response.json();
                     if (result.success) {
                         showAlert('Project created successfully!', 'success');
@@ -814,14 +814,14 @@
                 e.preventDefault();
                 const formData = new FormData(e.target);
                 const data = Object.fromEntries(formData.entries());
-                
+
                 try {
                     const response = await fetch("/api/davinci/voice/clone', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(data)
                     });
-                    
+
                     const result = await response.json();
                     if (result.success) {
                         showAlert('Voice cloned successfully!', 'success');
@@ -837,14 +837,14 @@
                 const formData = new FormData(e.target);
                 const data = Object.fromEntries(formData.entries());
                 data.texts = data.texts.split('\n').filter(text => text.trim());
-                
+
                 try {
                     const response = await fetch("/api/davinci/voice/batch-clone', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(data)
                     });
-                    
+
                     const result = await response.json();
                     if (result.success) {
                         showAlert(`Batch voice cloning completed! Success rate: ${result.success_rate}`, 'success');
@@ -859,14 +859,14 @@
                 e.preventDefault();
                 const formData = new FormData(e.target);
                 const data = Object.fromEntries(formData.entries());
-                
+
                 try {
                     const response = await fetch("/api/davinci/color/apply', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(data)
                     });
-                    
+
                     const result = await response.json();
                     if (result.success) {
                         showAlert('Color grade applied successfully!', 'success');
@@ -881,14 +881,14 @@
                 e.preventDefault();
                 const formData = new FormData(e.target);
                 const data = Object.fromEntries(formData.entries());
-                
+
                 try {
                     const response = await fetch(`/api/davinci/render?project_name=${data.project_name}`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(data)
                     });
-                    
+
                     const result = await response.json();
                     if (result.success) {
                         showAlert('Render started successfully!', 'success');
@@ -906,9 +906,9 @@
             const alertDiv = document.createElement('div');
             alertDiv.className = `alert alert-${type}`;
             alertDiv.textContent = message;
-            
+
             document.body.insertBefore(alertDiv, document.body.firstChild);
-            
+
             setTimeout(() => {
                 alertDiv.remove();
             }, 5000);
@@ -917,12 +917,12 @@
         function logActivity(message, type = 'info') {
             const timestamp = new Date().toLocaleTimeString();
             const logEntry = `[${timestamp}] ${message}`;
-            
+
             activityLogs.unshift(logEntry);
             if (activityLogs.length > 100) {
                 activityLogs = activityLogs.slice(0, 100);
             }
-            
+
             const logsElement = document.getElementById('activity-logs');
             if (logsElement) {
                 logsElement.innerHTML = activityLogs.join('\n');
@@ -949,7 +949,7 @@
                 } else {
                     document.getElementById('render-status-text').textContent = `Rendering... ${Math.round(progress)}%`;
                 }
-                
+
                 document.getElementById('progress-fill').style.width = `${progress}%`;
             }, 1000);
         }
@@ -962,22 +962,22 @@
         async function uploadAsset() {
             const fileInput = document.getElementById('asset-upload');
             const file = fileInput.files[0];
-            
+
             if (!file) {
                 showAlert('Please select a file to upload', 'warning');
                 return;
             }
-            
+
             const formData = new FormData();
             formData.append('file', file);
             formData.append('asset_type', file.type.split('/')[0]);
-            
+
             try {
                 const response = await fetch("/api/davinci/assets/upload', {
                     method: 'POST',
                     body: formData
                 });
-                
+
                 const result = await response.json();
                 if (result.success) {
                     showAlert('Asset uploaded successfully!', 'success');

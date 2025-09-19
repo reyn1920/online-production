@@ -19,10 +19,10 @@ Your RouteLL API key: `s2_f0b00d6897a0431f8367a7fc859b697a`
 
 ```bash
 # Set environment variable
-export ROUTELLM_API_KEY="s2_f0b00d6897a0431f8367a7fc859b697a"
+export ROUTELLM_API_KEY="your_routellm_api_key_here"
 
 # Or add to your .env file
-echo "ROUTELLM_API_KEY=s2_f0b00d6897a0431f8367a7fc859b697a" >> .env
+echo "ROUTELLM_API_KEY=your_routellm_api_key_here" >> .env
 ```
 
 ### 2. Basic Usage
@@ -86,12 +86,10 @@ client = RouteLL(api_key="your_api_key")
 
 # Check API health
 status = await client.health_check()
-print(f"API Status: {status.success}")
-
+# DEBUG_REMOVED: print statement
 # Get credit information
 credits = await client.get_credit_status()
-print(f"Remaining credits: {credits.remaining_credits}")
-
+# DEBUG_REMOVED: print statement
 # Make a request
 response = await client.chat_completion(
     messages=[{"role": "user", "content": "Hello!"}],
@@ -120,10 +118,9 @@ routing_result = router.route_request(
     preferences={'cost': 0.3, 'quality': 0.7},  # Prefer quality over cost
     constraints={'max_cost_per_token': 0.01}     # Budget constraint
 )
-
-print(f"Selected model: {routing_result['routing_decision']['selected_model']}")
-print(f"Task type: {routing_result['routing_decision']['task_type']}")
-print(f"Estimated cost: ${routing_result['model_info']['cost_per_token']:.4f}/token")
+# DEBUG_REMOVED: print statement
+# DEBUG_REMOVED: print statement
+# DEBUG_REMOVED: print statement
 ```
 
 ### 3. Rate Limiter (`utils/rate_limiter.py`)
@@ -147,11 +144,11 @@ if rate_limiter.can_make_request():
         messages,
         preferences={'cost': 0.8, 'speed': 0.2}
     )
-    print(f"Optimized max_tokens: {optimized['max_tokens']}")
-    print(f"Optimized temperature: {optimized['temperature']}")
+# DEBUG_REMOVED: print statement
+# DEBUG_REMOVED: print statement
 else:
     wait_time = rate_limiter.get_wait_time()
-    print(f"Rate limited. Wait {wait_time:.1f} seconds")
+# DEBUG_REMOVED: print statement
 ```
 
 ### 4. Credit Monitor (`monitoring/routellm_monitor.py`)
@@ -172,14 +169,13 @@ monitor.start_monitoring()
 
 # Get current status
 status = monitor.get_current_status()
-print(f"Credits remaining: {status['credits_remaining']}")
-print(f"Daily usage: {status['daily_usage']}")
-print(f"Projected monthly cost: ${status['projected_monthly_cost']:.2f}")
-
+# DEBUG_REMOVED: print statement
+# DEBUG_REMOVED: print statement
+# DEBUG_REMOVED: print statement
 # Get usage analytics
 analytics = monitor.get_usage_analytics()
-print(f"Total requests today: {analytics['daily_stats']['total_requests']}")
-print(f"Average cost per request: ${analytics['daily_stats']['avg_cost_per_request']:.4f}")
+# DEBUG_REMOVED: print statement
+# DEBUG_REMOVED: print statement
 ```
 
 ### 5. Usage Dashboard (`dashboard/routellm_dashboard.py`)
@@ -304,21 +300,19 @@ result = router.route_request(
 ```python
 async def optimized_streaming():
     client = RouteLL_IntegratedClient()
-    
+
     messages = [{"role": "user", "content": "Write a long story about AI"}]
-    
-    print("Streaming optimized response:")
+# DEBUG_REMOVED: print statement
     async for chunk in client.stream_completion(
         messages,
         preferences={'cost': 0.7, 'quality': 0.3},  # Optimize for cost
         temperature=0.7,
         max_tokens=1000
     ):
-        print(chunk, end='', flush=True)
-    
+# DEBUG_REMOVED: print statement
     # Get session analytics
     analytics = client.get_session_analytics()
-    print(f"\nTotal cost: ${analytics['estimated_total_cost']:.4f}")
+# DEBUG_REMOVED: print statement
 ```
 
 ### 3. Batch Processing with Rate Limiting
@@ -327,22 +321,22 @@ async def optimized_streaming():
 async def batch_process_requests(requests_list):
     client = RouteLL_IntegratedClient()
     results = []
-    
+
     for i, messages in enumerate(requests_list):
         print(f"Processing request {i+1}/{len(requests_list)}")
-        
+
         # The client automatically handles rate limiting
         response = await client.chat_completion(
             messages,
             preferences={'cost': 0.8, 'speed': 0.2}  # Optimize for cost in batch
         )
-        
+
         results.append(response)
-        
+
         # Optional: Add delay between requests
         if i < len(requests_list) - 1:
             await asyncio.sleep(0.1)
-    
+
     return results
 ```
 
@@ -353,11 +347,11 @@ from monitoring.routellm_monitor import RouteLL_Monitor
 
 class CustomAlertHandler:
     def handle_low_credits(self, credits_remaining):
-        print(f"⚠️ Low credits alert: {credits_remaining} remaining")
+# DEBUG_REMOVED: print statement
         # Send email, Slack notification, etc.
-    
+
     def handle_high_usage(self, usage_rate):
-        print(f"📈 High usage alert: {usage_rate} requests/hour")
+# DEBUG_REMOVED: print statement
         # Implement throttling, notifications, etc.
 
 # Set up monitoring with custom handlers
@@ -451,23 +445,21 @@ monitor.start_monitoring()
 # Get comprehensive analytics
 client = RouteLL_IntegratedClient()
 analytics = client.get_session_analytics()
-
-print(f"Session Summary:")
-print(f"  Duration: {analytics['session_duration_minutes']:.1f} minutes")
-print(f"  Requests: {analytics['total_requests']}")
-print(f"  Success Rate: {analytics['success_rate']:.1f}%")
-print(f"  Total Cost: ${analytics['estimated_total_cost']:.4f}")
-print(f"  Avg Cost/Request: ${analytics['avg_cost_per_request']:.4f}")
-
+# DEBUG_REMOVED: print statement
+# DEBUG_REMOVED: print statement
+# DEBUG_REMOVED: print statement
+# DEBUG_REMOVED: print statement
+# DEBUG_REMOVED: print statement
+# DEBUG_REMOVED: print statement
 # Model usage breakdown
 routing_stats = analytics['routing']
-print(f"\nModel Usage:")
+# DEBUG_REMOVED: print statement
 for model, count in routing_stats['model_usage_distribution'].items():
     percentage = (count/routing_stats['total_routing_decisions']) * 100
     print(f"  {model}: {count} requests ({percentage:.1f}%)")
 
 # Task type distribution
-print(f"\nTask Types:")
+# DEBUG_REMOVED: print statement
 for task, count in routing_stats['task_type_distribution'].items():
     percentage = (count/routing_stats['total_routing_decisions']) * 100
     print(f"  {task}: {count} requests ({percentage:.1f}%)")
@@ -511,7 +503,7 @@ for task, count in routing_stats['task_type_distribution'].items():
    ```bash
    # Verify API key is set
    echo $ROUTELLM_API_KEY
-   
+
    # Test API connectivity
    python -c "from integrations.routellm_client import RouteLL; import asyncio; asyncio.run(RouteLL().health_check())"
    ```
@@ -531,7 +523,7 @@ for task, count in routing_stats['task_type_distribution'].items():
    from routing.model_router import ModelRouter
    router = ModelRouter()
    analytics = router.get_routing_analytics()
-   print(f"Available models: {analytics['available_models']}")
+# DEBUG_REMOVED: print statement
    print(f"Recent decisions: {len(router.routing_history)}")
    ```
 
@@ -541,7 +533,7 @@ for task, count in routing_stats['task_type_distribution'].items():
    from integrations.routellm_client import RouteLL
    client = RouteLL()
    status = await client.get_credit_status()
-   print(f"Credits remaining: {status.remaining_credits}")
+# DEBUG_REMOVED: print statement
    ```
 
 ### Debug Mode
@@ -553,11 +545,11 @@ logging.basicConfig(level=logging.DEBUG)
 
 # Initialize client with debug info
 client = RouteLL_IntegratedClient()
-print("Debug info:")
+# DEBUG_REMOVED: print statement
 print(f"  Config loaded: {bool(client.config)}")
 print(f"  Models available: {len(client.router.models)}")
-print(f"  Rate limiter active: {client.rate_limiter is not None}")
-print(f"  Monitor running: {client.monitor is not None}")
+# DEBUG_REMOVED: print statement
+# DEBUG_REMOVED: print statement
 ```
 
 ## Support and Resources

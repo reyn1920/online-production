@@ -571,61 +571,61 @@ CREATE INDEX IF NOT EXISTS idx_audit_log_user ON audit_log(user_id);
 -- ============================================================================
 
 -- Update timestamps automatically
-CREATE TRIGGER IF NOT EXISTS update_task_queue_timestamp 
+CREATE TRIGGER IF NOT EXISTS update_task_queue_timestamp
     AFTER UPDATE ON task_queue
     BEGIN
         UPDATE task_queue SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
     END;
 
-CREATE TRIGGER IF NOT EXISTS update_api_registry_timestamp 
+CREATE TRIGGER IF NOT EXISTS update_api_registry_timestamp
     AFTER UPDATE ON api_registry
     BEGIN
         UPDATE api_registry SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
     END;
 
-CREATE TRIGGER IF NOT EXISTS update_author_personas_timestamp 
+CREATE TRIGGER IF NOT EXISTS update_author_personas_timestamp
     AFTER UPDATE ON author_personas
     BEGIN
         UPDATE author_personas SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
     END;
 
-CREATE TRIGGER IF NOT EXISTS update_hypocrisy_tracker_timestamp 
+CREATE TRIGGER IF NOT EXISTS update_hypocrisy_tracker_timestamp
     AFTER UPDATE ON hypocrisy_tracker
     BEGIN
         UPDATE hypocrisy_tracker SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
     END;
 
-CREATE TRIGGER IF NOT EXISTS update_affiliate_programs_timestamp 
+CREATE TRIGGER IF NOT EXISTS update_affiliate_programs_timestamp
     AFTER UPDATE ON affiliate_programs
     BEGIN
         UPDATE affiliate_programs SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
     END;
 
-CREATE TRIGGER IF NOT EXISTS update_affiliate_transactions_timestamp 
+CREATE TRIGGER IF NOT EXISTS update_affiliate_transactions_timestamp
     AFTER UPDATE ON affiliate_transactions
     BEGIN
         UPDATE affiliate_transactions SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
     END;
 
-CREATE TRIGGER IF NOT EXISTS update_channels_timestamp 
+CREATE TRIGGER IF NOT EXISTS update_channels_timestamp
     AFTER UPDATE ON channels
     BEGIN
         UPDATE channels SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
     END;
 
-CREATE TRIGGER IF NOT EXISTS update_avatars_timestamp 
+CREATE TRIGGER IF NOT EXISTS update_avatars_timestamp
     AFTER UPDATE ON avatars
     BEGIN
         UPDATE avatars SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
     END;
 
-CREATE TRIGGER IF NOT EXISTS update_evidence_timestamp 
+CREATE TRIGGER IF NOT EXISTS update_evidence_timestamp
     AFTER UPDATE ON evidence
     BEGIN
         UPDATE evidence SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
     END;
 
-CREATE TRIGGER IF NOT EXISTS update_system_config_timestamp 
+CREATE TRIGGER IF NOT EXISTS update_system_config_timestamp
     AFTER UPDATE ON system_config
     BEGIN
         UPDATE system_config SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
@@ -637,7 +637,7 @@ CREATE TRIGGER IF NOT EXISTS update_system_config_timestamp
 
 -- Active Tasks View
 CREATE VIEW IF NOT EXISTS active_tasks AS
-SELECT 
+SELECT
     task_id,
     task_type,
     priority,
@@ -646,13 +646,13 @@ SELECT
     scheduled_at,
     retry_count,
     max_retries
-FROM task_queue 
+FROM task_queue
 WHERE status IN ('pending', 'running')
 ORDER BY priority DESC, created_at ASC;
 
 -- Channel Performance Summary
 CREATE VIEW IF NOT EXISTS channel_performance_summary AS
-SELECT 
+SELECT
     c.channel_name,
     c.platform,
     c.subscriber_count,
@@ -668,7 +668,7 @@ GROUP BY c.id, c.channel_name, c.platform, c.subscriber_count;
 
 -- Evidence Quality Summary
 CREATE VIEW IF NOT EXISTS evidence_quality_summary AS
-SELECT 
+SELECT
     evidence_type,
     verification_status,
     COUNT(*) as count,
@@ -680,7 +680,7 @@ GROUP BY evidence_type, verification_status;
 
 -- API Health Dashboard
 CREATE VIEW IF NOT EXISTS api_health_dashboard AS
-SELECT 
+SELECT
     api_name,
     status,
     health_status,
@@ -772,14 +772,14 @@ INSERT OR IGNORE INTO api_registry (api_name, base_url, api_version, authenticat
 -- ============================================================================
 
 -- Verify all tables were created successfully
-SELECT 'Schema creation completed. Total tables: ' || COUNT(*) as status 
-FROM sqlite_master 
+SELECT 'Schema creation completed. Total tables: ' || COUNT(*) as status
+FROM sqlite_master
 WHERE type = 'table' AND name NOT LIKE 'sqlite_%';
 
 -- Display table summary
-SELECT 
+SELECT
     name as table_name,
-    CASE 
+    CASE
         WHEN name LIKE '%_log' OR name LIKE '%_history' THEN 'Logging/History'
         WHEN name IN ('task_queue', 'api_registry', 'api_request_logs') THEN 'System Core'
         WHEN name IN ('author_personas', 'hypocrisy_tracker') THEN 'Content Management'
@@ -790,7 +790,7 @@ SELECT
         WHEN name IN ('system_config', 'audit_log') THEN 'System Configuration'
         ELSE 'Other'
     END as category
-FROM sqlite_master 
+FROM sqlite_master
 WHERE type = 'table' AND name NOT LIKE 'sqlite_%'
 ORDER BY category, name;
 
@@ -819,7 +819,7 @@ CREATE INDEX IF NOT EXISTS idx_performance_metrics_name ON performance_metrics(m
 CREATE INDEX IF NOT EXISTS idx_performance_metrics_timestamp ON performance_metrics(timestamp);
 CREATE INDEX IF NOT EXISTS idx_performance_metrics_type ON performance_metrics(metric_type);
 
-INSERT OR REPLACE INTO schema_metadata (version, description, checksum) 
+INSERT OR REPLACE INTO schema_metadata (version, description, checksum)
 VALUES ('1.0.0', 'Initial TRAE.AI master database schema', 'sha256:placeholder_checksum');
 
 -- Final status message

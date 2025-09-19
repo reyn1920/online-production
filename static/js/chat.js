@@ -1,9 +1,9 @@
 /**
  * TRAE.AI Chat Integration System
- * 
+ *
  * Modern chat UI with real-time messaging, AI integration,
  * and connection to all existing integrations.
- * 
+ *
  * Features:
  * - Real-time WebSocket messaging
  * - AI-powered responses
@@ -11,26 +11,29 @@
  * - Rich media support
  * - Modern responsive UI
  * - Chat history persistence
- */class TraeChat {
+ */
+class TraeChat {
     constructor(options = {}) {
         this.userId = options.userId || `user_${Date.now()}`;
         this.roomId = options.roomId || 'general';
         this.wsUrl = options.wsUrl || `ws://localhost:8000/chat/ws/${this.userId}?room_id=${this.roomId}`;
         this.apiUrl = options.apiUrl || 'http://localhost:8000/chat';
-        
+
         this.socket = null;
         this.isConnected = false;
         this.messageHistory = [];
-        this.currentRoom = this.roomId;//Chat history management
+        this.currentRoom = this.roomId;
+
+        // Chat history management
         this.chatHistory = JSON.parse(localStorage.getItem('traeChat_history') || '[]');
         this.maxHistorySize = 1000;
         this.currentConversationId = null;
         this.conversations = [];
         this.userId = this.generateUserId();
-        
+
         this.init();
     }
-    
+
     generateUserId() {
         let userId = localStorage.getItem('traeChat_userId');
         if (!userId) {
@@ -49,7 +52,7 @@
                 this.updateConversationsList();
             }
         } catch (error) {
-            console.warn('Failed to load conversations:', error);
+// DEBUG_REMOVED: console.warn('Failed to load conversations:', error);
         }
     }
 
@@ -62,7 +65,7 @@
                 },
                 body: JSON.stringify({ title })
             });
-            
+
             if (response.ok) {
                 const data = await response.json();
                 this.currentConversationId = data.conversation_id;
@@ -70,7 +73,7 @@
                 return data.conversation_id;
             }
         } catch (error) {
-            console.warn('Failed to create conversation:', error);
+// DEBUG_REMOVED: console.warn('Failed to create conversation:', error);
         }
         return null;
     }
@@ -87,14 +90,14 @@
                 this.currentConversationId = conversationId;
             }
         } catch (error) {
-            console.warn('Failed to load conversation messages:', error);
+// DEBUG_REMOVED: console.warn('Failed to load conversation messages:', error);
         }
     }
 
     updateConversationsList() {//This would update a conversations sidebar if implemented//For now, we'll just log the conversations
-        console.log('Available conversations:', this.conversations);
+// DEBUG_REMOVED: console.log('Available conversations:', this.conversations);
     }
-    
+
     async init() {
         this.createChatUI();
         this.setupEventListeners();
@@ -105,10 +108,10 @@
         } else {//Load the most recent conversation
             this.currentConversationId = this.conversations[0].id;
         }
-        
+
         this.loadChatHistory();
     }
-    
+
     createChatUI() {//Create main chat container
         const chatContainer = document.createElement('div');
         chatContainer.id = 'trae-chat-container';
@@ -123,16 +126,16 @@
                     <button id="clear-chat" class="btn-clear">Clear</button>
                 </div>
             </div>
-            
+
             <div class="chat-body">
                 <div class="chat-messages" id="chat-messages"></div>
-                
+
                 <div class="chat-input-container">
                     <div class="input-wrapper">
                         <input type="text" id="chat-input" placeholder="Type a message... (try/ai,/weather,/news,/images,/pets)" autocomplete="off">
                         <button id="send-button" class="btn-send">Send</button>
                     </div>
-                    
+
                     <div class="chat-commands">
                         <button class="cmd-btn" data-cmd="/ai ">🤖 AI</button>
                         <button class="cmd-btn" data-cmd="/weather ">🌤️ Weather</button>
@@ -146,7 +149,7 @@
         this.addChatStyles();//Append to body
         document.body.appendChild(chatContainer);
     }
-    
+
     addChatStyles() {
         const styles = `
             <style id="trae-chat-styles">
@@ -166,7 +169,7 @@
                     backdrop-filter: blur(10px);
                     border: 1px solid rgba(255,255,255,0.2);
                 }
-                
+
                 .chat-header {
                     padding: 15px 20px;
                     background: rgba(255,255,255,0.1);
@@ -176,33 +179,33 @@
                     align-items: center;
                     backdrop-filter: blur(10px);
                 }
-                
+
                 .chat-title h3 {
                     margin: 0;
                     color: white;
                     font-size: 18px;
                     font-weight: 600;
                 }
-                
+
                 .connection-status {
                     font-size: 12px;
                     color: rgba(255,255,255,0.8);
                     margin-top: 2px;
                 }
-                
+
                 .connection-status.connected {
                     color: #4ade80;
                 }
-                
+
                 .connection-status.disconnected {
                     color: #f87171;
                 }
-                
+
                 .chat-controls {
                     display: flex;
                     gap: 8px;
                 }
-                
+
                 .btn-toggle, .btn-clear {
                     background: rgba(255,255,255,0.2);
                     border: none;
@@ -214,12 +217,12 @@
                     font-size: 16px;
                     transition: all 0.2s;
                 }
-                
+
                 .btn-toggle:hover, .btn-clear:hover {
                     background: rgba(255,255,255,0.3);
                     transform: scale(1.05);
                 }
-                
+
                 .chat-body {
                     flex: 1;
                     display: flex;
@@ -229,33 +232,33 @@
                     border-radius: 10px;
                     overflow: hidden;
                 }
-                
+
                 .chat-messages {
                     flex: 1;
                     padding: 15px;
                     overflow-y: auto;
                     scroll-behavior: smooth;
                 }
-                
+
                 .chat-messages::-webkit-scrollbar {
                     width: 6px;
                 }
-                
+
                 .chat-messages::-webkit-scrollbar-track {
                     background: #f1f1f1;
                     border-radius: 3px;
                 }
-                
+
                 .chat-messages::-webkit-scrollbar-thumb {
                     background: #c1c1c1;
                     border-radius: 3px;
                 }
-                
+
                 .message {
                     margin-bottom: 15px;
                     animation: fadeInUp 0.3s ease;
                 }
-                
+
                 @keyframes fadeInUp {
                     from {
                         opacity: 0;
@@ -266,19 +269,19 @@
                         transform: translateY(0);
                     }
                 }
-                
+
                 .message.user {
                     text-align: right;
                 }
-                
+
                 .message.ai {
                     text-align: left;
                 }
-                
+
                 .message.system {
                     text-align: center;
                 }
-                
+
                 .message-content {
                     display: inline-block;
                     max-width: 80%;
@@ -288,31 +291,31 @@
                     line-height: 1.4;
                     word-wrap: break-word;
                 }
-                
+
                 .message.user .message-content {
                     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                     color: white;
                 }
-                
+
                 .message.ai .message-content {
                     background: #f3f4f6;
                     color: #374151;
                     border: 1px solid #e5e7eb;
                 }
-                
+
                 .message.system .message-content {
                     background: #fef3c7;
                     color: #92400e;
                     font-style: italic;
                     font-size: 12px;
                 }
-                
+
                 .message-time {
                     font-size: 11px;
                     color: #9ca3af;
                     margin-top: 4px;
                 }
-                
+
                 .integration-data {
                     background: #f8fafc;
                     border: 1px solid #e2e8f0;
@@ -320,56 +323,104 @@
                     padding: 15px;
                     margin: 10px 0;
                 }
-                
+
                 .integration-data h4 {
                     margin: 0 0 10px 0;
                     color: #1e293b;
                     font-size: 14px;
                     font-weight: 600;
                 }
-                
+
+                .message-actions {
+                    margin: 10px 0 5px 0;
+                    display: flex;
+                    gap: 8px;
+                    justify-content: flex-start;
+                }
+
+                .action-btn {
+                    padding: 6px 12px;
+                    border: none;
+                    border-radius: 16px;
+                    font-size: 12px;
+                    font-weight: 500;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 4px;
+                }
+
+                .accept-btn {
+                    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                    color: white;
+                }
+
+                .accept-btn:hover:not(:disabled) {
+                    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+                    transform: translateY(-1px);
+                    box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+                }
+
+                .reject-btn {
+                    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+                    color: white;
+                }
+
+                .reject-btn:hover:not(:disabled) {
+                    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+                    transform: translateY(-1px);
+                    box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
+                }
+
+                .action-btn:disabled {
+                    cursor: not-allowed;
+                    transform: none !important;
+                    box-shadow: none !important;
+                }
+
                 .weather-data {
                     display: grid;
                     grid-template-columns: 1fr 1fr;
                     gap: 10px;
                     font-size: 13px;
                 }
-                
+
                 .news-article {
                     border-bottom: 1px solid #e2e8f0;
                     padding-bottom: 10px;
                     margin-bottom: 10px;
                 }
-                
+
                 .news-article:last-child {
                     border-bottom: none;
                     margin-bottom: 0;
                 }
-                
+
                 .news-title {
                     font-weight: 600;
                     color: #1e293b;
                     font-size: 13px;
                     margin-bottom: 4px;
                 }
-                
+
                 .news-description {
                     font-size: 12px;
                     color: #64748b;
                     margin-bottom: 4px;
                 }
-                
+
                 .news-source {
                     font-size: 11px;
                     color: #94a3b8;
                 }
-                
+
                 .image-grid {
                     display: grid;
                     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
                     gap: 8px;
                 }
-                
+
                 .image-item img {
                     width: 100%;
                     height: 80px;
@@ -378,11 +429,11 @@
                     cursor: pointer;
                     transition: transform 0.2s;
                 }
-                
+
                 .image-item img:hover {
                     transform: scale(1.05);
                 }
-                
+
                 .pet-item {
                     display: flex;
                     gap: 10px;
@@ -391,41 +442,41 @@
                     border-radius: 8px;
                     margin-bottom: 8px;
                 }
-                
+
                 .pet-photo {
                     width: 60px;
                     height: 60px;
                     border-radius: 8px;
                     object-fit: cover;
                 }
-                
+
                 .pet-info {
                     flex: 1;
                 }
-                
+
                 .pet-name {
                     font-weight: 600;
                     color: #1e293b;
                     font-size: 13px;
                 }
-                
+
                 .pet-details {
                     font-size: 12px;
                     color: #64748b;
                 }
-                
+
                 .chat-input-container {
                     padding: 15px;
                     border-top: 1px solid #e5e7eb;
                     background: white;
                 }
-                
+
                 .input-wrapper {
                     display: flex;
                     gap: 8px;
                     margin-bottom: 10px;
                 }
-                
+
                 #chat-input {
                     flex: 1;
                     padding: 12px 16px;
@@ -435,12 +486,12 @@
                     outline: none;
                     transition: border-color 0.2s;
                 }
-                
+
                 #chat-input:focus {
                     border-color: #667eea;
                     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
                 }
-                
+
                 .btn-send {
                     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                     color: white;
@@ -452,24 +503,24 @@
                     font-weight: 600;
                     transition: all 0.2s;
                 }
-                
+
                 .btn-send:hover {
                     transform: translateY(-1px);
                     box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
                 }
-                
+
                 .btn-send:disabled {
                     opacity: 0.6;
                     cursor: not-allowed;
                     transform: none;
                 }
-                
+
                 .chat-commands {
                     display: flex;
                     gap: 6px;
                     flex-wrap: wrap;
                 }
-                
+
                 .cmd-btn {
                     background: #f3f4f6;
                     border: 1px solid #e5e7eb;
@@ -480,12 +531,12 @@
                     font-size: 12px;
                     transition: all 0.2s;
                 }
-                
+
                 .cmd-btn:hover {
                     background: #e5e7eb;
                     transform: translateY(-1px);
                 }
-                
+
                 .typing-indicator {
                     display: flex;
                     align-items: center;
@@ -495,12 +546,12 @@
                     font-size: 13px;
                     font-style: italic;
                 }
-                
+
                 .typing-dots {
                     display: flex;
                     gap: 3px;
                 }
-                
+
                 .typing-dot {
                     width: 6px;
                     height: 6px;
@@ -508,15 +559,15 @@
                     border-radius: 50%;
                     animation: typingDot 1.4s infinite;
                 }
-                
+
                 .typing-dot:nth-child(2) {
                     animation-delay: 0.2s;
                 }
-                
+
                 .typing-dot:nth-child(3) {
                     animation-delay: 0.4s;
                 }
-                
+
                 @keyframes typingDot {
                     0%, 60%, 100% {
                         transform: translateY(0);
@@ -527,15 +578,15 @@
                         opacity: 1;
                     }
                 }
-                
+
                 .chat-minimized {
                     height: 60px !important;
                 }
-                
+
                 .chat-minimized .chat-body {
                     display: none;
                 }
-                
+
                 .error-message {
                     background: #fef2f2;
                     color: #dc2626;
@@ -545,7 +596,7 @@
                     font-size: 13px;
                     border: 1px solid #fecaca;
                 }
-                
+
                 @media (max-width: 480px) {
                     #trae-chat-container {
                         width: calc(100vw - 20px);
@@ -557,10 +608,10 @@
                 }
             </style>
         `;
-        
+
         document.head.insertAdjacentHTML('beforeend', styles);
     }
-    
+
     setupEventListeners() {
         const chatInput = document.getElementById('chat-input');
         const sendButton = document.getElementById('send-button');
@@ -573,7 +624,7 @@
                 this.sendMessage();
             }
         });
-        
+
         sendButton.addEventListener('click', () => this.sendMessage());//Toggle chat minimize/maximize
         toggleButton.addEventListener('click', () => {
             const container = document.getElementById('trae-chat-container');
@@ -593,26 +644,26 @@
             });
         });
     }
-    
+
     connectWebSocket() {
         try {//Update WebSocket URL to include user ID
-            this.wsUrl = this.wsUrl.includes('?') 
+            this.wsUrl = this.wsUrl.includes('?')
                 ? this.wsUrl + `&user_id=${this.userId}`
                 : this.wsUrl + `?user_id=${this.userId}`;
-            
+
             this.socket = new WebSocket(this.wsUrl);
-            
+
             this.socket.onopen = () => {
                 this.isConnected = true;
                 this.updateConnectionStatus('Connected', 'connected');
-                console.log('Chat WebSocket connected');
+// DEBUG_REMOVED: console.log('Chat WebSocket connected');
             };
-            
+
             this.socket.onmessage = (event) => {
                 const data = JSON.parse(event.data);
                 this.handleIncomingMessage(data);
             };
-            
+
             this.socket.onclose = () => {
                 this.isConnected = false;
                 this.updateConnectionStatus('Disconnected', 'disconnected');
@@ -623,18 +674,18 @@
                     }
                 }, 3000);
             };
-            
+
             this.socket.onerror = (error) => {
                 console.error('Chat WebSocket error:', error);
                 this.updateConnectionStatus('Error', 'disconnected');
             };
-            
+
         } catch (error) {
             console.error('Failed to connect to chat WebSocket:', error);
             this.updateConnectionStatus('Failed to connect', 'disconnected');
         }
     }
-    
+
     clearMessages() {
         const messagesContainer = document.getElementById('chat-messages');
         if (messagesContainer) {
@@ -643,7 +694,7 @@
         this.chatHistory = [];
         this.messageHistory = [];
     }
-    
+
     updateConnectionStatus(text, className) {
         const statusElement = document.getElementById('connection-status');
         if (statusElement) {
@@ -651,11 +702,11 @@
             statusElement.className = `connection-status ${className}`;
         }
     }
-    
+
     sendMessage() {
         const input = document.getElementById('chat-input');
         const message = input.value.trim();
-        
+
         if (!message || !this.isConnected) return;//Add user message to UI immediately
         this.addMessage({
             type: 'message',
@@ -670,16 +721,16 @@
             metadata: {}
         }));//Clear input
         input.value = '';//Show typing indicator for AI/integration commands
-        if (message.startsWith('/ai ') || message.startsWith('/weather ') || 
-            message.startsWith('/news ') || message.startsWith('/images ') || 
+        if (message.startsWith('/ai ') || message.startsWith('/weather ') ||
+            message.startsWith('/news ') || message.startsWith('/images ') ||
             message.startsWith('/pets ')) {
             this.showTypingIndicator();
         }
     }
-    
+
     handleIncomingMessage(data) {
         this.hideTypingIndicator();
-        
+
         if (data.type === 'message') {//Regular chat message from another user
             if (data.user_id !== this.userId) {
                 this.addMessage(data);
@@ -687,68 +738,83 @@
         } else if (data.type === 'system') {//System message
             this.addSystemMessage(data.content, data.timestamp);
         } else if (data.type === 'ai_response') {//AI response
-            this.addAIMessage(data.content, data.timestamp);
+            this.addAIMessage(data.content, data.timestamp, data);
         } else if (data.type === 'integration_data') {//Integration data (weather, news, images, pets)
             this.addIntegrationMessage(data);
         }
     }
-    
+
     addMessage(data, isOwnMessage = false) {
         const messagesContainer = document.getElementById('chat-messages');
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${isOwnMessage ? 'user' : 'other'}`;
-        
+
         const time = new Date(data.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-        
+
         messageDiv.innerHTML = `
             <div class="message-content">${this.escapeHtml(data.content)}</div>
             <div class="message-time">${time}</div>
         `;
-        
+
         messagesContainer.appendChild(messageDiv);
         this.scrollToBottom();
     }
-    
+
     addSystemMessage(content, timestamp) {
         const messagesContainer = document.getElementById('chat-messages');
         const messageDiv = document.createElement('div');
         messageDiv.className = 'message system';
-        
+
         const time = new Date(timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-        
+
         messageDiv.innerHTML = `
             <div class="message-content">${this.escapeHtml(content)}</div>
             <div class="message-time">${time}</div>
         `;
-        
+
         messagesContainer.appendChild(messageDiv);
         this.scrollToBottom();
     }
-    
-    addAIMessage(content, timestamp) {
+
+    addAIMessage(content, timestamp, messageData = null) {
         const messagesContainer = document.getElementById('chat-messages');
         const messageDiv = document.createElement('div');
         messageDiv.className = 'message ai';
-        
+
         const time = new Date(timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-        
+
+        let actionButtons = '';
+        if (messageData && messageData.requires_action && messageData.message_id) {
+            actionButtons = `
+                <div class="message-actions">
+                    <button class="action-btn accept-btn" onclick="window.traeChat.handleChangeAction('${messageData.message_id}', 'accept')">
+                        ✅ Accept
+                    </button>
+                    <button class="action-btn reject-btn" onclick="window.traeChat.handleChangeAction('${messageData.message_id}', 'reject')">
+                        ❌ Reject
+                    </button>
+                </div>
+            `;
+        }
+
         messageDiv.innerHTML = `
             <div class="message-content">🤖 ${this.escapeHtml(content)}</div>
+            ${actionButtons}
             <div class="message-time">${time}</div>
         `;
-        
+
         messagesContainer.appendChild(messageDiv);
         this.scrollToBottom();
     }
-    
+
     addIntegrationMessage(data) {
         const messagesContainer = document.getElementById('chat-messages');
         const messageDiv = document.createElement('div');
         messageDiv.className = 'message system';
-        
+
         const time = new Date(data.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
         let content = '';
-        
+
         if (data.integration_type === 'weather' && data.data.location) {
             content = `
                 <div class="integration-data">
@@ -781,7 +847,7 @@
                     <div class="image-grid">
                         ${data.data.images.map(image => `
                             <div class="image-item">
-                                <img src="${image.url}" alt="${this.escapeHtml(image.description || '')}" 
+                                <img src="${image.url}" alt="${this.escapeHtml(image.description || '')}"
                                      onclick="window.open('${image.url}', '_blank')">
                             </div>
                         `).join('')}
@@ -809,22 +875,22 @@
         } else if (data.data.error) {
             content = `<div class="error-message">❌ ${this.escapeHtml(data.data.error)}</div>`;
         }
-        
+
         messageDiv.innerHTML = `
             ${content}
             <div class="message-time">${time}</div>
         `;
-        
+
         messagesContainer.appendChild(messageDiv);
         this.scrollToBottom();
     }
-    
+
     showTypingIndicator() {
         const messagesContainer = document.getElementById('chat-messages');
         const existingIndicator = document.querySelector('.typing-indicator');
-        
+
         if (existingIndicator) return;
-        
+
         const typingDiv = document.createElement('div');
         typingDiv.className = 'typing-indicator';
         typingDiv.innerHTML = `
@@ -835,18 +901,18 @@
                 <div class="typing-dot"></div>
             </div>
         `;
-        
+
         messagesContainer.appendChild(typingDiv);
         this.scrollToBottom();
     }
-    
+
     hideTypingIndicator() {
         const indicator = document.querySelector('.typing-indicator');
         if (indicator) {
             indicator.remove();
         }
     }
-    
+
     async loadChatHistory() {
         try {
             const response = await fetch(`${this.apiUrl}/rooms/${this.roomId}/history?limit=50`);
@@ -866,7 +932,7 @@
             console.error('Failed to load chat history:', error);
         }
     }
-    
+
     clearChat() {
         const messagesContainer = document.getElementById('chat-messages');
         messagesContainer.innerHTML = '';//Also clear on server
@@ -876,29 +942,75 @@
             console.error('Failed to clear chat history on server:', error);
         });
     }
-    
+
     scrollToBottom() {
         const messagesContainer = document.getElementById('chat-messages');
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
-    
+
+    async handleChangeAction(messageId, action) {
+        try {
+            const response = await fetch('/chat/action', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message_id: messageId,
+                    action: action,
+                    session_id: this.currentConversationId || 'default',
+                    user_id: this.userId
+                })
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+
+                // Disable the action buttons
+                const actionButtons = document.querySelectorAll(`[onclick*="${messageId}"]`);
+                actionButtons.forEach(btn => {
+                    btn.disabled = true;
+                    btn.style.opacity = '0.5';
+                });
+
+                // Add confirmation message
+                this.addSystemMessage(
+                    `✅ Change ${action}ed successfully!`,
+                    new Date().toISOString()
+                );
+
+// DEBUG_REMOVED: console.log('Action processed:', result);
+            } else {
+                throw new Error('Failed to process action');
+            }
+        } catch (error) {
+            console.error('Error processing action:', error);
+            this.addSystemMessage(
+                `❌ Failed to ${action} change. Please try again.`,
+                new Date().toISOString()
+            );
+        }
+    }
+
     escapeHtml(text) {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
-    }//Public methods
+    }
+
+    // Public methods
     destroy() {
         if (this.socket) {
             this.socket.close();
         }
-        
+
         const container = document.getElementById('trae-chat-container');
         const styles = document.getElementById('trae-chat-styles');
-        
+
         if (container) container.remove();
         if (styles) styles.remove();
     }
-    
+
     sendCustomMessage(message, type = 'text') {
         if (this.isConnected && this.socket) {
             this.socket.send(JSON.stringify({
@@ -908,27 +1020,31 @@
             }));
         }
     }
-    
+
     changeRoom(roomId) {
         this.roomId = roomId;
         this.currentRoom = roomId;//Reconnect to new room
         if (this.socket) {
             this.socket.close();
         }
-        
+
         this.wsUrl = this.wsUrl.replace(/room_id=[^&]*/, `room_id=${roomId}`);
         this.connectWebSocket();//Clear current messages and load new room history
         document.getElementById('chat-messages').innerHTML = '';
         this.loadChatHistory();
     }
-}//Auto-initialize chat when DOM is ready
+}
+
+// Auto-initialize chat when DOM is ready
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         window.traeChat = new TraeChat();
     });
 } else {
     window.traeChat = new TraeChat();
-}//Export for module usage
+}
+
+// Export for module usage
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = TraeChat;
 }

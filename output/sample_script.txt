@@ -25,7 +25,7 @@ Overall, the synopsis captures the ups and downs of running a small business whi
 
 CHARACTERS:
 - Name: Description: Emily is a small business owner in her mid-30s who has invested her life savings into running a cozy coffee shop in a bustling city. She is hardworking and dedicated to providing excellen
-- Personality Traits: 1. Dedicated: Emily takes pride in her work and will stop at nothing to ensure that every customer leaves the shop satisfied. 2. Caring: She is genuinely invested in her customers' well-being, always 
+- Personality Traits: 1. Dedicated: Emily takes pride in her work and will stop at nothing to ensure that every customer leaves the shop satisfied. 2. Caring: She is genuinely invested in her customers' well-being, always
 
 SCRIPT:
 
@@ -246,4 +246,3 @@ EMILY
 (shaking her head) Just another day in the life of a small business owner... (She mutters under her breath and shakes her head)
 
 ==================================================
-

@@ -14,13 +14,13 @@
             const response = await fetch(`${this.pasteEndpoint}/status`);
             if (response.ok) {
                 this.isInitialized = true;
-                console.log('✅ Paste Avatar UI initialized successfully');
+// DEBUG_REMOVED: console.log('✅ Paste Avatar UI initialized successfully');
                 this.setupEventListeners();
             } else {
-                console.warn('⚠️ Paste service not available');
+// DEBUG_REMOVED: console.warn('⚠️ Paste service not available');
             }
         } catch (error) {
-            console.warn('⚠️ Paste service connection failed:', error.message);
+// DEBUG_REMOVED: console.warn('⚠️ Paste service connection failed:', error.message);
         }
     }
 
@@ -35,7 +35,7 @@
 
     async handleAvatarGeneration(options = {}) {
         if (!this.isInitialized) {
-            console.warn('Paste Avatar UI not initialized');
+// DEBUG_REMOVED: console.warn('Paste Avatar UI not initialized');
             return null;
         }
 
@@ -55,7 +55,7 @@
             });
 
             const result = await response.json();
-            
+
             if (result.success) {//Dispatch success event
                 document.dispatchEvent(new CustomEvent('avatar:generated', {
                     detail: result
@@ -100,7 +100,7 @@
             });
 
             const result = await response.json();
-            
+
             if (result.success) {
                 document.dispatchEvent(new CustomEvent('file:uploaded', {
                     detail: result
@@ -123,7 +123,7 @@
         try {
             const response = await fetch(`${this.pasteEndpoint}/downloads/list`);
             const result = await response.json();
-            
+
             return result.files || [];
         } catch (error) {
             console.error('Error fetching downloads files:', error);
@@ -149,7 +149,7 @@
             });
 
             const result = await response.json();
-            
+
             if (result.success) {
                 document.dispatchEvent(new CustomEvent('file:processed', {
                     detail: result

@@ -1,123 +1,47 @@
+import asyncio
 import logging
 import time
 import uuid
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
-from backend.agents.base_agents import BaseAgent
-from backend.agents.base_agents import AgentCapability
-
-# Minimal working versions of specialized agents
+from backend.agents.base_agents import BaseAgent, AgentCapability
 
 
 class SystemAgent(BaseAgent):
     """System management and maintenance agent"""
 
-    def __init__(self, agent_id: Optional[str] = None, name: Optional[str] = None, main_loop=None):
+    def __init__(self, agent_id: Optional[str] = None, name: Optional[str] = None):
         super().__init__(agent_id or str(uuid.uuid4()), name or "SystemAgent")
         self.agent_type = "system"
         self.logger = logging.getLogger(f"{self.__class__.__name__}_{self.agent_id}")
-        self.main_loop = main_loop
 
     @property
-    def capabilities(self) -> List[AgentCapability]:
-        return [
-            AgentCapability.SYSTEM_MONITORING,
-            AgentCapability.MAINTENANCE,
-            AgentCapability.HEALTH_CHECK,
-         ]
+    def capabilities(self) -> list[AgentCapability]:
+        return [AgentCapability.SYSTEM_MANAGEMENT, AgentCapability.ANALYSIS]
 
-    async def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        """
-Process system tasks
-
-        
-"""
+    async def execute_task(self, task: dict[str, Any]) -> dict[str, Any]:
+        """Execute system management tasks"""
         try:
-        """
             task_type = task.get("type", "unknown")
             self.logger.info(f"Processing system task: {task_type}")
-        """
 
-        try:
-        
+            # Simulate task processing
+            await asyncio.sleep(1)
 
-       
-""""""
             return {
                 "success": True,
                 "task_type": task_type,
                 "result": f"System task {task_type} completed",
                 "agent_id": self.agent_id,
-             }
+                "timestamp": time.time(),
+            }
         except Exception as e:
             self.logger.error(f"System task failed: {e}")
             return {"success": False, "error": str(e), "agent_id": self.agent_id}
 
-    async def _execute_with_monitoring(self, task: Dict[str, Any], context) -> Dict[str, Any]:
-        """
-Execute task with monitoring
-
-        
-"""
-        try:
-        """
-
-            result = await self.process_task(task)
-        
-
-        try:
-        
-""""""
-        
-       """
-            return {
-                "success": True,
-                "result": result,
-                "agent_id": self.agent_id,
-                "execution_time": time.time(),
-             }
-        except Exception as e:
-            self.logger.error(f"Task execution failed: {e}")
-            return {"success": False, "error": str(e), "agent_id": self.agent_id}
-
-    async def _rephrase_task(self, task: Dict[str, Any], context) -> str:
-        """Rephrase task for confirmation"""
-        task_type = task.get("type", "unknown")
-        description = task.get("description", "No description provided")
-        return f"System task: {task_type} - {description}"
-
-    async def _validate_rephrase_accuracy(
-        self, original_task: Dict[str, Any], rephrased: str, context
-#     ) -> bool:
-        """
-Validate rephrase accuracy
-
-       
-""""""
-
-        # Simple validation - check if key elements are present
-       
-
-        
-       
-"""
-        task_type = original_task.get("type", "")
-       """
-
-        
-       
-
-        # Simple validation - check if key elements are present
-       
-""""""
-
-        return task_type.lower() in rephrased.lower() if task_type else True
-
 
 class ResearchAgent(BaseAgent):
-    
-Research and information gathering agent
-"""
+    """Research and analysis agent"""
 
     def __init__(self, agent_id: Optional[str] = None, name: Optional[str] = None):
         super().__init__(agent_id or str(uuid.uuid4()), name or "ResearchAgent")
@@ -125,328 +49,133 @@ Research and information gathering agent
         self.logger = logging.getLogger(f"{self.__class__.__name__}_{self.agent_id}")
 
     @property
-    def capabilities(self) -> List[AgentCapability]:
+    def capabilities(self) -> list[AgentCapability]:
         return [
-            AgentCapability.WEB_SEARCH,
-            AgentCapability.DATA_ANALYSIS,
             AgentCapability.RESEARCH,
-         ]
+            AgentCapability.ANALYSIS,
+            AgentCapability.CONTENT_CREATION,
+        ]
 
-    async def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        """
-Process research tasks
-
-        
-"""
+    async def execute_task(self, task: dict[str, Any]) -> dict[str, Any]:
+        """Execute research tasks"""
         try:
-        """
             task_type = task.get("type", "unknown")
             self.logger.info(f"Processing research task: {task_type}")
-        """
 
-        try:
-        
+            # Simulate research processing
+            await asyncio.sleep(2)
 
-       
-""""""
             return {
                 "success": True,
                 "task_type": task_type,
                 "result": f"Research task {task_type} completed",
                 "agent_id": self.agent_id,
-             }
+                "timestamp": time.time(),
+            }
         except Exception as e:
             self.logger.error(f"Research task failed: {e}")
             return {"success": False, "error": str(e), "agent_id": self.agent_id}
 
-    async def _execute_with_monitoring(self, task: Dict[str, Any], context) -> Dict[str, Any]:
-        """
-Execute task with monitoring
-
-        
-"""
-        try:
-        """
-
-            result = await self.process_task(task)
-        
-
-        try:
-        
-""""""
-        
-       """
-            return {
-                "success": True,
-                "result": result,
-                "agent_id": self.agent_id,
-                "execution_time": time.time(),
-             }
-        except Exception as e:
-            self.logger.error(f"Task execution failed: {e}")
-            return {"success": False, "error": str(e), "agent_id": self.agent_id}
-
-    async def _rephrase_task(self, task: Dict[str, Any], context) -> str:
-        """Rephrase task for confirmation"""
-        task_type = task.get("type", "unknown")
-        description = task.get("description", "No description provided")
-        return f"Research task: {task_type} - {description}"
-
-    async def _validate_rephrase_accuracy(
-        self, original_task: Dict[str, Any], rephrased: str, context
-#     ) -> bool:
-        """Validate rephrase accuracy"""
-        task_type = original_task.get("type", "")
-        return task_type.lower() in rephrased.lower() if task_type else True
-
 
 class ContentAgent(BaseAgent):
-    """Content creation and management agent"""
+    """Content Agent for content creation and management"""
 
-    def __init__(self, agent_id: Optional[str] = None, name: Optional[str] = None):
-        super().__init__(agent_id or str(uuid.uuid4()), name or "ContentAgent")
+    def __init__(
+        self,
+        agent_id: str = "content_agent",
+        name: str = "Content Agent",
+        config: Optional[dict[str, Any]] = None,
+    ):
+        super().__init__(agent_id, name)
+        self.config = config or {}
         self.agent_type = "content"
-        self.logger = logging.getLogger(f"{self.__class__.__name__}_{self.agent_id}")
+        self.content_library = []
+        self.content_templates = []
+        self.publishing_schedule = {}
 
     @property
-    def capabilities(self) -> List[AgentCapability]:
-        return [
-            AgentCapability.CONTENT_CREATION,
-            AgentCapability.TEXT_PROCESSING,
-            AgentCapability.MEDIA_PROCESSING,
-         ]
+    def capabilities(self) -> list[AgentCapability]:
+        return [AgentCapability.CONTENT_CREATION, AgentCapability.ANALYSIS]
 
-    async def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        """
-Process content tasks
-
-        
-"""
-        try:
-        """
-            task_type = task.get("type", "unknown")
-            self.logger.info(f"Processing content task: {task_type}")
-        """
-
-        try:
-        
-
-       
-""""""
-            return {
-                "success": True,
-                "task_type": task_type,
-                "result": f"Content task {task_type} completed",
-                "agent_id": self.agent_id,
-             }
-        except Exception as e:
-            self.logger.error(f"Content task failed: {e}")
-            return {"success": False, "error": str(e), "agent_id": self.agent_id}
-
-    async def _execute_with_monitoring(self, task: Dict[str, Any], context) -> Dict[str, Any]:
-        """
-Execute task with monitoring
-
-        
-"""
-        try:
-        """
-
-            result = await self.process_task(task)
-        
-
-        try:
-        
-""""""
-        
-       """
-            return {
-                "success": True,
-                "result": result,
-                "agent_id": self.agent_id,
-                "execution_time": time.time(),
-             }
-        except Exception as e:
-            self.logger.error(f"Task execution failed: {e}")
-            return {"success": False, "error": str(e), "agent_id": self.agent_id}
-
-    async def _rephrase_task(self, task: Dict[str, Any], context) -> str:
-        """Rephrase task for confirmation"""
+    async def execute_task(self, task: dict[str, Any]) -> dict[str, Any]:
+        """Execute content task"""
         task_type = task.get("type", "unknown")
-        description = task.get("description", "No description provided")
-        return f"Content task: {task_type} - {description}"
 
-    async def _validate_rephrase_accuracy(
-        self, original_task: Dict[str, Any], rephrased: str, context
-#     ) -> bool:
-        """Validate rephrase accuracy"""
-        task_type = original_task.get("type", "")
-        return task_type.lower() in rephrased.lower() if task_type else True
+        if task_type == "create_content":
+            return await self._create_content(task)
+        elif task_type == "optimize_content":
+            return await self._optimize_content(task)
+        elif task_type == "schedule_publishing":
+            return await self._schedule_publishing(task)
+        else:
+            return {
+                "status": "completed",
+                "result": f"Content task {task_type} processed",
+            }
+
+    async def _create_content(self, task: dict[str, Any]) -> dict[str, Any]:
+        """Create content"""
+        await asyncio.sleep(0.1)  # Simulate processing
+        return {"status": "completed", "result": "Content created successfully"}
+
+    async def _optimize_content(self, task: dict[str, Any]) -> dict[str, Any]:
+        """Optimize content for engagement"""
+        await asyncio.sleep(0.1)  # Simulate processing
+        return {"status": "completed", "result": "Content optimization completed"}
+
+    async def _schedule_publishing(self, task: dict[str, Any]) -> dict[str, Any]:
+        """Schedule content publishing"""
+        await asyncio.sleep(0.1)  # Simulate processing
+        return {"status": "completed", "result": "Publishing schedule updated"}
 
 
 class MarketingAgent(BaseAgent):
-    """Marketing and promotion agent"""
+    """Marketing Agent for campaign management and optimization"""
 
-    def __init__(self, agent_id: Optional[str] = None, name: Optional[str] = None):
-        super().__init__(agent_id or str(uuid.uuid4()), name or "MarketingAgent")
+    def __init__(
+        self,
+        agent_id: str = "marketing_agent",
+        name: str = "Marketing Agent",
+        config: Optional[dict[str, Any]] = None,
+    ):
+        super().__init__(agent_id, name)
+        self.config = config or {}
         self.agent_type = "marketing"
-        self.logger = logging.getLogger(f"{self.__class__.__name__}_{self.agent_id}")
+        self.campaigns = []
+        self.target_audiences = []
+        self.performance_metrics = {}
 
     @property
-    def capabilities(self) -> List[AgentCapability]:
-        return [
-            AgentCapability.MARKETING,
-            AgentCapability.SOCIAL_MEDIA,
-            AgentCapability.ANALYTICS,
-         ]
+    def capabilities(self) -> list[AgentCapability]:
+        return [AgentCapability.MARKETING, AgentCapability.ANALYSIS]
 
-    async def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        """
-Process marketing tasks
-
-        
-"""
-        try:
-        """
-            task_type = task.get("type", "unknown")
-            self.logger.info(f"Processing marketing task: {task_type}")
-        """
-
-        try:
-        
-
-       
-""""""
-            return {
-                "success": True,
-                "task_type": task_type,
-                "result": f"Marketing task {task_type} completed",
-                "agent_id": self.agent_id,
-             }
-        except Exception as e:
-            self.logger.error(f"Marketing task failed: {e}")
-            return {"success": False, "error": str(e), "agent_id": self.agent_id}
-
-    async def _execute_with_monitoring(self, task: Dict[str, Any], context) -> Dict[str, Any]:
-        """
-Execute task with monitoring
-
-        
-"""
-        try:
-        """
-
-            result = await self.process_task(task)
-        
-
-        try:
-        
-""""""
-        
-       """
-            return {
-                "success": True,
-                "result": result,
-                "agent_id": self.agent_id,
-                "execution_time": time.time(),
-             }
-        except Exception as e:
-            self.logger.error(f"Task execution failed: {e}")
-            return {"success": False, "error": str(e), "agent_id": self.agent_id}
-
-    async def _rephrase_task(self, task: Dict[str, Any], context) -> str:
-        """Rephrase task for confirmation"""
+    async def execute_task(self, task: dict[str, Any]) -> dict[str, Any]:
+        """Execute marketing task"""
         task_type = task.get("type", "unknown")
-        description = task.get("description", "No description provided")
-        return f"Marketing task: {task_type} - {description}"
 
-    async def _validate_rephrase_accuracy(
-        self, original_task: Dict[str, Any], rephrased: str, context
-#     ) -> bool:
-        """Validate rephrase accuracy"""
-        task_type = original_task.get("type", "")
-        return task_type.lower() in rephrased.lower() if task_type else True
-
-
-class QAAgent(BaseAgent):
-    """Quality assurance and testing agent"""
-
-    def __init__(self, agent_id: Optional[str] = None, name: Optional[str] = None):
-        super().__init__(agent_id or str(uuid.uuid4()), name or "QAAgent")
-        self.agent_type = "qa"
-        self.logger = logging.getLogger(f"{self.__class__.__name__}_{self.agent_id}")
-
-    @property
-    def capabilities(self) -> List[AgentCapability]:
-        return [
-            AgentCapability.TESTING,
-            AgentCapability.QUALITY_ASSURANCE,
-            AgentCapability.VALIDATION,
-         ]
-
-    async def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        """
-Process QA tasks
-
-        
-"""
-        try:
-        """
-            task_type = task.get("type", "unknown")
-            self.logger.info(f"Processing QA task: {task_type}")
-        """
-
-        try:
-        
-
-       
-""""""
+        if task_type == "create_campaign":
+            return await self._create_campaign(task)
+        elif task_type == "analyze_performance":
+            return await self._analyze_performance(task)
+        elif task_type == "optimize_targeting":
+            return await self._optimize_targeting(task)
+        else:
             return {
-                "success": True,
-                "task_type": task_type,
-                "result": f"QA task {task_type} completed",
-                "agent_id": self.agent_id,
-             }
-        except Exception as e:
-            self.logger.error(f"QA task failed: {e}")
-            return {"success": False, "error": str(e), "agent_id": self.agent_id}
+                "status": "completed",
+                "result": f"Marketing task {task_type} processed",
+            }
 
-    async def _execute_with_monitoring(self, task: Dict[str, Any], context) -> Dict[str, Any]:
-        """
-Execute task with monitoring
+    async def _create_campaign(self, task: dict[str, Any]) -> dict[str, Any]:
+        """Create marketing campaign"""
+        await asyncio.sleep(0.1)  # Simulate processing
+        return {"status": "completed", "result": "Campaign created successfully"}
 
-        
-"""
-        try:
-        """
+    async def _analyze_performance(self, task: dict[str, Any]) -> dict[str, Any]:
+        """Analyze campaign performance"""
+        await asyncio.sleep(0.1)  # Simulate processing
+        return {"status": "completed", "result": "Performance analysis completed"}
 
-            result = await self.process_task(task)
-        
-
-        try:
-        
-""""""
-        
-       """
-            return {
-                "success": True,
-                "result": result,
-                "agent_id": self.agent_id,
-                "execution_time": time.time(),
-             }
-        except Exception as e:
-            self.logger.error(f"Task execution failed: {e}")
-            return {"success": False, "error": str(e), "agent_id": self.agent_id}
-
-    async def _rephrase_task(self, task: Dict[str, Any], context) -> str:
-        """Rephrase task for confirmation"""
-        task_type = task.get("type", "unknown")
-        description = task.get("description", "No description provided")
-        return f"QA task: {task_type} - {description}"
-
-    async def _validate_rephrase_accuracy(
-        self, original_task: Dict[str, Any], rephrased: str, context
-#     ) -> bool:
-        """Validate rephrase accuracy"""
-        task_type = original_task.get("type", "")
-        return task_type.lower() in rephrased.lower() if task_type else True
+    async def _optimize_targeting(self, task: dict[str, Any]) -> dict[str, Any]:
+        """Optimize audience targeting"""
+        await asyncio.sleep(0.1)  # Simulate processing
+        return {"status": "completed", "result": "Targeting optimization completed"}

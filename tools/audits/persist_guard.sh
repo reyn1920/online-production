@@ -108,7 +108,7 @@ init_directories() {
 generate_checksums() {
     log_info "Generating checksums for protected files..."
     > "$CHECKSUM_FILE"
-    
+
     for item in "${PROTECTED_ITEMS[@]}"; do
         local full_path="$PROJECT_ROOT/$item"
         if [ -f "$full_path" ]; then
@@ -132,20 +132,20 @@ generate_checksums() {
 verify_integrity() {
     log_info "Verifying integrity of protected files..."
     local violations=0
-    
+
     if [ ! -f "$CHECKSUM_FILE" ]; then
         log_warning "Checksum file not found, generating new checksums..."
         generate_checksums
         return 0
     fi
-    
+
     while IFS= read -r line; do
         if [ -z "$line" ]; then continue; fi
-        
+
         local expected_checksum=$(echo "$line" | cut -d' ' -f1)
         local file_path=$(echo "$line" | cut -d' ' -f3-)
         local full_path="$PROJECT_ROOT/$file_path"
-        
+
         if [ -f "$full_path" ]; then
             local current_checksum=$(shasum -a 256 "$full_path" | cut -d' ' -f1)
             if [ "$expected_checksum" != "$current_checksum" ]; then
@@ -161,7 +161,7 @@ verify_integrity() {
             ((violations++))
         fi
     done < "$CHECKSUM_FILE"
-    
+
     if [ $violations -gt 0 ]; then
         log_error "$violations integrity violations detected!"
         return 1
@@ -175,10 +175,10 @@ verify_integrity() {
 create_backup() {
     local timestamp=$(date +"%Y%m%d_%H%M%S")
     local backup_path="$BACKUP_DIR/backup_$timestamp"
-    
+
     log_info "Creating backup at: $backup_path"
     mkdir -p "$backup_path"
-    
+
     for item in "${PROTECTED_ITEMS[@]}"; do
         local full_path="$PROJECT_ROOT/$item"
         if [ -e "$full_path" ]; then
@@ -190,14 +190,14 @@ create_backup() {
             log_warning "Item not found for backup: $item"
         fi
     done
-    
+
     # Copy checksums
     if [ -f "$CHECKSUM_FILE" ]; then
         cp "$CHECKSUM_FILE" "$backup_path/checksums.txt"
     fi
-    
+
     log_success "Backup completed: $backup_path"
-    
+
     # Clean old backups (keep last 10)
     local backup_count=$(ls -1 "$BACKUP_DIR" | grep "^backup_" | wc -l)
     if [ $backup_count -gt 10 ]; then
@@ -213,47 +213,47 @@ create_backup() {
 restore_backup() {
     log_info "Available backups:"
     ls -1t "$BACKUP_DIR" | grep "^backup_" | head -5
-    
+
     echo "Enter backup name to restore (or 'latest' for most recent):"
     read -r backup_name
-    
+
     if [ "$backup_name" = "latest" ]; then
         backup_name=$(ls -1t "$BACKUP_DIR" | grep "^backup_" | head -1)
     fi
-    
+
     local backup_path="$BACKUP_DIR/$backup_name"
-    
+
     if [ ! -d "$backup_path" ]; then
         log_error "Backup not found: $backup_name"
         return 1
     fi
-    
+
     log_warning "This will overwrite current files. Continue? (y/N)"
     read -r confirm
     if [ "$confirm" != "y" ] && [ "$confirm" != "Y" ]; then
         log_info "Restore cancelled"
         return 0
     fi
-    
+
     log_info "Restoring from backup: $backup_name"
-    
+
     for item in "${PROTECTED_ITEMS[@]}"; do
         local backup_item="$backup_path/$item"
         local target_item="$PROJECT_ROOT/$item"
-        
+
         if [ -e "$backup_item" ]; then
             mkdir -p "$(dirname "$target_item")"
             cp -r "$backup_item" "$target_item"
             log_success "Restored: $item"
         fi
     done
-    
+
     # Restore checksums
     if [ -f "$backup_path/checksums.txt" ]; then
         cp "$backup_path/checksums.txt" "$CHECKSUM_FILE"
         log_success "Checksums restored"
     fi
-    
+
     log_success "Restore completed from: $backup_name"
 }
 
@@ -263,9 +263,9 @@ install_watchers() {
         log_warning "fswatch not available. Install with: brew install fswatch"
         return 1
     fi
-    
+
     log_info "Installing file system watchers..."
-    
+
     # Create watcher script
     cat > "$PROJECT_ROOT/.trae/file_watcher.sh" << 'EOF'
 #!/bin/bash
@@ -273,14 +273,14 @@ PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../" && pwd)"
 echo "$(date): File change detected: $1" >> "$PROJECT_ROOT/.trae/file_changes.log"
 "$PROJECT_ROOT/tools/audits/persist_guard.sh" --check
 EOF
-    
+
     chmod +x "$PROJECT_ROOT/.trae/file_watcher.sh"
-    
+
     # Start background watcher
     nohup fswatch -o "${PROTECTED_ITEMS[@]/#/$PROJECT_ROOT/}" | while read; do
         "$PROJECT_ROOT/.trae/file_watcher.sh"
     done > "$PROJECT_ROOT/.trae/watcher.log" 2>&1 &
-    
+
     echo $! > "$PROJECT_ROOT/.trae/watcher.pid"
     log_success "File system watcher installed (PID: $!)"
 }

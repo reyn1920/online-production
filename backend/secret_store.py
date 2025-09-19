@@ -1,899 +1,118 @@
-#!/usr/bin/env python3
-""""""
-Secure Secret Store for TRAE.AI System
-"""""""""
-
-This module provides a production - ready secret storage system using AES encryption
-
-
-with Fernet (symmetric encryption) from the cryptography library. Secrets are
-
-""""""
-
-stored in an encrypted SQLite database.
-
-
-
-""""""
-
-Security Features:
-- AES encryption using Fernet (cryptographically secure)
-- Key derivation using PBKDF2 with salt
-- Secure random salt generation
-- SQLite database with encrypted values
-- Input validation and sanitization
-
-
-
-Author: TRAE.AI System
-Version: 1.0.0
-
-"""
-
-import base64
-import logging
 import os
-import secrets
-import sqlite3
-from pathlib import Path
-from typing import Dict, List, Optional
-
-from cryptography.fernet import Fernet
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+from typing import Any, Optional
+from datetime import datetime
+import logging
 
 
-class SecretStoreError(Exception):
-    """
-Custom exception for SecretStore operations
-
-
-   
-""""""
-
-    pass
-   
-
-    
-   
-"""
 class SecretStore:
-   """
+    """Secret Store for managing sensitive configuration and API keys"""
 
-    
-   
-
-    TODO: Add documentation
-   
-""""""
-
-   
-
-    
-   
-"""
-    Production - ready secure secret storage system.
-   """"""
-    
-   """
-
-    This class provides encrypted storage of sensitive data using industry - standard
-    cryptographic practices. All secrets are encrypted before storage and decrypted
-    only when retrieved.
-
-    Attributes:
-        db_path (Path): Path to the SQLite database file:
-        master_key (bytes): Master encryption key derived from password
-        fernet (Fernet): Encryption/decryption handler
-   
-
-    
-   
-"""
-    def __init__(
-        self,
-        db_path: str = "data/secrets.sqlite",
-        master_password: Optional[str] = None,
-#     ):
-        """"""
-
-       
-
-        
-       
-"""
-        Initialize the SecretStore.
-       """
-
-        
-       
-
-        Args:
-            db_path (str): Path to the SQLite database file
-            master_password (str, optional): Master password for encryption.
-                                           If None, will use environment variable TRAE_MASTER_KEY
-       
-""""""
-
-        Initialize the SecretStore.
-       
-
-        
-       
-"""
-        Note:
-            If no master password is provided, the SecretStore will operate in disabled mode
-            where all operations return None/False gracefully instead of raising errors.
-       """
-
-        
-       
-
-        self.db_path = Path(db_path)
-       
-""""""
-
-        self.db_path.parent.mkdir(parents=True, exist_ok=True)
-       
-
-        
-       
-"""
-        # Setup logging first
+    def __init__(self, config: Optional[dict[str, Any]] = None):
+        self.config = config or {}
+        self.secrets = {}
         self.logger = logging.getLogger(__name__)
-       """
-
-        
-       
-
-        self.db_path.parent.mkdir(parents=True, exist_ok=True)
-       
-""""""
-
-       
-
-
-        
-
-       
-"""
-        # Get master password from parameter or environment
-       """
-
-        
-       
-
-        if master_password is None:
-       
-""""""
-
-        # Get master password from parameter or environment
-       
-
-        
-       
-"""
-            master_password = os.getenv("TRAE_MASTER_KEY")
-
-        if not master_password:
-            # Degrade gracefully - enter disabled mode
-            self.logger.warning(
-                "No master password provided. SecretStore operating in disabled mode. "
-                "Set TRAE_MASTER_KEY environment variable to enable secret storage."
-             )
-            self._disabled = True
-            self.fernet = None
-            return
-
-        # Initialize encryption
-        self._disabled = False
-        self._setup_encryption(master_password)
-
-        # Initialize database
-        self._init_database()
-
-    def _setup_encryption(self, master_password: str) -> None:
-        """"""
-
-       
-
-        
-       
-"""
-        Setup encryption using PBKDF2 key derivation and Fernet encryption.
-       """
-
-        
-       
-
-        Args:
-            master_password (str): Master password for key derivation
-       
-""""""
-
-       
-
-        
-       
-"""
-        # Get or create salt
-       """"""
-        
-       """
-
-        Setup encryption using PBKDF2 key derivation and Fernet encryption.
-       
-
-        
-       
-""""""
-
-        
-       
-
-        salt = self._get_or_create_salt()
-       
-""""""
-
-        # Derive key using PBKDF2
-       
-
-        
-       
-"""
-        salt = self._get_or_create_salt()
-       """
-
-        
-       
-
-        kdf = PBKDF2HMAC(
-            algorithm=hashes.SHA256(),
-            length=32,
-            salt=salt,
-            iterations=100000,  # OWASP recommended minimum
-         )
-
-        key = base64.urlsafe_b64encode(kdf.derive(master_password.encode()))
-        self.fernet = Fernet(key)
-
-    def _get_or_create_salt(self) -> bytes:
-       
-"""
-    TODO: Add documentation
-    """
-
-    TODO: Add documentation
-   
-
-    
-   
-""""""
-
-        
-       
-
-        Get existing salt from database or create a new one.
-       
-""""""
-
-       
-
-        
-       
-"""
-        Returns:
-            bytes: Cryptographic salt for key derivation
-       """"""
-        salt_file = self.db_path.parent / ".salt"
-
-        if salt_file.exists():
-            with open(salt_file, "rb") as f:
-                return f.read()
-        else:
-            # Generate cryptographically secure random salt
-            salt = secrets.token_bytes(32)
-            with open(salt_file, "wb") as f:
-                f.write(salt)
-            # Set restrictive permissions (owner read/write only)
-            os.chmod(salt_file, 0o600)
-            return salt
-
-    def _init_database(self) -> None:
-       """
-
-        
-       
-
-    TODO: Add documentation
-   
-""""""
-
-        Initialize the SQLite database with the secrets table.
-       
-
-        
-       
-"""
-        with sqlite3.connect(self.db_path) as conn:
-            conn.execute(
-                """"""
-
-                CREATE TABLE IF NOT EXISTS secrets (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        key_name TEXT UNIQUE NOT NULL,
-                        encrypted_value BLOB NOT NULL,
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                 )
-           
-
-            
-           
-""""""
-
-             
-            
-
-             )
-            
-""""""
-
-       
-
-        
-       
-"""
-            # Create index for faster lookups
-            conn.execute(
-               """
-
-                
-               
-
-                CREATE INDEX IF NOT EXISTS idx_key_name ON secrets(key_name)
-            
-""""""
-
-            
-
-             
-            
-"""
-             )
-            """"""
-
-            
-
-           """
-
-            conn.commit()
-           
-
-            
-           
-""""""
-
-             
-            
-
-             )
-            
-""""""
-
-    def store_secret(self, key_name: str, secret_value: str) -> bool:
-       
-
-        
-       
-""""""
-
-        
-       
-
-        Store a secret with encryption.
-       
-""""""
-
-        Args:
-            key_name (str): Unique identifier for the secret
-            secret_value (str): The secret value to encrypt and store
-       
-
-        
-       
-"""
-        Store a secret with encryption.
-       """
-
-        
-       
-
-        Returns:
-            bool: True if successful, False if disabled or failed
-
-        Raises:
-            SecretStoreError: If storage operation fails (only when not disabled)
-       
-""""""
-
-       
-
-        
-       
-"""
-        # Return False gracefully if in disabled mode
-       """"""
-        if getattr(self, "_disabled", False):
-            self.logger.debug(f"SecretStore disabled - cannot store secret: {key_name}")
-       """
-
-        
-       
-
-        # Return False gracefully if in disabled mode
-       
-""""""
-            return False
-
-        try:
-            # Validate inputs
-            if not key_name or not isinstance(key_name, str):
-                raise SecretStoreError("Key name must be a non - empty string")
-
-            if not secret_value or not isinstance(secret_value, str):
-                raise SecretStoreError("Secret value must be a non - empty string")
-
-            # Encrypt the secret
-            encrypted_value = self.fernet.encrypt(secret_value.encode())
-
-            with sqlite3.connect(self.db_path) as conn:
-                conn.execute(
-                    """"""
-
-                    INSERT OR REPLACE INTO secrets (key_name,
-    encrypted_value,
-#     updated_at)
-                    VALUES (?, ?, CURRENT_TIMESTAMP)
-                
-,
-"""
-                    (key_name, encrypted_value),
-                 )
-               """
-
-                
-               
-
-                conn.commit()
-               
-""""""
-            self.logger.info(f"Secret stored successfully: {key_name}")
-               """
-
-                
-               
-
-                conn.commit()
-               
-""""""
-            return True
-
-        except Exception as e:
-            self.logger.error(f"Failed to store secret {key_name}: {str(e)}")
-            raise SecretStoreError(f"Failed to store secret: {str(e)}")
-
-    def get_secret(self, key_name: str) -> Optional[str]:
-        """"""
-
-       
-
-        
-       
-"""
-        Retrieve and decrypt a secret.
-       """
-
-        
-       
-
-        Args:
-            key_name (str): Unique identifier for the secret
-       
-""""""
-
-        Retrieve and decrypt a secret.
-       
-
-        
-       
-"""
-        Returns:
-            str: Decrypted secret value, or None if not found or in disabled mode
-
-        Raises:
-            SecretStoreError: If retrieval or decryption fails (only when not disabled)
-       """"""
-        
-       """
-
-        # Return None gracefully if in disabled mode
-       
-
-        
-       
-"""
-        if getattr(self, "_disabled", False):
-            self.logger.debug(f"SecretStore disabled - returning None for key: {key_name}")
-       """
-
-        
-       
-
-        # Return None gracefully if in disabled mode
-       
-""""""
-            return None
-
-        try:
-            if not key_name or not isinstance(key_name, str):
-                raise SecretStoreError("Key name must be a non - empty string")
-
-            with sqlite3.connect(self.db_path) as conn:
-                cursor = conn.execute(
-                    "SELECT encrypted_value FROM secrets WHERE key_name = ?",
-                    (key_name,),
-                 )
-                row = cursor.fetchone()
-
-            if row is None:
-                return None
-
-            # Decrypt the secret
-            encrypted_value = row[0]
-            decrypted_value = self.fernet.decrypt(encrypted_value).decode()
-
-            self.logger.info(f"Secret retrieved successfully: {key_name}")
-            return decrypted_value
-
-        except Exception as e:
-            self.logger.error(f"Failed to retrieve secret {key_name}: {str(e)}")
-            raise SecretStoreError(f"Failed to retrieve secret: {str(e)}")
-
-    def delete_secret(self, key_name: str) -> bool:
-        """"""
-
-       
-
-        
-       
-"""
-        Delete a secret from the store.
-       """
-
-        
-       
-
-        Args:
-            key_name (str): Unique identifier for the secret
-       
-""""""
-
-        Delete a secret from the store.
-       
-
-        
-       
-"""
-        Returns:
-            bool: True if deleted, False if not found or disabled
-
-        Raises:
-            SecretStoreError: If deletion fails (only when not disabled)
-       """"""
-        
-       """
-
-        # Return False gracefully if in disabled mode
-       
-
-        
-       
-"""
-        if getattr(self, "_disabled", False):
-            self.logger.debug(f"SecretStore disabled - cannot delete secret: {key_name}")
-       """
-
-        
-       
-
-        # Return False gracefully if in disabled mode
-       
-""""""
-            return False
-
-        try:
-            if not key_name or not isinstance(key_name, str):
-                raise SecretStoreError("Key name must be a non - empty string")
-
-            with sqlite3.connect(self.db_path) as conn:
-                cursor = conn.execute("DELETE FROM secrets WHERE key_name = ?", (key_name,))
-                conn.commit()
-
-                deleted = cursor.rowcount > 0
-
-            if deleted:
-                self.logger.info(f"Secret deleted successfully: {key_name}")
-            else:
-                self.logger.warning(f"Secret not found for deletion: {key_name}")
-
-            return deleted
-
-        except Exception as e:
-            self.logger.error(f"Failed to delete secret {key_name}: {str(e)}")
-            raise SecretStoreError(f"Failed to delete secret: {str(e)}")
-
-    def list_secrets(self) -> List[Dict[str, str]]:
-       """
-
-        
-       
-
-    TODO: Add documentation
-   
-""""""
-
-           
-
-            
-           
-"""
-            List all stored secrets (metadata only, not values).
-           """"""
-        
-       """
-
-            Returns:
-                List[Dict]: List of secret metadata (key_name,
-        created_at,
-#         updated_at),
-        empty list if disabled
-       
-
-        
-       
-""""""
-
-        
-       
-
-        # Return empty list gracefully if in disabled mode
-       
-""""""
-        if getattr(self, "_disabled", False):
-            self.logger.debug("SecretStore disabled - returning empty secrets list")
-       """
-
-        
-       
-
-        # Return empty list gracefully if in disabled mode
-       
-""""""
-
-            return []
-
-        try:
-            with sqlite3.connect(self.db_path) as conn:
-                conn.row_factory = sqlite3.Row
-                cursor = conn.execute(
-                   
-
-                    
-                   
-"""
-                    SELECT key_name, created_at, updated_at
-                    FROM secrets
-                    ORDER BY key_name
-                """"""
-
-                
-
-                 
-                
-"""
-                 )
-                """"""
-                secrets = [dict(row) for row in cursor.fetchall()]
-
-            self.logger.info(f"Listed {len(secrets)} secrets")
-            return secrets
-
-        except Exception as e:
-            self.logger.error(f"Failed to list secrets: {str(e)}")
-            raise SecretStoreError(f"Failed to list secrets: {str(e)}")
-
-    def secret_exists(self, key_name: str) -> bool:
-        """"""
-
-       
-
-        
-       
-"""
-        Check if a secret exists in the store.
-       """
-
-        
-       
-
-        Args:
-            key_name (str): Unique identifier for the secret
-       
-""""""
-
-        Check if a secret exists in the store.
-       
-
-        
-       
-"""
-        Returns:
-            bool: True if secret exists, False otherwise or if disabled
-       """"""
-        
-       """
-
-        # Return False gracefully if in disabled mode
-       
-
-        
-       
-"""
-        if getattr(self, "_disabled", False):
-            self.logger.debug(
-                f"SecretStore disabled - returning False for secret existence: {key_name}"
-             )
-       """
-
-        
-       
-
-        # Return False gracefully if in disabled mode
-       
-""""""
-            return False
-
-        try:
-            with sqlite3.connect(self.db_path) as conn:
-                cursor = conn.execute(
-                    "SELECT 1 FROM secrets WHERE key_name = ? LIMIT 1", (key_name,)
-                 )
-                return cursor.fetchone() is not None
-
-        except Exception as e:
-            self.logger.error(f"Failed to check secret existence {key_name}: {str(e)}")
-            return False
-
-    def backup_secrets(self, backup_path: str) -> bool:
-        """"""
-
-       
-
-        
-       
-"""
-        Create a backup of the secrets database.
-       """
-
-        
-       
-
-        Args:
-            backup_path (str): Path for the backup file
-       
-""""""
-
-        Create a backup of the secrets database.
-       
-
-        
-       
-"""
-        Returns:
-            bool: True if backup successful, False otherwise
-       """"""
-        try:
-        """"""
-            """
-
-            import shutil
-            
-
-        
-"""
-        try:
-        """"""
-            backup_path = Path(backup_path)
-            backup_path.parent.mkdir(parents=True, exist_ok=True)
-
-            # Copy database file
-            shutil.copy2(self.db_path, backup_path)
-
-            # Copy salt file
-            salt_file = self.db_path.parent / ".salt"
-            if salt_file.exists():
-                backup_salt = backup_path.parent / ".salt"
-                shutil.copy2(salt_file, backup_salt)
-
-            self.logger.info(f"Secrets backed up to: {backup_path}")
-            return True
-
-        except Exception as e:
-            self.logger.error(f"Failed to backup secrets: {str(e)}")
-            return False
-
-    def __enter__(self):
-        """
-Context manager entry
-
-        
-"""
-        return self
-        """"""
-        """
-
-
-        return self
-
-        
-
-       
-""""""
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        """
-        Context manager exit
-        """
-        # Cleanup if needed
-       """
-
-        
-       
-
-        pass
-       
-""""""
-if __name__ == "__main__":
-    # Example usage and testing
-
-    import os
-    import tempfile
-
-    # Set up test environment
-    os.environ["TRAE_MASTER_KEY"] = "test_master_password_123"
-
-    with tempfile.TemporaryDirectory() as temp_dir:
-        db_path = os.path.join(temp_dir, "test_secrets.sqlite")
-
-        # Test the SecretStore
-        with SecretStore(db_path) as store:
-            # Store some test secrets
-            store.store_secret("api_key", "sk - 1234567890abcdef")
-            store.store_secret("database_url", "postgresql://user:pass@localhost/db")
-
-            # Retrieve secrets
-            api_key = store.get_secret("api_key")
-            print(f"Retrieved API key: {api_key}")
-
-            # List all secrets
-            secrets = store.list_secrets()
-            print(f"All secrets: {secrets}")
-
-            # Check existence
-            exists = store.secret_exists("api_key")
-            print(f"API key exists: {exists}")
-
-            # Delete a secret
-            deleted = store.delete_secret("api_key")
-            print(f"API key deleted: {deleted}")
+        self._load_secrets()
+
+    def _load_secrets(self):
+        """Load secrets from environment variables and config"""
+        # Load from environment variables
+        env_secrets = {
+            "openai_api_key": os.getenv("OPENAI_API_KEY"),
+            "anthropic_api_key": os.getenv("ANTHROPIC_API_KEY"),
+            "google_api_key": os.getenv("GOOGLE_API_KEY"),
+            "database_url": os.getenv("DATABASE_URL"),
+            "redis_url": os.getenv("REDIS_URL"),
+            "jwt_secret": os.getenv("JWT_SECRET"),
+            "encryption_key": os.getenv("ENCRYPTION_KEY"),
+        }
+
+        # Filter out None values
+        self.secrets = {k: v for k, v in env_secrets.items() if v is not None}
+
+        # Load additional secrets from config
+        if "secrets" in self.config:
+            self.secrets.update(self.config["secrets"])
+
+        self.logger.info(f"Loaded {len(self.secrets)} secrets")
+
+    def get_secret(self, key: str, default: Optional[str] = None) -> Optional[str]:
+        """Get a secret by key"""
+        secret = self.secrets.get(key, default)
+        if secret is None:
+            self.logger.warning(f"Secret '{key}' not found")
+        return secret
+
+    def set_secret(self, key: str, value: str) -> None:
+        """Set a secret (runtime only, not persisted)"""
+        self.secrets[key] = value
+        self.logger.info(f"Secret '{key}' updated")
+
+    def has_secret(self, key: str) -> bool:
+        """Check if a secret exists"""
+        return key in self.secrets and self.secrets[key] is not None
+
+    def get_database_config(self) -> dict[str, Any]:
+        """Get database configuration"""
+        return {
+            "url": self.get_secret("database_url", "sqlite:///./app.db"),
+            "echo": False,
+            "pool_pre_ping": True,
+        }
+
+    def get_redis_config(self) -> dict[str, Any]:
+        """Get Redis configuration"""
+        return {
+            "url": self.get_secret("redis_url", "redis://localhost:6379"),
+            "decode_responses": True,
+        }
+
+    def get_jwt_config(self) -> dict[str, Any]:
+        """Get JWT configuration"""
+        return {
+            "secret": self.get_secret(
+                "jwt_secret", "default-jwt-secret-change-in-production"
+            ),
+            "algorithm": "HS256",
+            "expire_minutes": 30,
+        }
+
+    def get_api_keys(self) -> dict[str, str]:
+        """Get all API keys (filtered)"""
+        api_keys = {}
+        for key, value in self.secrets.items():
+            if "api_key" in key.lower() and value:
+                api_keys[key] = value
+        return api_keys
+
+    def validate_required_secrets(self, required_keys: list[str]) -> dict[str, bool]:
+        """Validate that required secrets are present"""
+        validation_result = {}
+        for key in required_keys:
+            validation_result[key] = self.has_secret(key)
+            if not validation_result[key]:
+                self.logger.error(f"Required secret '{key}' is missing")
+        return validation_result
+
+    def get_encryption_key(self) -> str:
+        """Get encryption key for sensitive data"""
+        return (
+            self.get_secret(
+                "encryption_key", "default-encryption-key-change-in-production"
+            )
+            or "default-encryption-key-change-in-production"
+        )
+
+    def mask_secret(self, secret: str) -> str:
+        """Mask a secret for logging purposes"""
+        if not secret or len(secret) < 8:
+            return "***"
+        return secret[:4] + "*" * (len(secret) - 8) + secret[-4:]
+
+    def get_status(self) -> dict[str, Any]:
+        """Get secret store status"""
+        return {
+            "total_secrets": len(self.secrets),
+            "available_secrets": list(self.secrets.keys()),
+            "masked_values": {k: self.mask_secret(v) for k, v in self.secrets.items()},
+            "timestamp": datetime.now().isoformat(),
+        }

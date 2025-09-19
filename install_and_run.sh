@@ -234,7 +234,7 @@ class Settings(BaseSettings):
     secret_key: str = "your-secret-key-change-in-production"
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
-    
+
     class Config:
         env_file = ".env"
 
@@ -277,7 +277,7 @@ from app.core.database import Base
 
 class BaseModel(Base):
     __abstract__ = True
-    
+
     id = Column(Integer, primary_key=True, index=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
@@ -290,7 +290,7 @@ from .base import BaseModel
 
 class User(BaseModel):
     __tablename__ = "users"
-    
+
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean, default=True)
@@ -312,10 +312,10 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 class UserRepository:
     def __init__(self, db: Session):
         self.db = db
-    
+
     def get_by_email(self, email: str) -> User | None:
         return self.db.query(User).filter(User.email == email).first()
-    
+
     def create(self, user_data: UserCreate) -> User:
         hashed_password = pwd_context.hash(user_data.password)
         user = User(
@@ -347,7 +347,7 @@ class UserResponse(UserBase):
     id: int
     is_active: bool
     created_at: datetime
-    
+
     class Config:
         from_attributes = True
 EOF
@@ -402,22 +402,22 @@ REQUEST_DURATION = Histogram(
 class PrometheusMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         start_time = time.time()
-        
+
         response = await call_next(request)
-        
+
         duration = time.time() - start_time
-        
+
         REQUEST_COUNT.labels(
             method=request.method,
             endpoint=request.url.path,
             status_code=response.status_code
         ).inc()
-        
+
         REQUEST_DURATION.labels(
             method=request.method,
             endpoint=request.url.path
         ).observe(duration)
-        
+
         return response
 
 def get_metrics():
@@ -456,17 +456,17 @@ router = APIRouter()
 class ConnectionManager:
     def __init__(self):
         self.active_connections: List[WebSocket] = []
-    
+
     async def connect(self, websocket: WebSocket):
         await websocket.accept()
         self.active_connections.append(websocket)
-    
+
     def disconnect(self, websocket: WebSocket):
         self.active_connections.remove(websocket)
-    
+
     async def send_personal_message(self, message: str, websocket: WebSocket):
         await websocket.send_text(message)
-    
+
     async def broadcast(self, message: str):
         for connection in self.active_connections:
             await connection.send_text(message)
@@ -480,14 +480,14 @@ async def websocket_endpoint(websocket: WebSocket):
         while True:
             data = await websocket.receive_text()
             message = json.loads(data)
-            
+
             # Echo the message back
             response = {
                 "type": "echo",
                 "data": message,
                 "timestamp": asyncio.get_event_loop().time()
             }
-            
+
             await manager.send_personal_message(json.dumps(response), websocket)
     except WebSocketDisconnect:
         manager.disconnect(websocket)
@@ -512,7 +512,7 @@ def create_app() -> FastAPI:
         version="1.0.0",
         debug=settings.debug
     )
-    
+
     # Add CORS middleware
     app.add_middleware(
         CORSMiddleware,
@@ -521,17 +521,17 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
-    
+
     # Add Prometheus middleware
     app.add_middleware(PrometheusMiddleware)
-    
+
     # Include routers
     app.include_router(health.router, tags=["health"])
     app.include_router(websocket.router, tags=["websocket"])
-    
+
     # Metrics endpoint
     app.get("/metrics")(get_metrics)
-    
+
     return app
 
 app = create_app()

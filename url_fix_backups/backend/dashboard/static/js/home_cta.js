@@ -39,20 +39,20 @@
                 z-index: 1000;
                 overflow: hidden;
             }
-            
+
             #creative-sandbox-fab:hover {
                 width: 180px;
                 border-radius: 30px;
                 transform: translateY(-2px);
                 box-shadow: 0 8px 30px rgba(0, 212, 255, 0.4);
             }
-            
+
             #creative-sandbox-fab .fab-icon {
                 font-size: 24px;
                 transition: all 0.3s ease;
                 flex-shrink: 0;
             }
-            
+
             #creative-sandbox-fab .fab-text {
                 font-size: 14px;
                 font-weight: 600;
@@ -63,20 +63,20 @@
                 transition: all 0.3s ease;
                 white-space: nowrap;
             }
-            
+
             #creative-sandbox-fab:hover .fab-text {
                 opacity: 1;
                 transform: translateX(0);
             }
-            
+
             #creative-sandbox-fab:hover .fab-icon {
                 transform: scale(0.9);
             }
-            
+
             #creative-sandbox-fab:active {
                 transform: translateY(-2px) scale(0.95);
             }
-            
+
             /* Pulse animation for attention */
             @keyframes fab-pulse {
                 0% {
@@ -89,11 +89,11 @@
                     box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3);
                 }
             }
-            
+
             #creative-sandbox-fab.pulse {
                 animation: fab-pulse 2s infinite;
             }
-            
+
             /* Mobile responsive */
             @media (max-width: 768px) {
                 #creative-sandbox-fab {
@@ -102,16 +102,16 @@
                     width: 50px;
                     height: 50px;
                 }
-                
+
                 #creative-sandbox-fab .fab-icon {
                     font-size: 20px;
                 }
-                
+
                 #creative-sandbox-fab:hover {
                     width: 50px;
                     border-radius: 50%;
                 }
-                
+
                 #creative-sandbox-fab .fab-text {
                     display: none;
                 }

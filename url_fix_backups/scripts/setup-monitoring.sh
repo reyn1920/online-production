@@ -32,7 +32,7 @@ wait_for_deployment() {
     local namespace=$1
     local deployment=$2
     local timeout=${3:-300}
-    
+
     echo -e "${YELLOW}⏳ Waiting for $deployment to be ready...${NC}"
     kubectl wait --for=condition=available --timeout=${timeout}s deployment/$deployment -n $namespace
     echo -e "${GREEN}✅ $deployment is ready${NC}"
@@ -86,17 +86,17 @@ mkdir -p logs
 # Setup Kubernetes monitoring (if kubectl is configured)
 if kubectl cluster-info >/dev/null 2>&1; then
     echo -e "${BLUE}☸️  Setting up Kubernetes monitoring...${NC}"
-    
+
     # Create namespaces
     create_namespace $MONITORING_NAMESPACE
     create_namespace $APP_NAMESPACE
-    
+
     # Add Prometheus Helm repository
     echo -e "${YELLOW}📦 Adding Prometheus Helm repository...${NC}"
     helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
     helm repo add grafana https://grafana.github.io/helm-charts
     helm repo update
-    
+
     # Install Prometheus Stack
     echo -e "${YELLOW}🔧 Installing Prometheus Stack...${NC}"
     helm upgrade --install prometheus-stack prometheus-community/kube-prometheus-stack \
@@ -110,34 +110,34 @@ if kubectl cluster-info >/dev/null 2>&1; then
         --set grafana.persistence.enabled=true \
         --set grafana.persistence.size=10Gi \
         --set alertmanager.alertmanagerSpec.storage.volumeClaimTemplate.spec.resources.requests.storage=10Gi
-    
+
     # Wait for deployments
     wait_for_deployment $MONITORING_NAMESPACE prometheus-stack-kube-prom-operator
     wait_for_deployment $MONITORING_NAMESPACE prometheus-stack-grafana
-    
+
     # Apply custom alert rules
     echo -e "${YELLOW}📋 Applying custom alert rules...${NC}"
     kubectl create configmap prometheus-alert-rules \
         --from-file=monitoring/alert-rules.yml \
         --namespace=$MONITORING_NAMESPACE \
         --dry-run=client -o yaml | kubectl apply -f -
-    
+
     # Apply HPA configuration
     echo -e "${YELLOW}⚖️  Applying HPA configuration...${NC}"
     kubectl apply -f k8s/hpa-config.yaml -n $APP_NAMESPACE
-    
+
     # Create Grafana dashboard ConfigMap
     echo -e "${YELLOW}📊 Creating Grafana dashboard...${NC}"
     kubectl create configmap grafana-dashboard-trae-ai \
         --from-file=monitoring/grafana_dashboards.json \
         --namespace=$MONITORING_NAMESPACE \
         --dry-run=client -o yaml | kubectl apply -f -
-    
+
     # Label the ConfigMap for Grafana to pick it up
     kubectl label configmap grafana-dashboard-trae-ai \
         grafana_dashboard=1 \
         --namespace=$MONITORING_NAMESPACE
-    
+
     echo -e "${GREEN}✅ Kubernetes monitoring setup complete${NC}"
 else
     echo -e "${YELLOW}⚠️  Kubernetes cluster not accessible, skipping K8s setup${NC}"
@@ -165,35 +165,35 @@ scrape_configs:
   - job_name: 'prometheus'
     static_configs:
       - targets: ['localhost:9090']
-  
+
   - job_name: 'node-exporter'
     static_configs:
       - targets: ['node-exporter:9100']
-  
+
   - job_name: 'cadvisor'
     static_configs:
       - targets: ['cadvisor:8080']
-  
+
   - job_name: 'trae-ai-backend'
     static_configs:
       - targets: ['backend:8000']
     metrics_path: '/metrics'
-  
+
   - job_name: 'trae-ai-api'
     static_configs:
       - targets: ['api:3000']
     metrics_path: '/metrics'
-  
+
   - job_name: 'trae-ai-content-agent'
     static_configs:
       - targets: ['content-agent:5000']
     metrics_path: '/metrics'
-  
+
   - job_name: 'trae-ai-marketing-agent'
     static_configs:
       - targets: ['marketing-agent:5001']
     metrics_path: '/metrics'
-  
+
   - job_name: 'haproxy'
     static_configs:
       - targets: ['load-balancer:8404']

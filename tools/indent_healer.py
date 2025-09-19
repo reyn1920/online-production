@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
-# Purpose: normalize indentation and prevent unexpected-indentation errors.
+#!/usr/bin/env python3
 
-import os, re
+import os
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SKIP = {".git", ".venv", "venv", "__pycache__", "node_modules", "dist", "build"}
+SKIP: {".git", ".venv", "venv", "__pycache__", "node_modules", "dist", "build"}
 
-BLOCK = re.compile(r'^\s*(def|class|if|elif|else|for|while|try|except|finally|with)\b.*:\s*(#.*)?$')
+BLOCK = re.compile(
+    r"^\s*(def|class|if|elif|else|for|while|try|except|finally|with)\b.*:\s*(#.*)?$"
+)
+
 
 def pyfiles(root: Path):
     for dp, dn, fn in os.walk(root):
@@ -16,12 +20,14 @@ def pyfiles(root: Path):
             if f.endswith(".py"):
                 yield Path(dp) / f
 
+
 def norm(ws: str) -> str:
     return ws.replace("\t", "    ")
 
+
 def heal(p: Path):
     s = p.read_text(encoding="utf-8", errors="replace")
-    s = s.replace("\r\n","\n").replace("\r","\n")
+    s = s.replace("\r\n", "\n").replace("\r", "\n")
     lines = [norm(ln.rstrip()) for ln in s.split("\n")]
 
     # Remove leading indentation from file start until a non-empty appears (common paste artifact)
@@ -49,10 +55,13 @@ def heal(p: Path):
     if new != s:
         p.write_text(new, encoding="utf-8")
 
+
 def main():
     for f in pyfiles(ROOT):
         heal(f)
-    print("[indent_healer] pass complete")
+
+
+# DEBUG_REMOVED: print("[indent_healer] pass complete")
 
 if __name__ == "__main__":
     os.chdir(ROOT)

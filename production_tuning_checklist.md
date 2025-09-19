@@ -5,7 +5,7 @@ After completing your baseline FastAPI performance testing, use this checklist t
 
 ## 📊 Current Baseline Results
 - ✅ FastAPI `/api/status`: 797 req/s, 1.59ms avg latency
-- ✅ Paste app `/paste/`: 613 req/s 
+- ✅ Paste app `/paste/`: 613 req/s
 - ✅ Root endpoint `/`: 821 req/s
 - ⚠️ Target: 2k-5k req/s for simple endpoints
 
@@ -32,7 +32,7 @@ python start_fastapi_optimized.py --gunicorn
 # Test 3 workers
 gunicorn app.main:app -w 3 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000
 
-# Test 4 workers  
+# Test 4 workers
 gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000
 ```
 **Target:** Find sweet spot between throughput and memory usage
@@ -104,13 +104,13 @@ async def get_cached_data(key: str):
 #/etc/nginx/sites-available/your-app
 server {
     listen 443 ssl http2;
-    
+
     # Compression
     gzip on;
     gzip_vary on;
     gzip_min_length 1024;
     gzip_types text/plain text/css application/json application/javascript;
-    
+
     # Brotli (better compression)
     brotli on;
     brotli_comp_level 6;
@@ -151,7 +151,7 @@ server {
         limit_req zone=api burst=20 nodelay;
         proxy_pass http://fastapi_backend;
     }
-    
+
     # Security headers
     add_header X-Frame-Options DENY;
     add_header X-Content-Type-Options nosniff;
@@ -180,10 +180,10 @@ async def metrics_middleware(request, call_next):
     start_time = time.time()
     response = await call_next(request)
     duration = time.time() - start_time
-    
+
     REQUEST_COUNT.labels(request.method, request.url.path).inc()
     REQUEST_DURATION.observe(duration)
-    
+
     return response
 ```
 
@@ -209,9 +209,9 @@ logger = structlog.get_logger()
 @app.middleware("http")
 async def logging_middleware(request, call_next):
     start_time = time.time()
-    
+
     response = await call_next(request)
-    
+
     logger.info(
         "request_completed",
         method=request.method,
@@ -219,7 +219,7 @@ async def logging_middleware(request, call_next):
         status_code=response.status_code,
         duration=time.time() - start_time
     )
-    
+
     return response
 ```
 
@@ -268,7 +268,7 @@ location/static/{
     alias/path/to/static/files/;
     expires 1y;
     add_header Cache-Control "public, immutable";
-    
+
     # Enable compression for static files
     gzip_static on;
     brotli_static on;
@@ -305,15 +305,15 @@ from locust import HttpUser, task, between
 
 class WebsiteUser(HttpUser):
     wait_time = between(1, 3)
-    
+
     @task(3)
     def view_status(self):
         self.client.get("/api/status")
-    
+
     @task(2)
     def view_paste(self):
         self.client.get("/paste/")
-    
+
     @task(1)
     def create_paste(self):
         self.client.post("/paste/", json={
@@ -329,7 +329,7 @@ python fastapi_performance_baseline.py
 
 # Target metrics after optimization:
 # - Simple endpoints: 5k-10k req/s
-# - Database queries: 2k-5k req/s  
+# - Database queries: 2k-5k req/s
 # - p95 latency: <25ms
 # - p99 latency: <100ms
 # - Memory usage: <4GB total

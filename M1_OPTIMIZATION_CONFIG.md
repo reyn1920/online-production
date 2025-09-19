@@ -129,7 +129,7 @@ class ContentGenerator:
     def __init__(self):
         self.max_concurrent = 8  # M1 8-core optimization
         self.semaphore = asyncio.Semaphore(self.max_concurrent)
-    
+
     async def generate_content(self, requests):
         tasks = []
         for request in requests:
@@ -188,18 +188,18 @@ class M1ResourceMonitor:
     def __init__(self):
         self.memory_threshold = 0.85  # 85% of 16GB
         self.cpu_threshold = 0.80     # 80% CPU usage
-    
+
     async def monitor_resources(self):
         while True:
             memory_percent = psutil.virtual_memory().percent / 100
             cpu_percent = psutil.cpu_percent(interval=1) / 100
-            
+
             if memory_percent > self.memory_threshold:
                 await self.trigger_memory_cleanup()
-            
+
             if cpu_percent > self.cpu_threshold:
                 await self.throttle_operations()
-            
+
             await asyncio.sleep(30)  # Check every 30 seconds
 ```
 
@@ -256,7 +256,7 @@ services:
         reservations:
           memory: 2G
           cpus: '1.0'
-  
+
   database:
     image: postgres:14-alpine
     platform: linux/arm64
@@ -269,7 +269,7 @@ services:
         limits:
           memory: 2G
           cpus: '1.0'
-  
+
   redis:
     image: redis:7-alpine
     platform: linux/arm64
@@ -304,23 +304,23 @@ jobs:
     runs-on: macos-latest  # M1 runners
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Python for M1
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
           architecture: 'arm64'
-      
+
       - name: Install ARM64 dependencies
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
-      
+
       - name: Build ARM64 Docker images
         run: |
           docker buildx create --use --platform=linux/arm64
           docker buildx build --platform=linux/arm64 -t traeai:latest .
-      
+
       - name: Deploy to production
         run: |
           docker-compose -f docker-compose.prod.yml up -d

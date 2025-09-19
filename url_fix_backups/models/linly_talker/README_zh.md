@@ -22,7 +22,7 @@
 **2024.01 更新** 📆
 
 - **令人兴奋的消息！我现在已经将强大的GeminiPro和Qwen大模型融入到我们的对话场景中。用户现在可以在对话中上传任何图片，为我们的互动增添了全新的层面。**
-- **更新了FastAPI的部署调用方法。** 
+- **更新了FastAPI的部署调用方法。**
 - **更新了微软TTS的高级设置选项，增加声音种类的多样性，以及加入视频字幕加强可视化。**
 - **更新了GPT多轮对话系统，使得对话有上下文联系，提高数字人的交互性和真实感。**
 
@@ -239,10 +239,10 @@ pip install -r requirements_webui.txt
 
 # 安装有关musetalk依赖
 pip install --no-cache-dir -U  openmim
-mim install mmengine 
-mim install "mmcv==2.1.0" 
-mim install "mmdet>=3.1.0" 
-mim install "mmpose>=1.1.0" 
+mim install mmengine
+mim install "mmcv==2.1.0"
+mim install "mmdet>=3.1.0"
+mim install "mmpose>=1.1.0"
 
 # 💡CosyVoice的ttsfrd可以用WeTextProcessing代替，所以可以省略一下几步，同时保证能够在其他python版本中运行
 
@@ -285,32 +285,32 @@ sudo yum install sox sox-devel
 > 首先使用anaconda安装环境，安装pytorch环境，具体操作如下：
 >
 > ```bash
-> conda create -n linly python=3.10  
+> conda create -n linly python=3.10
 > conda activate linly
-> 
+>
 > # pytorch安装方式1：conda安装（推荐）
 > conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit=11.3 -c pytorch
-> 
+>
 > # pytorch安装方式2：pip 安装
 > pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu113
-> 
+>
 > conda install -q ffmpeg # ffmpeg==4.2.2
-> 
+>
 > pip install -r requirements_app.txt
 > ```
 >
 > 若使用语音克隆等模型，需要更高版本的Pytorch，但是功能也会更加丰富，不过需要的驱动版本可能要到cuda11.8，可选择
 >
 > ```bash
-> conda create -n linly python=3.10  
+> conda create -n linly python=3.10
 > conda activate linly
-> 
+>
 > pip install torch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2 --index-url https://download.pytorch.org/whl/cu118
-> 
+>
 > conda install -q ffmpeg # ffmpeg==4.2.2
-> 
+>
 > pip install -r requirements_app.txt
-> 
+>
 > # 安装语音克隆对应的依赖
 > pip install -r VITS/requirements_gptsovits.txt
 > ```
@@ -321,11 +321,11 @@ sudo yum install sox sox-devel
 > # 安装NeRF对应的依赖
 > pip install "git+https://github.com/facebookresearch/pytorch3d.git"
 > pip install -r TFG/requirements_nerf.txt
-> 
+>
 > # 若pyaudio出现问题，可安装对应依赖
 > # sudo apt-get update
 > # sudo apt-get install libasound-dev portaudio19-dev libportaudio2 libportaudiocpp0
-> 
+>
 > # 注意以下几个模块，若安装不成功，可以进入路径利用pip install . 或者 python setup.py install编译安装
 > # NeRF/freqencoder
 > # NeRF/gridencoder
@@ -348,12 +348,12 @@ sudo yum install sox sox-devel
 > 若使用MuesTalk模型，可安装环境
 >
 > ```bash
-> pip install --no-cache-dir -U openmim 
-> mim install mmengine 
-> mim install "mmcv>=2.0.1" 
-> mim install "mmdet>=3.1.0" 
-> mim install "mmpose>=1.1.0" 
-> pip install -r TFG/requirements_musetalk.txt 
+> pip install --no-cache-dir -U openmim
+> mim install mmengine
+> mim install "mmcv>=2.0.1"
+> mim install "mmdet>=3.1.0"
+> mim install "mmpose>=1.1.0"
+> pip install -r TFG/requirements_musetalk.txt
 > ```
 >
 
@@ -365,7 +365,7 @@ sudo yum install sox sox-devel
 >
 > - [Baidu (百度云盘)](https://pan.baidu.com/s/1eF13O-8wyw4B3MtesctQyg?pwd=linl) (Password: `linl`)
 > - [huggingface](https://huggingface.co/Kedreamix/Linly-Talker)
-> - [modelscope](https://www.modelscope.cn/models/Kedreamix/Linly-Talker/summary) 
+> - [modelscope](https://www.modelscope.cn/models/Kedreamix/Linly-Talker/summary)
 > - [Quark(夸克网盘)](https://pan.quark.cn/s/f48f5e35796b)
 >
 
@@ -444,7 +444,7 @@ port = 6006
 mode = 'api' # api 需要先运行Linly-api-fast.py，暂时仅仅适用于Linly
 
 # 本地端口localhost:127.0.0.1 全局端口转发:"0.0.0.0"
-ip = '127.0.0.1' 
+ip = '127.0.0.1'
 api_port = 7871
 
 # LLM模型路径 (Linly model path)
@@ -632,7 +632,7 @@ CosyVoice 包含多个预训练的语音合成模型，主要包括：
 在使用前先下载SadTalker模型:
 
 ```bash
-bash scripts/sadtalker_download_models.sh  
+bash scripts/sadtalker_download_models.sh
 ```
 
 [Baidu (百度云盘)](https://pan.baidu.com/s/1eF13O-8wyw4B3MtesctQyg?pwd=linl) (Password: `linl`)
@@ -769,7 +769,7 @@ Linly来自深圳大学数据工程国家重点实验室，参考 [https://githu
 
 - 使用OpenCV生成最终视频,比mimwrite更快
 
-  
+
 
 ## Gradio
 
@@ -907,7 +907,7 @@ python app_musetalk.py
 权重文件夹结构如下
 
 ```bash
-Linly-Talker/ 
+Linly-Talker/
 ├── checkpoints
 │   ├── audio_visual_encoder.pth
 │   ├── hub
@@ -1042,7 +1042,7 @@ Linly-Talker/
 
 **TTS**
 
-- [https://github.com/rany2/edge-tts](https://github.com/rany2/edge-tts)  
+- [https://github.com/rany2/edge-tts](https://github.com/rany2/edge-tts)
 - [https://github.com/PaddlePaddle/PaddleSpeech](https://github.com/PaddlePaddle/PaddleSpeech)
 
 **LLM**
@@ -1077,4 +1077,3 @@ Linly-Talker/
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=Kedreamix/Linly-Talker&type=Date)](https://star-history.com/#Kedreamix/Linly-Talker&Date)
-

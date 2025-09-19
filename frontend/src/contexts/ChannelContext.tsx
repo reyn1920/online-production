@@ -148,16 +148,16 @@ const channelReducer = (state: ChannelState, action: ChannelAction): ChannelStat
   switch (action.type) {
     case 'SET_LOADING':
       return { ...state, loading: action.payload };
-    
+
     case 'SET_ERROR':
       return { ...state, error: action.payload, loading: false };
-    
+
     case 'SET_CHANNELS':
       return { ...state, channels: action.payload, loading: false, error: null };
-    
+
     case 'SET_ACTIVE_CHANNEL':
       return { ...state, activeChannel: action.payload };
-    
+
     case 'ADD_CHANNEL':
       return {
         ...state,
@@ -165,7 +165,7 @@ const channelReducer = (state: ChannelState, action: ChannelAction): ChannelStat
         loading: false,
         error: null,
       };
-    
+
     case 'UPDATE_CHANNEL':
       return {
         ...state,
@@ -178,7 +178,7 @@ const channelReducer = (state: ChannelState, action: ChannelAction): ChannelStat
           ? { ...state.activeChannel, ...action.payload.updates, updatedAt: new Date().toISOString() }
           : state.activeChannel,
       };
-    
+
     case 'DELETE_CHANNEL':
       return {
         ...state,
@@ -188,7 +188,7 @@ const channelReducer = (state: ChannelState, action: ChannelAction): ChannelStat
           Object.entries(state.channelContent).filter(([channelId]) => channelId !== action.payload)
         ),
       };
-    
+
     case 'SET_CHANNEL_CONTENT':
       return {
         ...state,
@@ -197,7 +197,7 @@ const channelReducer = (state: ChannelState, action: ChannelAction): ChannelStat
           [action.payload.channelId]: action.payload.content,
         },
       };
-    
+
     case 'ADD_CONTENT':
       const channelId = action.payload.channelId;
       return {
@@ -207,7 +207,7 @@ const channelReducer = (state: ChannelState, action: ChannelAction): ChannelStat
           [channelId]: [...(state.channelContent[channelId] || []), action.payload],
         },
       };
-    
+
     case 'UPDATE_CONTENT':
       return {
         ...state,
@@ -222,7 +222,7 @@ const channelReducer = (state: ChannelState, action: ChannelAction): ChannelStat
           ])
         ),
       };
-    
+
     case 'DELETE_CONTENT':
       return {
         ...state,
@@ -233,7 +233,7 @@ const channelReducer = (state: ChannelState, action: ChannelAction): ChannelStat
           ])
         ),
       };
-    
+
     default:
       return state;
   }
@@ -247,7 +247,7 @@ const mockApi = {
   getChannels: async (): Promise<Channel[]> => {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 500));
-    
+
     // Return core channels with generated IDs and timestamps
     return CORE_CHANNELS.map((channel, index) => ({
       ...channel,
@@ -256,10 +256,10 @@ const mockApi = {
       updatedAt: new Date().toISOString(),
     }));
   },
-  
+
   createChannel: async (channelData: Omit<Channel, 'id' | 'createdAt' | 'updatedAt'>): Promise<Channel> => {
     await new Promise(resolve => setTimeout(resolve, 300));
-    
+
     return {
       ...channelData,
       id: `channel_${Date.now()}`,
@@ -267,18 +267,18 @@ const mockApi = {
       updatedAt: new Date().toISOString(),
     };
   },
-  
+
   updateChannel: async (id: string, updates: Partial<Channel>): Promise<void> => {
     await new Promise(resolve => setTimeout(resolve, 300));
   },
-  
+
   deleteChannel: async (id: string): Promise<void> => {
     await new Promise(resolve => setTimeout(resolve, 300));
   },
-  
+
   getChannelContent: async (channelId: string): Promise<ChannelContent[]> => {
     await new Promise(resolve => setTimeout(resolve, 300));
-    
+
     // Return mock content
     return [
       {
@@ -295,10 +295,10 @@ const mockApi = {
       },
     ];
   },
-  
+
   createContent: async (contentData: Omit<ChannelContent, 'id' | 'createdAt' | 'updatedAt'>): Promise<ChannelContent> => {
     await new Promise(resolve => setTimeout(resolve, 300));
-    
+
     return {
       ...contentData,
       id: `content_${Date.now()}`,
@@ -306,11 +306,11 @@ const mockApi = {
       updatedAt: new Date().toISOString(),
     };
   },
-  
+
   updateContent: async (id: string, updates: Partial<ChannelContent>): Promise<void> => {
     await new Promise(resolve => setTimeout(resolve, 300));
   },
-  
+
   deleteContent: async (id: string): Promise<void> => {
     await new Promise(resolve => setTimeout(resolve, 300));
   },
@@ -449,11 +449,11 @@ export const ChannelProvider: React.FC<{ children: ReactNode }> = ({ children })
 // Hook to use channel context
 export const useChannel = (): ChannelContextType => {
   const context = useContext(ChannelContext);
-  
+
   if (context === undefined) {
     throw new Error('useChannel must be used within a ChannelProvider');
   }
-  
+
   return context;
 };
 

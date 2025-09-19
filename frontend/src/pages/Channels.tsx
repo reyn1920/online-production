@@ -5,21 +5,21 @@ import { useTheme } from '../contexts/ThemeContext';
 import { Channel, ChannelContent } from '../contexts/ChannelContext';
 
 const Channels: React.FC = () => {
-  const { 
+  const {
     state: { channels, activeChannel },
-    setActiveChannel, 
-    createChannel, 
-    updateChannel, 
+    setActiveChannel,
+    createChannel,
+    updateChannel,
     deleteChannel,
     createContent,
     updateContent,
     deleteContent,
     getContentByChannel
   } = useChannel();
-  
+
   const { user } = useAuth();
   const { actualTheme } = useTheme();
-  
+
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showContentModal, setShowContentModal] = useState(false);
   const [selectedChannel, setSelectedChannel] = useState<Channel | null>(null);
@@ -36,10 +36,10 @@ const Channels: React.FC = () => {
     tags: [] as string[]
   });
   const [tagInput, setTagInput] = useState('');
-  
+
   // Get content for active channel
   const channelContent = activeChannel ? getContentByChannel(activeChannel.id) : [];
-  
+
   // Mock stats calculation
   const channelStats = activeChannel ? {
     contentCount: channelContent.length,
@@ -47,7 +47,7 @@ const Channels: React.FC = () => {
     totalViews: Math.floor(Math.random() * 1000) + 100,
     avgEngagement: Math.random() * 100
   } : null;
-  
+
   const handleCreateChannel = async () => {
     try {
       await createChannel({
@@ -65,10 +65,10 @@ const Channels: React.FC = () => {
       console.error('Failed to create channel:', error);
     }
   };
-  
+
   const handleCreateContent = async () => {
     if (!activeChannel) return;
-    
+
     try {
       await createContent({
         ...newContentData,
@@ -84,7 +84,7 @@ const Channels: React.FC = () => {
       console.error('Failed to create content:', error);
     }
   };
-  
+
   const handleAddTag = () => {
     if (tagInput.trim() && !newContentData.tags.includes(tagInput.trim())) {
       setNewContentData(prev => ({
@@ -94,14 +94,14 @@ const Channels: React.FC = () => {
       setTagInput('');
     }
   };
-  
+
   const handleRemoveTag = (tagToRemove: string) => {
     setNewContentData(prev => ({
       ...prev,
       tags: prev.tags.filter(tag => tag !== tagToRemove)
     }));
   };
-  
+
   const getCategoryIcon = (category: string) => {
     switch (category) {
       case 'research': return '🔬';
@@ -111,7 +111,7 @@ const Channels: React.FC = () => {
       default: return '📁';
     }
   };
-  
+
   const getContentTypeIcon = (type: string) => {
     switch (type) {
       case 'text': return '📄';
@@ -122,7 +122,7 @@ const Channels: React.FC = () => {
       default: return '📄';
     }
   };
-  
+
   return (
     <div className={`min-h-screen p-6 ${
       actualTheme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'
@@ -150,7 +150,7 @@ const Channels: React.FC = () => {
             Create Channel
           </button>
         </div>
-        
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Channels List */}
           <div className={`lg:col-span-1 ${
@@ -161,7 +161,7 @@ const Channels: React.FC = () => {
             }`}>
               Channels ({channels.length})
             </h2>
-            
+
             <div className="space-y-3">
               {channels.map((channel) => {
                 const content = getContentByChannel(channel.id);
@@ -170,7 +170,7 @@ const Channels: React.FC = () => {
                   memberCount: Math.floor(Math.random() * 50) + 10
                 };
                 const isActive = activeChannel?.id === channel.id;
-                
+
                 return (
                   <div
                     key={channel.id}
@@ -207,7 +207,7 @@ const Channels: React.FC = () => {
                         </span>
                       )}
                     </div>
-                    
+
                     {stats && (
                       <div className="mt-3 flex gap-4 text-sm">
                         <span className={actualTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'}>
@@ -223,7 +223,7 @@ const Channels: React.FC = () => {
               })}
             </div>
           </div>
-          
+
           {/* Channel Content */}
           <div className={`lg:col-span-2 ${
             actualTheme === 'dark' ? 'bg-gray-800' : 'bg-white'
@@ -252,7 +252,7 @@ const Channels: React.FC = () => {
                     Add Content
                   </button>
                 </div>
-                
+
                 {/* Channel Stats */}
                 {channelStats && (
                   <div className="grid grid-cols-4 gap-4 mb-6">
@@ -314,7 +314,7 @@ const Channels: React.FC = () => {
                     </div>
                   </div>
                 )}
-                
+
                 {/* Content List */}
                 <div className="space-y-4">
                   {channelContent.length > 0 ? (
@@ -391,7 +391,7 @@ const Channels: React.FC = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Create Channel Modal */}
       {showCreateModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -403,7 +403,7 @@ const Channels: React.FC = () => {
             }`}>
               Create New Channel
             </h3>
-            
+
             <div className="space-y-4">
               <div>
                 <label className={`block text-sm font-medium mb-1 ${
@@ -423,7 +423,7 @@ const Channels: React.FC = () => {
                   placeholder="Enter channel name"
                 />
               </div>
-              
+
               <div>
                 <label className={`block text-sm font-medium mb-1 ${
                   actualTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'
@@ -442,7 +442,7 @@ const Channels: React.FC = () => {
                   placeholder="Describe your channel"
                 />
               </div>
-              
+
               <div>
                 <label className={`block text-sm font-medium mb-1 ${
                   actualTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'
@@ -465,7 +465,7 @@ const Channels: React.FC = () => {
                   <option value="ai">🤖 AI</option>
                 </select>
               </div>
-              
+
               <div className="flex items-center">
                 <input
                   type="checkbox"
@@ -481,7 +481,7 @@ const Channels: React.FC = () => {
                 </label>
               </div>
             </div>
-            
+
             <div className="flex gap-3 mt-6">
               <button
                 onClick={() => setShowCreateModal(false)}
@@ -504,7 +504,7 @@ const Channels: React.FC = () => {
           </div>
         </div>
       )}
-      
+
       {/* Create Content Modal */}
       {showContentModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -516,7 +516,7 @@ const Channels: React.FC = () => {
             }`}>
               Add Content to {activeChannel?.name}
             </h3>
-            
+
             <div className="space-y-4">
               <div>
                 <label className={`block text-sm font-medium mb-1 ${
@@ -536,7 +536,7 @@ const Channels: React.FC = () => {
                   placeholder="Enter content title"
                 />
               </div>
-              
+
               <div>
                 <label className={`block text-sm font-medium mb-1 ${
                   actualTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'
@@ -555,7 +555,7 @@ const Channels: React.FC = () => {
                   placeholder="Enter your content"
                 />
               </div>
-              
+
               <div>
                 <label className={`block text-sm font-medium mb-1 ${
                   actualTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'
@@ -578,7 +578,7 @@ const Channels: React.FC = () => {
                   <option value="document">📋 Document</option>
                 </select>
               </div>
-              
+
               <div>
                 <label className={`block text-sm font-medium mb-1 ${
                   actualTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'
@@ -625,7 +625,7 @@ const Channels: React.FC = () => {
                 )}
               </div>
             </div>
-            
+
             <div className="flex gap-3 mt-6">
               <button
                 onClick={() => setShowContentModal(false)}

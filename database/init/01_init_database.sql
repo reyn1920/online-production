@@ -315,7 +315,7 @@ CREATE TRIGGER update_marketing_campaigns_updated_at BEFORE UPDATE ON marketing_
 
 -- Create views for analytics and reporting
 CREATE VIEW user_revenue_summary AS
-SELECT 
+SELECT
     u.id,
     u.email,
     u.first_name,
@@ -331,7 +331,7 @@ LEFT JOIN subscriptions s ON u.id = s.user_id AND s.status = 'active'
 GROUP BY u.id, u.email, u.first_name, u.last_name, s.plan_name, s.status;
 
 CREATE VIEW daily_revenue_summary AS
-SELECT 
+SELECT
     DATE(recorded_at) as revenue_date,
     revenue_stream,
     COUNT(*) as transaction_count,
@@ -342,7 +342,7 @@ GROUP BY DATE(recorded_at), revenue_stream
 ORDER BY revenue_date DESC, revenue_stream;
 
 CREATE VIEW agent_performance_summary AS
-SELECT 
+SELECT
     a.id,
     a.name,
     a.type,
@@ -358,7 +358,7 @@ GROUP BY a.id, a.name, a.type, a.status;
 
 -- Insert default AI agents
 INSERT INTO ai_agents (name, type, description, configuration, capabilities) VALUES
-('Content Creator', 'content', 'AI agent specialized in creating high-quality written content', 
+('Content Creator', 'content', 'AI agent specialized in creating high-quality written content',
  '{"model": "gpt-4", "max_tokens": 4000, "temperature": 0.7}',
  '{"content_types": ["articles", "blog_posts", "social_media"], "languages": ["en", "es", "fr"]}'),
 
@@ -384,7 +384,7 @@ INSERT INTO users (email, password_hash, first_name, last_name, role, email_veri
 
 -- Create sample subscription plans data
 INSERT INTO subscriptions (user_id, plan_name, status, monthly_price, yearly_price, features, usage_limits)
-SELECT 
+SELECT
     u.id,
     'Free Trial',
     'trial',

@@ -201,13 +201,13 @@
                         <p class="text-sm opacity-90">Modern Production Dashboard</p>
                     </div>
                 </div>
-                
+
                 <div class="flex items-center space-x-6">
                     <div class="live-indicator">
                         <div class="status-indicator status-live"></div>
                         <span>System Live</span>
                     </div>
-                    
+
                     <div class="text-right">
                         <div class="text-sm opacity-90">Last Updated</div>
                         <div id="currentTime" class="font-semibold"></div>
@@ -224,16 +224,16 @@
             <div class="glass-card rounded-2xl p-8 text-center">
                 <h2 class="text-2xl font-bold mb-4 text-gray-800">System Health & Testing</h2>
                 <p class="text-gray-600 mb-6">Run comprehensive system tests with one click</p>
-                
+
                 <button id="runSystemTest" class="test-button">
                     <i class="fas fa-play mr-3"></i>
                     Run Complete System Test
                 </button>
-                
+
                 <div id="testProgress" class="hidden mt-6">
                     <div class="flex justify-center mb-4">
                         <svg class="progress-ring" width="80" height="80">
-                            <circle class="progress-ring-circle" stroke="#10b981" stroke-width="4" 
+                            <circle class="progress-ring-circle" stroke="#10b981" stroke-width="4"
                                     fill="transparent" r="40" cx="40" cy="40"/>
                         </svg>
                     </div>
@@ -249,7 +249,7 @@
                     <i class="fas fa-shield-alt mr-2 text-green-500"></i>
                     Live System Validation
                 </h3>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="metric-card-modern">
                         <div class="flex items-center justify-between mb-3">
@@ -259,7 +259,7 @@
                         <div id="apiCount" class="text-3xl font-bold text-green-500">120+</div>
                         <div class="text-sm text-gray-500">APIs Registered</div>
                     </div>
-                    
+
                     <div class="metric-card-modern">
                         <div class="flex items-center justify-between mb-3">
                             <h4 class="font-semibold text-gray-700">System Load</h4>
@@ -268,7 +268,7 @@
                         <div id="systemLoad" class="text-3xl font-bold text-blue-500">23%</div>
                         <div class="text-sm text-gray-500">CPU Usage</div>
                     </div>
-                    
+
                     <div class="metric-card-modern">
                         <div class="flex items-center justify-between mb-3">
                             <h4 class="font-semibold text-gray-700">Uptime</h4>
@@ -290,19 +290,19 @@
                     <h4 class="font-semibold">Agent Control</h4>
                     <p class="text-sm text-gray-600">Monitor & control AI agents</p>
                 </div>
-                
+
                 <div class="action-card" onclick="openModule('database')">
                     <i class="fas fa-database text-3xl text-green-500 mb-3"></i>
                     <h4 class="font-semibold">Database Explorer</h4>
                     <p class="text-sm text-gray-600">Browse system data</p>
                 </div>
-                
+
                 <div class="action-card" onclick="openModule('reports')">
                     <i class="fas fa-chart-line text-3xl text-purple-500 mb-3"></i>
                     <h4 class="font-semibold">Analytics</h4>
                     <p class="text-sm text-gray-600">View performance metrics</p>
                 </div>
-                
+
                 <div class="action-card" onclick="openModule('settings')">
                     <i class="fas fa-cog text-3xl text-orange-500 mb-3"></i>
                     <h4 class="font-semibold">System Settings</h4>
@@ -318,7 +318,7 @@
                 <strong>Benchmark Quality Standards</strong>
             </div>
             <p class="text-sm text-gray-700">
-                This dashboard follows reference-quality benchmarks for correctness, clarity, and professionalism 
+                This dashboard follows reference-quality benchmarks for correctness, clarity, and professionalism
                 as established by leading AI platforms including ChatGPT, Gemini, and Abacus AI.
             </p>
         </section>
@@ -347,25 +347,25 @@
 
         // System test functionality
         let testRunning = false;
-        
+
         document.getElementById('runSystemTest').addEventListener('click', function() {
             if (testRunning) return;
-            
+
             testRunning = true;
             const button = this;
             const progress = document.getElementById('testProgress');
             const results = document.getElementById('testResults');
             const terminal = document.getElementById('terminalOutput');
             const status = document.getElementById('testStatus');
-            
+
             // Update button state
             button.classList.add('running');
             button.innerHTML = '<i class="fas fa-spinner fa-spin mr-3"></i>Running Tests...';
-            
+
             // Show progress
             progress.classList.remove('hidden');
             progress.classList.add('slide-in');
-            
+
             // Simulate comprehensive testing
             const tests = [
                 'Initializing test environment...',
@@ -379,34 +379,34 @@
                 'Testing backup procedures...',
                 'Finalizing health check...'
             ];
-            
+
             let currentTest = 0;
             const testInterval = setInterval(() => {
                 if (currentTest < tests.length) {
                     status.textContent = tests[currentTest];
                     terminal.innerHTML += `\n[${new Date().toLocaleTimeString()}] ${tests[currentTest]}`;
-                    
+
                     // Update progress ring
                     const progress = ((currentTest + 1) / tests.length) * 251.2;
                     document.querySelector('.progress-ring-circle').style.strokeDashoffset = 251.2 - progress;
-                    
+
                     currentTest++;
                 } else {
                     clearInterval(testInterval);
-                    
+
                     // Test completed
                     status.textContent = 'All tests completed successfully!';
                     terminal.innerHTML += `\n[${new Date().toLocaleTimeString()}] ✅ System test completed - All systems operational`;
-                    
+
                     // Update button state
                     button.classList.remove('running');
                     button.classList.add('success');
                     button.innerHTML = '<i class="fas fa-check mr-3"></i>Tests Completed Successfully';
-                    
+
                     // Show results
                     results.classList.remove('hidden');
                     results.classList.add('slide-in');
-                    
+
                     // Reset after 5 seconds
                     setTimeout(() => {
                         button.classList.remove('success');
@@ -423,10 +423,10 @@
             // Simulate real-time updates
             const load = Math.floor(Math.random() * 30) + 15;
             document.getElementById('systemLoad').textContent = load + '%';
-            
+
             const uptime = (99.5 + Math.random() * 0.4).toFixed(1);
             document.getElementById('systemUptime').textContent = uptime + '%';
-            
+
             // Update status indicators based on values
             const loadStatus = document.getElementById('loadStatus');
             if (load > 80) {
@@ -437,7 +437,7 @@
                 loadStatus.className = 'status-indicator status-live';
             }
         }
-        
+
         setInterval(updateLiveMetrics, 3000);
         updateLiveMetrics();
 
@@ -446,7 +446,7 @@
             // Simulate module opening with smooth transition
             const card = event.currentTarget;
             card.style.transform = 'scale(0.95)';
-            
+
             setTimeout(() => {
                 card.style.transform = 'scale(1)';
                 // Here you would typically navigate to the specific module
@@ -458,10 +458,10 @@
         // Initialize dashboard
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Modern TRAE.AI Dashboard initialized');
-            
+
             // Add smooth scrolling
             document.documentElement.style.scrollBehavior = 'smooth';
-            
+
             // Initialize all cards with slide-in animation
             const cards = document.querySelectorAll('.metric-card-modern, .action-card, .glass-card');
             cards.forEach((card, index) => {

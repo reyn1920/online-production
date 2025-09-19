@@ -91,20 +91,20 @@ echo ""
 # Security Checks
 check_security() {
     log_info "Running security compliance checks..."
-    
+
     # Check for hardcoded secrets
     log_info "Scanning for hardcoded secrets..."
     if command -v grep >/dev/null 2>&1; then
         # Common secret patterns
         SECRET_PATTERNS=(
-            "api_key\s*=\s*['\"][^'\"]+['\"]" 
-            "password\s*=\s*['\"][^'\"]+['\"]" 
-            "secret\s*=\s*['\"][^'\"]+['\"]" 
-            "token\s*=\s*['\"][^'\"]+['\"]" 
-            "sk-[a-zA-Z0-9]{32,}" 
-            "ghp_[a-zA-Z0-9]{36}" 
+            "api_key\s*=\s*['\"][^'\"]+['\"]"
+            "password\s*=\s*['\"][^'\"]+['\"]"
+            "secret\s*=\s*['\"][^'\"]+['\"]"
+            "token\s*=\s*['\"][^'\"]+['\"]"
+            "sk-[a-zA-Z0-9]{32,}"
+            "ghp_[a-zA-Z0-9]{36}"
         )
-        
+
         for pattern in "${SECRET_PATTERNS[@]}"; do
             if grep -r -i -E "$pattern" --exclude-dir=.git --exclude-dir=venv --exclude-dir=node_modules --exclude="*.log" "$PROJECT_ROOT" >/dev/null 2>&1; then
                 log_error "Potential hardcoded secret found (pattern: $pattern)"
@@ -116,7 +116,7 @@ check_security() {
     else
         log_warning "grep not available, skipping secret scan"
     fi
-    
+
     # Check .env files are in .gitignore
     log_info "Checking .env file protection..."
     if [ -f "$PROJECT_ROOT/.gitignore" ]; then
@@ -133,7 +133,7 @@ check_security() {
     else
         log_error ".gitignore file not found"
     fi
-    
+
     # Run Rule-1 scanner if available
     log_info "Running Rule-1 content scanner..."
     if [ -f "$PROJECT_ROOT/tools/audits/rule1_scan.py" ]; then
@@ -145,7 +145,7 @@ check_security() {
     else
         log_warning "Rule-1 scanner not found"
     fi
-    
+
     # Check for HTTPS in production configs
     log_info "Checking HTTPS configuration..."
     if grep -r "http://" --include="*.py" --include="*.js" --include="*.json" "$PROJECT_ROOT" | grep -v "localhost" | grep -v "127.0.0.1" >/dev/null 2>&1; then
@@ -158,7 +158,7 @@ check_security() {
 # Code Quality Checks
 check_quality() {
     log_info "Running code quality checks..."
-    
+
     # Check Python code with flake8 if available
     if command -v flake8 >/dev/null 2>&1; then
         log_info "Running Python linting..."
@@ -173,7 +173,7 @@ check_quality() {
     else
         log_warning "flake8 not available, skipping Python linting"
     fi
-    
+
     # Check for TODO/FIXME comments
     log_info "Scanning for TODO/FIXME comments..."
     TODO_COUNT=$(grep -r -i "TODO\|FIXME" --exclude-dir=.git --exclude-dir=venv --exclude-dir=node_modules "$PROJECT_ROOT" | wc -l || echo "0")
@@ -182,7 +182,7 @@ check_quality() {
     else
         log_success "No pending TODO/FIXME items"
     fi
-    
+
     # Check for proper docstrings in Python files
     log_info "Checking Python docstring coverage..."
     PYTHON_FILES=$(find "$PROJECT_ROOT" -name "*.py" -not -path "*/venv/*" -not -path "*/.git/*" | wc -l)
@@ -200,7 +200,7 @@ check_quality() {
 # Project Structure Checks
 check_structure() {
     log_info "Running project structure checks..."
-    
+
     # Check required files exist
     REQUIRED_FILES=(
         "README.md"
@@ -208,7 +208,7 @@ check_structure() {
         ".gitignore"
         "TRAE_RULES.md"
     )
-    
+
     for file in "${REQUIRED_FILES[@]}"; do
         if [ -f "$PROJECT_ROOT/$file" ]; then
             log_success "Required file exists: $file"
@@ -216,7 +216,7 @@ check_structure() {
             log_error "Missing required file: $file"
         fi
     done
-    
+
     # Check directory structure
     REQUIRED_DIRS=(
         "tools"
@@ -224,7 +224,7 @@ check_structure() {
         "backend"
         "tests"
     )
-    
+
     for dir in "${REQUIRED_DIRS[@]}"; do
         if [ -d "$PROJECT_ROOT/$dir" ]; then
             log_success "Required directory exists: $dir"
@@ -236,20 +236,20 @@ check_structure() {
             fi
         fi
     done
-    
+
     # Check for protected files
     if [ -d "$PROJECT_ROOT/tools/dnd" ]; then
         log_success "Protected directory exists: tools/dnd"
     else
         log_warning "Protected directory missing: tools/dnd"
     fi
-    
+
     # Check file permissions
     EXECUTABLE_FILES=(
         "run_rules_check.sh"
         "tools/start_local.py"
     )
-    
+
     for file in "${EXECUTABLE_FILES[@]}"; do
         if [ -f "$PROJECT_ROOT/$file" ]; then
             if [ -x "$PROJECT_ROOT/$file" ]; then

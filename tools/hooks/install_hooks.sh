@@ -83,22 +83,22 @@ install_hook() {
     local hook_name="$1"
     local source_file="$TOOLS_HOOKS_DIR/${hook_name}_guard.sh"
     local target_file="$HOOKS_DIR/$hook_name"
-    
+
     if [ ! -f "$source_file" ]; then
         log_error "Source hook file not found: $source_file"
         return 1
     fi
-    
+
     # Check if hook already exists
     if [ -f "$target_file" ] && [ "$FORCE" = false ]; then
         log_warning "Hook already exists: $hook_name (use --force to overwrite)"
         return 0
     fi
-    
+
     # Copy and make executable
     cp "$source_file" "$target_file"
     chmod +x "$target_file"
-    
+
     log_success "Installed hook: $hook_name"
 }
 
@@ -106,7 +106,7 @@ install_hook() {
 uninstall_hook() {
     local hook_name="$1"
     local target_file="$HOOKS_DIR/$hook_name"
-    
+
     if [ -f "$target_file" ]; then
         rm "$target_file"
         log_success "Uninstalled hook: $hook_name"
@@ -118,14 +118,14 @@ uninstall_hook() {
 # Install all hooks
 install_all_hooks() {
     log_info "Installing Git hooks..."
-    
+
     # List of hooks to install
     local hooks=("pre-commit" "pre-push")
-    
+
     for hook in "${hooks[@]}"; do
         install_hook "$hook"
     done
-    
+
     log_success "All hooks installed successfully!"
     log_info "Hooks will now run automatically on git commit and git push"
     log_info "To bypass hooks temporarily, use: git commit --no-verify"
@@ -134,23 +134,23 @@ install_all_hooks() {
 # Uninstall all hooks
 uninstall_all_hooks() {
     log_info "Uninstalling Git hooks..."
-    
+
     local hooks=("pre-commit" "pre-push")
-    
+
     for hook in "${hooks[@]}"; do
         uninstall_hook "$hook"
     done
-    
+
     log_success "All hooks uninstalled successfully!"
 }
 
 # Verify hook installation
 verify_installation() {
     log_info "Verifying hook installation..."
-    
+
     local hooks=("pre-commit" "pre-push")
     local all_installed=true
-    
+
     for hook in "${hooks[@]}"; do
         local target_file="$HOOKS_DIR/$hook"
         if [ -f "$target_file" ] && [ -x "$target_file" ]; then
@@ -160,7 +160,7 @@ verify_installation() {
             all_installed=false
         fi
     done
-    
+
     if [ "$all_installed" = true ]; then
         log_success "All hooks are properly installed!"
         return 0
@@ -174,15 +174,15 @@ verify_installation() {
 show_status() {
     log_info "Git Hooks Status:"
     echo
-    
+
     local hooks=("pre-commit" "pre-push")
-    
+
     for hook in "${hooks[@]}"; do
         local target_file="$HOOKS_DIR/$hook"
         local source_file="$TOOLS_HOOKS_DIR/${hook}_guard.sh"
-        
+
         echo -n "  $hook: "
-        
+
         if [ -f "$target_file" ]; then
             if [ -x "$target_file" ]; then
                 echo -e "${GREEN}Installed${NC}"
@@ -192,20 +192,20 @@ show_status() {
         else
             echo -e "${RED}Not installed${NC}"
         fi
-        
+
         # Check if source exists
         if [ ! -f "$source_file" ]; then
             echo -e "    ${RED}Warning: Source file missing: $source_file${NC}"
         fi
     done
-    
+
     echo
 }
 
 # Test hooks
 test_hooks() {
     log_info "Testing installed hooks..."
-    
+
     # Test pre-commit hook
     if [ -f "$HOOKS_DIR/pre-commit" ]; then
         log_info "Testing pre-commit hook..."
@@ -215,7 +215,7 @@ test_hooks() {
             log_warning "Pre-commit hook test failed or not supported"
         fi
     fi
-    
+
     # Test pre-push hook
     if [ -f "$HOOKS_DIR/pre-push" ]; then
         log_info "Testing pre-push hook..."

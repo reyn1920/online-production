@@ -495,7 +495,8 @@
       </div>
     </div>
 
-    <script>//Add some interactive elements
+    <script>
+      // Add some interactive elements
       document.addEventListener('DOMContentLoaded', function () {
         const cards = document.querySelectorAll('.component-card');
 
@@ -506,14 +507,18 @@
               this.style.transform = '';
             }, 200);
           });
-        });//Animate status indicators
+        });
+
+        // Animate status indicators
         const statusIndicators = document.querySelectorAll('.status-live');
         statusIndicators.forEach((indicator, index) => {
           setTimeout(() => {
             indicator.style.animation = 'pulse 2s infinite';
           }, index * 100);
         });
-      });//Add CSS animation for pulse effect
+      });
+
+      // Add CSS animation for pulse effect
       const style = document.createElement('style');
       style.textContent = `
             @keyframes pulse {

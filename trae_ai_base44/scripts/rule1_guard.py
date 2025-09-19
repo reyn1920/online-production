@@ -5,6 +5,7 @@ from pathlib import Path
 
 RULE1: re.Pattern[str] = re.compile(r"do\-not\-delete", re.IGNORECASE)
 
+
 def scan_paths(paths: list[Path]) -> list[str]:
     violations: list[str] = []
     for p in paths:
@@ -16,13 +17,12 @@ def scan_paths(paths: list[Path]) -> list[str]:
             violations.append(str(p))
     return violations
 
+
 def main() -> int:
     root = Path(__file__).resolve().parents[2]
     paths: list[Path] = [
-        p for p in root.rglob("*")
-        if p.suffix in {".md", ".txt", ".py", ".json"}
-# BRACKET_SURGEON: disabled
-#     ]
+        p for p in root.rglob("*") if p.suffix in {".md", ".txt", ".py", ".json"}
+    ]
     bad: list[str] = scan_paths(paths)
     if bad:
         print("Rule1 guard violations (do-not-delete markers found):")
@@ -31,6 +31,7 @@ def main() -> int:
         return 1
     print("rule1_guard: OK")
     return 0
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

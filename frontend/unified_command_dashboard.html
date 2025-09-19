@@ -916,7 +916,7 @@
         function updateMetrics() {//Simulate real-time data updates
             systemData.revenue += Math.floor(Math.random() * 100);
             systemData.videos += Math.floor(Math.random() * 3);
-            
+
             document.getElementById('totalRevenue').textContent = `$${systemData.revenue.toLocaleString()}`;
             document.getElementById('videosCreated').textContent = systemData.videos;
         }
@@ -930,7 +930,7 @@
                     item.classList.add('active');
                 }
             });
-            
+
             currentSection = section;
         }
 
@@ -955,7 +955,7 @@
 
         function quickAction(action) {
             console.log(`Executing quick action: ${action}`);
-            
+
             switch(action) {
                 case 'emergency-stop':
                     if (confirm('Are you sure you want to stop all systems?')) {
@@ -986,7 +986,7 @@
             element.classList.toggle('active');
             const setting = element.parentElement.querySelector('span').textContent;
             const isActive = element.classList.contains('active');
-            
+
             console.log(`${setting}: ${isActive ? 'enabled' : 'disabled'}`);
             showNotification(`${setting} ${isActive ? 'enabled' : 'disabled'}`, 'info');
         }
@@ -1070,12 +1070,12 @@
 
         function submitModal() {//Handle form submission based on current modal
             const title = document.getElementById('modalTitle').textContent;
-            
+
             if (title.includes('Campaign')) {
                 const name = document.getElementById('campaignName').value;
                 const type = document.getElementById('campaignType').value;
                 const budget = document.getElementById('campaignBudget').value;
-                
+
                 if (name && type && budget) {
                     console.log('Creating campaign:', { name, type, budget });
                     showNotification(`Campaign "${name}" created successfully`, 'success');
@@ -1087,7 +1087,7 @@
                 const name = document.getElementById('productName').value;
                 const type = document.getElementById('productType').value;
                 const price = document.getElementById('productPrice').value;
-                
+
                 if (name && type && price) {
                     console.log('Creating product:', { name, type, price });
                     showNotification(`Product "${name}" created successfully`, 'success');
@@ -1117,10 +1117,10 @@
                 warning: '#ffaa00',
                 info: '#00d4ff'
             };
-            
+
             notification.style.background = colors[type] || colors.info;
             notification.textContent = message;
-            
+
             document.body.appendChild(notification);//Remove notification after 3 seconds
             setTimeout(() => {
                 notification.style.animation = 'slideOut 0.3s ease';
@@ -1135,7 +1135,7 @@
                 from { transform: translateX(100%); opacity: 0; }
                 to { transform: translateX(0); opacity: 1; }
             }
-            
+
             @keyframes slideOut {
                 from { transform: translateX(0); opacity: 1; }
                 to { transform: translateX(100%); opacity: 0; }

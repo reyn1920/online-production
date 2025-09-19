@@ -31,20 +31,20 @@ check_service() {
     local url=$2
     local max_attempts=30
     local attempt=1
-    
+
     echo -e "${YELLOW}⏳ Checking $service_name...${NC}"
-    
+
     while [ $attempt -le $max_attempts ]; do
         if curl -f -s $url >/dev/null 2>&1; then
             echo -e "${GREEN}✅ $service_name is ready${NC}"
             return 0
         fi
-        
+
         echo -e "${YELLOW}   Attempt $attempt/$max_attempts - waiting for $service_name...${NC}"
         sleep 5
         ((attempt++))
     done
-    
+
     echo -e "${RED}❌ $service_name failed to start${NC}"
     return 1
 }
@@ -165,39 +165,39 @@ echo "Monitoring system metrics and scaling events..."
 # Monitor for 5 minutes while load test runs
 for i in {1..10}; do
     echo -e "\n${YELLOW}📊 Metrics Check $i/10 ($(date))${NC}"
-    
+
     # Get current metrics
     current_cpu=$(curl -s 'http://localhost:9090/api/v1/query?query=system_cpu_usage_percent' | jq -r '.data.result[0].value[1]//"0"')
     current_memory=$(curl -s 'http://localhost:9090/api/v1/query?query=system_memory_usage_percent' | jq -r '.data.result[0].value[1]//"0"')
     current_requests=$(curl -s 'http://localhost:9090/api/v1/query?query=rate(http_requests_total[5m])' | jq -r '.data.result[0].value[1]//"0"')
-    
+
     # Check for scaling events
     scaling_events=$(curl -s 'http://localhost:9090/api/v1/query?query=increase(scaling_events_total[1m])' | jq -r '.data.result | length')
-    
+
     # Check active alerts
     active_alerts=$(curl -s 'http://localhost:9093/api/v1/alerts' | jq -r '.data | length')
-    
+
     echo -e "  CPU: ${current_cpu}% (was ${initial_cpu}%)"
     echo -e "  Memory: ${current_memory}% (was ${initial_memory}%)"
     echo -e "  Requests: ${current_requests} req/s (was ${initial_requests} req/s)"
     echo -e "  Scaling Events: $scaling_events"
     echo -e "  Active Alerts: $active_alerts"
-    
+
     # Check if CPU usage increased significantly
     if (( $(echo "$current_cpu > $initial_cpu + 20" | bc -l) )); then
         echo -e "  ${GREEN}🔥 High CPU usage detected - scaling should trigger!${NC}"
     fi
-    
+
     # Check if scaling events occurred
     if [ "$scaling_events" -gt "0" ]; then
         echo -e "  ${GREEN}⚖️  Scaling events detected!${NC}"
     fi
-    
+
     # Check if alerts are firing
     if [ "$active_alerts" -gt "0" ]; then
         echo -e "  ${YELLOW}🚨 Alerts are firing!${NC}"
     fi
-    
+
     sleep 30
 done
 

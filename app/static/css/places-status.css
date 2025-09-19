@@ -132,27 +132,27 @@
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   .status-legend {
     flex-direction: column;
     gap: 1rem;
     text-align: center;
   }
-  
+
   .places-status-title {
     font-size: 1.5rem;
   }
-  
+
   .clinic-group {
     padding: 1rem;
   }
-  
+
   .provider-item {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
   }
-  
+
   .status-text {
     align-self: flex-end;
   }

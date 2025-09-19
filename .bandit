@@ -93,5 +93,5 @@ tests = [
 # Confidence levels to report
 confidence = ["HIGH", "MEDIUM"]
 
-# Severity levels to report  
+# Severity levels to report
 severity = ["HIGH", "MEDIUM"]

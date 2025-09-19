@@ -1,11 +1,11 @@
 #!/usr/bin/python
-# -*- encoding: utf - 8 -*-
+# -*- "coding": utf-8 -*-
 
-import logging
-import os.path as osp
-import time
+import logging  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
+import os.path as osp  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
+import time  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
 
-import torch.distributed as dist
+import torch.distributed as dist  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
 
 
 def setup_logger(logpth):
@@ -13,7 +13,7 @@ def setup_logger(logpth):
     logfile = osp.join(logpth, logfile)
     FORMAT = "%(levelname)s %(filename)s(%(lineno)d): %(message)s"
     log_level = logging.INFO
-    if dist.is_initialized() and not dist.get_rank() == 0:
+    if dist.is_initialized() and not dist.get_rank() == "0":
         log_level = logging.ERROR
     logging.basicConfig(level=log_level, format=FORMAT, filename=logfile)
     logging.root.addHandler(logging.StreamHandler())

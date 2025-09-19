@@ -15,7 +15,7 @@ services:
     container_name: traeai-backend
     restart: unless-stopped
     platform: linux/arm64
-    
+
     environment:
       - ENVIRONMENT=production
       - PLATFORM=linux/arm64
@@ -42,23 +42,23 @@ services:
       - OMP_NUM_THREADS=2
       - MKL_NUM_THREADS=2
       - OPENBLAS_NUM_THREADS=2
-    
+
     ports:
       - "8000:8000"
-    
+
     volumes:
       - ./logs:/app/logs
       - ./uploads:/app/uploads
       - ./cache:/app/cache
       - ./static:/app/static
       - ./media:/app/media
-    
+
     depends_on:
       database:
         condition: service_healthy
       redis:
         condition: service_healthy
-    
+
     deploy:
       resources:
         limits:
@@ -67,14 +67,14 @@ services:
         reservations:
           memory: 2G
           cpus: '1.0'
-    
+
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
-    
+
     networks:
       - traeai-network
 
@@ -84,19 +84,19 @@ services:
     container_name: traeai-database
     restart: unless-stopped
     platform: linux/arm64
-    
+
     environment:
       - POSTGRES_DB=traeai_prod
       - POSTGRES_USER=traeai
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_INITDB_ARGS="--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
       - PGDATA=/var/lib/postgresql/data/pgdata
-    
+
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./database/init:/docker-entrypoint-initdb.d
       - ./database/postgresql.conf:/etc/postgresql/postgresql.conf
-    
+
     command: >
       postgres
       -c config_file=/etc/postgresql/postgresql.conf
@@ -115,10 +115,10 @@ services:
       -c max_parallel_workers_per_gather=4
       -c max_parallel_workers=8
       -c max_parallel_maintenance_workers=4
-    
+
     ports:
       - "5432:5432"
-    
+
     deploy:
       resources:
         limits:
@@ -127,13 +127,13 @@ services:
         reservations:
           memory: 1G
           cpus: '0.5'
-    
+
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U traeai -d traeai_prod"]
       interval: 10s
       timeout: 5s
       retries: 5
-    
+
     networks:
       - traeai-network
 
@@ -143,7 +143,7 @@ services:
     container_name: traeai-redis
     restart: unless-stopped
     platform: linux/arm64
-    
+
     command: >
       redis-server
       --maxmemory 1gb
@@ -155,13 +155,13 @@ services:
       --appendfsync everysec
       --tcp-keepalive 300
       --timeout 0
-    
+
     volumes:
       - redis_data:/data
-    
+
     ports:
       - "6379:6379"
-    
+
     deploy:
       resources:
         limits:
@@ -170,13 +170,13 @@ services:
         reservations:
           memory: 256M
           cpus: '0.1'
-    
+
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 3s
       retries: 3
-    
+
     networks:
       - traeai-network
 
@@ -189,9 +189,9 @@ services:
     container_name: traeai-celery-worker
     restart: unless-stopped
     platform: linux/arm64
-    
+
     command: celery -A backend.celery_app worker --loglevel=info --concurrency=4 --max-tasks-per-child=1000
-    
+
     environment:
       - ENVIRONMENT=production
       - PLATFORM=linux/arm64
@@ -203,18 +203,18 @@ services:
       - OMP_NUM_THREADS=1
       - MKL_NUM_THREADS=1
       - OPENBLAS_NUM_THREADS=1
-    
+
     volumes:
       - ./logs:/app/logs
       - ./uploads:/app/uploads
       - ./cache:/app/cache
-    
+
     depends_on:
       database:
         condition: service_healthy
       redis:
         condition: service_healthy
-    
+
     deploy:
       resources:
         limits:
@@ -223,7 +223,7 @@ services:
         reservations:
           memory: 512M
           cpus: '0.5'
-    
+
     networks:
       - traeai-network
 
@@ -236,25 +236,25 @@ services:
     container_name: traeai-celery-beat
     restart: unless-stopped
     platform: linux/arm64
-    
+
     command: celery -A backend.celery_app beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
-    
+
     environment:
       - ENVIRONMENT=production
       - PLATFORM=linux/arm64
       - DATABASE_URL=postgresql://traeai:${DB_PASSWORD}@database:5432/traeai_prod
       - REDIS_URL=redis://redis:6379/0
       - SECRET_KEY=${SECRET_KEY}
-    
+
     volumes:
       - ./logs:/app/logs
-    
+
     depends_on:
       database:
         condition: service_healthy
       redis:
         condition: service_healthy
-    
+
     deploy:
       resources:
         limits:
@@ -263,7 +263,7 @@ services:
         reservations:
           memory: 256M
           cpus: '0.1'
-    
+
     networks:
       - traeai-network
 
@@ -273,21 +273,21 @@ services:
     container_name: traeai-nginx
     restart: unless-stopped
     platform: linux/arm64
-    
+
     ports:
       - "80:80"
       - "443:443"
-    
+
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - ./static:/var/www/static:ro
       - ./media:/var/www/media:ro
       - ./ssl:/etc/nginx/ssl:ro
-    
+
     depends_on:
       - backend
-    
+
     deploy:
       resources:
         limits:
@@ -296,7 +296,7 @@ services:
         reservations:
           memory: 128M
           cpus: '0.1'
-    
+
     networks:
       - traeai-network
 
@@ -306,7 +306,7 @@ services:
     container_name: traeai-prometheus
     restart: unless-stopped
     platform: linux/arm64
-    
+
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
@@ -314,14 +314,14 @@ services:
       - '--web.console.templates=/etc/prometheus/consoles'
       - '--storage.tsdb.retention.time=200h'
       - '--web.enable-lifecycle'
-    
+
     volumes:
       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
-    
+
     ports:
       - "9090:9090"
-    
+
     deploy:
       resources:
         limits:
@@ -330,7 +330,7 @@ services:
         reservations:
           memory: 512M
           cpus: '0.1'
-    
+
     networks:
       - traeai-network
 
@@ -340,21 +340,21 @@ services:
     container_name: traeai-grafana
     restart: unless-stopped
     platform: linux/arm64
-    
+
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
       - GF_USERS_ALLOW_SIGN_UP=false
-    
+
     volumes:
       - grafana_data:/var/lib/grafana
       - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
-    
+
     ports:
       - "3000:3000"
-    
+
     depends_on:
       - prometheus
-    
+
     deploy:
       resources:
         limits:
@@ -363,7 +363,7 @@ services:
         reservations:
           memory: 256M
           cpus: '0.1'
-    
+
     networks:
       - traeai-network
 

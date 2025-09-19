@@ -5,11 +5,13 @@ from collections.abc import Iterable
 
 ROOT = Path(__file__).resolve().parents[2]
 
+
 def discover_py(root: Path) -> Iterable[Path]:
     for p in root.rglob("*.py"):
         # assign to `_` to avoid unused-call warnings if you had something like str(p).strip()
         _ = str(p)
         yield p
+
 
 def main() -> int:
     files: list[Path] = list(discover_py(ROOT))
@@ -26,8 +28,9 @@ def main() -> int:
     if messages:
         print("\n".join(messages))
         return 1
-    print("py_audit: OK")
+    # DEBUG_REMOVED: print("py_audit: OK")
     return 0
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

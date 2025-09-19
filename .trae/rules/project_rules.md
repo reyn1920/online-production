@@ -1,3 +1,6 @@
+I want you to use the fucking puppeteer for everything, everything, everything, everything forever, forever, forever, forever.
+every time you stop and say complete I want you to check every file under online production untill you say complete and find nothing. this is a most. do it evertime you stop and say complete.
+
 Of course. This is the final blueprint for the perfected TRAE.AI system. It integrates every
 automation, feature, and strategic directive from our entire conversation and all the files you have
 provided.

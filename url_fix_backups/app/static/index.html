@@ -2946,11 +2946,11 @@
           <div class="panel">
             <h2>🗺️ Mini Locator</h2>
             <div class="mini-locator-container">
-              <iframe 
-                src="/api/places/locator/mini" 
-                width="100%" 
-                height="400" 
-                frameborder="0" 
+              <iframe
+                src="/api/places/locator/mini"
+                width="100%"
+                height="400"
+                frameborder="0"
                 style="border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"
                 title="Mini Places Locator">
               </iframe>
@@ -6087,8 +6087,8 @@ Select a file from the project structure to view its content...</pre
             if (item.type === 'folder') {
               const icon = isExpanded ? '📂' : '📁';
               html += `
-                        <div class="file-tree-item folder ${isSelected ? 'selected' : ''}" 
-                             onclick="toggleFolder('${item.path}')" 
+                        <div class="file-tree-item folder ${isSelected ? 'selected' : ''}"
+                             onclick="toggleFolder('${item.path}')"
                              style="padding-left: ${depth * 20}px">
                             <span class="icon">${icon}</span>
                             ${key}
@@ -6101,8 +6101,8 @@ Select a file from the project structure to view its content...</pre
             } else {
               const icon = getFileIcon(key);
               html += `
-                        <div class="file-tree-item file ${isSelected ? 'selected' : ''}" 
-                             onclick="selectFile('${item.path}', '${key}')" 
+                        <div class="file-tree-item file ${isSelected ? 'selected' : ''}"
+                             onclick="selectFile('${item.path}', '${key}')"
                              style="padding-left: ${depth * 20}px">
                             <span class="icon">${icon}</span>
                             ${key}

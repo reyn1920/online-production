@@ -1,744 +1,598 @@
-#!/usr/bin/env python3
-"""""""""
-Video Engine - Comprehensive Video Generation and Processing System
-""""""
-This module provides a unified interface for video generation, processing,
-and management within the TRAE.AI system. It integrates various video
-creation tools and provides a consistent API for video operations.
-"""
+"""Video processing and analysis engine."""
 
-Video Engine - Comprehensive Video Generation and Processing System
-
-
-
-""""""
-
-
-Features:
-
-
-
-- Video generation from scripts and audio
-- Avatar - based video creation
-- Basic video composition
-- Video processing and effects
-- Batch video generation
-- Integration with existing video tools
-
-Author: TRAE.AI System
-Version: 1.0.0
-
-"""
-
-import asyncio
+from typing import Any, Optional
+from datetime import datetime
 import logging
 import os
-import subprocess
-from dataclasses import dataclass
-from datetime import datetime
-from enum import Enum
+import tempfile
+import hashlib
 from pathlib import Path
-from typing import Any, Dict, List, Optional
 
-# Configure logging
+# Logger setup
 logger = logging.getLogger(__name__)
 
 
-class VideoFormat(Enum):
-    """Supported video formats"""
+class VideoProcessor:
+    """Handles video processing operations."""
 
-    MP4 = "mp4"
-    AVI = "avi"
-    MOV = "mov"
-    WEBM = "webm"
+    def __init__(self):
+        self.supported_formats = [
+            ".mp4",
+            ".avi",
+            ".mov",
+            ".mkv",
+            ".wmv",
+            ".flv",
+            ".webm",
+            ".m4v",
+        ]
+        self.max_file_size = 500 * 1024 * 1024  # 500MB limit
+        self.temp_dir = tempfile.gettempdir()
+
+    def validate_video_file(self, file_path: str) -> dict[str, Any]:
+        """Validate video file format and size."""
+        try:
+            if not file_path or not isinstance(file_path, str):
+                return {"valid": False, "error": "Invalid file path provided"}
+
+            path = Path(file_path)
+
+            # Check if file exists
+            if not path.exists():
+                return {"valid": False, "error": "File does not exist"}
+
+            # Check file extension
+            if path.suffix.lower() not in self.supported_formats:
+                return {
+                    "valid": False,
+                    "error": f"Unsupported format. Supported: {
+                        ', '.join(self.supported_formats)
+                    }",
+                }
+
+            # Check file size
+            file_size = path.stat().st_size
+            if file_size > self.max_file_size:
+                return {
+                    "valid": False,
+                    "error": f"File too large. Maximum size: {self.max_file_size // (1024 * 1024)}MB",
+                }
+
+            return {
+                "valid": True,
+                "file_size": file_size,
+                "format": path.suffix.lower(),
+                "filename": path.name,
+            }
+        except Exception as validation_error:
+            logger.error("Error validating video file: %s", validation_error)
+            return {"valid": False, "error": f"Validation failed: {validation_error}"}
+
+    def get_video_info(self, file_path: str) -> dict[str, Any]:
+        """Get basic video information without external dependencies."""
+        try:
+            validation = self.validate_video_file(file_path)
+            if not validation["valid"]:
+                return validation
+
+            path = Path(file_path)
+            file_stats = path.stat()
+
+            # Basic file information
+            info = {
+                "filename": path.name,
+                "file_size": file_stats.st_size,
+                "format": path.suffix.lower(),
+                "created_time": datetime.fromtimestamp(file_stats.st_ctime).isoformat(),
+                "modified_time": datetime.fromtimestamp(
+                    file_stats.st_mtime
+                ).isoformat(),
+                "file_hash": self._calculate_file_hash(file_path),
+            }
+
+            # Try to get additional metadata if possible
+            try:
+                # This would normally use ffprobe or similar, but we'll provide
+                # basic info
+                info.update(
+                    {
+                        "duration": "unknown",
+                        "resolution": "unknown",
+                        "fps": "unknown",
+                        "codec": "unknown",
+                        "bitrate": "unknown",
+                    }
+                )
+            except Exception as metadata_error:
+                logger.warning(
+                    "Could not extract detailed video metadata: %s", metadata_error
+                )
+
+            return {"valid": True, "info": info}
+        except Exception as info_error:
+            logger.error("Error getting video info: %s", info_error)
+            return {
+                "error": f"Failed to get video info: {info_error}",
+                "file_path": file_path,
+            }
+
+    def _calculate_file_hash(self, file_path: str) -> str:
+        """Calculate SHA-256 hash of file."""
+        try:
+            hash_sha256 = hashlib.sha256()
+            with open(file_path, "rb") as file_handle:
+                # Read file in chunks to handle large files
+                for chunk in iter(lambda: file_handle.read(4096), b""):
+                    hash_sha256.update(chunk)
+            return hash_sha256.hexdigest()
+        except Exception as hash_error:
+            logger.error("Error calculating file hash: %s", hash_error)
+            return "unknown"
+
+    def create_thumbnail(
+        self, file_path: str, output_path: Optional[str] = None, timestamp: float = 1.0
+    ) -> dict[str, Any]:
+        """Create thumbnail from video (placeholder implementation)."""
+        try:
+            validation = self.validate_video_file(file_path)
+            if not validation["valid"]:
+                return validation
+
+            # In a real implementation, this would use ffmpeg or similar
+            # For now, we'll return a placeholder response
+
+            if not output_path:
+                path = Path(file_path)
+                output_path = str(path.parent / f"{path.stem}_thumbnail.jpg")
+
+            return {
+                "success": False,
+                "message": "Thumbnail generation requires ffmpeg or similar video processing library",
+                "output_path": output_path,
+                "timestamp": timestamp,
+                "note": "This is a placeholder implementation",
+            }
+        except Exception as thumbnail_error:
+            logger.error("Error creating thumbnail: %s", thumbnail_error)
+            return {
+                "success": False,
+                "error": f"Thumbnail creation failed: {thumbnail_error}",
+            }
+
+    def extract_frames(
+        self, file_path: str, output_dir: Optional[str] = None, frame_count: int = 10
+    ) -> dict[str, Any]:
+        """Extract frames from video (placeholder implementation)."""
+        try:
+            validation = self.validate_video_file(file_path)
+            if not validation["valid"]:
+                return validation
+
+            if not output_dir:
+                output_dir = os.path.join(self.temp_dir, "video_frames")
+
+            # Create output directory if it doesn't exist
+            os.makedirs(output_dir, exist_ok=True)
+
+            return {
+                "success": False,
+                "message": "Frame extraction requires ffmpeg or similar video processing library",
+                "output_dir": output_dir,
+                "requested_frames": frame_count,
+                "note": "This is a placeholder implementation",
+            }
+        except Exception as frame_error:
+            logger.error("Error extracting frames: %s", frame_error)
+            return {
+                "success": False,
+                "error": f"Frame extraction failed: {frame_error}",
+            }
 
 
-class VideoQuality(Enum):
-    """Video quality presets"""
+class VideoAnalyzer:
+    """Analyzes video content for various properties."""
 
-    LOW = "low"
-    MEDIUM = "medium"
-    HIGH = "high"
-    ULTRA = "ultra"
+    def __init__(self):
+        self.processor = VideoProcessor()
+
+    def analyze_video(
+        self, file_path: str, analysis_type: str = "basic"
+    ) -> dict[str, Any]:
+        """Analyze video content."""
+        try:
+            # Validate file first
+            validation = self.processor.validate_video_file(file_path)
+            if not validation["valid"]:
+                return {"success": False, "error": validation["error"]}
+
+            # Get basic video info
+            video_info = self.processor.get_video_info(file_path)
+            if not video_info["valid"]:
+                return {"success": False, "error": video_info["error"]}
+
+            analysis_result = {
+                "timestamp": datetime.utcnow().isoformat(),
+                "file_path": file_path,
+                "analysis_type": analysis_type,
+                "video_info": video_info["info"],
+                "analysis": {},
+            }
+
+            # Perform different types of analysis
+            if analysis_type == "basic":
+                analysis_result["analysis"] = self._basic_analysis(video_info["info"])
+            elif analysis_type == "content":
+                analysis_result["analysis"] = self._content_analysis(file_path)
+            elif analysis_type == "quality":
+                analysis_result["analysis"] = self._quality_analysis(video_info["info"])
+            else:
+                analysis_result["analysis"] = self._basic_analysis(video_info["info"])
+
+            analysis_result["success"] = True
+            return analysis_result
+
+        except Exception as analysis_error:
+            logger.error("Error analyzing video: %s", analysis_error)
+            return {
+                "success": False,
+                "error": f"Analysis failed: {analysis_error}",
+                "file_path": file_path,
+            }
+
+    def _basic_analysis(self, video_info: dict[str, Any]) -> dict[str, Any]:
+        """Perform basic video analysis."""
+        try:
+            file_size_mb = video_info["file_size"] / (1024 * 1024)
+
+            analysis = {
+                "file_size_category": self._categorize_file_size(file_size_mb),
+                "format_analysis": self._analyze_format(video_info["format"]),
+                "estimated_quality": self._estimate_quality(
+                    file_size_mb, video_info["format"]
+                ),
+                "recommendations": self._generate_basic_recommendations(video_info),
+            }
+
+            return analysis
+
+        except Exception as basic_error:
+            logger.error("Error in basic analysis: %s", basic_error)
+            return {"error": str(basic_error)}
+
+    def _content_analysis(self, file_path: str) -> dict[str, Any]:
+        """Perform content analysis (placeholder)."""
+        try:
+            # This would normally involve computer vision analysis
+            return {
+                "content_type": "unknown",
+                "scene_detection": "requires computer vision library",
+                "object_detection": "requires computer vision library",
+                "text_detection": "requires OCR library",
+                "audio_analysis": "requires audio processing library",
+                "note": "Content analysis requires additional libraries like OpenCV, Tesseract, etc.",
+            }
+
+        except Exception as content_error:
+            logger.error("Error in content analysis: %s", content_error)
+            return {"error": str(content_error)}
+
+    def _quality_analysis(self, video_info: dict[str, Any]) -> dict[str, Any]:
+        """Perform quality analysis."""
+        try:
+            file_size_mb = video_info["file_size"] / (1024 * 1024)
+
+            analysis = {
+                "file_size_score": self._score_file_size(file_size_mb),
+                "format_score": self._score_format(video_info["format"]),
+                "overall_quality_estimate": "unknown",
+                "quality_issues": self._detect_quality_issues(video_info),
+                "improvement_suggestions": self._suggest_improvements(video_info),
+            }
+
+            # Calculate overall score
+            scores = [analysis["file_size_score"], analysis["format_score"]]
+            valid_scores = [s for s in scores if isinstance(s, (int, float))]
+            if valid_scores:
+                analysis["overall_quality_estimate"] = sum(valid_scores) / len(
+                    valid_scores
+                )
+
+            return analysis
+
+        except Exception as quality_error:
+            logger.error("Error in quality analysis: %s", quality_error)
+            return {"error": str(quality_error)}
+
+    def _categorize_file_size(self, size_mb: float) -> str:
+        """Categorize file size."""
+        if size_mb < 10:
+            return "small"
+        if size_mb < 100:
+            return "medium"
+        if size_mb < 500:
+            return "large"
+        return "very_large"
+
+    def _analyze_format(self, format_ext: str) -> dict[str, Any]:
+        """Analyze video format."""
+        format_info = {
+            ".mp4": {
+                "quality": "high",
+                "compatibility": "excellent",
+                "compression": "good",
+            },
+            ".avi": {
+                "quality": "medium",
+                "compatibility": "good",
+                "compression": "poor",
+            },
+            ".mov": {
+                "quality": "high",
+                "compatibility": "medium",
+                "compression": "good",
+            },
+            ".mkv": {
+                "quality": "high",
+                "compatibility": "medium",
+                "compression": "excellent",
+            },
+            ".wmv": {
+                "quality": "medium",
+                "compatibility": "poor",
+                "compression": "medium",
+            },
+            ".flv": {"quality": "low", "compatibility": "poor", "compression": "good"},
+            ".webm": {
+                "quality": "high",
+                "compatibility": "good",
+                "compression": "excellent",
+            },
+            ".m4v": {"quality": "high", "compatibility": "good", "compression": "good"},
+        }
+
+        return format_info.get(
+            format_ext,
+            {
+                "quality": "unknown",
+                "compatibility": "unknown",
+                "compression": "unknown",
+            },
+        )
+
+    def _estimate_quality(self, size_mb: float, format_ext: str) -> str:
+        """Estimate video quality based on size and format."""
+        if format_ext in [".mp4", ".mkv"] and size_mb > 100:
+            return "high"
+        if format_ext in [".avi", ".mov"] and size_mb > 50:
+            return "medium"
+        return "low"
+
+    def _score_file_size(self, size_mb: float) -> float:
+        """Score file size (0-1 scale)."""
+        if size_mb < 10:
+            return 1.0
+        if size_mb < 50:
+            return 0.8
+        if size_mb < 100:
+            return 0.6
+        if size_mb < 200:
+            return 0.4
+        return 0.2
+
+    def _score_format(self, format_ext: str) -> float:
+        """Score format compatibility."""
+        format_scores = {
+            ".mp4": 1.0,
+            ".mkv": 0.9,
+            ".avi": 0.8,
+            ".mov": 0.7,
+            ".webm": 0.6,
+            ".wmv": 0.5,
+            ".flv": 0.4,
+            ".m4v": 0.8,
+        }
+        return format_scores.get(format_ext, 0.3)
+
+    def _detect_quality_issues(self, video_info: dict[str, Any]) -> list[str]:
+        """Detect potential quality issues."""
+        issues = []
+
+        file_size_mb = video_info["file_size"] / (1024 * 1024)
+        format_ext = video_info["format"]
+
+        if file_size_mb < 5:
+            issues.append(
+                "File size very small - may indicate low quality or short duration"
+            )
+
+        if file_size_mb > 400:
+            issues.append("File size very large - may need compression")
+
+        if format_ext in [".flv", ".wmv"]:
+            issues.append(f"Format {format_ext} has limited compatibility")
+
+        if format_ext == ".avi":
+            issues.append("AVI format typically has poor compression efficiency")
+
+        return issues
+
+    def _suggest_improvements(self, video_info: dict[str, Any]) -> list[str]:
+        """Suggest improvements for video quality."""
+        suggestions = []
+
+        file_size_mb = video_info["file_size"] / (1024 * 1024)
+        format_ext = video_info["format"]
+
+        if format_ext not in [".mp4", ".webm", ".mkv"]:
+            suggestions.append(
+                "Consider converting to MP4 or WebM for better compatibility"
+            )
+
+        if file_size_mb > 300:
+            suggestions.append("Consider compressing the video to reduce file size")
+
+        if file_size_mb < 10:
+            suggestions.append(
+                "Check if video quality meets requirements - file size seems small"
+            )
+
+        return suggestions
+
+    def _generate_basic_recommendations(self, video_info: dict[str, Any]) -> list[str]:
+        """Generate basic recommendations."""
+        recommendations = []
+
+        format_analysis = self._analyze_format(video_info["format"])
+
+        if format_analysis["compatibility"] != "excellent":
+            recommendations.append(
+                "Consider converting to MP4 for maximum compatibility"
+            )
+
+        if format_analysis["compression"] == "poor":
+            recommendations.append(
+                "Consider using a format with better compression (MP4, WebM, MKV)"
+            )
+
+        file_size_mb = video_info["file_size"] / (1024 * 1024)
+        if file_size_mb > 200:
+            recommendations.append("Consider compressing the video for faster loading")
+
+        return recommendations
 
 
-@dataclass
-class VideoGenerationRequest:
-    """
-Video generation request parameters
-
-
-    title: str
-    script: Optional[str] = None
-    audio_path: Optional[str] = None
-    background_image: Optional[str] = None
-    duration: int = 30
-    format: VideoFormat = VideoFormat.MP4
-    quality: VideoQuality = VideoQuality.MEDIUM
-    output_path: Optional[str] = None
-   
-""""""
-
-    metadata: Optional[Dict[str, Any]] = None
-   
-
-    
-   
-"""
-@dataclass
-class VideoGenerationResult:
-    """
-Video generation result
-
-
-    success: bool
-    video_path: Optional[str] = None
-    duration: Optional[float] = None
-    file_size: Optional[int] = None
-    format: Optional[str] = None
-    error_message: Optional[str] = None
-    metadata: Optional[Dict[str, Any]] = None
-   
-""""""
-
-    generation_time: Optional[float] = None
-   
-
-    
-   
-"""
 class VideoEngine:
-    """Main video engine for video generation and processing"""
+    """Main video processing engine."""
 
-    def __init__(self, config: Optional[Dict] = None):
-        self.config = config or {}
-        self.logger = logging.getLogger(__name__)
+    def __init__(self):
+        self.processor = VideoProcessor()
+        self.analyzer = VideoAnalyzer()
+        self.cache = {}  # Simple in-memory cache
 
-        # Default configuration
-        self.output_dir = Path(self.config.get("output_dir", "output/videos"))
-        self.temp_dir = Path(self.config.get("temp_dir", "temp/video"))
-        self.ffmpeg_path = self.config.get("ffmpeg_path", "ffmpeg")
-
-        # Create directories
-        self.output_dir.mkdir(parents=True, exist_ok=True)
-        self.temp_dir.mkdir(parents=True, exist_ok=True)
-
-        # Check ffmpeg availability
-        self.ffmpeg_available = self._check_ffmpeg()
-
-        self.logger.info(f"Video engine initialized. FFmpeg available: {self.ffmpeg_available}")
-
-    def _check_ffmpeg(self) -> bool:
-        """
-Check if ffmpeg is available
-
-        
-"""
+    def process_video(
+        self, file_path: str, operations: Optional[list[str]] = None
+    ) -> dict[str, Any]:
+        """Process video with specified operations."""
         try:
-        """
-            result = subprocess.run(
-                [self.ffmpeg_path, "-version"],
-        """
-        try:
-        """
-                capture_output=True,
-                text=True,
-                timeout=10,
-             )
-            return result.returncode == 0
-        except Exception as e:
-            self.logger.warning(f"FFmpeg not available: {e}")
-            return False
+            if operations is None:
+                operations = ["validate", "analyze"]
 
-    async def generate_video(self, request: VideoGenerationRequest) -> VideoGenerationResult:
-        """
-Generate video based on request parameters
+            # Create cache key
+            cache_key = hashlib.md5(
+                f"{file_path}_{str(operations)}".encode()
+            ).hexdigest()
 
-       
-""""""
+            # Check cache
+            if cache_key in self.cache:
+                logger.info("Returning cached video processing result")
+                return self.cache[cache_key]
 
-        start_time = datetime.now()
-       
+            result: dict[str, Any] = {
+                "timestamp": datetime.utcnow().isoformat(),
+                "file_path": file_path,
+                "operations": operations,
+                "results": {},
+                "success": False,
+            }
 
-        
-       
-"""
-        try:
-            self.logger.info(f"Starting video generation for: {request.title}")
-       """
+            # Execute operations
+            for operation in operations:
+                if operation == "validate":
+                    result["results"]["validation"] = (
+                        self.processor.validate_video_file(file_path)
+                    )
+                elif operation == "info":
+                    result["results"]["info"] = self.processor.get_video_info(file_path)
+                elif operation == "analyze":
+                    result["results"]["analysis"] = self.analyzer.analyze_video(
+                        file_path
+                    )
+                elif operation == "thumbnail":
+                    result["results"]["thumbnail"] = self.processor.create_thumbnail(
+                        file_path
+                    )
+                elif operation == "frames":
+                    result["results"]["frames"] = self.processor.extract_frames(
+                        file_path
+                    )
+                else:
+                    result["results"][operation] = {
+                        "error": f"Unknown operation: {operation}"
+                    }
 
-        
-       
+            # Cache result (limit cache size)
+            if len(self.cache) < 50:
+                self.cache[cache_key] = result
 
-        start_time = datetime.now()
-       
-""""""
-            # Determine output path
-            if not request.output_path:
-                timestamp = datetime.now().strftime("%Y % m%d_ % H%M % S")
-                filename = f"{request.title.replace(' ', '_')}_{timestamp}.{request.format.value}"
-                output_path = self.output_dir / filename
-            else:
-                output_path = Path(request.output_path)
-
-            # Choose generation method based on available inputs
-            if request.audio_path and os.path.exists(request.audio_path):
-                result = await self._generate_video_with_audio(request, output_path)
-            elif request.script:
-                result = await self._generate_video_from_script(request, output_path)
-            else:
-                result = await self._generate_basic_video(request, output_path)
-
-            # Calculate generation time
-            generation_time = (datetime.now() - start_time).total_seconds()
-            result.generation_time = generation_time
-
-            if result.success:
-                self.logger.info(
-                    f"Video generation completed in {generation_time:.2f}s: {result.video_path}"
-                 )
-            else:
-                self.logger.error(f"Video generation failed: {result.error_message}")
-
+            result["success"] = True
             return result
 
-        except Exception as e:
-            self.logger.error(f"Error generating video: {e}")
-            return VideoGenerationResult(
-                success=False,
-                error_message=str(e),
-                generation_time=(datetime.now() - start_time).total_seconds(),
-             )
+        except Exception as process_error:
+            logger.error("Video engine error: %s", process_error)
+            return {
+                "success": False,
+                "error": f"Processing failed: {process_error}",
+                "file_path": file_path,
+            }
 
-    async def _generate_video_with_audio(
-        self, request: VideoGenerationRequest, output_path: Path
-#     ) -> VideoGenerationResult:
-        """
-Generate video with audio track
-
-        
-"""
-        try:
-        """"""
-            if not self.ffmpeg_available:
-        """
-
-        try:
-        
-
-       
-""""""
-                return VideoGenerationResult(
-                    success=False,
-                    error_message="FFmpeg not available for video generation",
-                 )
-
-            # Create background image if not provided
-            background_path = request.background_image
-            if not background_path:
-                background_path = await self._create_default_background(request.title)
-
-                # Build ffmpeg command
-                cmd = [
-                    self.ffmpeg_path,
-                    "-loop",
-                    "1",
-                    "-i",
-                    background_path,
-                    "-i",
-                    request.audio_path,
-                    "-c:v",
-                    "libx264",
-                    "-c:a",
-                    "aac",
-                    "-shortest",
-                    "-pix_fmt",
-                    "yuv420p",
-                    "-y",  # Overwrite output file
-                    str(output_path),
-                 ]
-
-                # Execute ffmpeg command
-                result = subprocess.run(
-                    cmd, capture_output=True, text=True, timeout=300  # 5 minute timeout
-                 )
-
-            if result.returncode == 0 and output_path.exists():
-                file_size = output_path.stat().st_size
-                return VideoGenerationResult(
-                    success=True,
-                    video_path=str(output_path),
-                    file_size=file_size,
-                    format=request.format.value,
-                    metadata={"method": "audio_video", "background": background_path},
-                 )
-            else:
-                return VideoGenerationResult(
-                    success=False, error_message=f"FFmpeg failed: {result.stderr}"
-                 )
-
-        except Exception as e:
-            return VideoGenerationResult(
-                success=False, error_message=f"Audio video generation failed: {str(e)}"
-             )
-
-    async def _generate_video_from_script(
-        self, request: VideoGenerationRequest, output_path: Path
-#     ) -> VideoGenerationResult:
-        """
-Generate video from script (text - to - speech + video)
-
-        try:
-            # For now, create a basic video with script as subtitle
-           
-""""""
-
-            # In a full implementation, this would include TTS generation
-           
-
-            
-           
-"""
-            background_path = request.background_image
-            if not background_path:
-                background_path = await self._create_default_background(request.title)
-
-            if not self.ffmpeg_available:
-                # Fallback: create placeholder video file
-                await self._create_placeholder_video(output_path, request.title, request.script)
-                return VideoGenerationResult(
-                    success=True,
-                    video_path=str(output_path),
-                    file_size=output_path.stat().st_size if output_path.exists() else 0,
-                    format=request.format.value,
-                    metadata={
-                        "method": "placeholder",
-                        "script_length": len(request.script or ""),
-                     },
-                 )
-
-            # Create video with text overlay
-            cmd = [
-                self.ffmpeg_path,
-                "-loop",
-                "1",
-                "-i",
-                background_path,
-                "-vf",
-                f"drawtext = text='{request.title}':fontcolor = white:fontsize = 24:x=(w - text_w)/2:y=(h - text_h)/2",
-                "-t",
-                str(request.duration),
-                "-c:v",
-                "libx264",
-                "-pix_fmt",
-                "yuv420p",
-                "-y",
-                str(output_path),
-             ]
-
-            result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
-
-            if result.returncode == 0 and output_path.exists():
-                file_size = output_path.stat().st_size
-                return VideoGenerationResult(
-                    success=True,
-                    video_path=str(output_path),
-                    file_size=file_size,
-                    format=request.format.value,
-                    metadata={
-                        "method": "script_video",
-                        "script_length": len(request.script or ""),
-                     },
-                 )
-            else:
-                return VideoGenerationResult(
-                    success=False,
-                    error_message=f"Script video generation failed: {result.stderr}",
-                 )
-
-        except Exception as e:
-            return VideoGenerationResult(
-                success=False, error_message=f"Script video generation failed: {str(e)}"
-             )
-
-    async def _generate_basic_video(
-        self, request: VideoGenerationRequest, output_path: Path
-#     ) -> VideoGenerationResult:
-        """
-Generate basic video with title card
-
-        
-"""
-        try:
-        """
-
-            background_path = request.background_image
-        
-
-        try:
-        
-""""""
-
-        
-       
-
-            if not background_path:
-               
-""""""
-
-                background_path = await self._create_default_background(request.title)
-               
-
-                
-               
-""""""
-
-
-                
-
-               
-
-                background_path = await self._create_default_background(request.title)
-               
-""""""
-            if not self.ffmpeg_available:
-                # Create placeholder file
-                await self._create_placeholder_video(output_path, request.title)
-                return VideoGenerationResult(
-                    success=True,
-                    video_path=str(output_path),
-                    file_size=output_path.stat().st_size if output_path.exists() else 0,
-                    format=request.format.value,
-                    metadata={"method": "placeholder"},
-                 )
-
-            # Create basic video
-            cmd = [
-                self.ffmpeg_path,
-                "-loop",
-                "1",
-                "-i",
-                background_path,
-                "-t",
-                str(request.duration),
-                "-c:v",
-                "libx264",
-                "-pix_fmt",
-                "yuv420p",
-                "-y",
-                str(output_path),
-             ]
-
-            result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
-
-            if result.returncode == 0 and output_path.exists():
-                file_size = output_path.stat().st_size
-                return VideoGenerationResult(
-                    success=True,
-                    video_path=str(output_path),
-                    file_size=file_size,
-                    format=request.format.value,
-                    metadata={"method": "basic_video"},
-                 )
-            else:
-                return VideoGenerationResult(
-                    success=False,
-                    error_message=f"Basic video generation failed: {result.stderr}",
-                 )
-
-        except Exception as e:
-            return VideoGenerationResult(
-                success=False, error_message=f"Basic video generation failed: {str(e)}"
-             )
-
-    async def _create_default_background(self, title: str) -> str:
-        """
-Create a default background image
-
-        try:
-           
-""""""
-
-            # Create a simple colored background with title
-           
-
-            
-           
-"""
-            background_path = self.temp_dir / f"bg_{title.replace(' ', '_')}.png"
-           """
-
-            
-           
-
-            # Create a simple colored background with title
-           
-""""""
-            if self.ffmpeg_available:
-                # Create background using ffmpeg
-                cmd = [
-                    self.ffmpeg_path,
-                    "-f",
-                    "lavfi",
-                    "-i",
-                    "color = c = blue:size = 1280x720:duration = 1",
-                    "-frames:v",
-                    "1",
-                    "-y",
-                    str(background_path),
-                 ]
-
-                result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
-
-                if result.returncode == 0 and background_path.exists():
-                    return str(background_path)
-
-            # Fallback: create a minimal file
-            background_path.touch()
-            return str(background_path)
-
-        except Exception as e:
-            self.logger.warning(f"Failed to create background: {e}")
-            # Return a placeholder path
-            return str(self.temp_dir / "placeholder_bg.png")
-
-    async def _create_placeholder_video(
-        self, output_path: Path, title: str, script: Optional[str] = None
-#     ) -> None:
-        """
-Create a placeholder video file
-
-        try:
-            # Create a minimal MP4 file as placeholder
-           
-""""""
-
-            output_path.parent.mkdir(parents=True, exist_ok=True)
-           
-
-            
-           
-"""
-            # Write minimal video file content
-            with open(output_path, "wb") as f:
-                # Write minimal MP4 header (this creates a valid but minimal file)
-                f.write(b"\\x00\\x00\\x00\\x20ftypmp42\\x00\\x00\\x00\\x00mp42isom")
-                f.write(b"\\x00\\x00\\x00\\x08free")
-           """
-
-            
-           
-
-            output_path.parent.mkdir(parents=True, exist_ok=True)
-           
-""""""
-            self.logger.info(f"Created placeholder video: {output_path}")
-
-        except Exception as e:
-            self.logger.error(f"Failed to create placeholder video: {e}")
-
-    async def batch_generate_videos(
-        self, requests: List[VideoGenerationRequest]
-    ) -> List[VideoGenerationResult]:
-        """
-Generate multiple videos in batch
-
-       
-""""""
-
+    def batch_process(
+        self, file_paths: list[str], operations: Optional[list[str]] = None
+    ) -> list[dict[str, Any]]:
+        """Process multiple videos."""
         results = []
-       
 
-        
-       
-"""
-        for i, request in enumerate(requests, 1):
-            self.logger.info(f"Processing video {i}/{len(requests)}: {request.title}")
-       """
+        for i, file_path in enumerate(file_paths):
+            try:
+                result = self.process_video(file_path, operations)
+                result["batch_index"] = i
+                results.append(result)
 
-        
-       
-
-        results = []
-       
-""""""
-
-            result = await self.generate_video(request)
-            results.append(result)
-
-            # Small delay between videos
-            await asyncio.sleep(1)
+            except Exception as batch_error:
+                logger.error("Error processing file %s: %s", file_path, batch_error)
+                results.append(
+                    {
+                        "success": False,
+                        "error": f"Processing failed: {batch_error}",
+                        "file_path": file_path,
+                    }
+                )
 
         return results
 
-    def get_video_info(self, video_path: str) -> Dict[str, Any]:
-        
-Get information about a video file
-""""""
-
-        try:
-        
-
-       
-""""""
-
-            if not os.path.exists(video_path):
-        
-
-        try:
-        
-""""""
-        
-       """
-                return {"error": "Video file not found"}
-
-            file_size = os.path.getsize(video_path)
-
-            info = {
-                "path": video_path,
-                "size": file_size,
-                "size_mb": round(file_size / (1024 * 1024), 2),
-                "exists": True,
-             }
-
-            if self.ffmpeg_available:
-                try:
-                    # Get video metadata using ffprobe
-                    cmd = [
-                        "ffprobe",
-                        "-v",
-                        "quiet",
-                        "-print_format",
-                        "json",
-                        "-show_format",
-                        "-show_streams",
-                        video_path,
-                     ]
-
-                    result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
-
-                    if result.returncode == 0:
-                        import json
-
-                        metadata = json.loads(result.stdout)
-                        info["metadata"] = metadata
-
-                        # Extract common properties
-                        if "format" in metadata:
-                            info["duration"] = float(metadata["format"].get("duration", 0))
-                            info["format_name"] = metadata["format"].get("format_name", "unknown")
-
-                        if "streams" in metadata:
-                            for stream in metadata["streams"]:
-                                if stream.get("codec_type") == "video":
-                                    info["width"] = stream.get("width")
-                                    info["height"] = stream.get("height")
-                                    info["codec"] = stream.get("codec_name")
-                                    break
-
-                except Exception as e:
-                    info["metadata_error"] = str(e)
-
-            return info
-
-        except Exception as e:
-            return {"error": str(e)}
-
-    def cleanup_temp_files(self) -> None:
-        """
-Clean up temporary files
-
-        
-"""
-        try:
-        """"""
-            """
-
-            import shutil
-            
-
-        
-"""
-        try:
-        """"""
-            if self.temp_dir.exists():
-                shutil.rmtree(self.temp_dir)
-                self.temp_dir.mkdir(parents=True, exist_ok=True)
-                self.logger.info("Temporary files cleaned up")
-        except Exception as e:
-            self.logger.warning(f"Failed to cleanup temp files: {e}")
-
-    def get_engine_status(self) -> Dict[str, Any]:
-        """Get engine status and capabilities"""
+    def get_stats(self) -> dict[str, Any]:
+        """Get engine statistics."""
         return {
-            "engine_version": "1.0.0",
-            "ffmpeg_available": self.ffmpeg_available,
-            "output_dir": str(self.output_dir),
-            "temp_dir": str(self.temp_dir),
-            "supported_formats": [f.value for f in VideoFormat],
-            "quality_presets": [q.value for q in VideoQuality],
-            "capabilities": {
-                "audio_video_generation": self.ffmpeg_available,
-                "script_to_video": True,
-                "basic_video_generation": True,
-                "batch_processing": True,
-                "video_info_extraction": self.ffmpeg_available,
-             },
-         }
+            "cache_size": len(self.cache),
+            "supported_formats": self.processor.supported_formats,
+            "max_file_size_mb": self.processor.max_file_size // (1024 * 1024),
+            "engine_status": "active",
+            "timestamp": datetime.utcnow().isoformat(),
+        }
+
+    def clear_cache(self) -> None:
+        """Clear the processing cache."""
+        self.cache.clear()
+        logger.info("Video engine cache cleared")
 
 
-# Convenience functions for backward compatibility
+# Global engine instance
+engine = VideoEngine()
+
+# Convenience functions
 
 
-async def generate_video(
-    title: str, script: Optional[str] = None, audio_path: Optional[str] = None, **kwargs
-# ) -> VideoGenerationResult:
-    """
-Generate a video with simplified interface
-
-    engine = VideoEngine()
-    request = VideoGenerationRequest(title=title, script=script, audio_path=audio_path, **kwargs)
-    
-"""
-    return await engine.generate_video(request)
-    """"""
-    """
+def process_video(
+    file_path: str, operations: Optional[list[str]] = None
+) -> dict[str, Any]:
+    """Convenience function to process a video."""
+    return engine.process_video(file_path, operations)
 
 
-    return await engine.generate_video(request)
-
-    
-
-   
-""""""
-
-def create_video_engine(config: Optional[Dict] = None) -> VideoEngine:
-    
-Create and return a video engine instance
-""""""
-
-    return VideoEngine(config)
-    
-
-   
-""""""
-
-    
+def analyze_video(file_path: str, analysis_type: str = "basic") -> dict[str, Any]:
+    """Convenience function to analyze a video."""
+    return engine.analyzer.analyze_video(file_path, analysis_type)
 
 
-    return VideoEngine(config)
-
-    
-""""""
-    
-   """
-# Export main classes and functions
-__all__ = [
-    "VideoEngine",
-    "VideoGenerationRequest",
-    "VideoGenerationResult",
-    "VideoFormat",
-    "VideoQuality",
-    "generate_video",
-    "create_video_engine",
- ]
+def validate_video(file_path: str) -> dict[str, Any]:
+    """Convenience function to validate a video file."""
+    return engine.processor.validate_video_file(file_path)

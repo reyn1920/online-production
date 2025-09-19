@@ -175,7 +175,7 @@ python -c "
 import os
 from dotenv import load_dotenv
 load_dotenv('.env.production')
-print('Environment loaded successfully')
+# DEBUG_REMOVED: print statement
 "
 ```
 

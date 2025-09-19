@@ -61,7 +61,7 @@ cursor.execute('''
 
 # Insert initial status
 cursor.execute('''
-    INSERT OR REPLACE INTO system_status (id, component, status) 
+    INSERT OR REPLACE INTO system_status (id, component, status)
     VALUES (1, 'database', 'initialized')
 ''')
 
@@ -104,7 +104,7 @@ def check_database():
         db_path = "data/right_perspective.db"
         if not os.path.exists(db_path):
             return False, "Database file not found"
-        
+
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
         cursor.execute("SELECT 1")
@@ -117,7 +117,7 @@ def check_environment():
     """Check environment configuration"""
     required_vars = ['ENVIRONMENT', 'DATABASE_URL']
     missing = [var for var in required_vars if not os.getenv(var)]
-    
+
     if missing:
         return False, f"Missing environment variables: {', '.join(missing)}"
     return True, "Environment configured"
@@ -126,7 +126,7 @@ def check_directories():
     """Check required directories"""
     required_dirs = ['data', 'cache', 'logs']
     missing = [d for d in required_dirs if not os.path.exists(d)]
-    
+
     if missing:
         return False, f"Missing directories: {', '.join(missing)}"
     return True, "Required directories exist"
@@ -137,15 +137,15 @@ def main():
     print("=" * 30)
     print(f"Timestamp: {datetime.now().isoformat()}")
     print()
-    
+
     checks = [
         ("Database", check_database),
         ("Environment", check_environment),
         ("Directories", check_directories)
     ]
-    
+
     all_passed = True
-    
+
     for name, check_func in checks:
         try:
             passed, message = check_func()
@@ -156,7 +156,7 @@ def main():
         except Exception as e:
             print(f"{name:12} ❌ ERROR - {str(e)}")
             all_passed = False
-    
+
     print()
     if all_passed:
         print("🎉 All health checks passed!")

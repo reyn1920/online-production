@@ -1126,7 +1126,7 @@ return header + "\n".join(links)
 
 PY
 
-# --- Patch backend/app.py to: 
+# --- Patch backend/app.py to:
 # - inject affiliate footer in /api/create_video responses (non-destructive)
 # - add settings routes
 # - add embed_preview route

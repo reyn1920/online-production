@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "project": "online-production",
-  
+
   "env": {
     "NODE_ENV": "production",
     "HOST": "0.0.0.0",
@@ -11,7 +11,7 @@
     "NETLIFY_SITE_ID": "${NETLIFY_SITE_ID}",
     "NETLIFY_AUTH_TOKEN": "${NETLIFY_AUTH_TOKEN}"
   },
-  
+
   "rules": {
     "rule1Enforced": true,
     "autoDeploy": false,
@@ -19,7 +19,7 @@
     "testRequired": true,
     "lintRequired": true
   },
-  
+
   "services": {
     "paste": {
       "enabled": true,
@@ -47,7 +47,7 @@
       }
     }
   },
-  
+
   "tasks": [
     {
       "name": "install",
@@ -106,7 +106,7 @@
       }
     }
   ],
-  
+
   "deploy": {
     "provider": "netlify",
     "siteId": "${NETLIFY_SITE_ID}",
@@ -114,7 +114,7 @@
     "buildCommand": "npm run build",
     "outputDir": "dist"
   },
-  
+
   "logging": {
     "level": "info",
     "file": "server_logs.txt"

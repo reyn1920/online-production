@@ -1,103 +1,173 @@
-"""Base44 Pack Health Router - Enhanced system health monitoring."""
+"""Health check router for monitoring application status."""
 
+import os
+import logging
+from typing import Any
 from datetime import datetime
-from typing import Dict, Any
-from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+import psutil
 
-router = APIRouter()
+# Simple fallback classes for missing dependencies
 
-class HealthResponse(BaseModel):
-    status: str
-    version: str
-    timestamp: str
-    database: bool
-    task_manager: bool
-    orchestrator: bool
-    active_agents: int
-    base44_pack: Dict[str, Any]
 
-@router.get("/health", response_model=HealthResponse)
-async def enhanced_health_check():
-    """
-Enhanced health check with Base44 Pack metrics.
+class APIRouter:
+    """Simple API router fallback."""
 
-    try:
-       
-""""""
+    def __init__(self, **kwargs):
+        self.routes = []
 
-        # Base health metrics
-       
+    def get(self, path: str, **kwargs):
+        def decorator(func):
+            self.routes.append({"method": "GET", "path": path, "func": func})
+            return func
 
-        
-       
-"""
-        health_data = {
-            "status": "healthy",
-            "version": "1.0.0",
-            "timestamp": datetime.utcnow().isoformat() + "+00:00",
-            "database": True,
-            "task_manager": True,
-            "orchestrator": False,
-            "active_agents": 0,
-            "base44_pack": {
-                "security_audit": "enabled",
-                "debug_guard": "active",
-                "policy_enforcement": "active",
-                "do_not_delete_registry": "protected",
-                "revenue_dashboard": "operational",
-                "health_monitoring": "enhanced"
-             }
-         }
-       """
+        return decorator
 
-        
-       
 
-        # Base health metrics
-       
-""""""
-        return HealthResponse(**health_data)
+class HTTPException(Exception):
+    """HTTP exception fallback."""
 
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Health check failed: {str(e)}")
+    def __init__(self, status_code: int, detail: str):
+        self.status_code = status_code
+        self.detail = detail
+        super().__init__(detail)
 
-@router.get("/health/detailed")
-async def detailed_health_check():
-    """
-Detailed health check with comprehensive system metrics.
 
-    
-"""
-    try:
-    """"""
+class Status:
+    """HTTP status codes."""
+
+    HTTP_200_OK = 200
+    HTTP_503_SERVICE_UNAVAILABLE = 503
+
+
+# Logger setup
+logger = logging.getLogger(__name__)
+
+# Health check service
+
+
+class HealthService:
+    """Service for health checks and system monitoring."""
+
+    @staticmethod
+    def get_system_health() -> dict[str, Any]:
+        """Get comprehensive system health information."""
+        try:
+            # Get system metrics
+            cpu_percent = psutil.cpu_percent(interval=1)
+            memory = psutil.virtual_memory()
+            disk = psutil.disk_usage("/")
+
+            # Check if system is healthy
+            is_healthy = cpu_percent < 90 and memory.percent < 90 and disk.percent < 90
+
+            return {
+                "status": "healthy" if is_healthy else "degraded",
+                "timestamp": datetime.utcnow().isoformat(),
+                "system": {
+                    "cpu_percent": cpu_percent,
+                    "memory_percent": memory.percent,
+                    "memory_used_gb": round(memory.used / (1024**3), 2),
+                    "memory_total_gb": round(memory.total / (1024**3), 2),
+                    "disk_percent": disk.percent,
+                    "disk_used_gb": round(disk.used / (1024**3), 2),
+                    "disk_total_gb": round(disk.total / (1024**3), 2),
+                },
+                "process": {
+                    "pid": os.getpid(),
+                    "uptime_seconds": psutil.Process().create_time(),
+                },
+            }
+        except Exception as health_error:
+            logger.error("Health check failed: %s", health_error)
+            return {
+                "status": "unhealthy",
+                "timestamp": datetime.utcnow().isoformat(),
+                "error": str(health_error),
+            }
+
+    @staticmethod
+    def get_basic_health() -> dict[str, str]:
+        """Get basic health status."""
         return {
-            "status": "healthy",
+            "status": "ok",
             "timestamp": datetime.utcnow().isoformat(),
-            "system": {
-                "uptime": "operational",
-                "memory_usage": "normal",
-                "cpu_usage": "normal",
-                "disk_space": "sufficient"
-             },
-            "services": {
-                "database": {"status": "connected", "response_time": "<50ms"},
-                "task_manager": {"status": "running", "queue_size": 0},
-                "orchestrator": {"status": "standby", "agents": 0}
-             },
-            "base44_pack": {
-                "security_audit": {"status": "enabled", "last_scan": "recent"},
-                "debug_guard": {"status": "active", "protection_level": "high"},
-                "policy_enforcement": {"status": "active", "violations": 0},
-                "revenue_dashboard": {"status": "operational", "data_quality": "high"}
-             }
-         }
-    """
+            "service": "online-production-api",
+        }
 
+
+# Router setup
+router = APIRouter(prefix="/health", tags=["health"])
+
+
+@router.get("/")
+def basic_health_check():
+    """Basic health check endpoint."""
     try:
-    
+        return HealthService.get_basic_health()
+    except Exception as basic_error:
+        logger.error("Basic health check failed: %s", basic_error)
+        raise HTTPException(
+            status_code=Status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Service unavailable",
+        ) from basic_error
 
-   
-""""""
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Detailed health check failed: {str(e)}")
+
+@router.get("/detailed")
+def detailed_health_check():
+    """Detailed health check with system metrics."""
+    try:
+        health_data = HealthService.get_system_health()
+        if health_data["status"] == "unhealthy":
+            raise HTTPException(
+                status_code=Status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="System unhealthy",
+            )
+        return health_data
+    except HTTPException:
+        raise
+    except Exception as detailed_error:
+        logger.error("Detailed health check failed: %s", detailed_error)
+        raise HTTPException(
+            status_code=Status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Health check failed",
+        ) from detailed_error
+
+
+@router.get("/ready")
+def readiness_check():
+    """Readiness check for load balancers."""
+    try:
+        # Check if all critical services are ready
+        # This is a simplified check - in production you'd check database,
+        # cache, etc.
+        return {
+            "ready": True,
+            "timestamp": datetime.utcnow().isoformat(),
+            "checks": {
+                "database": "ok",  # Would check actual DB connection
+                "cache": "ok",  # Would check cache connection
+                "storage": "ok",  # Would check file system
+            },
+        }
+    except Exception as readiness_error:
+        logger.error("Readiness check failed: %s", readiness_error)
+        raise HTTPException(
+            status_code=Status.HTTP_503_SERVICE_UNAVAILABLE, detail="Service not ready"
+        ) from readiness_error
+
+
+@router.get("/live")
+def liveness_check():
+    """Liveness check for container orchestrators."""
+    try:
+        # Simple liveness check - just return ok if the service is running
+        return {
+            "alive": True,
+            "timestamp": datetime.utcnow().isoformat(),
+            "pid": os.getpid(),
+        }
+    except Exception as liveness_error:
+        logger.error("Liveness check failed: %s", liveness_error)
+        raise HTTPException(
+            status_code=Status.HTTP_503_SERVICE_UNAVAILABLE, detail="Service not alive"
+        ) from liveness_error

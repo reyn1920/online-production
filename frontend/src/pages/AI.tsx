@@ -7,7 +7,7 @@ import { AIProvider, AIRequest } from '../contexts/AIContext';
 type AIRequestStatus = 'pending' | 'processing' | 'completed' | 'failed';
 
 const AI: React.FC = () => {
-  const { 
+  const {
     state: { providers, requests },
     loadProviders,
     toggleProvider,
@@ -19,22 +19,22 @@ const AI: React.FC = () => {
     isProviderAvailable,
     getRequestHistory
   } = useAI();
-  
+
   const { user } = useAuth();
   const { theme, actualTheme } = useTheme();
-  
+
   // Theme utility function
   const getThemeValue = (lightValue: string, darkValue: string) => {
     return actualTheme === 'dark' ? darkValue : lightValue;
   };
-  
+
   // State for modals and forms
   const [showProviderModal, setShowProviderModal] = useState(false);
   const [showRequestModal, setShowRequestModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<AIRequestStatus>('pending');
   const [activeProvider, setActiveProvider] = useState<AIProvider | null>(null);
-  
+
   // Form data
   const [newProviderData, setNewProviderData] = useState({
     name: '',
@@ -46,21 +46,21 @@ const AI: React.FC = () => {
     capabilities: [] as string[],
     limits: { requestsPerMinute: 60, tokensPerRequest: 4000 }
   });
-  
+
   const [newRequestData, setNewRequestData] = useState({
     providerId: '',
     prompt: '',
     parameters: {},
     priority: 'medium' as const
   });
-  
+
   // Get filtered data
-  const filteredProviders = selectedCategory === 'all' 
-    ? providers 
+  const filteredProviders = selectedCategory === 'all'
+    ? providers
     : getProvidersByType(selectedCategory);
-  
+
   const filteredRequests = requests.filter(r => r.status === selectedStatus);
-  
+
   // Provider stats (mock implementation)
   const getProviderStats = (providerId: string) => {
     const providerRequests = requests.filter(r => r.providerId === providerId);
@@ -70,7 +70,7 @@ const AI: React.FC = () => {
       successRate: providerRequests.length > 0 ? Math.round((completed.length / providerRequests.length) * 100) : 0
     };
   };
-  
+
   const handleCreateProvider = async () => {
     try {
       // Mock provider creation - in real app this would call an API
@@ -81,7 +81,7 @@ const AI: React.FC = () => {
         category: 'free',
         isActive: true,
         apiEndpoint: newProviderData.apiEndpoint,
-        rateLimit: { 
+        rateLimit: {
           requestsPerMinute: newProviderData.limits.requestsPerMinute,
           requestsPerDay: newProviderData.limits.tokensPerRequest * 10
         },
@@ -89,8 +89,8 @@ const AI: React.FC = () => {
         quality: 'good',
         responseTime: 'medium'
       };
-      
-      console.log('Created provider:', newProvider);
+
+// DEBUG_REMOVED: console.log('Created provider:', newProvider);
       setShowProviderModal(false);
       setNewProviderData({
         name: '',
@@ -106,15 +106,15 @@ const AI: React.FC = () => {
       console.error('Failed to create provider:', error);
     }
   };
-  
+
   const handleCreateRequest = async () => {
     if (!activeProvider) return;
-    
+
     try {
       // Mock request creation - in real app this would call generateWithProvider
       const result = await generateWithProvider(activeProvider.id, newRequestData.prompt, newRequestData.parameters);
-      console.log('Request result:', result);
-      
+// DEBUG_REMOVED: console.log('Request result:', result);
+
       setShowRequestModal(false);
       setNewRequestData({
         providerId: '',
@@ -126,7 +126,7 @@ const AI: React.FC = () => {
       console.error('Failed to create request:', error);
     }
   };
-  
+
   const getCategoryIcon = (category: string) => {
     const icons = {
       llm: '🤖',
@@ -139,7 +139,7 @@ const AI: React.FC = () => {
     };
     return icons[category as keyof typeof icons] || '⚡';
   };
-  
+
   const getStatusColor = (status: AIRequestStatus) => {
     const colors = {
       pending: 'bg-yellow-100 text-yellow-800',
@@ -150,7 +150,7 @@ const AI: React.FC = () => {
     };
     return colors[status];
   };
-  
+
   const getPriorityColor = (priority: string) => {
     const colors = {
       low: 'bg-gray-100 text-gray-800',
@@ -160,7 +160,7 @@ const AI: React.FC = () => {
     };
     return colors[priority as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   };
-  
+
   return (
     <div className={`min-h-screen ${getThemeValue('bg-gray-50', 'bg-gray-900')} transition-colors duration-200`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -196,7 +196,7 @@ const AI: React.FC = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div className={`${getThemeValue('bg-white', 'bg-gray-800')} rounded-lg p-6 shadow-sm`}>
@@ -214,7 +214,7 @@ const AI: React.FC = () => {
               </div>
             </div>
           </div>
-          
+
           <div className={`${getThemeValue('bg-white', 'bg-gray-800')} rounded-lg p-6 shadow-sm`}>
             <div className="flex items-center">
               <div className="p-2 bg-green-100 rounded-lg">
@@ -230,7 +230,7 @@ const AI: React.FC = () => {
               </div>
             </div>
           </div>
-          
+
           <div className={`${getThemeValue('bg-white', 'bg-gray-800')} rounded-lg p-6 shadow-sm`}>
             <div className="flex items-center">
               <div className="p-2 bg-yellow-100 rounded-lg">
@@ -246,7 +246,7 @@ const AI: React.FC = () => {
               </div>
             </div>
           </div>
-          
+
           <div className={`${getThemeValue('bg-white', 'bg-gray-800')} rounded-lg p-6 shadow-sm`}>
             <div className="flex items-center">
               <div className="p-2 bg-purple-100 rounded-lg">
@@ -263,7 +263,7 @@ const AI: React.FC = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Providers Panel */}
           <div className="lg:col-span-2">
@@ -292,13 +292,13 @@ const AI: React.FC = () => {
                   </select>
                 </div>
               </div>
-              
+
               <div className="p-6">
                 <div className="space-y-4">
                   {filteredProviders.map((provider) => {
                     const stats = getProviderStats(provider.id);
                     const isActive = activeProvider?.id === provider.id;
-                    
+
                     return (
                       <div
                         key={provider.id}
@@ -347,7 +347,7 @@ const AI: React.FC = () => {
                             </p>
                           </div>
                         </div>
-                        
+
                         {provider.capabilities.length > 0 && (
                           <div className="mt-3">
                             <div className="flex flex-wrap gap-1">
@@ -374,7 +374,7 @@ const AI: React.FC = () => {
               </div>
             </div>
           </div>
-          
+
           {/* Requests Panel */}
           <div>
             <div className={`${getThemeValue('bg-white', 'bg-gray-800')} rounded-lg shadow-sm`}>
@@ -399,12 +399,12 @@ const AI: React.FC = () => {
                   </select>
                 </div>
               </div>
-              
+
               <div className="p-6">
                 <div className="space-y-4">
                   {filteredRequests.slice(0, 10).map((request) => {
                     const provider = providers.find(p => p.id === request.providerId);
-                    
+
                     return (
                       <div
                         key={request.id}
@@ -427,8 +427,8 @@ const AI: React.FC = () => {
                               {provider?.name || 'Unknown Provider'}
                             </p>
                             <p className={`text-xs ${getThemeValue('text-gray-600', 'text-gray-400')} mt-1`}>
-                              {request.prompt.length > 50 
-                                ? `${request.prompt.substring(0, 50)}...` 
+                              {request.prompt.length > 50
+                                ? `${request.prompt.substring(0, 50)}...`
                                 : request.prompt}
                             </p>
                             <p className={`text-xs ${getThemeValue('text-gray-500', 'text-gray-500')} mt-2`}>
@@ -439,7 +439,7 @@ const AI: React.FC = () => {
                       </div>
                     );
                   })}
-                  
+
                   {filteredRequests.length === 0 && (
                     <div className="text-center py-8">
                       <p className={`${getThemeValue('text-gray-500', 'text-gray-400')}`}>
@@ -453,7 +453,7 @@ const AI: React.FC = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Provider Modal */}
       {showProviderModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -461,7 +461,7 @@ const AI: React.FC = () => {
             <h3 className={`text-lg font-semibold mb-4 ${getThemeValue('text-gray-900', 'text-white')}`}>
               Add AI Provider
             </h3>
-            
+
             <div className="space-y-4">
               <div>
                 <label className={`block text-sm font-medium mb-1 ${getThemeValue('text-gray-700', 'text-gray-300')}`}>
@@ -478,7 +478,7 @@ const AI: React.FC = () => {
                   placeholder="e.g., OpenAI GPT-4"
                 />
               </div>
-              
+
               <div>
                 <label className={`block text-sm font-medium mb-1 ${getThemeValue('text-gray-700', 'text-gray-300')}`}>
                   Category
@@ -500,7 +500,7 @@ const AI: React.FC = () => {
                   <option value="other">Other</option>
                 </select>
               </div>
-              
+
               <div>
                 <label className={`block text-sm font-medium mb-1 ${getThemeValue('text-gray-700', 'text-gray-300')}`}>
                   Description
@@ -516,7 +516,7 @@ const AI: React.FC = () => {
                   placeholder="Brief description of the AI provider..."
                 />
               </div>
-              
+
               <div>
                 <label className={`block text-sm font-medium mb-1 ${getThemeValue('text-gray-700', 'text-gray-300')}`}>
                   API Endpoint
@@ -533,7 +533,7 @@ const AI: React.FC = () => {
                 />
               </div>
             </div>
-            
+
             <div className="flex gap-3 mt-6">
               <button
                 onClick={() => setShowProviderModal(false)}
@@ -554,7 +554,7 @@ const AI: React.FC = () => {
           </div>
         </div>
       )}
-      
+
       {/* Request Modal */}
       {showRequestModal && activeProvider && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -562,13 +562,13 @@ const AI: React.FC = () => {
             <h3 className={`text-lg font-semibold mb-4 ${getThemeValue('text-gray-900', 'text-white')}`}>
               New AI Request
             </h3>
-            
+
             <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
               <p className={`text-sm ${getThemeValue('text-blue-800', 'text-blue-200')}`}>
                 Provider: <span className="font-medium">{activeProvider.name}</span>
               </p>
             </div>
-            
+
             <div className="space-y-4">
               <div>
                 <label className={`block text-sm font-medium mb-1 ${getThemeValue('text-gray-700', 'text-gray-300')}`}>
@@ -585,7 +585,7 @@ const AI: React.FC = () => {
                   placeholder="Enter your prompt or request..."
                 />
               </div>
-              
+
               <div>
                 <label className={`block text-sm font-medium mb-1 ${getThemeValue('text-gray-700', 'text-gray-300')}`}>
                   Priority
@@ -605,7 +605,7 @@ const AI: React.FC = () => {
                 </select>
               </div>
             </div>
-            
+
             <div className="flex gap-3 mt-6">
               <button
                 onClick={() => setShowRequestModal(false)}

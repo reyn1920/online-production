@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-# Purpose: neutralize obvious bracket/paren closers that break compile.
+#!/usr/bin/env python3
 
-import os, re
+import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SKIP = {".git", ".venv", "venv", "__pycache__", "node_modules", "dist", "build"}
+SKIP: {".git", ".venv", "venv", "__pycache__", "node_modules", "dist", "build"}
+
 
 def pyfiles(root: Path):
     for dp, dn, fn in os.walk(root):
@@ -13,6 +14,7 @@ def pyfiles(root: Path):
         for f in fn:
             if f.endswith(".py"):
                 yield Path(dp) / f
+
 
 def suspicious(ln: str) -> bool:
     s = ln.strip()
@@ -26,6 +28,7 @@ def suspicious(ln: str) -> bool:
     clos = ln.count(")") + ln.count("]") + ln.count("}")
     return clos > opens and opens == 0
 
+
 def main():
     for f in pyfiles(ROOT):
         s = f.read_text(encoding="utf-8", errors="replace")
@@ -38,7 +41,9 @@ def main():
         new = "\n".join(out)
         if new != s:
             f.write_text(new, encoding="utf-8")
-    print("[bracket_surgeon] pass complete")
+
+
+# DEBUG_REMOVED: print("[bracket_surgeon] pass complete")
 
 if __name__ == "__main__":
     os.chdir(ROOT)

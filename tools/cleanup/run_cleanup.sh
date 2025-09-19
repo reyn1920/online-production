@@ -56,13 +56,13 @@ log() {
     shift
     local message="$*"
     local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-    
+
     echo "[$timestamp] [$level] $message" >> "$LOG_FILE"
-    
+
     if [[ "$QUIET" == "true" && "$level" != "ERROR" ]]; then
         return
     fi
-    
+
     case "$level" in
         "ERROR")
             echo -e "${RED}[ERROR]${NC} $message" >&2
@@ -100,16 +100,16 @@ show_progress() {
     local current="$1"
     local total="$2"
     local task="$3"
-    
+
     local percent=$((current * 100/total))
     local filled=$((percent/2))
     local empty=$((50 - filled))
-    
+
     printf "\r${BLUE}[%3d%%]${NC} [" "$percent"
     printf "%*s" "$filled" | tr ' ' '█'
     printf "%*s" "$empty" | tr ' ' '░'
     printf "] %s" "$task"
-    
+
     if [[ "$current" -eq "$total" ]]; then
         echo
     fi
@@ -245,19 +245,19 @@ parse_args() {
 # Check tool availability
 check_tool_availability() {
     log "DEBUG" "Checking cleanup tool availability..."
-    
+
     local tools=(
         "href_fix.sh:HREF_FIX_AVAILABLE"
         "rule1_rewrite_suggester.py:RULE1_REWRITER_AVAILABLE"
         "unused_scan.py:UNUSED_SCANNER_AVAILABLE"
         "patch_package_json.sh:PACKAGE_PATCHER_AVAILABLE"
     )
-    
+
     for tool_info in "${tools[@]}"; do
         local tool_name="${tool_info%:*}"
         local var_name="${tool_info#*:}"
         local tool_path="$SCRIPT_DIR/$tool_name"
-        
+
         if [[ -f "$tool_path" && -x "$tool_path" ]]; then
             eval "$var_name=true"
             log "DEBUG" "✓ $tool_name available"
@@ -271,12 +271,12 @@ check_tool_availability() {
 # Load configuration
 load_configuration() {
     log "DEBUG" "Loading configuration..."
-    
+
     # Create default config if it doesn't exist
     if [[ ! -f "$CONFIG_FILE" ]]; then
         create_default_config
     fi
-    
+
     # Load profile-specific settings
     case "$PROFILE" in
         "security")
@@ -305,7 +305,7 @@ load_configuration() {
             PROFILE="default"
             ;;
     esac
-    
+
     log "INFO" "Using profile: $PROFILE"
 }
 
@@ -350,15 +350,15 @@ run_href_fix() {
         log "WARN" "href_fix.sh not available, skipping"
         return 0
     fi
-    
+
     log "PROGRESS" "Running href reference fixes..."
-    
+
     local args=()
     [[ "$DRY_RUN" == "true" ]] && args+=("--dry-run")
     [[ "$VERBOSE" == "true" ]] && args+=("--verbose")
     [[ "$AUTO_FIX" == "true" ]] && args+=("--auto-fix")
     [[ "$SKIP_BACKUP" == "true" ]] && args+=("--no-backup")
-    
+
     if "$SCRIPT_DIR/href_fix.sh" ${args[@]:+"${args[@]}"} --target-dir "$PROJECT_ROOT"; then
         log "SUCCESS" "href reference fixes completed"
         ((FIXED_ISSUES += 5))  # Placeholder count
@@ -374,14 +374,14 @@ run_rule1_rewriter() {
         log "WARN" "rule1_rewrite_suggester.py not available, skipping"
         return 0
     fi
-    
+
     log "PROGRESS" "Running Rule-1 compliance analysis..."
-    
+
     local args=()
     [[ "$DRY_RUN" == "true" ]] && args+=("--dry-run")
     [[ "$VERBOSE" == "true" ]] && args+=("--verbose")
     [[ "$AUTO_FIX" == "true" ]] && args+=("--auto-fix")
-    
+
     if python3 "$SCRIPT_DIR/rule1_rewrite_suggester.py" ${args[@]:+"${args[@]}"} --target-dir "$PROJECT_ROOT"; then
         log "SUCCESS" "Rule-1 compliance analysis completed"
         ((FIXED_ISSUES += 8))  # Placeholder count
@@ -397,14 +397,14 @@ run_unused_scanner() {
         log "WARN" "unused_scan.py not available, skipping"
         return 0
     fi
-    
+
     log "PROGRESS" "Running unused code detection..."
-    
+
     local args=()
     [[ "$DRY_RUN" == "true" ]] && args+=("--dry-run")
     [[ "$VERBOSE" == "true" ]] && args+=("--verbose")
     [[ "$AUTO_FIX" == "true" ]] && args+=("--auto-remove")
-    
+
     if python3 "$SCRIPT_DIR/unused_scan.py" ${args[@]:+"${args[@]}"} --target-dir "$PROJECT_ROOT"; then
         log "SUCCESS" "Unused code detection completed"
         ((FIXED_ISSUES += 12))  # Placeholder count
@@ -420,16 +420,16 @@ run_package_patcher() {
         log "WARN" "patch_package_json.sh not available, skipping"
         return 0
     fi
-    
+
     log "PROGRESS" "Running package.json optimization..."
-    
+
     local args=()
     [[ "$DRY_RUN" == "true" ]] && args+=("--dry-run")
     [[ "$VERBOSE" == "true" ]] && args+=("--verbose")
     [[ "$AUTO_FIX" == "true" ]] && args+=("--auto-fix")
     [[ "$SKIP_BACKUP" == "true" ]] && args+=("--no-backup")
     [[ "$SECURITY_ONLY" == "true" ]] && args+=("--security-audit" "--fix-vulns")
-    
+
     if "$SCRIPT_DIR/patch_package_json.sh" ${args[@]:+"${args[@]}"}; then
         log "SUCCESS" "Package.json optimization completed"
         ((FIXED_ISSUES += 6))  # Placeholder count
@@ -442,7 +442,7 @@ run_package_patcher() {
 # Run linting tools
 run_linting() {
     log "PROGRESS" "Running code quality checks..."
-    
+
     # ESLint
     if [[ -f "$PROJECT_ROOT/eslint.config.js" ]] && command -v npx >/dev/null 2>&1; then
         log "DEBUG" "Running ESLint..."
@@ -456,7 +456,7 @@ run_linting() {
             log "INFO" "[DRY RUN] Would run ESLint"
         fi
     fi
-    
+
     # Prettier
     if [[ -f "$PROJECT_ROOT/.prettierrc.json" ]] && command -v npx >/dev/null 2>&1; then
         log "DEBUG" "Running Prettier..."
@@ -475,7 +475,7 @@ run_linting() {
 # Run security checks
 run_security_checks() {
     log "PROGRESS" "Running security analysis..."
-    
+
     # npm audit (if package.json exists)
     if [[ -f "$PROJECT_ROOT/package.json" ]] && command -v npm >/dev/null 2>&1; then
         log "DEBUG" "Running npm security audit..."
@@ -489,7 +489,7 @@ run_security_checks() {
             fi
         fi
     fi
-    
+
     # Check for common security issues
     log "DEBUG" "Checking for hardcoded secrets..."
     if grep -r -i "password\|secret\|key\|token" "$PROJECT_ROOT" --exclude-dir=node_modules --exclude-dir=.git --exclude="*.log" >/dev/null 2>&1; then
@@ -504,12 +504,12 @@ generate_html_report() {
     if [[ "$GENERATE_REPORT" == "false" ]]; then
         return 0
     fi
-    
+
     log "INFO" "Generating cleanup report..."
-    
+
     local end_time=$(date +%s)
     local duration=$((end_time - START_TIME))
-    
+
     cat > "$REPORT_FILE" << EOF
 <!DOCTYPE html>
 <html lang="en">
@@ -538,7 +538,7 @@ generate_html_report() {
             <h1>🧹 Trae AI Cleanup Report</h1>
             <p>Generated on $(date) | Profile: $PROFILE | Duration: ${duration}s</p>
         </div>
-        
+
         <div class="content">
             <div class="stats">
                 <div class="stat-card">
@@ -558,7 +558,7 @@ generate_html_report() {
                     <div>Total Issues</div>
                 </div>
             </div>
-            
+
             <div class="tool-section">
                 <h3>🔧 Tools Executed</h3>
                 <ul>
@@ -568,7 +568,7 @@ generate_html_report() {
                     $(if [[ "$PACKAGE_PATCHER_AVAILABLE" == "true" ]]; then echo "<li>✅ patch_package_json.sh - Package optimization</li>"; else echo "<li>❌ patch_package_json.sh - Not available</li>"; fi)
                 </ul>
             </div>
-            
+
             <div class="tool-section">
                 <h3>⚙️ Configuration</h3>
                 <ul>
@@ -579,7 +579,7 @@ generate_html_report() {
                     <li><strong>Security Only:</strong> $SECURITY_ONLY</li>
                 </ul>
             </div>
-            
+
             <div class="tool-section">
                 <h3>📋 Execution Log</h3>
                 <div class="log-section">
@@ -591,7 +591,7 @@ $(tail -50 "$LOG_FILE" | sed 's/</\&lt;/g' | sed 's/>/\&gt;/g')
 </body>
 </html>
 EOF
-    
+
     log "SUCCESS" "Report generated: $REPORT_FILE"
 }
 
@@ -599,7 +599,7 @@ EOF
 generate_final_report() {
     local end_time=$(date +%s)
     local duration=$((end_time - START_TIME))
-    
+
     echo
     echo -e "${CYAN}╔══════════════════════════════════════════════════════════════╗${NC}"
     echo -e "${CYAN}║                    CLEANUP SUMMARY                           ║${NC}"
@@ -616,7 +616,7 @@ generate_final_report() {
     fi
     echo -e "${CYAN}╚══════════════════════════════════════════════════════════════╝${NC}"
     echo
-    
+
     if [[ "$ERROR_COUNT" -gt 0 ]]; then
         echo -e "${RED}⚠️  Cleanup completed with $ERROR_COUNT errors. Check the log for details.${NC}"
     elif [[ "$FIXED_ISSUES" -gt 0 ]]; then
@@ -624,7 +624,7 @@ generate_final_report() {
     else
         echo -e "${BLUE}ℹ️  Cleanup completed. No issues found or all checks passed.${NC}"
     fi
-    
+
     generate_html_report
 }
 
@@ -633,35 +633,35 @@ run_cleanup() {
     log "INFO" "Starting Trae AI cleanup process..."
     log "INFO" "Project: $PROJECT_ROOT"
     log "INFO" "Profile: $PROFILE"
-    
+
     local tasks=()
     local task_count=0
-    
+
     # Determine which tasks to run based on profile and availability
     if [[ "$SECURITY_ONLY" != "true" ]]; then
         [[ "$HREF_FIX_AVAILABLE" == "true" ]] && tasks+=("href_fix") && ((task_count++))
         [[ "$UNUSED_SCANNER_AVAILABLE" == "true" ]] && tasks+=("unused_scanner") && ((task_count++))
     fi
-    
+
     [[ "$RULE1_REWRITER_AVAILABLE" == "true" ]] && tasks+=("rule1_rewriter") && ((task_count++))
     [[ "$PACKAGE_PATCHER_AVAILABLE" == "true" ]] && tasks+=("package_patcher") && ((task_count++))
-    
+
     # Add linting and security tasks
     tasks+=("linting" "security")
     task_count=$((task_count + 2))
-    
+
     if [[ "$task_count" -eq 0 ]]; then
         error_exit "No cleanup tools available to run"
     fi
-    
+
     log "INFO" "Running $task_count cleanup tasks..."
-    
+
     local current_task=0
-    
+
     # Execute tasks
     for task in "${tasks[@]}"; do
         ((current_task++))
-        
+
         case "$task" in
             "href_fix")
                 show_progress "$current_task" "$task_count" "Fixing href references"
@@ -688,13 +688,13 @@ run_cleanup() {
                 run_security_checks || log "ERROR" "security checks failed"
                 ;;
         esac
-        
+
         # Add small delay for visual effect
         sleep 0.1
     done
-    
+
     TOTAL_ISSUES=$((FIXED_ISSUES + SKIPPED_ISSUES))
-    
+
     log "SUCCESS" "Cleanup process completed"
 }
 
@@ -703,17 +703,17 @@ confirm_execution() {
     if [[ "$FORCE" == "true" || "$DRY_RUN" == "true" ]]; then
         return 0
     fi
-    
+
     echo -e "${YELLOW}About to run cleanup with the following configuration:${NC}"
     echo -e "  Profile: ${CYAN}$PROFILE${NC}"
     echo -e "  Auto-fix: ${CYAN}$AUTO_FIX${NC}"
     echo -e "  Backup: ${CYAN}$(if [[ "$SKIP_BACKUP" == "true" ]]; then echo "No"; else echo "Yes"; fi)${NC}"
     echo -e "  Target: ${CYAN}$PROJECT_ROOT${NC}"
     echo
-    
+
     read -p "Continue? [y/N] " -n 1 -r
     echo
-    
+
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
         log "INFO" "Cleanup cancelled by user"
         exit 0
@@ -725,10 +725,10 @@ main() {
     # Initialize log
     mkdir -p "$(dirname "$LOG_FILE")"
     echo "Trae AI Cleanup Framework - $(date)" > "$LOG_FILE"
-    
+
     # Parse arguments
     parse_args "$@"
-    
+
     # Show banner
     if [[ "$QUIET" != "true" ]]; then
         echo -e "${CYAN}"
@@ -738,20 +738,20 @@ main() {
         echo "╚══════════════════════════════════════════════════════════════╝"
         echo -e "${NC}"
     fi
-    
+
     # Check prerequisites
     check_tool_availability
     load_configuration
-    
+
     # Confirm execution
     confirm_execution
-    
+
     # Run cleanup
     run_cleanup
-    
+
     # Generate final report
     generate_final_report
-    
+
     # Exit with appropriate code
     if [[ "$ERROR_COUNT" -gt 0 ]]; then
         exit 1

@@ -5,18 +5,18 @@ import { resolve } from 'path'
 export default defineConfig({
   // Base public path when served in development or production
   base: '/',
-  
+
   // Build configuration
   build: {
     // Output directory for build files
     outDir: 'dist',
-    
+
     // Generate sourcemaps for production build
     sourcemap: true,
-    
+
     // Minify the output
     minify: 'terser',
-    
+
     // Rollup options
     rollupOptions: {
       input: {
@@ -29,14 +29,14 @@ export default defineConfig({
         },
       },
     },
-    
+
     // Target browsers
     target: 'es2015',
-    
+
     // Asset inline threshold
     assetsInlineLimit: 4096,
   },
-  
+
   // Development server configuration
   server: {
     port: 3000,
@@ -44,16 +44,16 @@ export default defineConfig({
     open: true,
     cors: true,
   },
-  
+
   // Preview server configuration
   preview: {
     port: 4173,
     host: true,
   },
-  
+
   // Environment variables
   envPrefix: 'VITE_',
-  
+
   // CSS configuration
   css: {
     devSourcemap: true,
@@ -63,10 +63,10 @@ export default defineConfig({
       }
     }
   },
-  
+
   // Plugin configuration
   plugins: [],
-  
+
   // Resolve configuration
   resolve: {
     alias: {
@@ -76,12 +76,12 @@ export default defineConfig({
       '@assets': resolve(__dirname, 'src/assets'),
     },
   },
-  
+
   // Optimization
   optimizeDeps: {
     include: ['react', 'react-dom'],
   },
-  
+
   // Define global constants
   define: {
     __APP_VERSION__: JSON.stringify(process.env.npm_package_version),

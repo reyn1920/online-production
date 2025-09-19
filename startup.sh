@@ -185,28 +185,28 @@ def monitor_system():
         memory = psutil.virtual_memory()
         memory_percent = memory.percent
         memory_used_gb = memory.used / (1024**3)
-        
+
         # CPU usage
         cpu_percent = psutil.cpu_percent(interval=1)
-        
+
         # Disk usage
         disk = psutil.disk_usage('/app')
         disk_percent = (disk.used / disk.total) * 100
-        
+
         # Log if thresholds exceeded
         if memory_percent > 85:
             logger.warning(f'High memory usage: {memory_percent:.1f}% ({memory_used_gb:.1f}GB)')
-        
+
         if cpu_percent > 80:
             logger.warning(f'High CPU usage: {cpu_percent:.1f}%')
-        
+
         if disk_percent > 85:
             logger.warning(f'High disk usage: {disk_percent:.1f}%')
-        
+
         # Log normal status every 5 minutes
         if int(time.time()) % 300 == 0:
             logger.info(f'System Status - Memory: {memory_percent:.1f}%, CPU: {cpu_percent:.1f}%, Disk: {disk_percent:.1f}%')
-        
+
         time.sleep(30)  # Check every 30 seconds
 
 if __name__ == '__main__':
@@ -280,13 +280,13 @@ log "================================================\n"
 # Cleanup function for graceful shutdown
 cleanup() {
     log "Shutting down TRAE AI Production System..."
-    
+
     # Kill background monitoring
     if [ ! -z "$MONITOR_PID" ]; then
         kill $MONITOR_PID 2>/dev/null || true
         log "Performance monitoring stopped"
     fi
-    
+
     # Additional cleanup tasks
     log "Cleanup completed"
     exit 0

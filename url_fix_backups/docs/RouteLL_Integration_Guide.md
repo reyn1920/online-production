@@ -304,9 +304,9 @@ result = router.route_request(
 ```python
 async def optimized_streaming():
     client = RouteLL_IntegratedClient()
-    
+
     messages = [{"role": "user", "content": "Write a long story about AI"}]
-    
+
     print("Streaming optimized response:")
     async for chunk in client.stream_completion(
         messages,
@@ -315,7 +315,7 @@ async def optimized_streaming():
         max_tokens=1000
     ):
         print(chunk, end='', flush=True)
-    
+
     # Get session analytics
     analytics = client.get_session_analytics()
     print(f"\nTotal cost: ${analytics['estimated_total_cost']:.4f}")
@@ -327,22 +327,22 @@ async def optimized_streaming():
 async def batch_process_requests(requests_list):
     client = RouteLL_IntegratedClient()
     results = []
-    
+
     for i, messages in enumerate(requests_list):
         print(f"Processing request {i+1}/{len(requests_list)}")
-        
+
         # The client automatically handles rate limiting
         response = await client.chat_completion(
             messages,
             preferences={'cost': 0.8, 'speed': 0.2}  # Optimize for cost in batch
         )
-        
+
         results.append(response)
-        
+
         # Optional: Add delay between requests
         if i < len(requests_list) - 1:
             await asyncio.sleep(0.1)
-    
+
     return results
 ```
 
@@ -355,7 +355,7 @@ class CustomAlertHandler:
     def handle_low_credits(self, credits_remaining):
         print(f"⚠️ Low credits alert: {credits_remaining} remaining")
         # Send email, Slack notification, etc.
-    
+
     def handle_high_usage(self, usage_rate):
         print(f"📈 High usage alert: {usage_rate} requests/hour")
         # Implement throttling, notifications, etc.
@@ -511,7 +511,7 @@ for task, count in routing_stats['task_type_distribution'].items():
    ```bash
    # Verify API key is set
    echo $ROUTELLM_API_KEY
-   
+
    # Test API connectivity
    python -c "from integrations.routellm_client import RouteLL; import asyncio; asyncio.run(RouteLL().health_check())"
    ```

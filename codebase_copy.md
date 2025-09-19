@@ -236,13 +236,13 @@ async def get_providers():
 async def create_paste(paste: PasteCreate, request: Request):
     """Create a new paste"""
     paste_id = str(uuid.uuid4())[:8]
-    
+
     # Calculate expiration
     expires_at = None
     if paste.expires_in:
         from datetime import timedelta
         expires_at = datetime.utcnow() + timedelta(minutes=paste.expires_in)
-    
+
     # Store paste
     paste_data = {
         "id": paste_id,
@@ -253,13 +253,13 @@ async def create_paste(paste: PasteCreate, request: Request):
         "expires_at": expires_at,
         "view_count": 0
     }
-    
+
     pastes_storage[paste_id] = paste_data
-    
+
     # Generate URL
     base_url = str(request.base_url).rstrip('/')
     paste_url = f"{base_url}/api/v1/paste/{paste_id}"
-    
+
     return PasteResponse(
         **paste_data,
         url=paste_url
@@ -270,10 +270,10 @@ async def list_pastes(limit: int = 10, offset: int = 0):
     """List recent pastes"""
     pastes_list = list(pastes_storage.values())
     pastes_list.sort(key=lambda x: x["created_at"], reverse=True)
-    
+
     total = len(pastes_list)
     paginated = pastes_list[offset:offset + limit]
-    
+
     return {
         "pastes": paginated,
         "total": total,
@@ -286,21 +286,21 @@ async def get_paste(paste_id: str, request: Request):
     """Get a specific paste"""
     if paste_id not in pastes_storage:
         raise HTTPException(status_code=404, detail="Paste not found")
-    
+
     paste_data = pastes_storage[paste_id]
-    
+
     # Check if expired
     if paste_data["expires_at"] and datetime.utcnow() > paste_data["expires_at"]:
         del pastes_storage[paste_id]
         raise HTTPException(status_code=404, detail="Paste has expired")
-    
+
     # Increment view count
     paste_data["view_count"] += 1
-    
+
     # Generate URL
     base_url = str(request.base_url).rstrip('/')
     paste_url = f"{base_url}/api/v1/paste/{paste_id}"
-    
+
     return PasteResponse(
         **paste_data,
         url=paste_url
@@ -311,7 +311,7 @@ async def delete_paste(paste_id: str):
     """Delete a paste"""
     if paste_id not in pastes_storage:
         raise HTTPException(status_code=404, detail="Paste not found")
-    
+
     del pastes_storage[paste_id]
     return {"message": "Paste deleted successfully"}
 
@@ -332,14 +332,14 @@ async def paste_ui():
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
         }
-        
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -348,44 +348,44 @@ async def paste_ui():
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             overflow: hidden;
         }
-        
+
         .header {
             background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
             color: white;
             padding: 30px;
             text-align: center;
         }
-        
+
         .header h1 {
             font-size: 2.5em;
             margin-bottom: 10px;
             font-weight: 300;
         }
-        
+
         .header p {
             opacity: 0.9;
             font-size: 1.1em;
         }
-        
+
         .main-content {
             padding: 40px;
         }
-        
+
         .form-section {
             margin-bottom: 40px;
         }
-        
+
         .form-group {
             margin-bottom: 20px;
         }
-        
+
         label {
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
             color: #333;
         }
-        
+
         input, textarea, select {
             width: 100%;
             padding: 12px;
@@ -394,24 +394,24 @@ async def paste_ui():
             font-size: 14px;
             transition: border-color 0.3s ease;
         }
-        
+
         input:focus, textarea:focus, select:focus {
             outline: none;
             border-color: #4facfe;
         }
-        
+
         textarea {
             min-height: 200px;
             resize: vertical;
             font-family: 'Courier New', monospace;
         }
-        
+
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
         }
-        
+
         .btn {
             background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
             color: white;
@@ -423,28 +423,28 @@ async def paste_ui():
             cursor: pointer;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-        
+
         .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(79, 172, 254, 0.3);
         }
-        
+
         .btn:active {
             transform: translateY(0);
         }
-        
+
         .btn-secondary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
-        
+
         .btn-danger {
             background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
         }
-        
+
         .pastes-section {
             margin-top: 40px;
         }
-        
+
         .paste-item {
             background: #f8f9fa;
             border: 1px solid #e9ecef;
@@ -453,30 +453,30 @@ async def paste_ui():
             margin-bottom: 15px;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-        
+
         .paste-item:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
-        
+
         .paste-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
         }
-        
+
         .paste-title {
             font-weight: 600;
             color: #333;
             font-size: 1.1em;
         }
-        
+
         .paste-meta {
             color: #666;
             font-size: 0.9em;
         }
-        
+
         .paste-content {
             background: white;
             border: 1px solid #e1e5e9;
@@ -489,18 +489,18 @@ async def paste_ui():
             white-space: pre-wrap;
             word-break: break-word;
         }
-        
+
         .paste-actions {
             margin-top: 15px;
             display: flex;
             gap: 10px;
         }
-        
+
         .btn-small {
             padding: 8px 16px;
             font-size: 14px;
         }
-        
+
         .status-indicator {
             display: inline-block;
             width: 8px;
@@ -508,39 +508,39 @@ async def paste_ui():
             border-radius: 50%;
             margin-right: 8px;
         }
-        
+
         .status-healthy {
             background-color: #28a745;
         }
-        
+
         .status-unhealthy {
             background-color: #dc3545;
         }
-        
+
         .alert {
             padding: 15px;
             border-radius: 8px;
             margin-bottom: 20px;
         }
-        
+
         .alert-success {
             background-color: #d4edda;
             border: 1px solid #c3e6cb;
             color: #155724;
         }
-        
+
         .alert-error {
             background-color: #f8d7da;
             border: 1px solid #f5c6cb;
             color: #721c24;
         }
-        
+
         .loading {
             display: none;
             text-align: center;
             padding: 20px;
         }
-        
+
         .spinner {
             border: 4px solid #f3f3f3;
             border-top: 4px solid #4facfe;
@@ -550,23 +550,23 @@ async def paste_ui():
             animation: spin 1s linear infinite;
             margin: 0 auto 10px;
         }
-        
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        
+
         @media (max-width: 768px) {
             .form-row {
                 grid-template-columns: 1fr;
             }
-            
+
             .paste-header {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 10px;
             }
-            
+
             .paste-actions {
                 flex-wrap: wrap;
             }
@@ -579,10 +579,10 @@ async def paste_ui():
             <h1>🔗 Paste Service</h1>
             <p>Share code snippets and text easily</p>
         </div>
-        
+
         <div class="main-content">
             <div id="alert-container"></div>
-            
+
             <div class="form-section">
                 <h2>Create New Paste</h2>
                 <form id="paste-form">
@@ -607,12 +607,12 @@ async def paste_ui():
                             </select>
                         </div>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="content">Content</label>
                         <textarea id="content" placeholder="Paste your content here..." required></textarea>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="expires">Expires In (Optional)</label>
                         <select id="expires">
@@ -623,16 +623,16 @@ async def paste_ui():
                             <option value="10080">1 week</option>
                         </select>
                     </div>
-                    
+
                     <button type="submit" class="btn">Create Paste</button>
                 </form>
             </div>
-            
+
             <div class="loading" id="loading">
                 <div class="spinner"></div>
                 <p>Processing...</p>
             </div>
-            
+
             <div class="pastes-section">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                     <h2>Recent Pastes</h2>
@@ -642,10 +642,10 @@ async def paste_ui():
             </div>
         </div>
     </div>
-    
+
     <script>
         const API_BASE = '/api/v1';
-        
+
         // Show alert message
         function showAlert(message, type = 'success') {
             const container = document.getElementById('alert-container');
@@ -653,35 +653,35 @@ async def paste_ui():
             alert.className = `alert alert-${type}`;
             alert.textContent = message;
             container.appendChild(alert);
-            
+
             setTimeout(() => {
                 alert.remove();
             }, 5000);
         }
-        
+
         // Show/hide loading
         function setLoading(show) {
             document.getElementById('loading').style.display = show ? 'block' : 'none';
         }
-        
+
         // Format date
         function formatDate(dateString) {
             return new Date(dateString).toLocaleString();
         }
-        
+
         // Create paste
         document.getElementById('paste-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const formData = {
                 title: document.getElementById('title').value || null,
                 content: document.getElementById('content').value,
                 language: document.getElementById('language').value,
                 expires_in: document.getElementById('expires').value ? parseInt(document.getElementById('expires').value) : null
             };
-            
+
             setLoading(true);
-            
+
             try {
                 const response = await fetch(`${API_BASE}/paste`, {
                     method: 'POST',
@@ -690,7 +690,7 @@ async def paste_ui():
                     },
                     body: JSON.stringify(formData)
                 });
-                
+
                 if (response.ok) {
                     const result = await response.json();
                     showAlert(`Paste created successfully! ID: ${result.id}`);
@@ -706,21 +706,21 @@ async def paste_ui():
                 setLoading(false);
             }
         });
-        
+
         // Load pastes
         async function loadPastes() {
             try {
                 const response = await fetch(`${API_BASE}/pastes?limit=10`);
                 const data = await response.json();
-                
+
                 const container = document.getElementById('pastes-container');
                 container.innerHTML = '';
-                
+
                 if (data.pastes.length === 0) {
                     container.innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">No pastes found. Create your first paste above!</p>';
                     return;
                 }
-                
+
                 data.pastes.forEach(paste => {
                     const pasteElement = document.createElement('div');
                     pasteElement.className = 'paste-item';
@@ -745,7 +745,7 @@ async def paste_ui():
                 showAlert('Failed to load pastes', 'error');
             }
         }
-        
+
         // View paste
         async function viewPaste(pasteId) {
             try {
@@ -760,7 +760,7 @@ async def paste_ui():
                 showAlert('Failed to load paste', 'error');
             }
         }
-        
+
         // Copy to clipboard
         async function copyToClipboard(text) {
             try {
@@ -770,18 +770,18 @@ async def paste_ui():
                 showAlert('Failed to copy to clipboard', 'error');
             }
         }
-        
+
         // Delete paste
         async function deletePaste(pasteId) {
             if (!confirm('Are you sure you want to delete this paste?')) {
                 return;
             }
-            
+
             try {
                 const response = await fetch(`${API_BASE}/paste/${pasteId}`, {
                     method: 'DELETE'
                 });
-                
+
                 if (response.ok) {
                     showAlert('Paste deleted successfully!');
                     loadPastes();
@@ -792,7 +792,7 @@ async def paste_ui():
                 showAlert('Network error occurred', 'error');
             }
         }
-        
+
         // Load pastes on page load
         document.addEventListener('DOMContentLoaded', loadPastes);
     </script>

@@ -63,7 +63,7 @@ subl --help
 ```
 
 ### 2. CI/CD Pipeline Integration
-**Files**: 
+**Files**:
 - `.github/workflows/ci-cd.yml` (Updated)
 - `.github/workflows/sublime-integration.yml` (New)
 
@@ -79,7 +79,7 @@ subl --help
   if: runner.os == 'macOS'
   run: |
     brew install --cask sublime-text
-    
+
 - name: Sublime Text formatting validation
   if: runner.os == 'macOS'
   run: |

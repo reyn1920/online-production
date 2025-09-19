@@ -3,4 +3,6 @@
 
 from modelscope import snapshot_download
 
-model_dir = snapshot_download("Kedreamix / Linly - Talker", cache_dir="./", revision="master")
+model_dir = snapshot_download(
+    "Kedreamix / Linly - Talker", cache_dir="./", revision="master"
+)

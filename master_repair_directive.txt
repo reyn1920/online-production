@@ -820,7 +820,7 @@ const tag = document.getElementById('af-tag').value.trim();
 
 if(!name || !url){ log('Please enter name and url'); return; }
 
-const r = await fetch("/api/affiliates/add', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name,url,tag,enabled:true})});
+const r = await fetch("/api/affiliates/add", {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name,url,tag,enabled:true})});
 
 const j = await r.json(); log('Affiliate add: '+JSON.stringify(j));
 
@@ -844,7 +844,7 @@ const state = document.getElementById('af-toggle-state').value === 'on';
 
 if(!name){ log('Enter name to toggle'); return; }
 
-const r = await fetch("/api/affiliates/toggle', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name,enabled:state})});
+const r = await fetch("/api/affiliates/toggle", {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name,enabled:state})});
 
 const j = await r.json(); log('Affiliate toggle: '+JSON.stringify(j));
 
@@ -856,7 +856,7 @@ const url = document.getElementById('af-validate-url').value.trim();
 
 if(!url){ log('Enter url to validate'); return; }
 
-const r = await fetch("/api/affiliates/validate', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({url})});
+const r = await fetch("/api/affiliates/validate", {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({url})});
 
 const j = await r.json(); log('Affiliate validate: '+JSON.stringify(j));
 
@@ -1123,7 +1123,7 @@ return header + "\n".join(links)
 
 PY
 
-# --- Patch backend/app.py to: 
+# --- Patch backend/app.py to:
 # - inject affiliate footer in/api/create_video responses (non-destructive)
 # - add settings routes
 # - add embed_preview route
@@ -1299,9 +1299,9 @@ src = src.replace(
 
 "</script>",
 
-"""async function kvGet(k, d=''){ const r=await fetch("/api/settings/get?key='+encodeURIComponent(k)+'&default='+encodeURIComponent(d)); return (await r.json()).value; }
+"""async function kvGet(k, d=''){ const r=await fetch("/api/settings/get?key="+encodeURIComponent(k)+"&default="+encodeURIComponent(d)); return (await r.json()).value; }
 
-async function kvSet(k, v){ const r=await fetch("/api/settings/set', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({key:k, value:v})}); return await r.json(); }
+async function kvSet(k, v){ const r=await fetch("/api/settings/set", {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({key:k, value:v})}); return await r.json(); }
 
 (async function initEmbedSettings(){
 
@@ -1883,9 +1883,9 @@ src = src.replace(
 
 "</script>",
 
-"""async function pathGet(k){ const r=await fetch("/api/paths/get?key='+encodeURIComponent(k)); return (await r.json()).path; }
+"""async function pathGet(k){ const r=await fetch("/api/paths/get?key="+encodeURIComponent(k)); return (await r.json()).path; }
 
-async function pathSet(k,v){ const r=await fetch("/api/paths/set', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({key:k, path:v})}); return await r.json(); }
+async function pathSet(k,v){ const r=await fetch("/api/paths/set", {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({key:k, path:v})}); return await r.json(); }
 
 const plog = (m)=>{ const el=document.getElementById('pipe-log'); el.textContent += m + "\n"; el.scrollTop = el.scrollHeight; };
 
@@ -1931,7 +1931,7 @@ document.getElementById('blender-run').onclick = async ()=>{
 
 const render = (document.getElementById('blender-render').value === 'on');
 
-const r = await fetch("/api/pipeline/run', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({engine:'blender', render})});
+const r = await fetch("/api/pipeline/run", {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({engine:'blender', render})});
 
 const j = await r.json(); plog('Blender: '+JSON.stringify(j));
 
@@ -1939,7 +1939,7 @@ const j = await r.json(); plog('Blender: '+JSON.stringify(j));
 
 document.getElementById('resolve-run').onclick = async ()=>{
 
-const r = await fetch("/api/pipeline/run', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({engine:'resolve'})});
+const r = await fetch("/api/pipeline/run", {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({engine:'resolve'})});
 
 const j = await r.json(); plog('Resolve: '+JSON.stringify(j));
 
@@ -2375,9 +2375,9 @@ src = src.replace(
 
 "</script>",
 
-"""async function ahGet(){ const r=await fetch("/api/auto_handoff/get'); return await r.json(); }
+"""async function ahGet(){ const r=await fetch("/api/auto_handoff/get"); return await r.json(); }
 
-async function ahSet(k,v){ const r=await fetch("/api/auto_handoff/set',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:k,value:v})}); return await r.json(); }
+async function ahSet(k,v){ const r=await fetch("/api/auto_handoff/set",{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:k,value:v})}); return await r.json(); }
 
 
 

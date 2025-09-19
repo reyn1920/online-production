@@ -77,7 +77,7 @@ class AffiliateProcessor {
    */
   getStatistics() {
     const statusCounts = this.getStatusCounts(this.buckets);
-    
+
     const stats = {
       total: this.buckets.length,
       byChannel: {},
@@ -101,15 +101,15 @@ class AffiliateProcessor {
    */
   getStatusCounts(programs) {
     const counts = { active: 0, disabled: 0, error: 0 };
-    
+
     programs.forEach(program => {
       const status = this.getRandomStatus(); // In real app, this would come from actual status
       counts[status]++;
     });
-    
+
     return counts;
   }
-  
+
   /**
    * Get a random status for demo purposes
    * @returns {string} Status
@@ -118,7 +118,7 @@ class AffiliateProcessor {
     const statuses = ['active', 'active', 'active', 'disabled', 'error']; // Weighted towards active
     return statuses[Math.floor(Math.random() * statuses.length)];
   }
-  
+
   /**
    * Get status dot HTML
    * @param {string} status - Program status
@@ -130,10 +130,10 @@ class AffiliateProcessor {
       disabled: 'purple',
       error: 'red'
     };
-    
+
     const dotClass = statusMap[status] || 'red';
     const pulse = status === 'active' && Math.random() > 0.7 ? ' pulse' : '';
-    
+
     return `<span class="dot ${dotClass}${pulse}"></span>`;
   }
 }

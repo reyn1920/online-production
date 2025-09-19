@@ -85,26 +85,25 @@ sessions = await mcp_ai.multi_service_debugging(
 
 # Generate comprehensive report
 report = mcp_ai.generate_comprehensive_report(sessions, error_message)
-print(report)
+# DEBUG_REMOVED: print statement
 ```
 
 ### Research Code Solutions
 ```python
 # Query AI services for coding help
 session = await mcp_ai.interact_with_ai_service(
-    'gemini', 
+    'gemini',
     "How do I implement JWT authentication in Python Flask?"
 )
-
-print(f"AI Response: {session.final_response}")
-print(f"Screenshots: {session.screenshots}")
+# DEBUG_REMOVED: print statement
+# DEBUG_REMOVED: print statement
 ```
 
 ### Export Session Data
 ```python
 # Export complete interaction history
 export_file = mcp_ai.export_complete_session()
-print(f"Session data saved to: {export_file}")
+# DEBUG_REMOVED: print statement
 ```
 
 ## 📊 What You Get

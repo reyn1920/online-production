@@ -8,10 +8,10 @@ global:
   smtp_auth_username: '${SMTP_USERNAME}'
   smtp_auth_password: '${SMTP_PASSWORD}'
   smtp_require_tls: true
-  
+
   # Slack configuration
   slack_api_url: '${SLACK_WEBHOOK_URL}'
-  
+
   # Default notification settings
   resolve_timeout: 5m
 
@@ -23,19 +23,19 @@ templates:
 route:
   # Default receiver for all alerts
   receiver: 'default-notifications'
-  
+
   # Group alerts by service and alertname
   group_by: ['service', 'alertname', 'severity']
-  
+
   # Wait time before sending initial notification
   group_wait: 30s
-  
+
   # Wait time before sending additional notifications for the same group
   group_interval: 5m
-  
+
   # Wait time before sending repeat notifications
   repeat_interval: 12h
-  
+
   # Routing rules for different alert types
   routes:
     # Critical alerts - immediate notification
@@ -46,7 +46,7 @@ route:
       group_interval: 2m
       repeat_interval: 1h
       continue: true
-    
+
     # High severity alerts
     - match:
         severity: high
@@ -55,7 +55,7 @@ route:
       group_interval: 5m
       repeat_interval: 4h
       continue: true
-    
+
     # Scaling events
     - match:
         category: scaling
@@ -63,7 +63,7 @@ route:
       group_wait: 1m
       group_interval: 10m
       repeat_interval: 24h
-    
+
     # Performance alerts
     - match:
         category: performance
@@ -71,7 +71,7 @@ route:
       group_wait: 2m
       group_interval: 15m
       repeat_interval: 6h
-    
+
     # Infrastructure alerts
     - match:
         category: infrastructure
@@ -79,7 +79,7 @@ route:
       group_wait: 1m
       group_interval: 10m
       repeat_interval: 8h
-    
+
     # Security alerts
     - match:
         category: security
@@ -96,14 +96,14 @@ inhibit_rules:
     target_match:
       severity: 'warning'
     equal: ['service', 'instance']
-  
+
   # Inhibit scaling alerts when service is down
   - source_match:
       alertname: 'ServiceDown'
     target_match:
       category: 'scaling'
     equal: ['service']
-  
+
   # Inhibit performance alerts during scaling events
   - source_match:
       category: 'scaling'
@@ -129,7 +129,7 @@ receivers:
           {{ end }}
         color: '{{ if eq .Status "firing" }}danger{{ else }}good{{ end }}'
         send_resolved: true
-  
+
   # Critical alerts (Slack + Email + PagerDuty)
   - name: 'critical-alerts'
     slack_configs:
@@ -147,26 +147,26 @@ receivers:
           {{ end }}
         color: 'danger'
         send_resolved: true
-    
+
     email_configs:
       - to: '${CRITICAL_ALERT_EMAIL}'
         subject: '🚨 CRITICAL: {{ .GroupLabels.service }} - {{ .GroupLabels.alertname }}'
         body: |
           Critical alert detected in TRAE AI system:
-          
+
           {{ range .Alerts }}
           Service: {{ .Labels.service }}
           Alert: {{ .Annotations.summary }}
           Description: {{ .Annotations.description }}
           Severity: {{ .Labels.severity }}
           Started: {{ .StartsAt.Format "2006-01-02 15:04:05" }}
-          
+
           Runbook: {{ .Annotations.runbook_url }}
           Dashboard: {{ .Annotations.dashboard_url }}
           {{ end }}
         headers:
           Priority: 'high'
-    
+
     pagerduty_configs:
       - routing_key: '${PAGERDUTY_INTEGRATION_KEY}'
         description: '{{ .GroupLabels.service }}: {{ .GroupLabels.alertname }}'
@@ -175,7 +175,7 @@ receivers:
           service: '{{ .GroupLabels.service }}'
           alert: '{{ .GroupLabels.alertname }}'
           description: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
-  
+
   # High priority alerts (Slack + Email)
   - name: 'high-priority-alerts'
     slack_configs:
@@ -192,20 +192,20 @@ receivers:
           {{ end }}
         color: 'warning'
         send_resolved: true
-    
+
     email_configs:
       - to: '${HIGH_PRIORITY_EMAIL}'
         subject: '⚠️ HIGH: {{ .GroupLabels.service }} - {{ .GroupLabels.alertname }}'
         body: |
           High priority alert in TRAE AI system:
-          
+
           {{ range .Alerts }}
           Service: {{ .Labels.service }}
           Alert: {{ .Annotations.summary }}
           Description: {{ .Annotations.description }}
           Started: {{ .StartsAt.Format "2006-01-02 15:04:05" }}
           {{ end }}
-  
+
   # Scaling notifications (Slack only)
   - name: 'scaling-notifications'
     slack_configs:
@@ -224,7 +224,7 @@ receivers:
           {{ end }}
         color: '{{ if eq .Labels.scaling_direction "up" }}good{{ else }}warning{{ end }}'
         send_resolved: false
-  
+
   # Performance alerts (Slack)
   - name: 'performance-alerts'
     slack_configs:
@@ -242,7 +242,7 @@ receivers:
           {{ end }}
         color: 'warning'
         send_resolved: true
-  
+
   # Infrastructure alerts (Slack + Email)
   - name: 'infrastructure-alerts'
     slack_configs:
@@ -259,13 +259,13 @@ receivers:
           {{ end }}
         color: 'warning'
         send_resolved: true
-    
+
     email_configs:
       - to: '${INFRASTRUCTURE_EMAIL}'
         subject: '🏗️ Infrastructure: {{ .GroupLabels.component }} - {{ .GroupLabels.alertname }}'
         body: |
           Infrastructure alert in TRAE AI system:
-          
+
           {{ range .Alerts }}
           Component: {{ .Labels.component }}
           Alert: {{ .Annotations.summary }}
@@ -273,7 +273,7 @@ receivers:
           Instance: {{ .Labels.instance }}
           Started: {{ .StartsAt.Format "2006-01-02 15:04:05" }}
           {{ end }}
-  
+
   # Security alerts (Slack + Email + PagerDuty)
   - name: 'security-alerts'
     slack_configs:
@@ -291,25 +291,25 @@ receivers:
           {{ end }}
         color: 'danger'
         send_resolved: true
-    
+
     email_configs:
       - to: '${SECURITY_EMAIL}'
         subject: '🔒 SECURITY: {{ .GroupLabels.security_type }} - {{ .GroupLabels.alertname }}'
         body: |
           SECURITY ALERT in TRAE AI system:
-          
+
           {{ range .Alerts }}
           Type: {{ .Labels.security_type }}
           Alert: {{ .Annotations.summary }}
           Description: {{ .Annotations.description }}
           Source IP: {{ .Labels.source_ip }}
           Started: {{ .StartsAt.Format "2006-01-02 15:04:05" }}
-          
+
           Immediate action may be required.
           {{ end }}
         headers:
           Priority: 'urgent'
-    
+
     pagerduty_configs:
       - routing_key: '${PAGERDUTY_SECURITY_KEY}'
         description: 'Security Alert: {{ .GroupLabels.security_type }}'
@@ -334,7 +334,7 @@ time_intervals:
             end_time: '17:00'
         weekdays: ['monday:friday']
         location: 'UTC'
-  
+
   - name: 'weekends'
     time_intervals:
       - times:
@@ -342,7 +342,7 @@ time_intervals:
             end_time: '23:59'
         weekdays: ['saturday', 'sunday']
         location: 'UTC'
-  
+
   - name: 'off-hours'
     time_intervals:
       - times:

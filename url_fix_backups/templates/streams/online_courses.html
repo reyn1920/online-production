@@ -599,27 +599,27 @@
             .main-content {
                 grid-template-columns: 1fr;
             }
-            
+
             .metrics-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .form-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .courses-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .students-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .course-stats {
                 grid-template-columns: 1fr;
             }
-            
+
             .course-actions {
                 grid-template-columns: 1fr;
             }
@@ -638,7 +638,7 @@
             <!-- Control Panel -->
             <div class="control-panel">
                 <h2>Stream Controls</h2>
-                
+
                 <div class="control-group">
                     <label>Stream Status</label>
                     <div style="display: flex; align-items: center; gap: 15px;">
@@ -678,7 +678,7 @@
             <!-- Metrics Panel -->
             <div class="metrics-panel">
                 <h2>Course Metrics</h2>
-                
+
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <div class="metric-value" id="totalCourses">0</div>
@@ -713,7 +713,7 @@
             <div class="courses-section">
                 <h2>Course Catalog</h2>
                 <p style="color: #666; margin-bottom: 20px;">Manage your online courses and track performance</p>
-                
+
                 <div class="courses-grid" id="coursesGrid">
                     <!-- Courses will be loaded dynamically -->
                 </div>
@@ -722,13 +722,13 @@
             <!-- New Course Form -->
             <div class="new-course-form" id="newCourseForm" style="display: none;">
                 <h2>Create New Course</h2>
-                
+
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Course Title</label>
                         <input type="text" id="courseTitle" placeholder="Enter course title">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Category</label>
                         <select id="courseCategory">
@@ -740,12 +740,12 @@
                             <option value="photography">Photography</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Price ($)</label>
                         <input type="number" id="coursePrice" placeholder="99" min="9" max="999">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Difficulty Level</label>
                         <select id="courseDifficulty">
@@ -754,23 +754,23 @@
                             <option value="advanced">Advanced</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Duration (hours)</label>
                         <input type="number" id="courseDuration" placeholder="10" min="1" max="100">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Number of Lessons</label>
                         <input type="number" id="courseLessons" placeholder="25" min="1" max="200">
                     </div>
-                    
+
                     <div class="form-group" style="grid-column: 1 / -1;">
                         <label>Course Description</label>
                         <textarea id="courseDescription" placeholder="Describe what students will learn..."></textarea>
                     </div>
                 </div>
-                
+
                 <div style="text-align: center; margin-top: 20px;">
                     <button class="btn btn-success" onclick="createCourse()">✅ Create Course</button>
                     <button class="btn" onclick="hideNewCourseForm()">❌ Cancel</button>
@@ -781,7 +781,7 @@
             <div class="students-section">
                 <h2>Recent Students</h2>
                 <p style="color: #666; margin-bottom: 20px;">Track student progress and engagement</p>
-                
+
                 <div class="students-grid" id="studentsGrid">
                     <!-- Students will be loaded dynamically -->
                 </div>
@@ -970,7 +970,7 @@
                 courseCard.className = 'course-card';
                 courseCard.innerHTML = `
                     <div class="difficulty-badge difficulty-${course.difficulty}">${course.difficulty}</div>
-                    
+
                     <div class="course-header">
                         <div>
                             <div class="course-title">${course.title}</div>
@@ -978,14 +978,14 @@
                         </div>
                         <div class="course-status status-${course.status}">${course.status}</div>
                     </div>
-                    
+
                     <div class="course-description">
                         ${course.description}<br><br>
                         <strong>Duration:</strong> ${course.duration} hours • <strong>Lessons:</strong> ${course.lessons}<br>
                         <strong>Created:</strong> ${new Date(course.created).toLocaleDateString()}<br>
                         <strong>Last Updated:</strong> ${new Date(course.lastUpdated).toLocaleDateString()}
                     </div>
-                    
+
                     <div class="course-stats">
                         <div class="stat-item">
                             <div class="stat-value">${course.students}</div>
@@ -1000,9 +1000,9 @@
                             <div class="stat-label">Lessons</div>
                         </div>
                     </div>
-                    
+
                     <div class="course-price">$${course.price}</div>
-                    
+
                     <div class="course-actions">
                         <button class="btn" onclick="editCourse('${course.id}')" style="padding: 10px; font-size: 0.9rem;">
                             ✏️ Edit
@@ -1028,14 +1028,14 @@
                         <div class="student-name">${student.name}</div>
                         <div class="student-progress">${student.progress}%</div>
                     </div>
-                    
+
                     <div style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">
                         <strong>Course:</strong> ${student.course}<br>
                         <strong>Email:</strong> ${student.email}<br>
                         <strong>Enrolled:</strong> ${new Date(student.enrolled).toLocaleDateString()}<br>
                         <strong>Last Active:</strong> ${new Date(student.lastActive).toLocaleDateString()}
                     </div>
-                    
+
                     <div class="student-stats">
                         <div class="student-stat">
                             <div class="student-stat-value">${student.completedLessons}</div>
@@ -1046,13 +1046,13 @@
                             <div class="student-stat-label">Total Lessons</div>
                         </div>
                     </div>
-                    
+
                     <div style="margin-top: 15px;">
                         <div class="progress-bar" style="height: 8px;">
                             <div class="progress-fill" style="width: ${student.progress}%;"></div>
                         </div>
                     </div>
-                    
+
                     <div style="text-align: center; margin-top: 15px;">
                         <button class="btn" onclick="contactStudent('${student.id}')" style="padding: 8px 16px; font-size: 0.9rem;">
                             💬 Contact
@@ -1067,7 +1067,7 @@
             try {
                 const response = await fetch('/api/revenue/status');
                 const data = await response.json();
-                
+
                 if (data.success && data.streams.online_courses) {
                     const stream = data.streams.online_courses;
                     streamData.status = stream.status;
@@ -1076,7 +1076,7 @@
                     streamData.monthlyRevenue = stream.monthlyRevenue;
                     streamData.avgRating = stream.avgRating;
                     streamData.autoStart = stream.autoStart;
-                    
+
                     updateUI();
                 }
             } catch (error) {
@@ -1110,7 +1110,7 @@
             document.getElementById('totalStudents').textContent = streamData.totalStudents.toLocaleString();
             document.getElementById('monthlyRevenue').textContent = '$' + streamData.monthlyRevenue.toLocaleString();
             document.getElementById('avgRating').textContent = streamData.avgRating.toFixed(1);
-            
+
             // Update revenue goal progress
             const goalPercent = Math.min(100, (streamData.monthlyRevenue/streamData.revenueGoal) * 100);
             document.getElementById('revenueGoalFill').style.width = goalPercent + '%';
@@ -1120,18 +1120,18 @@
         async function startStream() {
             try {
                 showAlert('Starting Online Courses stream...', 'warning');
-                
+
                 const response = await fetch(`/api/revenue/start/${streamData.streamId}`, {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     streamData.status = 'starting';
                     updateUI();
                     showAlert(result.message, 'success');
-                    
+
                     // Poll for status updates
                     pollStreamStatus();
                 } else {
@@ -1146,18 +1146,18 @@
         async function stopStream() {
             try {
                 showAlert('Stopping Online Courses stream...', 'warning');
-                
+
                 const response = await fetch(`/api/revenue/stop/${streamData.streamId}`, {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     streamData.status = 'stopping';
                     updateUI();
                     showAlert(result.message, 'success');
-                    
+
                     // Poll for status updates
                     pollStreamStatus();
                 } else {
@@ -1172,16 +1172,16 @@
         async function runTests() {
             try {
                 showAlert('Running comprehensive online courses tests...', 'warning');
-                
+
                 const testContainer = document.getElementById('testResultsContainer');
                 testContainer.innerHTML = '<div style="text-align: center;"><div class="loading"></div> Running tests...</div>';
-                
+
                 const response = await fetch(`/api/revenue/test/${streamData.streamId}`, {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     displayTestResults(result.results);
                     showAlert('Tests completed successfully', 'success');
@@ -1198,12 +1198,12 @@
         function displayTestResults(results) {
             const container = document.getElementById('testResultsContainer');
             container.innerHTML = '';
-            
+
             Object.keys(results).forEach(testName => {
                 const test = results[testName];
                 const testItem = document.createElement('div');
                 testItem.className = 'test-item';
-                
+
                 testItem.innerHTML = `
                     <div>
                         <strong>${testName}</strong>
@@ -1212,7 +1212,7 @@
                     </div>
                     <div class="test-status test-${test.status}">${test.status}</div>
                 `;
-                
+
                 container.appendChild(testItem);
             });
         }
@@ -1305,14 +1305,14 @@
                     const oldPrice = course.price;
                     course.price = parseFloat(newPrice);
                     course.lastUpdated = new Date().toISOString().split('T')[0];
-                    
+
                     // Update revenue proportionally
                     const priceRatio = course.price/oldPrice;
                     course.revenue = Math.round(course.revenue * priceRatio);
-                    
+
                     // Update totals
                     streamData.monthlyRevenue = streamData.courses.reduce((sum, c) => sum + c.revenue, 0);
-                    
+
                     renderCourses();
                     updateUI();
                     showAlert(`Price updated for "${course.title}"`, 'success');
@@ -1335,7 +1335,7 @@ Course Analytics for "${course.title}":
 • Revenue per Student: $${course.students > 0 ? (course.revenue/course.students).toFixed(2) : '0.00'}
 • Status: ${course.status.charAt(0).toUpperCase() + course.status.slice(1)}
 • Last Updated: ${new Date(course.lastUpdated).toLocaleDateString()}`;
-                
+
                 alert(analytics);
             }
         }
@@ -1362,9 +1362,9 @@ Course Analytics for "${course.title}":
                         revenueGoal: streamData.revenueGoal
                     })
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     showAlert('Configuration saved successfully', 'success');
                 } else {
@@ -1387,7 +1387,7 @@ Course Analytics for "${course.title}":
                         autoStart: streamData.autoStart
                     })
                 });
-                
+
                 if (!response.ok) {
                     console.error('Failed to update auto-start setting');
                 }
@@ -1401,7 +1401,7 @@ Course Analytics for "${course.title}":
                 try {
                     const response = await fetch('/api/revenue/status');
                     const data = await response.json();
-                    
+
                     if (data.success && data.streams.online_courses) {
                         const stream = data.streams.online_courses;
                         const oldStatus = streamData.status;
@@ -1410,13 +1410,13 @@ Course Analytics for "${course.title}":
                         streamData.totalStudents = stream.totalStudents;
                         streamData.monthlyRevenue = stream.monthlyRevenue;
                         streamData.avgRating = stream.avgRating;
-                        
+
                         updateUI();
-                        
+
                         // Stop polling if status is stable
                         if (stream.status === 'active' || stream.status === 'inactive' || stream.status === 'error') {
                             clearInterval(pollInterval);
-                            
+
                             if (stream.status === 'error') {
                                 showAlert('Stream error: ' + (stream.errorMessage || 'Unknown error'), 'error');
                             } else if (oldStatus !== stream.status) {
@@ -1449,14 +1449,14 @@ Course Analytics for "${course.title}":
                         const newStudents = Math.floor(Math.random() * 5) + 1;
                         course.students += newStudents;
                         course.revenue += newStudents * course.price;
-                        
+
                         // Slight rating fluctuation
                         if (course.rating > 0 && Math.random() < 0.2) {
                             course.rating = Math.max(3.0, Math.min(5.0, course.rating + (Math.random() - 0.5) * 0.2));
                         }
                     }
                 });
-                
+
                 // Update student progress
                 streamData.students.forEach(student => {
                     if (student.progress < 100 && Math.random() < 0.3) {
@@ -1466,12 +1466,12 @@ Course Analytics for "${course.title}":
                         student.lastActive = new Date().toISOString().split('T')[0];
                     }
                 });
-                
+
                 // Update totals
                 streamData.totalStudents = streamData.courses.reduce((sum, c) => sum + c.students, 0);
                 streamData.monthlyRevenue = streamData.courses.reduce((sum, c) => sum + c.revenue, 0);
                 streamData.avgRating = streamData.courses.filter(c => c.rating > 0).reduce((sum, c, _, arr) => sum + c.rating/arr.length, 0);
-                
+
                 updateUI();
                 renderCourses();
                 renderStudents();
@@ -1483,9 +1483,9 @@ Course Analytics for "${course.title}":
             const alert = document.createElement('div');
             alert.className = `alert alert-${type}`;
             alert.textContent = message;
-            
+
             container.appendChild(alert);
-            
+
             // Remove alert after 5 seconds
             setTimeout(() => {
                 if (alert.parentNode) {

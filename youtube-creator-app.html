@@ -15,20 +15,20 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             color: #333;
         }
-        
+
         .app-container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
         }
-        
+
         .header {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -38,7 +38,7 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
-        
+
         .header h1 {
             font-size: 2.5rem;
             background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
@@ -46,19 +46,19 @@
             -webkit-text-fill-color: transparent;
             margin-bottom: 10px;
         }
-        
+
         .header p {
             color: #666;
             font-size: 1.1rem;
         }
-        
+
         .dashboard-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 25px;
             margin-bottom: 30px;
         }
-        
+
         .card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -67,18 +67,18 @@
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        
+
         .card:hover {
             transform: translateY(-5px);
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
         }
-        
+
         .card-header {
             display: flex;
             align-items: center;
             margin-bottom: 20px;
         }
-        
+
         .card-icon {
             width: 50px;
             height: 50px;
@@ -90,20 +90,20 @@
             font-size: 1.5rem;
             color: white;
         }
-        
+
         .youtube-icon { background: linear-gradient(45deg, #ff0000, #cc0000); }
         .tiktok-icon { background: linear-gradient(45deg, #000000, #ff0050); }
         .affiliate-icon { background: linear-gradient(45deg, #4ecdc4, #44a08d); }
         .analytics-icon { background: linear-gradient(45deg, #667eea, #764ba2); }
         .brand-icon { background: linear-gradient(45deg, #f093fb, #f5576c); }
         .strategy-icon { background: linear-gradient(45deg, #4facfe, #00f2fe); }
-        
+
         .card-title {
             font-size: 1.3rem;
             font-weight: 600;
             color: #333;
         }
-        
+
         .metric {
             display: flex;
             justify-content: space-between;
@@ -111,21 +111,21 @@
             padding: 12px 0;
             border-bottom: 1px solid #eee;
         }
-        
+
         .metric:last-child {
             border-bottom: none;
         }
-        
+
         .metric-label {
             color: #666;
             font-size: 0.9rem;
         }
-        
+
         .metric-value {
             font-weight: 600;
             color: #333;
         }
-        
+
         .progress-bar {
             width: 100%;
             height: 8px;
@@ -134,14 +134,14 @@
             overflow: hidden;
             margin: 10px 0;
         }
-        
+
         .progress-fill {
             height: 100%;
             background: linear-gradient(90deg, #4ecdc4, #44a08d);
             border-radius: 4px;
             transition: width 0.3s ease;
         }
-        
+
         .btn {
             background: linear-gradient(45deg, #667eea, #764ba2);
             color: white;
@@ -153,24 +153,24 @@
             transition: all 0.3s ease;
             margin: 5px;
         }
-        
+
         .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
-        
+
         .btn-success {
             background: linear-gradient(45deg, #4ecdc4, #44a08d);
         }
-        
+
         .btn-warning {
             background: linear-gradient(45deg, #ffa726, #ff7043);
         }
-        
+
         .btn-danger {
             background: linear-gradient(45deg, #ef5350, #e53935);
         }
-        
+
         .status-badge {
             padding: 6px 12px;
             border-radius: 20px;
@@ -178,63 +178,63 @@
             font-weight: 600;
             text-transform: uppercase;
         }
-        
+
         .status-success {
             background: #e8f5e8;
             color: #2e7d32;
         }
-        
+
         .status-warning {
             background: #fff3e0;
             color: #f57c00;
         }
-        
+
         .status-danger {
             background: #ffebee;
             color: #c62828;
         }
-        
+
         .revenue-streams {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
             margin: 20px 0;
         }
-        
+
         .revenue-item {
             background: #f8f9fa;
             padding: 15px;
             border-radius: 10px;
             text-align: center;
         }
-        
+
         .revenue-amount {
             font-size: 1.5rem;
             font-weight: 700;
             color: #4ecdc4;
         }
-        
+
         .revenue-label {
             font-size: 0.9rem;
             color: #666;
             margin-top: 5px;
         }
-        
+
         .action-list {
             list-style: none;
         }
-        
+
         .action-item {
             display: flex;
             align-items: center;
             padding: 10px 0;
             border-bottom: 1px solid #eee;
         }
-        
+
         .action-item:last-child {
             border-bottom: none;
         }
-        
+
         .action-icon {
             width: 30px;
             height: 30px;
@@ -245,11 +245,11 @@
             margin-right: 12px;
             font-size: 0.8rem;
         }
-        
+
         .priority-high { background: #ffebee; color: #c62828; }
         .priority-medium { background: #fff3e0; color: #f57c00; }
         .priority-low { background: #e8f5e8; color: #2e7d32; }
-        
+
         .tabs {
             display: flex;
             background: rgba(255, 255, 255, 0.1);
@@ -257,7 +257,7 @@
             padding: 5px;
             margin-bottom: 20px;
         }
-        
+
         .tab {
             flex: 1;
             padding: 12px 20px;
@@ -267,27 +267,27 @@
             transition: all 0.3s ease;
             color: rgba(255, 255, 255, 0.7);
         }
-        
+
         .tab.active {
             background: rgba(255, 255, 255, 0.2);
             color: white;
         }
-        
+
         .chart-container {
             position: relative;
             height: 300px;
             margin: 20px 0;
         }
-        
+
         @media (max-width: 768px) {
             .dashboard-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .header h1 {
                 font-size: 2rem;
             }
-            
+
             .revenue-streams {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -296,9 +296,9 @@
 </head>
 <body>
     <div id="root"></div>
-    
+
     <script type="text/babel">
-        const { useState, useEffect } = React;//Mock data based on research findings
+        const { useState, useEffect } = React; // Mock data based on research findings
         const mockData = {
             youtubeMetrics: {
                 subscribers: 8500,
@@ -334,20 +334,20 @@
                 { text: 'Plan content calendar for next month', priority: 'low', completed: false }
             ]
         };
-        
+
         function YouTubeCreatorApp() {
             const [activeTab, setActiveTab] = useState('overview');
             const [data, setData] = useState(mockData);
-            
+
             const calculateYPPProgress = () => {
                 const subscriberProgress = Math.min((data.youtubeMetrics.subscribers/1000) * 100, 100);
                 const watchTimeProgress = Math.min((data.youtubeMetrics.watchHours/4000) * 100, 100);
                 return { subscriberProgress, watchTimeProgress };
             };
-            
+
             const { subscriberProgress, watchTimeProgress } = calculateYPPProgress();
             const totalRevenue = Object.values(data.revenueStreams).reduce((sum, val) => sum + val, 0);
-            
+
             const OverviewTab = () => (
                 <div className="dashboard-grid">
                     <div className="card">
@@ -378,7 +378,7 @@
                             </span>
                         </div>
                     </div>
-                    
+
                     <div className="card">
                         <div className="card-header">
                             <div className="card-icon analytics-icon">
@@ -405,7 +405,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div className="card">
                         <div className="card-header">
                             <div className="card-icon strategy-icon">
@@ -431,7 +431,7 @@
                     </div>
                 </div>
             );
-            
+
             const AffiliateTab = () => (
                 <div className="dashboard-grid">
                     <div className="card">
@@ -456,7 +456,7 @@
                             <i className="fas fa-plus"></i> Add Affiliate Program
                         </button>
                     </div>
-                    
+
                     <div className="card">
                         <div className="card-header">
                             <div className="card-icon tiktok-icon">
@@ -482,7 +482,7 @@
                     </div>
                 </div>
             );
-            
+
             const BrandTab = () => (
                 <div className="dashboard-grid">
                     <div className="card">
@@ -512,7 +512,7 @@
                             <i className="fas fa-search"></i> Find New Partnerships
                         </button>
                     </div>
-                    
+
                     <div className="card">
                         <div className="card-header">
                             <div className="card-icon analytics-icon">
@@ -538,7 +538,7 @@
                     </div>
                 </div>
             );
-            
+
             const renderActiveTab = () => {
                 switch(activeTab) {
                     case 'overview': return <OverviewTab/>;
@@ -547,40 +547,40 @@
                     default: return <OverviewTab/>;
                 }
             };
-            
+
             return (
                 <div className="app-container">
                     <div className="header">
                         <h1>YouTube Creator Monetization Hub 2025</h1>
                         <p>Advanced analytics, YPP tracking, affiliate management, and brand partnership tools</p>
                     </div>
-                    
+
                     <div className="tabs">
-                        <div 
+                        <div
                             className={`tab ${activeTab === 'overview' ? 'active' : ''}`}
                             onClick={() => setActiveTab('overview')}
                         >
                             <i className="fas fa-tachometer-alt"></i> Overview
                         </div>
-                        <div 
+                        <div
                             className={`tab ${activeTab === 'affiliate' ? 'active' : ''}`}
                             onClick={() => setActiveTab('affiliate')}
                         >
                             <i className="fas fa-link"></i> Affiliate Marketing
                         </div>
-                        <div 
+                        <div
                             className={`tab ${activeTab === 'brands' ? 'active' : ''}`}
                             onClick={() => setActiveTab('brands')}
                         >
                             <i className="fas fa-handshake"></i> Brand Partnerships
                         </div>
                     </div>
-                    
+
                     {renderActiveTab()}
                 </div>
             );
         }
-        
+
         ReactDOM.render(<YouTubeCreatorApp/>, document.getElementById('root'));
     </script>
 </body>

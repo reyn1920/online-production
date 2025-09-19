@@ -139,7 +139,7 @@ ISSUES_FIXED=0
 check_file_exists() {
     local file_path="$1"
     local base_dir="$2"
-    
+
     # Handle different types of paths
     if [[ "$file_path" =~ ^https?:// ]]; then
         # External URL - skip for now
@@ -160,7 +160,7 @@ check_file_exists() {
         # Relative path
         local full_path="$base_dir/$file_path"
     fi
-    
+
     [[ -f "$full_path" ]]
 }
 
@@ -168,18 +168,18 @@ check_file_exists() {
 suggest_href_fix() {
     local broken_href="$1"
     local file_dir="$2"
-    
+
     # Try to find similar files
     local basename=$(basename "$broken_href")
     local dirname=$(dirname "$broken_href")
-    
+
     # Search for files with similar names
     local suggestions=()
     while IFS= read -r -d '' file; do
         local rel_path=$(realpath --relative-to="$file_dir" "$file")
         suggestions+=("$rel_path")
     done < <(find "$PROJECT_ROOT" -name "*$basename*" -type f -print0 2>/dev/null | head -5)
-    
+
     if [[ ${#suggestions[@]} -gt 0 ]]; then
         echo "Possible fixes:"
         for i in "${!suggestions[@]}"; do
@@ -197,18 +197,18 @@ fix_href_in_file() {
     local file="$1"
     local old_href="$2"
     local new_href="$3"
-    
+
     if [[ "$DRY_RUN" == "true" ]]; then
         log_info "[DRY RUN] Would fix: $old_href -> $new_href in $file"
         return 0
     fi
-    
+
     # Create backup if requested
     if [[ "$CREATE_BACKUP" == "true" ]]; then
         local backup_file="$BACKUP_DIR/$(basename "$file").backup"
         cp "$file" "$backup_file"
     fi
-    
+
     # Use sed to replace the href
     if sed -i.tmp "s|href=\"$old_href\"|href=\"$new_href\"|g" "$file" && rm "$file.tmp"; then
         log_success "Fixed: $old_href -> $new_href in $file"
@@ -225,13 +225,13 @@ scan_file_for_hrefs() {
     local file="$1"
     local file_dir=$(dirname "$file")
     local file_has_issues=false
-    
+
     ((FILES_SCANNED++))
-    
+
     if [[ "$VERBOSE" == "true" ]]; then
         log_info "Scanning: $file"
     fi
-    
+
     # Extract all href attributes
     while IFS= read -r line; do
         if [[ -n "$line" ]]; then
@@ -240,9 +240,9 @@ scan_file_for_hrefs() {
                 if ! check_file_exists "$href" "$file_dir"; then
                     ((ISSUES_FOUND++))
                     file_has_issues=true
-                    
+
                     log_warning "Broken href found in $file: $href"
-                    
+
                     if [[ "$FIX_ALL" == "true" ]]; then
                         local suggestion=$(suggest_href_fix "$href" "$file_dir" | tail -1)
                         if [[ -n "$suggestion" && "$suggestion" != "No suggestions found" ]]; then
@@ -255,7 +255,7 @@ scan_file_for_hrefs() {
             fi
         fi
     done < <(grep -n 'href="[^"]*"' "$file" 2>/dev/null || true)
-    
+
     if [[ "$file_has_issues" == "true" ]]; then
         ((FILES_WITH_ISSUES++))
     fi
@@ -264,7 +264,7 @@ scan_file_for_hrefs() {
 # Main scanning function
 scan_for_broken_hrefs() {
     log_info "Scanning for broken href references..."
-    
+
     # Convert extensions to find pattern
     local find_pattern=""
     IFS=',' read -ra EXT_ARRAY <<< "$EXTENSIONS"
@@ -274,10 +274,10 @@ scan_for_broken_hrefs() {
         fi
         find_pattern="$find_pattern -name \"*.$ext\""
     done
-    
+
     # Find and scan files
     local find_cmd="find \"$TARGET_DIR\" -type f \( $find_pattern \) -not -path '*/node_modules/*' -not -path '*/venv/*' -not -path '*/.git/*' -not -path '*/dist/*' -not -path '*/build/*'"
-    
+
     while IFS= read -r -d '' file; do
         scan_file_for_hrefs "$file"
     done < <(eval "$find_cmd -print0")
@@ -290,7 +290,7 @@ generate_report() {
     log_info "Files with issues: $FILES_WITH_ISSUES"
     log_info "Issues found: $ISSUES_FOUND"
     log_info "Issues fixed: $ISSUES_FIXED"
-    
+
     if [[ $ISSUES_FOUND -gt 0 && $ISSUES_FIXED -eq 0 && "$DRY_RUN" == "false" ]]; then
         log_warning "Issues found but not fixed. Run with --fix-all to auto-fix or manually review."
     elif [[ $ISSUES_FOUND -eq 0 ]]; then
@@ -307,13 +307,13 @@ main() {
         log_error "Target directory does not exist: $TARGET_DIR"
         exit 1
     fi
-    
+
     # Run the scan
     scan_for_broken_hrefs
-    
+
     # Generate report
     generate_report
-    
+
     # Exit with appropriate code
     if [[ $ISSUES_FOUND -gt 0 && $ISSUES_FIXED -lt $ISSUES_FOUND ]]; then
         exit 1

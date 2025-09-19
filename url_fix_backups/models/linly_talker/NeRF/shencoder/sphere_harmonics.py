@@ -1,8 +1,6 @@
-import numpy as np
 import torch
 import torch.nn as nn
 from torch.autograd import Function
-from torch.autograd.function import once_differentiable
 from torch.cuda.amp import custom_bwd, custom_fwd
 
 try:
@@ -26,7 +24,9 @@ class _sh_encoder(Function):
         outputs = torch.empty(B, output_dim, dtype=inputs.dtype, device=inputs.device)
 
         if calc_grad_inputs:
-            dy_dx = torch.empty(B, input_dim * output_dim, dtype=inputs.dtype, device=inputs.device)
+            dy_dx = torch.empty(
+                B, input_dim * output_dim, dtype=inputs.dtype, device=inputs.device
+            )
         else:
             dy_dx = None
 
@@ -49,7 +49,9 @@ class _sh_encoder(Function):
             grad = grad.contiguous()
             B, input_dim, degree = ctx.dims
             grad_inputs = torch.zeros_like(inputs)
-            _backend.sh_encode_backward(grad, inputs, B, input_dim, degree, dy_dx, grad_inputs)
+            _backend.sh_encode_backward(
+                grad, inputs, B, input_dim, degree, dy_dx, grad_inputs
+            )
             return grad_inputs, None, None
         else:
             return None, None, None
@@ -59,7 +61,7 @@ sh_encode = _sh_encoder.apply
 
 
 class SHEncoder(nn.Module):
-    def __init__(self, input_dim=3, degree=4):
+    def __init__(self, input_dim: 3, degree=4):
         super().__init__()
 
         self.input_dim = input_dim  # coord dims, must be 3
@@ -67,7 +69,9 @@ class SHEncoder(nn.Module):
         self.output_dim = degree**2
 
         assert self.input_dim == 3, "SH encoder only support input dim == 3"
-        assert self.degree > 0 and self.degree <= 8, "SH encoder only supports degree in [1, 8]"
+        assert (
+            self.degree > 0 and self.degree <= 8
+        ), "SH encoder only supports degree in [1, 8]"
 
     def __repr__(self):
         return f"SHEncoder: input_dim={self.input_dim} degree={self.degree}"

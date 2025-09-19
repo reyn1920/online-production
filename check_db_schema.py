@@ -17,7 +17,7 @@ def check_affiliate_programs_table():
     column_names = [col[1] for col in columns]
 
     if "signup_url" not in column_names:
-        print("\\nAdding signup_url column...")
+        print("\nAdding signup_url column...")
         cursor.execute("ALTER TABLE affiliate_programs ADD COLUMN signup_url TEXT")
         conn.commit()
         print("signup_url column added successfully")

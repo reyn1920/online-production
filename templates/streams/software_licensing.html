@@ -551,31 +551,31 @@
             .main-content {
                 grid-template-columns: 1fr;
             }
-            
+
             .metrics-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .form-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .licenses-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .license-stats {
                 grid-template-columns: 1fr;
             }
-            
+
             .license-actions {
                 grid-template-columns: 1fr;
             }
-            
+
             .activations-table {
                 font-size: 0.9rem;
             }
-            
+
             .activations-table th,
             .activations-table td {
                 padding: 10px;
@@ -595,7 +595,7 @@
             <!-- Control Panel -->
             <div class="control-panel">
                 <h2>Stream Controls</h2>
-                
+
                 <div class="control-group">
                     <label>Stream Status</label>
                     <div style="display: flex; align-items: center; gap: 15px;">
@@ -635,7 +635,7 @@
             <!-- Metrics Panel -->
             <div class="metrics-panel">
                 <h2>License Metrics</h2>
-                
+
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <div class="metric-value" id="activeLicenses">0</div>
@@ -670,7 +670,7 @@
             <div class="licenses-section">
                 <h2>Software Products</h2>
                 <p style="color: #666; margin-bottom: 20px;">Manage your software licenses and pricing tiers</p>
-                
+
                 <div class="licenses-grid" id="licensesGrid">
                     <!-- Licenses will be loaded dynamically -->
                 </div>
@@ -680,7 +680,7 @@
             <div class="activations-section">
                 <h2>License Activations</h2>
                 <p style="color: #666; margin-bottom: 20px;">Track active license keys and customer usage</p>
-                
+
                 <table class="activations-table" id="activationsTable">
                     <thead>
                         <tr>
@@ -703,18 +703,18 @@
             <!-- New License Form -->
             <div class="new-license-form" id="newLicenseForm" style="display: none;">
                 <h2>Create New Software License</h2>
-                
+
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Product Name</label>
                         <input type="text" id="productName" placeholder="Enter product name">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Version</label>
                         <input type="text" id="productVersion" placeholder="1.0.0">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>License Type</label>
                         <select id="licenseType">
@@ -725,28 +725,28 @@
                             <option value="enterprise">Enterprise</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Single License Price ($)</label>
                         <input type="number" id="singlePrice" placeholder="99" min="1" max="10000">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Bulk License Price ($)</label>
                         <input type="number" id="bulkPrice" placeholder="79" min="1" max="10000">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Max Activations</label>
                         <input type="number" id="maxActivations" placeholder="1" min="1" max="1000">
                     </div>
-                    
+
                     <div class="form-group" style="grid-column: 1/-1;">
                         <label>Product Description</label>
                         <textarea id="productDescription" placeholder="Describe the software product and its features..."></textarea>
                     </div>
                 </div>
-                
+
                 <div style="text-align: center; margin-top: 20px;">
                     <button class="btn btn-success" onclick="createLicense()">✅ Create License</button>
                     <button class="btn" onclick="hideNewLicenseForm()">❌ Cancel</button>
@@ -957,11 +957,11 @@
             streamData.activeLicenses = streamData.activations.filter(a => a.status === 'active').length;
             streamData.totalRevenue = streamData.licenses.reduce((sum, l) => sum + l.totalRevenue, 0);
             streamData.monthlyRecurring = streamData.licenses.filter(l => l.type === 'subscription').reduce((sum, l) => sum + (l.activeUsers * l.singlePrice), 0);
-            
+
             const trialActivations = streamData.activations.filter(a => a.type === 'trial').length;
             const convertedTrials = streamData.activations.filter(a => a.type === 'trial' && a.status === 'active').length;
             streamData.conversionRate = trialActivations > 0 ? Math.round((convertedTrials/trialActivations) * 100) : 0;
-            
+
             renderLicenses();
             renderActivations();
         }
@@ -995,7 +995,7 @@
                         </div>
                         <div class="license-type">${license.type}</div>
                     </div>
-                    
+
                     <div class="license-stats">
                         <div class="stat-item">
                             <div class="stat-value">${license.totalSales.toLocaleString()}</div>
@@ -1010,7 +1010,7 @@
                             <div class="stat-label">Revenue</div>
                         </div>
                     </div>
-                    
+
                     <div class="license-pricing">
                         <div>
                             <div class="price-single">$${license.singlePrice}</div>
@@ -1020,11 +1020,11 @@
                             <div>Max: ${license.maxActivations} devices</div>
                         </div>
                     </div>
-                    
+
                     <div style="font-size: 0.9rem; color: #666; margin-bottom: 20px;">
                         ${license.description}
                     </div>
-                    
+
                     <div class="license-actions">
                         <button class="btn" onclick="editLicense('${license.id}')" style="padding: 10px; font-size: 0.9rem;">
                             ✏️ Edit Pricing
@@ -1072,7 +1072,7 @@
             try {
                 const response = await fetch("/api/revenue/status');
                 const data = await response.json();
-                
+
                 if (data.success && data.streams.software_licensing) {
                     const stream = data.streams.software_licensing;
                     streamData.status = stream.status;
@@ -1081,7 +1081,7 @@
                     streamData.monthlyRecurring = stream.monthlyRecurring;
                     streamData.conversionRate = stream.conversionRate;
                     streamData.autoStart = stream.autoStart;
-                    
+
                     updateUI();
                 }
             } catch (error) {
@@ -1118,13 +1118,13 @@
         async function startStream() {
             try {
                 showAlert('Starting Software Licensing stream...', 'warning');
-                
+
                 const response = await fetch(`/api/revenue/start/${streamData.streamId}`, {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     streamData.status = 'starting';
                     updateUI();
@@ -1142,13 +1142,13 @@
         async function stopStream() {
             try {
                 showAlert('Stopping Software Licensing stream...', 'warning');
-                
+
                 const response = await fetch(`/api/revenue/stop/${streamData.streamId}`, {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     streamData.status = 'stopping';
                     updateUI();
@@ -1166,16 +1166,16 @@
         async function runTests() {
             try {
                 showAlert('Running comprehensive software licensing tests...', 'warning');
-                
+
                 const testContainer = document.getElementById('testResultsContainer');
                 testContainer.innerHTML = '<div style="text-align: center;"><div class="loading"></div> Running tests...</div>';
-                
+
                 const response = await fetch(`/api/revenue/test/${streamData.streamId}`, {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     displayTestResults(result.results);
                     showAlert('Tests completed successfully', 'success');
@@ -1192,12 +1192,12 @@
         function displayTestResults(results) {
             const container = document.getElementById('testResultsContainer');
             container.innerHTML = '';
-            
+
             Object.keys(results).forEach(testName => {
                 const test = results[testName];
                 const testItem = document.createElement('div');
                 testItem.className = 'test-item';
-                
+
                 testItem.innerHTML = `
                     <div>
                         <strong>${testName}</strong>
@@ -1206,7 +1206,7 @@
                     </div>
                     <div class="test-status test-${test.status}">${test.status}</div>
                 `;
-                
+
                 container.appendChild(testItem);
             });
         }
@@ -1303,7 +1303,7 @@
                         if (license.type === 'subscription') {
                             streamData.monthlyRecurring = streamData.licenses.filter(l => l.type === 'subscription').reduce((sum, l) => sum + (l.activeUsers * l.singlePrice), 0);
                         }
-                        
+
                         renderLicenses();
                         updateUI();
                         showAlert(`Pricing updated for "${license.productName}"`, 'success');
@@ -1321,13 +1321,13 @@
             if (license) {
                 const customerName = prompt(`Enter customer name for "${license.productName}" license:`);
                 const customerEmail = prompt(`Enter customer email:`);
-                
+
                 if (customerName && customerEmail) {//Generate a license key
                     const prefix = license.productName.split(' ').map(w => w.charAt(0)).join('').toUpperCase();
                     const year = new Date().getFullYear();
                     const random = Math.random().toString(36).substr(2, 8).toUpperCase();
                     const licenseKey = `${prefix}-${year}-${random}`;
-                    
+
                     const newActivation = {
                         id: 'activation_' + Date.now(),
                         licenseKey: licenseKey,
@@ -1342,18 +1342,18 @@
                         activationsUsed: 1,
                         maxActivations: license.maxActivations
                     };
-                    
+
                     streamData.activations.unshift(newActivation);
                     streamData.activeLicenses = streamData.activations.filter(a => a.status === 'active').length;//Update license stats
                     license.totalSales += 1;
                     license.activeUsers += 1;
                     license.totalRevenue += license.singlePrice;//Update total revenue
                     streamData.totalRevenue = streamData.licenses.reduce((sum, l) => sum + l.totalRevenue, 0);
-                    
+
                     renderLicenses();
                     renderActivations();
                     updateUI();
-                    
+
                     alert(`License key generated successfully:\n\nKey: ${licenseKey}\nCustomer: ${customerName}\nEmail: ${customerEmail}\nProduct: ${license.productName}`);
                     showAlert('License key generated and activated', 'success');
                 }
@@ -1373,7 +1373,7 @@
             if (activation && confirm(`Are you sure you want to revoke the license for ${activation.customerName}?`)) {
                 activation.status = 'suspended';
                 streamData.activeLicenses = streamData.activations.filter(a => a.status === 'active').length;
-                
+
                 renderActivations();
                 updateUI();
                 showAlert(`License revoked for ${activation.customerName}`, 'success');
@@ -1394,9 +1394,9 @@
                         revenueGoal: streamData.revenueGoal
                     })
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     showAlert('Configuration saved successfully', 'success');
                 } else {
@@ -1419,7 +1419,7 @@
                         autoStart: streamData.autoStart
                     })
                 });
-                
+
                 if (!response.ok) {
                     console.error('Failed to update auto-start setting');
                 }
@@ -1433,7 +1433,7 @@
                 try {
                     const response = await fetch("/api/revenue/status');
                     const data = await response.json();
-                    
+
                     if (data.success && data.streams.software_licensing) {
                         const stream = data.streams.software_licensing;
                         const oldStatus = streamData.status;
@@ -1442,11 +1442,11 @@
                         streamData.totalRevenue = stream.totalRevenue;
                         streamData.monthlyRecurring = stream.monthlyRecurring;
                         streamData.conversionRate = stream.conversionRate;
-                        
+
                         updateUI();//Stop polling if status is stable
                         if (stream.status === 'active' || stream.status === 'inactive' || stream.status === 'error') {
                             clearInterval(pollInterval);
-                            
+
                             if (stream.status === 'error') {
                                 showAlert('Stream error: ' + (stream.errorMessage || 'Unknown error'), 'error');
                             } else if (oldStatus !== stream.status) {
@@ -1482,7 +1482,7 @@
                 });//Update totals
                 streamData.totalRevenue = streamData.licenses.reduce((sum, l) => sum + l.totalRevenue, 0);
                 streamData.monthlyRecurring = streamData.licenses.filter(l => l.type === 'subscription').reduce((sum, l) => sum + (l.activeUsers * l.singlePrice), 0);
-                
+
                 renderLicenses();
                 updateUI();
             }
@@ -1493,9 +1493,9 @@
             const alert = document.createElement('div');
             alert.className = `alert alert-${type}`;
             alert.textContent = message;
-            
+
             alertContainer.appendChild(alert);
-            
+
             setTimeout(() => {
                 if (alert.parentNode) {
                     alert.parentNode.removeChild(alert);

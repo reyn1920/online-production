@@ -3,9 +3,11 @@
 .env.local
 .env.production
 .env.staging
+.env.runtime
 .env.*.local
 *.env
 !/.env.example
+!/.env.runtime.example
 
 # Database files
 *.db

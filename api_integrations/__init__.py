@@ -27,5 +27,4 @@ __all__ = [
     "PexelsAPI",
     "RedditAPI",
     "YouTubeAPI",
-# BRACKET_SURGEON: disabled
-# ]
+]

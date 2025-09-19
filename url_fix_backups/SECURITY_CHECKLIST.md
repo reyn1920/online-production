@@ -136,7 +136,7 @@ Referrer-Policy: strict-origin-when-cross-origin
   run: |
     bandit -r . -f json -o bandit-report.json
     safety check --json --output safety-report.json
-    
+
 - name: Secret scanning
   uses: trufflesecurity/trufflehog@main
   with:

@@ -69,33 +69,33 @@ import json
 class LinlyTalkerAPI:
     def __init__(self, base_url="http://localhost:7860"):
         self.base_url = base_url
-    
+
     def generate_avatar_video(self, text, voice_sample=None, image_path=None):
         """
         Generate talking avatar video from text input
         """
         endpoint = f"{self.base_url}/api/generate"
-        
+
         payload = {
             "text": text,
             "voice_sample": voice_sample,
             "image_path": image_path,
             "output_format": "mp4"
         }
-        
+
         response = requests.post(endpoint, json=payload)
         return response.json()
-    
+
     def clone_voice(self, audio_file_path, duration_minutes=1):
         """
         Clone voice using GPT-SoVITS integration
         """
         endpoint = f"{self.base_url}/api/voice_clone"
-        
+
         with open(audio_file_path, 'rb') as f:
             files = {'audio': f}
             response = requests.post(endpoint, files=files)
-        
+
         return response.json()
 ```
 
@@ -130,78 +130,78 @@ class DaVinciResolveAutomation:
         self.resolve = dvr_script.scriptapp("Resolve")
         self.project_manager = self.resolve.GetProjectManager()
         self.media_storage = self.resolve.GetMediaStorage()
-    
+
     def create_project(self, project_name):
         """
         Create new DaVinci Resolve project
         """
         project = self.project_manager.CreateProject(project_name)
         return project
-    
+
     def import_media(self, file_paths):
         """
         Import media files into current project
         """
         project = self.project_manager.GetCurrentProject()
         media_pool = project.GetMediaPool()
-        
+
         imported_clips = []
         for file_path in file_paths:
             if os.path.exists(file_path):
                 clip = media_pool.ImportMedia([file_path])
                 imported_clips.extend(clip)
-        
+
         return imported_clips
-    
+
     def create_timeline_with_clips(self, timeline_name, clips):
         """
         Create timeline and add clips
         """
         project = self.project_manager.GetCurrentProject()
         media_pool = project.GetMediaPool()
-        
+
         # Create empty timeline
         timeline = media_pool.CreateEmptyTimeline(timeline_name)
-        
+
         # Add clips to timeline
         for i, clip in enumerate(clips):
             timeline.InsertClip(clip, i + 1, 0)
-        
+
         return timeline
-    
+
     def apply_ai_voice_convert(self, timeline, voice_model_path):
         """
         Apply AI Voice Convert feature
         """
         # Access AI Voice Convert through Resolve's AI tools
         timeline.SetCurrentTimecode("00:00:00:00")
-        
+
         # Apply voice conversion (requires DaVinci Resolve Studio)
         voice_settings = {
             "model_path": voice_model_path,
             "strength": 0.8,
             "preserve_timing": True
         }
-        
+
         return timeline.ApplyAIVoiceConvert(voice_settings)
-    
+
     def render_project(self, output_path, format_preset="H.264"):
         """
         Render current timeline
         """
         project = self.project_manager.GetCurrentProject()
-        
+
         # Set render settings
         project.SetRenderSettings({
             "TargetDir": os.path.dirname(output_path),
             "CustomName": os.path.basename(output_path),
             "Format": format_preset
         })
-        
+
         # Start render
         job_id = project.AddRenderJob()
         project.StartRendering(job_id)
-        
+
         return job_id
 ```
 
@@ -213,15 +213,15 @@ def run_resolve_headless(script_path):
     Run DaVinci Resolve in headless mode
     """
     import subprocess
-    
+
     resolve_path = "/Applications/DaVinci Resolve/DaVinci Resolve.app/Contents/MacOS/Resolve"
-    
+
     cmd = [
         resolve_path,
         "-nogui",
         "-script", script_path
     ]
-    
+
     process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     return process
 ```
@@ -242,7 +242,7 @@ class BlenderAutomation:
         # Clear existing mesh objects
         bpy.ops.object.select_all(action='SELECT')
         bpy.ops.object.delete(use_global=False)
-    
+
     def import_video_as_plane(self, video_path, scale=1.0):
         """
         Import video file as image plane for compositing
@@ -250,32 +250,32 @@ class BlenderAutomation:
         # Add plane
         bpy.ops.mesh.primitive_plane_add(size=2*scale)
         plane = bpy.context.active_object
-        
+
         # Create material with video texture
         material = bpy.data.materials.new(name="VideoMaterial")
         material.use_nodes = True
-        
+
         # Clear default nodes
         material.node_tree.nodes.clear()
-        
+
         # Add nodes
         output_node = material.node_tree.nodes.new('ShaderNodeOutputMaterial')
         emission_node = material.node_tree.nodes.new('ShaderNodeEmission')
         image_node = material.node_tree.nodes.new('ShaderNodeTexImage')
-        
+
         # Load video texture
         image = bpy.data.images.load(video_path)
         image_node.image = image
-        
+
         # Connect nodes
         material.node_tree.links.new(image_node.outputs['Color'], emission_node.inputs['Color'])
         material.node_tree.links.new(emission_node.outputs['Emission'], output_node.inputs['Surface'])
-        
+
         # Assign material to plane
         plane.data.materials.append(material)
-        
+
         return plane
-    
+
     def create_3d_environment(self, environment_type="studio"):
         """
         Create 3D environment for avatar integration
@@ -285,26 +285,26 @@ class BlenderAutomation:
             bpy.ops.object.light_add(type='AREA', location=(5, 5, 5))
             key_light = bpy.context.active_object
             key_light.data.energy = 100
-            
+
             bpy.ops.object.light_add(type='AREA', location=(-5, 5, 3))
             fill_light = bpy.context.active_object
             fill_light.data.energy = 50
-            
+
             # Add backdrop
             bpy.ops.mesh.primitive_plane_add(size=10, location=(0, -3, 0))
             backdrop = bpy.context.active_object
             backdrop.rotation_euler = (1.5708, 0, 0)  # 90 degrees
-            
+
         elif environment_type == "outdoor":
             # Add HDRI environment
             world = bpy.context.scene.world
             world.use_nodes = True
-            
+
             env_texture = world.node_tree.nodes.new('ShaderNodeTexEnvironment')
             background = world.node_tree.nodes['Background']
-            
+
             world.node_tree.links.new(env_texture.outputs['Color'], background.inputs['Color'])
-    
+
     def setup_camera_tracking(self, target_object):
         """
         Setup camera to track avatar object
@@ -312,34 +312,34 @@ class BlenderAutomation:
         # Add camera
         bpy.ops.object.camera_add(location=(7, -7, 5))
         camera = bpy.context.active_object
-        
+
         # Add track-to constraint
         constraint = camera.constraints.new('TRACK_TO')
         constraint.target = target_object
         constraint.track_axis = 'TRACK_NEGATIVE_Z'
         constraint.up_axis = 'UP_Y'
-        
+
         # Set as active camera
         bpy.context.scene.camera = camera
-        
+
         return camera
-    
+
     def render_animation(self, output_path, start_frame=1, end_frame=250):
         """
         Render animation sequence
         """
         scene = bpy.context.scene
-        
+
         # Set render settings
         scene.render.filepath = output_path
         scene.render.image_settings.file_format = 'FFMPEG'
         scene.render.ffmpeg.format = 'MPEG4'
         scene.render.ffmpeg.codec = 'H264'
-        
+
         # Set frame range
         scene.frame_start = start_frame
         scene.frame_end = end_frame
-        
+
         # Render animation
         bpy.ops.render.render(animation=True)
 ```
@@ -352,7 +352,7 @@ def run_blender_headless(blend_file, script_path, output_path):
     Run Blender in headless mode with custom script
     """
     import subprocess
-    
+
     cmd = [
         "blender",
         blend_file,
@@ -361,7 +361,7 @@ def run_blender_headless(blend_file, script_path, output_path):
         "--",  # Arguments after this are passed to script
         output_path
     ]
-    
+
     process = subprocess.run(cmd, capture_output=True, text=True)
     return process
 ```
@@ -382,90 +382,90 @@ class AIVideoProductionPipeline:
         self.linly_api = LinlyTalkerAPI(self.config['linly_talker']['url'])
         self.resolve_automation = DaVinciResolveAutomation()
         self.blender_automation = BlenderAutomation()
-        
+
     def load_config(self, config_path):
         """
         Load pipeline configuration
         """
         with open(config_path, 'r') as f:
             return json.load(f)
-    
+
     def generate_ai_avatar_content(self, script_text, character_image=None, voice_sample=None):
         """
         Step 1: Generate AI avatar video using Linly Talker
         """
         print("Generating AI avatar content...")
-        
+
         # Generate avatar video
         result = self.linly_api.generate_avatar_video(
             text=script_text,
             voice_sample=voice_sample,
             image_path=character_image
         )
-        
+
         avatar_video_path = result.get('output_path')
-        
+
         if not avatar_video_path or not os.path.exists(avatar_video_path):
             raise Exception("Failed to generate avatar video")
-        
+
         return avatar_video_path
-    
+
     def enhance_with_blender(self, avatar_video_path, environment_type="studio"):
         """
         Step 2: Enhance avatar video with 3D environment in Blender
         """
         print("Enhancing with 3D environment...")
-        
+
         # Import avatar video
         avatar_plane = self.blender_automation.import_video_as_plane(avatar_video_path)
-        
+
         # Create 3D environment
         self.blender_automation.create_3d_environment(environment_type)
-        
+
         # Setup camera tracking
         camera = self.blender_automation.setup_camera_tracking(avatar_plane)
-        
+
         # Render enhanced video
         enhanced_output = f"/tmp/enhanced_avatar_{int(time.time())}.mp4"
         self.blender_automation.render_animation(enhanced_output)
-        
+
         return enhanced_output
-    
+
     def finalize_in_resolve(self, enhanced_video_path, additional_assets=None):
         """
         Step 3: Final editing and post-production in DaVinci Resolve
         """
         print("Finalizing in DaVinci Resolve...")
-        
+
         # Create new project
         project_name = f"AI_Production_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
         project = self.resolve_automation.create_project(project_name)
-        
+
         # Import media
         media_files = [enhanced_video_path]
         if additional_assets:
             media_files.extend(additional_assets)
-        
+
         clips = self.resolve_automation.import_media(media_files)
-        
+
         # Create timeline
         timeline = self.resolve_automation.create_timeline_with_clips(
             "Main_Timeline", clips
         )
-        
+
         # Apply AI enhancements if available
         if self.config.get('resolve', {}).get('ai_voice_model'):
             self.resolve_automation.apply_ai_voice_convert(
-                timeline, 
+                timeline,
                 self.config['resolve']['ai_voice_model']
             )
-        
+
         # Render final output
         final_output = f"/tmp/final_production_{int(time.time())}.mp4"
         job_id = self.resolve_automation.render_project(final_output)
-        
+
         return final_output, job_id
-    
+
     def run_complete_pipeline(self, script_text, character_image=None, voice_sample=None, additional_assets=None):
         """
         Execute complete AI video production pipeline
@@ -475,15 +475,15 @@ class AIVideoProductionPipeline:
             avatar_video = self.generate_ai_avatar_content(
                 script_text, character_image, voice_sample
             )
-            
+
             # Step 2: Enhance with Blender
             enhanced_video = self.enhance_with_blender(avatar_video)
-            
+
             # Step 3: Finalize in DaVinci Resolve
             final_video, render_job = self.finalize_in_resolve(
                 enhanced_video, additional_assets
             )
-            
+
             return {
                 'success': True,
                 'avatar_video': avatar_video,
@@ -491,7 +491,7 @@ class AIVideoProductionPipeline:
                 'final_video': final_video,
                 'render_job_id': render_job
             }
-            
+
         except Exception as e:
             return {
                 'success': False,
@@ -561,7 +561,7 @@ else:
 ```python
 # Complex production with multiple assets
 script = """
-Welcome to our quarterly business review. 
+Welcome to our quarterly business review.
 Let me walk you through our key achievements and future roadmap.
 As you can see in the charts, our growth has been exceptional.
 """
@@ -604,7 +604,7 @@ class OptimizedPipeline(AIVideoProductionPipeline):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.max_workers = mp.cpu_count() // 2
-    
+
     def parallel_processing(self, tasks):
         """
         Execute multiple tasks in parallel
@@ -641,12 +641,12 @@ class DebugPipeline(AIVideoProductionPipeline):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.debug = True
-    
+
     def log_debug(self, message, level="INFO"):
         if self.debug:
             timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             print(f"[{timestamp}] {level}: {message}")
-    
+
     def run_complete_pipeline(self, *args, **kwargs):
         self.log_debug("Starting AI video production pipeline")
         result = super().run_complete_pipeline(*args, **kwargs)

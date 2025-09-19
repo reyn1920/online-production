@@ -139,7 +139,7 @@ services:
     volumes:
       - .:/code
       - api_logs:/var/log/api
-    working_dir:/code
+    working_dir: /code
     networks:
       - trae-network
     healthcheck:

@@ -193,31 +193,31 @@ scaling_rules:
 global_settings:
   # Default cooldown period for all rules (can be overridden per rule)
   default_cooldown_seconds: 300
-  
+
   # Minimum time between any scaling actions across all services
   global_cooldown_seconds: 60
-  
+
   # Maximum number of concurrent scaling actions
   max_concurrent_scaling_actions: 3
-  
+
   # Enable predictive scaling based on historical data
   enable_predictive_scaling: true
-  
+
   # Predictive scaling window (seconds ahead to predict)
   prediction_window_seconds: 300
-  
+
   # Minimum confidence threshold for predictive scaling decisions
   prediction_confidence_threshold: 0.7
-  
+
   # Enable emergency scaling (bypass cooldowns for critical thresholds)
   enable_emergency_scaling: true
-  
+
   # Scaling decision logging level (DEBUG, INFO, WARNING, ERROR)
   log_level: "INFO"
-  
+
   # Metrics collection interval (seconds)
   metrics_collection_interval: 30
-  
+
   # Historical data retention period (hours)
   historical_data_retention_hours: 24
 
@@ -225,19 +225,19 @@ global_settings:
 notifications:
   # Enable notifications for scaling events
   enabled: true
-  
+
   # Notification channels
   channels:
     - type: "webhook"
       url: "${SLACK_WEBHOOK_URL}"
       events: ["scale_up", "scale_down", "emergency_scale", "scaling_failed"]
       enabled: true
-    
+
     - type: "email"
       recipients: ["${ADMIN_EMAIL}"]
       events: ["emergency_scale", "scaling_failed"]
       enabled: false
-  
+
   # Notification rate limiting (minimum seconds between notifications)
   rate_limit_seconds: 300
 
@@ -245,13 +245,13 @@ notifications:
 health_checks:
   # Enable health checks before scaling decisions
   enabled: true
-  
+
   # Health check timeout (seconds)
   timeout_seconds: 10
-  
+
   # Number of consecutive failed health checks before marking unhealthy
   failure_threshold: 3
-  
+
   # Health check endpoints for each service
   endpoints:
     api: "/health"
@@ -264,26 +264,26 @@ health_checks:
 advanced_policies:
   # Enable multi-metric scaling (consider multiple metrics simultaneously)
   enable_multi_metric_scaling: true
-  
+
   # Multi-metric aggregation method (weighted_average, max, min)
   multi_metric_aggregation: "weighted_average"
-  
+
   # Enable cascade scaling (scale dependent services together)
   enable_cascade_scaling: true
-  
+
   # Cascade scaling relationships
   cascade_relationships:
     - primary: "api"
       dependents: ["backend"]
       scale_ratio: 0.5  # Scale dependents at 50% of primary scaling
-    
+
     - primary: "content-agent"
       dependents: ["backend"]
       scale_ratio: 0.3
-  
+
   # Enable time-based scaling policies
   enable_time_based_scaling: true
-  
+
   # Time-based scaling rules
   time_based_rules:
     - name: "business_hours_boost"
@@ -291,7 +291,7 @@ advanced_policies:
       services: ["api", "frontend"]
       min_replicas_multiplier: 1.5
       enabled: true
-    
+
     - name: "weekend_scale_down"
       schedule: "0 0-23 * * 0,6"  # All day Saturday and Sunday
       services: ["marketing-agent"]
@@ -302,7 +302,7 @@ advanced_policies:
 resource_constraints:
   # Maximum total replicas across all services
   max_total_replicas: 50
-  
+
   # Resource quotas per service
   service_quotas:
     api:
@@ -320,7 +320,7 @@ resource_constraints:
     frontend:
       max_cpu_cores: 8
       max_memory_gb: 16
-  
+
   # Cost optimization settings
   cost_optimization:
     enabled: true

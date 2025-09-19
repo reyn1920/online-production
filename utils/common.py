@@ -1,87 +1,117 @@
-"""Common utilities to break circular imports between modules."""
+#!/usr/bin/env python3
+"""
+TRAE.AI Common Utilities
 
-import logging
+Provides common utility functions and classes for the TRAE.AI system.
+"""
+
 import os
-from dataclasses import dataclass
+import logging
+import time
+from enum import Enum
+import urllib.request
+import urllib.parse
+import urllib.error
 from typing import Optional
 
-import httpx
 
-logger = logging.getLogger(__name__)
+class Provider(Enum):
+    """Enumeration of supported service providers."""
 
-
-@dataclass
-class Provider:
-    """Provider configuration dataclass."""
-
-    name: str
-    url: str
-    needs_key: bool = False
-    key_env: Optional[str] = None
-    affiliate_id: Optional[str] = None
-    status: str = "unknown"
-    last_checked: Optional[str] = None
-    response_time: Optional[float] = None
-    error: Optional[str] = None
+    OPENAI = "openai"
+    ANTHROPIC = "anthropic"
+    GOOGLE = "google"
+    AZURE = "azure"
+    LOCAL = "local"
+    CUSTOM = "custom"
 
 
 def get_secret(key: str, default: Optional[str] = None) -> Optional[str]:
-    """Get secret from environment variables.
-    
+    """
+    Retrieve a secret from environment variables.
+
     Args:
-        key: Environment variable name
-        default: Default value if not found
+        key: The environment variable key
+        default: Default value if key is not found
 
     Returns:
-        Secret value or default
+        The secret value or default
     """
     return os.getenv(key, default)
 
 
-async def http_with_fallback(
-    url: str,
-    method: str = "GET",
-    headers: Optional[dict] = None,
-    json_data: Optional[dict] = None,
-    timeout: float = 10.0,
-    **kwargs,
-) -> Optional[dict]:
-    """Make HTTP request with error handling and fallback.
-    
+class SimpleHTTPResponse:
+    """Simple HTTP response wrapper."""
+
+    def __init__(
+        self, status_code: int, text: str, headers: Optional[dict[str, str]] = None
+    ):
+        self.status_code = status_code
+        self.text = text
+        self.headers = headers or {}
+
+    def raise_for_status(self):
+        """Raise an exception for HTTP error status codes."""
+        if self.status_code >= 400:
+            raise Exception(f"HTTP {self.status_code}: {self.text}")
+
+
+def http_with_fallback(url: str, method: str = "GET", **kwargs) -> SimpleHTTPResponse:
+    """
+    Make HTTP request with retry logic and fallback handling.
+
     Args:
-        url: Request URL
-        method: HTTP method
-        headers: Request headers
-        json_data: JSON payload for POST/PUT requests
-        timeout: Request timeout in seconds
-        **kwargs: Additional httpx client arguments
+        url: The URL to request
+        method: HTTP method (GET, POST, etc.)
+        **kwargs: Additional arguments for the request
 
     Returns:
-        Response JSON or None on error
+        SimpleHTTPResponse object
+
+    Raises:
+        urllib.error.URLError: If all retry attempts fail
     """
-    try:
-        async with httpx.AsyncClient(timeout=timeout) as client:
-            if method.upper() == "GET":
-                response = await client.get(url, headers=headers, **kwargs)
-            elif method.upper() == "POST":
-                response = await client.post(url, headers=headers, json=json_data, **kwargs)
-            elif method.upper() == "PUT":
-                response = await client.put(url, headers=headers, json=json_data, **kwargs)
-            elif method.upper() == "DELETE":
-                response = await client.delete(url, headers=headers, **kwargs)
-            else:
-                logger.error(f"Unsupported HTTP method: {method}")
-                return None
+    max_retries = 3
+    backoff_factor = 1
 
-            response.raise_for_status()
-            return response.json()
+    data = kwargs.get("data")
+    headers = kwargs.get("headers", {})
 
-    except httpx.TimeoutException:
-        logger.warning(f"Request timeout for {url}")
-        return None
-    except httpx.HTTPStatusError as e:
-        logger.warning(f"HTTP error {e.response.status_code} for {url}: {e.response.text}")
-        return None
-    except Exception as e:
-        logger.error(f"Unexpected error for {url}: {str(e)}")
-        return None
+    if data and isinstance(data, dict):
+        data = urllib.parse.urlencode(data).encode("utf-8")
+    elif data and isinstance(data, str):
+        data = data.encode("utf-8")
+
+    for attempt in range(max_retries + 1):
+        try:
+            req = urllib.request.Request(url, data=data, headers=headers, method=method)
+
+            with urllib.request.urlopen(req, timeout=30) as response:
+                content = response.read().decode("utf-8")
+                status_code = response.getcode()
+                response_headers = dict(response.headers)
+
+                return SimpleHTTPResponse(status_code, content, response_headers)
+
+        except (urllib.error.HTTPError, urllib.error.URLError) as e:
+            if attempt == max_retries:
+                logging.error(
+                    f"HTTP request failed for {url} after {max_retries} retries: {e}"
+                )
+                raise
+
+            # Exponential backoff
+            sleep_time = backoff_factor * (2**attempt)
+            logging.warning(
+                f"HTTP request failed (attempt {attempt + 1}/{max_retries + 1}), retrying in {sleep_time}s: {e}"
+            )
+            time.sleep(sleep_time)
+
+        except Exception as e:
+            logging.error(f"Unexpected error during HTTP request to {url}: {e}")
+            raise
+
+    # This should never be reached due to the raise in the except block
+    raise urllib.error.URLError(
+        f"Failed to complete request to {url} after {max_retries} retries"
+    )

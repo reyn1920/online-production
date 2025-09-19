@@ -203,7 +203,7 @@ CREATE TABLE IF NOT EXISTS user_engagement (
 
 -- Views for common queries
 CREATE VIEW IF NOT EXISTS high_impact_examples AS
-SELECT 
+SELECT
     he.*,
     p.full_name,
     p.position,
@@ -216,7 +216,7 @@ WHERE he.severity = 'high' AND he.verification_status = 'verified'
 ORDER BY he.impact_score DESC, he.date_recorded DESC;
 
 CREATE VIEW IF NOT EXISTS recent_examples AS
-SELECT 
+SELECT
     he.*,
     p.full_name,
     p.position,
@@ -228,7 +228,7 @@ WHERE he.created_at >= date('now', '-30 days')
 ORDER BY he.created_at DESC;
 
 CREATE VIEW IF NOT EXISTS politician_stats AS
-SELECT 
+SELECT
     p.name,
     p.full_name,
     p.position,
@@ -244,7 +244,7 @@ LEFT JOIN hypocrisy_examples he ON p.name = he.politician
 GROUP BY p.name, p.full_name, p.position, p.party;
 
 CREATE VIEW IF NOT EXISTS category_stats AS
-SELECT 
+SELECT
     c.name,
     c.display_name,
     COUNT(he.id) as total_examples,
@@ -272,7 +272,7 @@ INSERT OR IGNORE INTO politicians (name, full_name, party, position, last_update
 CREATE TRIGGER IF NOT EXISTS update_politician_hypocrisy_count
 AFTER INSERT ON hypocrisy_examples
 BEGIN
-    UPDATE politicians 
+    UPDATE politicians
     SET hypocrisy_count = hypocrisy_count + 1,
         last_updated = datetime('now')
     WHERE name = NEW.politician;
@@ -281,7 +281,7 @@ END;
 CREATE TRIGGER IF NOT EXISTS update_category_example_count
 AFTER INSERT ON hypocrisy_examples
 BEGIN
-    UPDATE categories 
+    UPDATE categories
     SET example_count = example_count + 1
     WHERE name = NEW.category;
 END;
@@ -289,7 +289,7 @@ END;
 CREATE TRIGGER IF NOT EXISTS update_example_timestamp
 AFTER UPDATE ON hypocrisy_examples
 BEGIN
-    UPDATE hypocrisy_examples 
+    UPDATE hypocrisy_examples
     SET updated_at = datetime('now')
     WHERE id = NEW.id;
 END;
@@ -318,12 +318,12 @@ COMMENT ON TABLE social_media_content IS 'YouTube videos and social media posts 
 -- Sample queries for testing
 /*
 -- Get all high-severity examples for a specific politician
-SELECT * FROM hypocrisy_examples 
+SELECT * FROM hypocrisy_examples
 WHERE politician = 'Adam Schiff' AND severity = 'high'
 ORDER BY date_recorded DESC;
 
 -- Get examples by category with politician info
-SELECT he.*, p.full_name, p.position 
+SELECT he.*, p.full_name, p.position
 FROM hypocrisy_examples he
 JOIN politicians p ON he.politician = p.name
 WHERE he.category = 'immigration'

@@ -21,7 +21,7 @@
 
 **2024.01 Update** 📆📆
 
-- **Exciting news! I've now incorporated both the powerful GeminiPro and Qwen large models into our conversational scene. Users can now upload images during the conversation, adding a whole new dimension to the interactions.** 
+- **Exciting news! I've now incorporated both the powerful GeminiPro and Qwen large models into our conversational scene. Users can now upload images during the conversation, adding a whole new dimension to the interactions.**
 - **The deployment invocation method for FastAPI has been updated.**
 - **The advanced settings options for Microsoft TTS have been updated, increasing the variety of voice types. Additionally, video subtitles have been introduced to enhance visualization.**
 - **Updated the GPT multi-turn conversation system to establish contextual connections in dialogue, enhancing the interactivity and realism of the digital persona.**
@@ -215,21 +215,21 @@ If you are using Linly-Talker, you can set up the environment directly with Anac
 conda create -n linly python=3.10
 conda activate linly
 
-# PyTorch Installation Option 1: Using conda  
-# CUDA 11.8  
-# conda install pytorch==2.4.1 torchvision==0.19.1 torchaudio==2.4.1 pytorch-cuda=11.8 -c pytorch -c nvidia  
-# CUDA 12.1  
-# conda install pytorch==2.4.1 torchvision==0.19.1 torchaudio==2.4.1 pytorch-cuda=12.1 -c pytorch -c nvidia  
-# CUDA 12.4  
-# conda install pytorch==2.4.1 torchvision==0.19.1 torchaudio==2.4.1 pytorch-cuda=12.4 -c pytorch -c nvidia  
+# PyTorch Installation Option 1: Using conda
+# CUDA 11.8
+# conda install pytorch==2.4.1 torchvision==0.19.1 torchaudio==2.4.1 pytorch-cuda=11.8 -c pytorch -c nvidia
+# CUDA 12.1
+# conda install pytorch==2.4.1 torchvision==0.19.1 torchaudio==2.4.1 pytorch-cuda=12.1 -c pytorch -c nvidia
+# CUDA 12.4
+# conda install pytorch==2.4.1 torchvision==0.19.1 torchaudio==2.4.1 pytorch-cuda=12.4 -c pytorch -c nvidia
 
-# PyTorch Installation Option 2: Using pip  
-# CUDA 11.8  
-# pip install torch==2.4.1 torchvision==0.19.1 torchaudio==2.4.1 --index-url https://download.pytorch.org/whl/cu118  
-# CUDA 12.1  
-# pip install torch==2.4.1 torchvision==0.19.1 torchaudio==2.4.1 --index-url https://download.pytorch.org/whl/cu121  
-# CUDA 12.4  
-# pip install torch==2.4.1 torchvision==0.19.1 torchaudio==2.4.1 --index-url https://download.pytorch.org/whl/cu124  
+# PyTorch Installation Option 2: Using pip
+# CUDA 11.8
+# pip install torch==2.4.1 torchvision==0.19.1 torchaudio==2.4.1 --index-url https://download.pytorch.org/whl/cu118
+# CUDA 12.1
+# pip install torch==2.4.1 torchvision==0.19.1 torchaudio==2.4.1 --index-url https://download.pytorch.org/whl/cu121
+# CUDA 12.4
+# pip install torch==2.4.1 torchvision==0.19.1 torchaudio==2.4.1 --index-url https://download.pytorch.org/whl/cu124
 pip install torch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2 --index-url https://download.pytorch.org/whl/cu118
 
 conda install -q ffmpeg==4.2.2 # ffmpeg==4.2.2
@@ -244,10 +244,10 @@ pip install -r requirements_webui.txt
 
 # Install dependencies related to musetalk
 pip install --no-cache-dir -U openmim
-mim install mmengine 
-mim install "mmcv==2.1.0" 
-mim install "mmdet>=3.1.0" 
-mim install "mmpose>=1.1.0" 
+mim install mmengine
+mim install "mmcv==2.1.0"
+mim install "mmdet>=3.1.0"
+mim install "mmpose>=1.1.0"
 
 # 💡The ttsfrd from CosyVoice can be replaced with WeTextProcessing, so a few steps can be omitted, while ensuring compatibility with other Python versions
 
@@ -292,30 +292,30 @@ Below are some older installation methods, which might cause dependency conflict
 > ```bash
 > conda create -n linly python=3.10
 > conda activate linly
-> 
+>
 > # PyTorch Installation Method 1: Conda Installation (Recommended)
 > conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit=11.3 -c pytorch
-> 
+>
 > # PyTorch Installation Method 2: Pip Installation
 > pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu113
-> 
+>
 > conda install -q ffmpeg # ffmpeg==4.2.2
-> 
+>
 > pip install -r requirements_app.txt
 > ```
 >
 > If you want to use models like voice cloning, you may need a higher version of PyTorch. However, the functionality will be more diverse. You may need to use CUDA 11.8 as the driver version, which you can choose.
 >
 > ```bash
-> conda create -n linly python=3.10  
+> conda create -n linly python=3.10
 > conda activate linly
-> 
+>
 > pip install torch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2 --index-url https://download.pytorch.org/whl/cu118
-> 
+>
 > conda install -q ffmpeg # ffmpeg==4.2.2
-> 
+>
 > pip install -r requirements_app.txt
-> 
+>
 > # Install dependencies for voice cloning
 > pip install -r VITS/requirements_gptsovits.txt
 > ```
@@ -326,10 +326,10 @@ Below are some older installation methods, which might cause dependency conflict
 > # Install dependencies for NeRF
 > pip install "git+https://github.com/facebookresearch/pytorch3d.git"
 > pip install -r TFG/requirements_nerf.txt
-> 
+>
 > # If there are issues with PyAudio, you can install the corresponding dependencies
 > # sudo apt-get install libasound-dev portaudio19-dev libportaudio2 libportaudiocpp0
-> 
+>
 > # Note the following modules. If installation is unsuccessful, you can navigate to the path and use pip install . or python setup.py install to compile and install.
 > # NeRF/freqencoder
 > # NeRF/gridencoder
@@ -352,12 +352,12 @@ Below are some older installation methods, which might cause dependency conflict
 > If using the MuesTalk model, you can set up the environment with the following commands:
 >
 > ```bash
-> pip install --no-cache-dir -U openmim 
-> mim install mmengine 
-> mim install "mmcv>=2.0.1" 
-> mim install "mmdet>=3.1.0" 
-> mim install "mmpose>=1.1.0" 
-> pip install -r TFG/requirements_musetalk.txt 
+> pip install --no-cache-dir -U openmim
+> mim install mmengine
+> mim install "mmcv>=2.0.1"
+> mim install "mmdet>=3.1.0"
+> mim install "mmpose>=1.1.0"
+> pip install -r TFG/requirements_musetalk.txt
 > ```
 >
 
@@ -630,7 +630,7 @@ Digital persona generation can utilize SadTalker (CVPR 2023). For detailed infor
 Before usage, download the SadTalker model:
 
 ```bash
-bash scripts/sadtalker_download_models.sh  
+bash scripts/sadtalker_download_models.sh
 ```
 
 [Baidu (百度云盘)](https://pan.baidu.com/s/1eF13O-8wyw4B3MtesctQyg?pwd=linl) (Password: `linl`)
@@ -789,12 +789,12 @@ Some optimizations:
 
 - Use fixed input face images, extract features beforehand to avoid reading each time
 - Remove unnecessary libraries to reduce total time
-- Only save final video output, don't save intermediate results to improve performance 
+- Only save final video output, don't save intermediate results to improve performance
 - Use OpenCV to generate final video instead of mimwrite for faster runtime
 
 ## Gradio
 
-Gradio is a Python library that provides an easy way to deploy machine learning models as interactive web apps. 
+Gradio is a Python library that provides an easy way to deploy machine learning models as interactive web apps.
 
 For Linly-Talker, Gradio serves two main purposes:
 
@@ -802,7 +802,7 @@ For Linly-Talker, Gradio serves two main purposes:
 
 2. **User Interaction**: The Gradio GUI can serve as a frontend to allow end users to interact with Linly-Talker. Users can upload their own images and ask arbitrary questions or have conversations to get real-time responses. This provides a more natural speech interaction method.
 
-Specifically, we create a Gradio Interface in app.py that takes image and text inputs, calls our function to generate the response video, and displays it in the GUI. This enables browser interaction without needing to build complex frontend. 
+Specifically, we create a Gradio Interface in app.py that takes image and text inputs, calls our function to generate the response video, and displays it in the GUI. This enables browser interaction without needing to build complex frontend.
 
 In summary, Gradio provides visualization and user interaction interfaces for Linly-Talker, serving as effective means for showcasing system capabilities and enabling end users.
 
@@ -832,7 +832,7 @@ The current features available in the WebUI are as follows:
   - [x] Multiple LLM model selections: Linly/Qwen/ChatGLM / GeminiPro/ChatGPT/Coming Soon
   - [x] Multiple Talker model selections: Wav2Lip/Wav2Lipv2/SadTalker/ERNeRF/MuseTalk/ Coming Soon
   - [x] Multiple ASR model selections: Whisper/FunASR/Coming Soon
-  
+
   ![](docs/WebUI2.png)
 
 You can directly run the web UI to obtain results. The page you will see is as follows:
@@ -923,7 +923,7 @@ python app_musetalk.py
 >
 
 ```bash
-Linly-Talker/ 
+Linly-Talker/
 ├── checkpoints
 │   ├── audio_visual_encoder.pth
 │   ├── hub
@@ -1057,7 +1057,7 @@ Linly-Talker/
 
 **TTS**
 
-- [https://github.com/rany2/edge-tts](https://github.com/rany2/edge-tts)  
+- [https://github.com/rany2/edge-tts](https://github.com/rany2/edge-tts)
 - [https://github.com/PaddlePaddle/PaddleSpeech](https://github.com/PaddlePaddle/PaddleSpeech)
 
 **LLM**
@@ -1090,4 +1090,3 @@ Linly-Talker/
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=Kedreamix/Linly-Talker&type=Date)](https://star-history.com/#Kedreamix/Linly-Talker&Date)
-

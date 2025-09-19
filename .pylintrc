@@ -1,6 +1,6 @@
 [MASTER]
 # Use multiple processes to speed up Pylint
-jobs=0
+jobs=2
 
 # Pickle collected data for later comparisons
 persistent=yes
@@ -10,7 +10,6 @@ load-plugins=
 
 # Use a conservative default here; 2 should speed up most setups and you can
 # always reduce it further if you change your mind
-jobs=2
 
 [MESSAGES CONTROL]
 # Disable specific warnings and errors
@@ -18,13 +17,13 @@ disable=
     # Import warnings
     import-error,
     no-name-in-module,
-    
+
     # Documentation warnings (can be enabled later)
     missing-docstring,
     missing-module-docstring,
     missing-class-docstring,
     missing-function-docstring,
-    
+
     # Style preferences
     line-too-long,
     too-few-public-methods,
@@ -32,23 +31,16 @@ disable=
     too-many-locals,
     too-many-branches,
     too-many-statements,
-    
+
     # Type checking (handled by mypy)
     no-member,
     maybe-no-member,
-    
-    # Formatting (handled by black/flake8)
-    bad-continuation,
-    bad-whitespace,
-    
+
     # Common false positives
     unused-argument,
     broad-except,
     fixme,
-    
-    # Django/Framework specific
-    django-not-configured,
-    
+
     # Async/await related
     not-an-iterable,
     unsubscriptable-object
@@ -61,9 +53,6 @@ enable=
 [REPORTS]
 # Set the output format
 output-format=text
-
-# Include message's id in output
-include-ids=yes
 
 # Template used to display messages
 msg-template={path}:{line}:{column}: {msg_id}: {msg} ({symbol})
@@ -301,4 +290,4 @@ preferred-modules=
 
 [EXCEPTIONS]
 # Exceptions that will emit a warning when being caught
-overgeneral-exceptions=BaseException,Exception
+overgeneral-exceptions=builtins.BaseException,builtins.Exception

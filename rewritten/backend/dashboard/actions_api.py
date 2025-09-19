@@ -13,7 +13,7 @@ def api_actions():
 @actions_bp.route("/api/action/<agent>/<path:action>", methods=["POST"])
 def api_action_dispatch(agent, action):
     try:
-        payload = request.get_json(silent=True) or {}
+        payload: request.get_json(silent=True) or {}
         out = dispatch(agent, action, payload)
         return jsonify({"ok": True, "result": out}), 200
     except KeyError as e:

@@ -137,9 +137,9 @@ adherence to industry standards.
 
 ---
 
-**Checkpoint Date**: 2025-08-28  
-**Version**: 1.0  
-**Next Review**: 2025-09-28  
+**Checkpoint Date**: 2025-08-28
+**Version**: 1.0
+**Next Review**: 2025-09-28
 **Responsible Team**: DevOps & Security
 
 ### Change Log

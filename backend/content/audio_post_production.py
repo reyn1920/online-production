@@ -1,1631 +1,712 @@
-#!/usr/bin/env python3
-"""""""""
-Audio Post - Production - Automated Sound Design and Mastering with FFmpeg
-""""""
-This module provides comprehensive audio post - production capabilities including:
-"""
+"""Audio Post-Production Module - Advanced audio processing and enhancement system"""
 
-Audio Post - Production - Automated Sound Design and Mastering with FFmpeg
-
-
-
-""""""
-
-1. Audio Ducking - Automatic volume reduction during speech
-2. Sound Design - Adding ambient sounds, music, and effects
-3. Audio Mastering - Normalization, compression, and EQ
-4. Multi - track Mixing - Combining multiple audio sources
-5. Noise Reduction - Removing background noise and artifacts
-6. Dynamic Range Control - Compression and limiting
-7. Spatial Audio - Stereo imaging and 3D positioning
-8. Batch Processing - Process multiple audio files simultaneously
-
-
-
-Author: TRAE.AI Content Generation System
-Version: 1.0.0
-
-"""
-
-import json
-import logging
-import math
 import os
-import re
-import shutil
-import struct
-import subprocess
-import sys
-import tempfile
-import threading
-import time
-import wave
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from dataclasses import asdict, dataclass, field
+import logging
+from typing import Optional, Any
+from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+import tempfile
 
-# Configure logging
-logging.basicConfig(level = logging.INFO)
-logger = logging.getLogger(__name__)
+# Optional imports with fallbacks
+try:
+    import numpy as np
+except ImportError:
+    np = None
+
+try:
+    from scipy import signal
+    from scipy.io import wavfile
+except ImportError:
+    signal = None
+    wavfile = None
+
+try:
+    import librosa
+except ImportError:
+    librosa = None
+
+try:
+    from pydub import AudioSegment
+except ImportError:
+    AudioSegment = None
 
 
 class AudioFormat(Enum):
-    """Supported audio formats."""
+    """Supported audio formats"""
 
     WAV = "wav"
     MP3 = "mp3"
-    AAC = "aac"
     FLAC = "flac"
+    AAC = "aac"
     OGG = "ogg"
     M4A = "m4a"
-    OPUS = "opus"
-
-
-class AudioQuality(Enum):
-    """Audio quality presets."""
-
-    PHONE = "phone"  # 8kHz, mono, low bitrate
-    PODCAST = "podcast"  # 22kHz, mono, medium bitrate
-    MUSIC = "music"  # 44.1kHz, stereo, high bitrate
-    BROADCAST = "broadcast"  # 48kHz, stereo, broadcast quality
-    STUDIO = "studio"  # 96kHz, stereo, studio quality
-    CUSTOM = "custom"  # Custom settings
 
 
 class ProcessingType(Enum):
-    """Types of audio processing."""
+    """Types of audio processing"""
 
-    DUCKING = "ducking"  # Audio ducking
-    MASTERING = "mastering"  # Audio mastering
-    NOISE_REDUCTION = "noise_reduction"  # Noise reduction
-    MIXING = "mixing"  # Multi - track mixing
-    EFFECTS = "effects"  # Audio effects
-    NORMALIZATION = "normalization"  # Volume normalization
-    COMPRESSION = "compression"  # Dynamic range compression
-    EQ = "eq"  # Equalization
-    REVERB = "reverb"  # Reverb effects
-    CUSTOM = "custom"  # Custom processing
-
-
-class ProcessingStatus(Enum):
-    """Status of audio processing."""
-
-    PENDING = "pending"
-    ANALYZING = "analyzing"
-    PROCESSING = "processing"
-    MIXING = "mixing"
+    NOISE_REDUCTION = "noise_reduction"
+    NORMALIZATION = "normalization"
+    COMPRESSION = "compression"
+    EQ = "equalization"
+    REVERB = "reverb"
+    DELAY = "delay"
+    PITCH_CORRECTION = "pitch_correction"
+    VOCAL_ENHANCEMENT = "vocal_enhancement"
     MASTERING = "mastering"
-    EXPORTING = "exporting"
-    COMPLETED = "completed"
-    ERROR = "error"
-    CANCELLED = "cancelled"
+    CUSTOM = "custom"
+
+
+class QualityLevel(Enum):
+    """Audio quality levels"""
+
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+    STUDIO = "studio"
+
+
+class AudioChannel(Enum):
+    """Audio channel configurations"""
+
+    MONO = "mono"
+    STEREO = "stereo"
+    SURROUND_5_1 = "surround_5_1"
+    SURROUND_7_1 = "surround_7_1"
+
 
 @dataclass
+class AudioMetadata:
+    """Audio file metadata"""
 
+    duration: float
+    sample_rate: int
+    channels: int
+    bit_depth: Optional[int] = None
+    format: Optional[AudioFormat] = None
+    file_size: Optional[int] = None
+    peak_amplitude: Optional[float] = None
+    rms_level: Optional[float] = None
+    dynamic_range: Optional[float] = None
+    metadata: Optional[dict[str, Any]] = None
 
-class AudioSettings:
-    """Audio processing settings."""
+    def __post_init__(self):
+        if self.metadata is None:
+            self.metadata = {}
 
-    sample_rate: int = 44100
-    channels: int = 2  # 1 = mono, 2 = stereo
-    bit_depth: int = 16  # 16, 24, 32
-    format: AudioFormat = AudioFormat.WAV
-    quality: AudioQuality = AudioQuality.MUSIC
-
-    # Compression settings
-    bitrate: Optional[str] = None  # "128k", "320k", etc.
-
-    # Processing settings
-    normalize: bool = True
-    target_lufs: float = -23.0: # Target loudness (LUFS)
-    peak_limit: float = -1.0  # Peak limiter threshold (dB)
-
-    # Advanced settings
-    fade_in: float = 0.0  # Fade in duration (seconds)
-    fade_out: float = 0.0  # Fade out duration (seconds)
-    trim_silence: bool = False  # Remove silence from start/end
 
 @dataclass
+class ProcessingParameters:
+    """Parameters for audio processing"""
 
+    processing_type: ProcessingType
+    intensity: float = 1.0
+    frequency_range: Optional[tuple[float, float]] = None
+    threshold: Optional[float] = None
+    ratio: Optional[float] = None
+    attack_time: Optional[float] = None
+    release_time: Optional[float] = None
+    custom_params: Optional[dict[str, Any]] = None
 
-class DuckingSettings:
-    """
-Audio ducking configuration.
+    def __post_init__(self):
+        if self.custom_params is None:
+            self.custom_params = {}
 
-
-    threshold: float = -20.0: # Ducking threshold (dB)
-    ratio: float = 4.0  # Ducking ratio
-    attack: float = 0.1  # Attack time (seconds)
-    release: float = 0.5  # Release time (seconds)
-    reduction: float = -12.0  # Maximum reduction (dB)
-
-    # Advanced ducking
-    lookahead: float = 0.05  # Lookahead time (seconds)
-   
-""""""
-
-    knee: float = 2.0  # Soft knee (dB)
-   
-
-    
-   
-"""
-@dataclass
-
-
-class MasteringSettings:
-    """
-Audio mastering configuration.
-
-
-    # EQ settings
-    high_pass_freq: float = 20.0: # High - pass filter frequency (Hz)
-    low_pass_freq: float = 20000.0  # Low - pass filter frequency (Hz)
-
-    # EQ bands (frequency, gain, Q)
-    
-"""
-    eq_bands: List[Tuple[float, float, float]] = field(
-    """
-
-        default_factory = lambda: [
-            (100.0, 0.0, 1.0),  # Low
-            (1000.0, 0.0, 1.0),  # Mid
-            (10000.0, 0.0, 1.0),  # High
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-         ]
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-    
-
-     
-    
-"""
-     )
-    """"""
-    eq_bands: List[Tuple[float, float, float]] = field(
-    """"""
-    # Compression
-    compressor_threshold: float = -12.0  # Compressor threshold (dB)
-    compressor_ratio: float = 3.0  # Compression ratio
-    compressor_attack: float = 0.003  # Attack time (seconds)
-    compressor_release: float = 0.1  # Release time (seconds)
-
-    # Limiting
-    limiter_threshold: float = -1.0  # Limiter threshold (dB)
-    limiter_release: float = 0.05  # Limiter release (seconds)
-
-    # Stereo enhancement
-    stereo_width: float = 1.0  # Stereo width (0.0 - 2.0)
-
-    # Harmonic enhancement
-    harmonic_enhancement: float = 0.0  # Harmonic enhancement (0.0 - 1.0)
 
 @dataclass
+class AudioProcessingRequest:
+    """Request for audio processing"""
 
+    input_path: str
+    output_path: Optional[str] = None
+    processing_chain: Optional[list[ProcessingParameters]] = None
+    target_format: AudioFormat = AudioFormat.WAV
+    target_quality: QualityLevel = QualityLevel.HIGH
+    target_sample_rate: Optional[int] = None
+    target_channels: Optional[AudioChannel] = None
+    normalize_output: bool = True
+    metadata: Optional[dict[str, Any]] = None
 
-class AudioTrack:
-    """Individual audio track configuration."""
+    def __post_init__(self):
+        if self.processing_chain is None:
+            self.processing_chain = []
+        if self.metadata is None:
+            self.metadata = {}
 
-    name: str
-    source_path: str
-    track_type: str  # "speech", "music", "sfx", "ambient"
-
-    # Timing
-    start_time: float = 0.0  # Start time in seconds
-    duration: Optional[float] = None: # Duration in seconds (None = full length)
-
-    # Volume and panning
-    volume: float = 1.0  # Volume multiplier (0.0 - 2.0)
-    pan: float = 0.0  # Pan (-1.0 left, 0.0 center, 1.0 right)
-
-    # Processing
-    mute: bool = False
-    solo: bool = False
-
-    # Effects
-    effects: List[Dict[str, Any]] = field(default_factory = list)
-
-    # Ducking (for background tracks)
-    duck_to_speech: bool = False
-    ducking_settings: Optional[DuckingSettings] = None
-
-    # Metadata
-    metadata: Dict[str, Any] = field(default_factory = dict)
 
 @dataclass
+class AudioProcessingResult:
+    """Result of audio processing"""
+
+    success: bool
+    output_path: Optional[str] = None
+    original_metadata: Optional[AudioMetadata] = None
+    processed_metadata: Optional[AudioMetadata] = None
+    processing_time: Optional[float] = None
+    quality_score: Optional[float] = None
+    applied_effects: Optional[list[str]] = None
+    error: Optional[str] = None
+    metadata: Optional[dict[str, Any]] = None
+
+    def __post_init__(self):
+        if self.applied_effects is None:
+            self.applied_effects = []
+        if self.metadata is None:
+            self.metadata = {}
 
 
-class AudioProject:
-    """
-Audio post - production project configuration.
+class AudioAnalyzer:
+    """Analyzes audio files and extracts metadata"""
 
+    def __init__(self):
+        self.logger = logging.getLogger(__name__)
 
-    project_id: str
-    name: str
-    tracks: List[AudioTrack]
-    output_path: str
-
-    # Global settings
-    audio_settings: AudioSettings = field(default_factory = AudioSettings)
-    mastering_settings: MasteringSettings = field(default_factory = MasteringSettings)
-
-    # Project timing
-    total_duration: Optional[float] = None  # Total project duration
-
-    # Processing options
-    
-"""
-    processing_types: List[ProcessingType] = field(
-    """
-
-        default_factory = lambda: [ProcessingType.MIXING, ProcessingType.MASTERING]
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-    
-
-     
-    
-"""
-     )
-    """"""
-    processing_types: List[ProcessingType] = field(
-    """"""
-    # Advanced options
-    temp_dir: Optional[str] = None
-    cleanup_temp: bool = True
-
-    # Metadata
-    metadata: Dict[str, Any] = field(default_factory = dict)
-
-@dataclass
-
-
-class ProcessingJob:
-    """Audio processing job tracking."""
-
-    job_id: str
-    project: AudioProject
-    status: ProcessingStatus
-
-    # Progress tracking
-    progress_percentage: float = 0.0
-    current_step: str = ""
-    current_track: Optional[str] = None
-
-    # Timing
-    created_at: datetime = field(default_factory = datetime.now)
-    started_at: Optional[datetime] = None
-    completed_at: Optional[datetime] = None
-    processing_time: float = 0.0
-
-    # Results
-    output_files: List[str] = field(default_factory = list)
-    error_message: Optional[str] = None
-
-    # Process management
-    ffmpeg_processes: List[subprocess.Popen] = field(default_factory = list)
-
-    # Analysis results
-    audio_analysis: Dict[str, Any] = field(default_factory = dict)
-
-    # Metadata
-    metadata: Dict[str, Any] = field(default_factory = dict)
-
-
-class FFmpegInterface:
-    """Interface for FFmpeg operations and audio processing."""
-
-
-    def __init__(self, ffmpeg_executable: Optional[str] = None):
-        self.ffmpeg_executable = ffmpeg_executable or self._find_ffmpeg()
-        self.temp_dir = Path(tempfile.gettempdir())/"audio_post_production"
-        self.temp_dir.mkdir(parents = True, exist_ok = True)
-
-        # Validate FFmpeg installation
-        if not self._validate_ffmpeg():
-            raise RuntimeError("FFmpeg not found or invalid installation")
-
-        logger.info(f"FFmpeg interface initialized: {self.ffmpeg_executable}")
-
-
-    def _find_ffmpeg(self) -> str:
-        """Find FFmpeg executable on the system."""
-        possible_paths = [
-            "/usr/local/bin/ffmpeg",  # Homebrew on macOS
-            "/opt/homebrew/bin/ffmpeg",  # Homebrew on Apple Silicon
-            "/usr/bin/ffmpeg",  # Linux
-            "C:\\\\ffmpeg\\\\bin\\\\ffmpeg.exe",  # Windows
-            "ffmpeg",  # PATH
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-         ]
-
-        for path in possible_paths:
-            if os.path.exists(path) or shutil.which(path):
-                return path
-
-        raise RuntimeError("FFmpeg executable not found")
-
-
-    def _validate_ffmpeg(self) -> bool:
-        """
-Validate FFmpeg installation.
-
-        
-"""
+    def analyze_audio(self, file_path: str) -> Optional[AudioMetadata]:
+        """Analyze audio file and extract metadata"""
         try:
-        """
-            result = subprocess.run(
-                [self.ffmpeg_executable, "-version"],
-        """
-        try:
-        """
-                    capture_output = True,
-                    text = True,
-                    timeout = 10,
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-                     )
-            return result.returncode == 0 and "ffmpeg version" in result.stdout
-        except Exception as e:
-            logger.error(f"FFmpeg validation failed: {e}")
-            return False
+            if not os.path.exists(file_path):
+                self.logger.error(f"Audio file not found: {file_path}")
+                return None
 
-
-    def analyze_audio(self, audio_path: str) -> Dict[str, Any]:
-        """
-Analyze audio file properties.
-
-        try:
-           
-""""""
-
-            # Get basic audio info
-           
-
-            
-           
-"""
-            cmd = [self.ffmpeg_executable, "-i", audio_path, "-f", "null", "-"]
-           """
-
-            
-           
-
-            # Get basic audio info
-           
-""""""
-            result = subprocess.run(cmd,
-    capture_output = True,
-    text = True,
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-#     timeout = 30)
-
-            # Parse FFmpeg output
-            info = self._parse_ffmpeg_info(result.stderr)
-
-            # Get loudness analysis
-            loudness_info = self._analyze_loudness(audio_path)
-            info.update(loudness_info)
-
-            return info
-
-        except Exception as e:
-            logger.error(f"Audio analysis failed: {e}")
-            return {}
-
-
-    def _parse_ffmpeg_info(self, ffmpeg_output: str) -> Dict[str, Any]:
-        """
-Parse FFmpeg output for audio information.
-
-       
-""""""
-
-        info = {}
-       
-
-        
-       
-"""
-        try:
-            # Extract duration
-       """
-
-        
-       
-
-        info = {}
-       
-""""""
-            duration_match = re.search(
-                r"Duration: (\\d+):(\\d+):(\\d+\\.\\d+)", ffmpeg_output
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-             )
-            if duration_match:
-                hours, minutes, seconds = duration_match.groups()
-                total_seconds = int(hours) * 3600 + int(minutes) * 60 + float(seconds)
-                info["duration"] = total_seconds
-
-            # Extract audio stream info
-            audio_match = re.search(
-                r"Audio: ([^,]+), (\\d+) Hz, ([^,]+), ([^,]+), (\\d+) kb/s",
-    ffmpeg_output
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-             )
-            if audio_match:
-                codec, sample_rate, channels, bit_depth, bitrate = audio_match.groups()
-                info.update(
-                    {
-                        "codec": codec.strip(),
-                            "sample_rate": int(sample_rate),
-                            "channels": channels.strip(),
-                            "bit_depth": bit_depth.strip(),
-                            "bitrate": f"{bitrate} kb/s",
-                             }
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-                 )
-
-        except Exception as e:
-            logger.error(f"Failed to parse FFmpeg info: {e}")
-
-        return info
-
-
-    def _analyze_loudness(self, audio_path: str) -> Dict[str, Any]:
-        """
-Analyze audio loudness using FFmpeg loudnorm filter.
-
-        
-"""
-        try:
-        """
-            cmd = [
-                self.ffmpeg_executable,
-                    "-i",
-                    audio_path,
-                    "-af",
-                    "loudnorm = I=-23:TP=-2:LRA = 7:print_format = json",
-                    "-f",
-                    "null",
-                    "-",
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-                     ]
-        """
-
-        try:
-        
-
-       
-""""""
-            result = subprocess.run(cmd,
-    capture_output = True,
-    text = True,
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-#     timeout = 60)
-
-            # Extract JSON from output
-            output_lines = result.stderr.split("\\n")
-            json_started = False
-            json_lines = []
-
-            for line in output_lines:
-                if line.strip() == "{":
-                    json_started = True
-                if json_started:
-                    json_lines.append(line)
-                if line.strip() == "}" and json_started:
-                    break
-
-            if json_lines:
-                json_str = "\\n".join(json_lines)
-                loudness_data = json.loads(json_str)
-
-                return {
-                    "input_i": float(loudness_data.get("input_i", 0)),
-                        "input_tp": float(loudness_data.get("input_tp", 0)),
-                        "input_lra": float(loudness_data.get("input_lra", 0)),
-                        "input_thresh": float(loudness_data.get("input_thresh", 0)),
-                         }
-
-        except Exception as e:
-            logger.error(f"Loudness analysis failed: {e}")
-
-        return {}
-
-
-    def apply_ducking(
-        self,
-            main_audio: str,
-            trigger_audio: str,
-            output_path: str,
-            settings: DuckingSettings,
-#             ) -> bool:
-        """
-Apply audio ducking to main audio based on trigger audio.
-
-        try:
-           
-""""""
-
-            # Build ducking filter
-           
-
-            
-           
-"""
-            ducking_filter = (
-                f"[0:a][1:a]sidechaincompress="
-                f"threshold={settings.threshold}:"
-                f"ratio={settings.ratio}:"
-                f"attack={settings.attack}:"
-                f"release={settings.release}:"
-                f"makeup={abs(settings.reduction)}:"
-                f"knee={settings.knee}:"
-                f"detection = peak:"
-                f"mix = 1"
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-             )
-           """
-
-            
-           
-
-            # Build ducking filter
-           
-""""""
-            cmd = [
-                self.ffmpeg_executable,
-                    "-i",
-                    main_audio,
-                    "-i",
-                    trigger_audio,
-                    "-filter_complex",
-                    ducking_filter,
-                    "-c:a",
-                    "pcm_s16le",
-                    "-y",
-                    output_path,
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-                     ]
-
-            result = subprocess.run(cmd,
-    capture_output = True,
-    text = True,
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-#     timeout = 300)
-
-            if result.returncode == 0:
-                logger.info(f"Ducking applied successfully: {output_path}")
-                return True
+            # Try different methods based on available libraries
+            if librosa is not None:
+                return self._analyze_with_librosa(file_path)
+            elif AudioSegment is not None:
+                return self._analyze_with_pydub(file_path)
             else:
-                logger.error(f"Ducking failed: {result.stderr}")
+                return self._analyze_basic(file_path)
+
+        except Exception as e:
+            self.logger.error(f"Audio analysis failed: {e}")
+            return None
+
+    def _analyze_with_librosa(self, file_path: str) -> AudioMetadata:
+        """Analyze using librosa library"""
+        if librosa is None:
+            raise ImportError("librosa not available")
+        y, sr = librosa.load(file_path, sr=None)
+        duration = librosa.get_duration(y=y, sr=sr)
+
+        # Calculate audio statistics
+        peak_amplitude = float(np.max(np.abs(y))) if np is not None else 0.0
+        rms_level = float(np.sqrt(np.mean(y**2))) if np is not None else 0.0
+
+        return AudioMetadata(
+            duration=duration,
+            sample_rate=sr,
+            channels=1 if len(y.shape) == 1 else y.shape[0],
+            peak_amplitude=peak_amplitude,
+            rms_level=rms_level,
+            file_size=os.path.getsize(file_path),
+        )
+
+    def _analyze_with_pydub(self, file_path: str) -> AudioMetadata:
+        """Analyze using pydub library"""
+        if AudioSegment is None:
+            raise ImportError("AudioSegment not available")
+        audio = AudioSegment.from_file(file_path)
+
+        return AudioMetadata(
+            duration=len(audio) / 1000.0,  # Convert ms to seconds
+            sample_rate=audio.frame_rate,
+            channels=audio.channels,
+            file_size=os.path.getsize(file_path),
+        )
+
+    def _analyze_basic(self, file_path: str) -> AudioMetadata:
+        """Basic analysis without external libraries"""
+        file_size = os.path.getsize(file_path)
+
+        # Estimate basic properties (simplified)
+        return AudioMetadata(
+            duration=0.0,  # Cannot determine without audio library
+            sample_rate=44100,  # Default assumption
+            channels=2,  # Default assumption
+            file_size=file_size,
+        )
+
+    def detect_silence(
+        self, file_path: str, threshold: float = -40.0
+    ) -> list[tuple[float, float]]:
+        """Detect silent segments in audio"""
+        try:
+            if AudioSegment is None:
+                return []
+
+            audio = AudioSegment.from_file(file_path)
+            silence_ranges = []
+
+            # Simple silence detection
+            chunk_size = 100  # ms
+            for i in range(0, len(audio), chunk_size):
+                chunk = audio[i : i + chunk_size]
+                if chunk.dBFS < threshold:
+                    start_time = i / 1000.0
+                    end_time = min(i + chunk_size, len(audio)) / 1000.0
+                    silence_ranges.append((start_time, end_time))
+
+            return silence_ranges
+
+        except Exception as e:
+            self.logger.error(f"Silence detection failed: {e}")
+            return []
+
+
+class AudioProcessor:
+    """Core audio processing engine"""
+
+    def __init__(self, temp_dir: Optional[str] = None):
+        self.logger = logging.getLogger(__name__)
+        self.temp_dir = temp_dir or tempfile.gettempdir()
+        self.analyzer = AudioAnalyzer()
+
+        # Create temp directory if it doesn't exist
+        os.makedirs(self.temp_dir, exist_ok=True)
+
+    def apply_noise_reduction(
+        self, audio_data: Any, sample_rate: int, intensity: float = 1.0
+    ) -> Any:
+        """Apply noise reduction to audio data"""
+        try:
+            if np is None or signal is None:
+                self.logger.warning("NumPy or SciPy not available for noise reduction")
+                return audio_data
+
+            # Simple spectral subtraction noise reduction
+            # This is a simplified implementation
+            if len(audio_data.shape) > 1:
+                # Process each channel separately
+                processed = np.zeros_like(audio_data)
+                for i in range(audio_data.shape[0]):
+                    processed[i] = self._spectral_subtraction(audio_data[i], intensity)
+                return processed
+            else:
+                return self._spectral_subtraction(audio_data, intensity)
+
+        except Exception as e:
+            self.logger.error(f"Noise reduction failed: {e}")
+            return audio_data
+
+    def _spectral_subtraction(self, audio: Any, intensity: float) -> Any:
+        """Apply spectral subtraction noise reduction"""
+        if np is None:
+            return audio
+
+        # Simple high-pass filter as noise reduction
+        nyquist = 0.5
+        cutoff = 80.0 / (22050 * nyquist)  # 80 Hz cutoff
+
+        if signal is not None:
+            b, a = signal.butter(4, cutoff, btype="high")
+            filtered = signal.filtfilt(b, a, audio)
+            return audio * (1 - intensity) + filtered * intensity
+
+        return audio
+
+    def apply_normalization(self, audio_data: Any, target_level: float = -3.0) -> Any:
+        """Normalize audio to target level"""
+        try:
+            if np is None:
+                return audio_data
+
+            # Calculate current peak level
+            peak = np.max(np.abs(audio_data))
+
+            if peak == 0:
+                return audio_data
+
+            # Calculate normalization factor
+            target_linear = 10 ** (target_level / 20.0)
+            normalization_factor = target_linear / peak
+
+            return audio_data * normalization_factor
+
+        except Exception as e:
+            self.logger.error(f"Normalization failed: {e}")
+            return audio_data
+
+    def apply_compression(
+        self,
+        audio_data: Any,
+        threshold: float = -12.0,
+        ratio: float = 4.0,
+        attack: float = 0.003,
+        release: float = 0.1,
+    ) -> Any:
+        """Apply dynamic range compression"""
+        try:
+            if np is None:
+                return audio_data
+
+            # Simple compression implementation
+            threshold_linear = 10 ** (threshold / 20.0)
+            compressed = np.copy(audio_data)
+
+            # Find samples above threshold
+            above_threshold = np.abs(compressed) > threshold_linear
+
+            # Apply compression to samples above threshold
+            compressed[above_threshold] = np.sign(compressed[above_threshold]) * (
+                threshold_linear
+                + (np.abs(compressed[above_threshold]) - threshold_linear) / ratio
+            )
+
+            return compressed
+
+        except Exception as e:
+            self.logger.error(f"Compression failed: {e}")
+            return audio_data
+
+    def apply_eq(
+        self,
+        audio_data: Any,
+        sample_rate: int,
+        frequency: float,
+        gain: float,
+        q_factor: float = 1.0,
+    ) -> Any:
+        """Apply parametric EQ"""
+        try:
+            if np is None or signal is None:
+                return audio_data
+
+            # Design peaking EQ filter
+            nyquist = sample_rate / 2.0
+            freq_norm = frequency / nyquist
+
+            if freq_norm >= 1.0 or freq_norm <= 0.0:
+                return audio_data
+
+            # Simple peaking filter
+            b, a = signal.iirpeak(freq_norm, q_factor)
+
+            # Apply gain
+            if gain != 0:
+                gain_linear = 10 ** (gain / 20.0)
+                filtered = signal.filtfilt(b, a, audio_data)
+                return audio_data + (filtered - audio_data) * (gain_linear - 1)
+
+            return audio_data
+
+        except Exception as e:
+            self.logger.error(f"EQ failed: {e}")
+            return audio_data
+
+    def process_audio_file(
+        self, request: AudioProcessingRequest
+    ) -> AudioProcessingResult:
+        """Process audio file with specified parameters"""
+        start_time = datetime.now()
+
+        try:
+            # Analyze input file
+            original_metadata = self.analyzer.analyze_audio(request.input_path)
+            if not original_metadata:
+                return AudioProcessingResult(
+                    success=False, error="Failed to analyze input audio file"
+                )
+
+            # Load audio data
+            if librosa is not None:
+                audio_data, sample_rate = librosa.load(request.input_path, sr=None)
+            elif AudioSegment is not None:
+                audio_segment = AudioSegment.from_file(request.input_path)
+                audio_data = (
+                    np.array(audio_segment.get_array_of_samples())
+                    if np is not None
+                    else None
+                )
+                sample_rate = audio_segment.frame_rate
+            else:
+                return AudioProcessingResult(
+                    success=False, error="No audio processing library available"
+                )
+
+            if audio_data is None:
+                return AudioProcessingResult(
+                    success=False, error="Failed to load audio data"
+                )
+
+            # Apply processing chain
+            processed_audio = audio_data
+            applied_effects = []
+
+            for params in request.processing_chain or []:
+                if params.processing_type == ProcessingType.NOISE_REDUCTION:
+                    processed_audio = self.apply_noise_reduction(
+                        processed_audio, sample_rate, params.intensity
+                    )
+                    applied_effects.append("noise_reduction")
+
+                elif params.processing_type == ProcessingType.NORMALIZATION:
+                    target_level = (
+                        params.custom_params.get("target_level", -3.0)
+                        if params.custom_params
+                        else -3.0
+                    )
+                    processed_audio = self.apply_normalization(
+                        processed_audio, target_level
+                    )
+                    applied_effects.append("normalization")
+
+                elif params.processing_type == ProcessingType.COMPRESSION:
+                    threshold = params.threshold or -12.0
+                    ratio = params.ratio or 4.0
+                    processed_audio = self.apply_compression(
+                        processed_audio, threshold, ratio
+                    )
+                    applied_effects.append("compression")
+
+                elif params.processing_type == ProcessingType.EQ:
+                    if params.frequency_range and params.custom_params:
+                        freq = params.frequency_range[0]
+                        gain = params.custom_params.get("gain", 0.0)
+                        q = params.custom_params.get("q_factor", 1.0)
+                        processed_audio = self.apply_eq(
+                            processed_audio, sample_rate, freq, gain, q
+                        )
+                        applied_effects.append("eq")
+
+            # Apply final normalization if requested
+            if request.normalize_output:
+                processed_audio = self.apply_normalization(processed_audio)
+                if "normalization" not in applied_effects:
+                    applied_effects.append("final_normalization")
+
+            # Determine output path
+            output_path = request.output_path
+            if not output_path:
+                base_name = os.path.splitext(os.path.basename(request.input_path))[0]
+                output_path = os.path.join(
+                    self.temp_dir,
+                    f"{base_name}_processed.{request.target_format.value}",
+                )
+
+            # Save processed audio
+            success = self._save_audio(
+                processed_audio, sample_rate, output_path, request.target_format
+            )
+
+            if not success:
+                return AudioProcessingResult(
+                    success=False, error="Failed to save processed audio"
+                )
+
+            # Analyze processed audio
+            processed_metadata = self.analyzer.analyze_audio(output_path)
+
+            # Calculate quality score
+            quality_score = self._calculate_quality_score(
+                original_metadata, processed_metadata
+            )
+
+            processing_time = (datetime.now() - start_time).total_seconds()
+
+            return AudioProcessingResult(
+                success=True,
+                output_path=output_path,
+                original_metadata=original_metadata,
+                processed_metadata=processed_metadata,
+                processing_time=processing_time,
+                quality_score=quality_score,
+                applied_effects=applied_effects,
+            )
+
+        except Exception as e:
+            self.logger.error(f"Audio processing failed: {e}")
+            processing_time = (datetime.now() - start_time).total_seconds()
+            return AudioProcessingResult(
+                success=False, error=str(e), processing_time=processing_time
+            )
+
+    def _save_audio(
+        self, audio_data: Any, sample_rate: int, output_path: str, format: AudioFormat
+    ) -> bool:
+        """Save processed audio to file"""
+        try:
+            if AudioSegment is not None and np is not None:
+                # Convert numpy array to AudioSegment
+                audio_int16 = (audio_data * 32767).astype(np.int16)
+                audio_segment = AudioSegment(
+                    audio_int16.tobytes(),
+                    frame_rate=sample_rate,
+                    sample_width=2,
+                    channels=1 if len(audio_data.shape) == 1 else audio_data.shape[0],
+                )
+
+                # Export in requested format
+                audio_segment.export(output_path, format=format.value)
+                return True
+
+            elif wavfile is not None and format == AudioFormat.WAV:
+                # Use scipy for WAV files
+                wavfile.write(output_path, sample_rate, audio_data)
+                return True
+
+            else:
+                self.logger.error("No suitable library for audio export")
                 return False
 
         except Exception as e:
-            logger.error(f"Ducking application failed: {e}")
+            self.logger.error(f"Audio save failed: {e}")
             return False
 
-
-    def apply_mastering(
-        self,
-            input_path: str,
-            output_path: str,
-            settings: MasteringSettings,
-            audio_settings: AudioSettings,
-#             ) -> bool:
-        """
-Apply mastering chain to audio.
-
+    def _calculate_quality_score(
+        self, original: Optional[AudioMetadata], processed: Optional[AudioMetadata]
+    ) -> float:
+        """Calculate quality score for processed audio"""
         try:
-           
-""""""
+            if not original or not processed:
+                return 50.0
 
-            # Build mastering filter chain
-           
+            score = 70.0  # Base score
 
-            
-           
-""""""
+            # Check if processing improved dynamic range
+            if (
+                original.dynamic_range
+                and processed.dynamic_range
+                and processed.dynamic_range > original.dynamic_range
+            ):
+                score += 10.0
 
-            
-           
+            # Check if RMS level is appropriate
+            if processed.rms_level and 0.1 <= processed.rms_level <= 0.7:
+                score += 10.0
 
-            filters = []
-           
-""""""
+            # Check if peak amplitude is not clipping
+            if processed.peak_amplitude and processed.peak_amplitude < 0.95:
+                score += 10.0
 
-           
-
-            
-           
-"""
-            # Build mastering filter chain
-           """"""
-            # High - pass filter
-            if settings.high_pass_freq > 0:
-                filters.append(f"highpass = f={settings.high_pass_freq}")
-
-            # Low - pass filter
-            if settings.low_pass_freq < 20000:
-                filters.append(f"lowpass = f={settings.low_pass_freq}")
-
-            # EQ bands
-            for freq, gain, q in settings.eq_bands:
-                if gain != 0.0:
-                    filters.append(f"equalizer = f={freq}:g={gain}:q={q}")
-
-            # Compressor
-                compressor = (
-                f"acompressor="
-                f"threshold={settings.compressor_threshold}:"
-                f"ratio={settings.compressor_ratio}:"
-                f"attack={settings.compressor_attack}:"
-                f"release={settings.compressor_release}:"
-                f"makeup = 2"
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-             )
-            filters.append(compressor)
-
-            # Stereo width
-            if settings.stereo_width != 1.0:
-                filters.append(f"extrastereo = m={settings.stereo_width}")
-
-            # Loudness normalization
-            if audio_settings.normalize:
-                loudnorm = (
-                    f"loudnorm="
-                    f"I={audio_settings.target_lufs}:"
-                    f"TP={audio_settings.peak_limit}:"
-                    f"LRA = 7"
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-                 )
-                filters.append(loudnorm)
-
-            # Limiter
-            limiter = f"alimiter = level_in = 1:level_out = 1:limit={settings.limiter_threshold}:release={settings.limiter_release}"
-            filters.append(limiter)
-
-            # Combine filters
-            filter_chain = ",".join(filters)
-
-            # Build command
-                cmd = [
-                self.ffmpeg_executable,
-                    "-i",
-                    input_path,
-                    "-af",
-                    filter_chain,
-                    "-c:a",
-                    self._get_audio_codec(audio_settings.format),
-                    "-ar",
-                    str(audio_settings.sample_rate),
-                    "-ac",
-                    str(audio_settings.channels),
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-                     ]
-
-            # Add format - specific options
-            if audio_settings.bitrate:
-                cmd.extend(["-b:a", audio_settings.bitrate])
-
-            cmd.extend(["-y", output_path])
-
-            result = subprocess.run(cmd,
-    capture_output = True,
-    text = True,
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-#     timeout = 600)
-
-            if result.returncode == 0:
-                logger.info(f"Mastering applied successfully: {output_path}")
-                return True
-            else:
-                logger.error(f"Mastering failed: {result.stderr}")
-                return False
+            return min(100.0, score)
 
         except Exception as e:
-            logger.error(f"Mastering application failed: {e}")
-            return False
+            self.logger.error(f"Quality score calculation failed: {e}")
+            return 50.0
 
-
-    def mix_tracks(
-        self,
-            tracks: List[AudioTrack],
-            output_path: str,
-            audio_settings: AudioSettings,
-            total_duration: Optional[float] = None,
-#             ) -> bool:
-        """
-Mix multiple audio tracks into a single output.
-
-        try:
-           
-""""""
-
-            # Build input arguments
-           
-
-            
-           
-"""
-            inputs = []
-           """
-
-            
-           
-
-            # Build input arguments
-           
-""""""
-
-           
-
-            
-           
-"""
-            filter_inputs = []
-           """
-
-            
-           
-
-            for i, track in enumerate(tracks):
-           
-""""""
-
-            filter_inputs = []
-           
-
-            
-           
-"""
-                if track.mute:
-                    continue
-
-                inputs.extend(["-i", track.source_path])
-
-                # Build track filter
-                track_filter = f"[{i}:a]"
-
-                # Apply volume
-                if track.volume != 1.0:
-                    track_filter += f"volume={track.volume}[v{i}];"
-                    track_filter += f"[v{i}]"
-
-                # Apply pan
-                if track.pan != 0.0:
-                    track_filter += f"pan = stereo|c0={1 - abs(track.pan) if track.pan < 0 else 1}*c0|c1={1 if track.pan > 0 else 1 - abs(track.pan)}*c1[p{i}];"
-                    track_filter += f"[p{i}]"
-
-                # Apply timing (delay)
-                if track.start_time > 0:
-                    track_filter += f"adelay={int(track.start_time * 1000)}[d{i}];"
-                    track_filter += f"[d{i}]"
-
-                # Apply duration limit
-                if track.duration:
-                    track_filter += f"atrim = duration={track.duration}[t{i}];"
-                    track_filter += f"[t{i}]"
-
-                filter_inputs.append(track_filter + f"[a{i}]")
-
-            # Build mixing filter
-            mix_inputs = ";".join(filter_inputs)
-            track_refs = "".join(
-                [f"[a{i}]" for i in range(len([t for t in tracks if not t.mute]))]
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-             )
-            mix_filter = f"{mix_inputs};{track_refs}amix = inputs={len([t for t in tracks if not t.mute])}:duration = longest[out]"
-
-            # Build command
-                cmd = (
-                [self.ffmpeg_executable]
-                + inputs
-                + [
-                    "-filter_complex",
-                        mix_filter,
-                        "-map",
-                        "[out]",
-                        "-c:a",
-                        self._get_audio_codec(audio_settings.format),
-                        "-ar",
-                        str(audio_settings.sample_rate),
-                        "-ac",
-                        str(audio_settings.channels),
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-                         ]
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-             )
-
-            if audio_settings.bitrate:
-                cmd.extend(["-b:a", audio_settings.bitrate])
-
-            if total_duration:
-                cmd.extend(["-t", str(total_duration)])
-
-            cmd.extend(["-y", output_path])
-
-            result = subprocess.run(cmd,
-    capture_output = True,
-    text = True,
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-#     timeout = 600)
-
-            if result.returncode == 0:
-                logger.info(f"Tracks mixed successfully: {output_path}")
-                return True
-            else:
-                logger.error(f"Track mixing failed: {result.stderr}")
-                return False
-
-        except Exception as e:
-            logger.error(f"Track mixing failed: {e}")
-            return False
-
-
-    def _get_audio_codec(self, format: AudioFormat) -> str:
-        """Get appropriate audio codec for format."""
-        codec_map = {
-            AudioFormat.WAV: "pcm_s16le",
-                AudioFormat.MP3: "libmp3lame",
-                AudioFormat.AAC: "aac",
-                AudioFormat.FLAC: "flac",
-                AudioFormat.OGG: "libvorbis",
-                AudioFormat.M4A: "aac",
-                AudioFormat.OPUS: "libopus",
-                 }
-        return codec_map.get(format, "pcm_s16le")
-
-
-    def terminate_processes(self, processes: List[subprocess.Popen]) -> None:
-        """
-Terminate FFmpeg processes.
-
-        for process in processes:
-            
-"""
-            try:
-            """"""
-                if process.poll() is None:
-                    process.terminate()
-                    try:
-                        process.wait(timeout = 5)
-                    except subprocess.TimeoutExpired:
-                        process.kill()
-            except Exception as e:
-                logger.error(f"Failed to terminate process: {e}")
-            """
-
-            try:
-            
-
-           
-""""""
 
 class AudioPostProduction:
-    
-Main Audio Post - Production system.
-"""
+    """Main audio post-production class - high-level interface"""
 
+    def __init__(self, temp_dir: Optional[str] = None):
+        self.logger = logging.getLogger(__name__)
+        self.temp_dir = temp_dir or tempfile.gettempdir()
+        self.processor = AudioProcessor(temp_dir)
 
-    def __init__(
-        self, ffmpeg_executable: Optional[str] = None, temp_dir: Optional[str] = None
-#     ):
-        self.ffmpeg_interface = FFmpegInterface(ffmpeg_executable)
+        # Create temp directory if it doesn't exist
+        os.makedirs(self.temp_dir, exist_ok=True)
 
-        # Setup directories
-        self.temp_dir = (
-            Path(temp_dir)
-            if temp_dir
-            else Path(tempfile.gettempdir())/"audio_post_production"
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-         )
-        self.temp_dir.mkdir(parents = True, exist_ok = True)
-
-        # Job tracking
-        self.active_jobs: Dict[str, ProcessingJob] = {}
-        self._job_lock = threading.Lock()
-
-        logger.info("Audio Post - Production system initialized successfully")
-
-
-    def create_project(
+    async def enhance_audio(
         self,
-            name: str,
-            tracks: List[AudioTrack],
-            output_path: str,
-            project_id: Optional[str] = None,
-            audio_settings: Optional[AudioSettings] = None,
-            mastering_settings: Optional[MasteringSettings] = None,
-#             ) -> str:
-        """Create a new audio post - production project."""
-
-        if not project_id:
-            project_id = f"audio_{int(time.time())}_{hash(name) % 10000}"
-
-        project = AudioProject(
-            project_id = project_id,
-                name = name,
-                tracks = tracks,
-                output_path = output_path,
-                audio_settings = audio_settings or AudioSettings(),
-                mastering_settings = mastering_settings or MasteringSettings(),
-                metadata={
-                "created_at": datetime.now().isoformat(),
-                    "track_count": len(tracks),
-                    "total_duration": None,  # Will be calculated
-             },
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-                 )
-
-        logger.info(f"Created audio project: {project_id} with {len(tracks)} tracks")
-        return project_id
-
-
-    def process_project(self, project: AudioProject) -> str:
-        """Process audio project through complete post - production pipeline."""
-
-        job_id = f"job_{project.project_id}_{int(time.time())}"
-
-        job = ProcessingJob(
-            job_id = job_id,
-                project = project,
-                status = ProcessingStatus.PENDING,
-                metadata={
-                "project_name": project.name,
-                    "track_count": len(project.tracks),
-                    "processing_types": [pt.value for pt in project.processing_types],
-                     },
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-                 )
-
-        with self._job_lock:
-            self.active_jobs[job_id] = job
-
-        # Start processing in background thread
-        threading.Thread(
-            target = self._process_job_async, args=(job,), daemon = True
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-#         ).start()
-
-        logger.info(f"Started audio processing job: {job_id}")
-        return job_id
-
-
-    def _process_job_async(self, job: ProcessingJob) -> None:
-        """
-Process job asynchronously.
-
-       
-""""""
-
-        job.started_at = datetime.now()
-       
-
-        
-       
-"""
-        try:
-            # Step 1: Analysis
-            logger.info(f"Analyzing audio tracks for job: {job.job_id}")
-            job.status = ProcessingStatus.ANALYZING
-            job.progress_percentage = 10.0
-            job.current_step = "Analyzing audio tracks"
-       """
-
-        
-       
-
-        job.started_at = datetime.now()
-       
-""""""
-            self._analyze_project_audio(job)
-
-            # Step 2: Processing individual tracks
-            job.status = ProcessingStatus.PROCESSING
-            job.progress_percentage = 30.0
-            job.current_step = "Processing individual tracks"
-
-            processed_tracks = self._process_individual_tracks(job)
-
-            # Step 3: Mixing
-            if ProcessingType.MIXING in job.project.processing_types:
-                logger.info(f"Mixing tracks for job: {job.job_id}")
-                job.status = ProcessingStatus.MIXING
-                job.progress_percentage = 60.0
-                job.current_step = "Mixing tracks"
-
-                mixed_path = self._mix_project_tracks(job, processed_tracks)
-                if not mixed_path:
-                    raise Exception("Track mixing failed")
-            else:
-                mixed_path = processed_tracks[0] if processed_tracks else None
-
-            # Step 4: Mastering
-            if ProcessingType.MASTERING in job.project.processing_types and mixed_path:
-                logger.info(f"Mastering audio for job: {job.job_id}")
-                job.status = ProcessingStatus.MASTERING
-                job.progress_percentage = 80.0
-                job.current_step = "Mastering audio"
-
-                mastered_path = self._master_audio(job, mixed_path)
-                if not mastered_path:
-                    raise Exception("Audio mastering failed")
-
-                final_output = mastered_path
-            else:
-                final_output = mixed_path
-
-            # Step 5: Export
-            job.status = ProcessingStatus.EXPORTING
-            job.progress_percentage = 95.0
-            job.current_step = "Exporting final audio"
-
-            if final_output and final_output != job.project.output_path:
-                shutil.copy2(final_output, job.project.output_path)
-
-            job.output_files.append(job.project.output_path)
-
-            # Completion
-            job.status = ProcessingStatus.COMPLETED
-            job.progress_percentage = 100.0
-            job.current_step = "Completed"
-            job.completed_at = datetime.now()
-            job.processing_time = (job.completed_at - job.started_at).total_seconds()
-
-            logger.info(
-                f"Audio processing completed: {job.job_id} ({job.processing_time:.2f}s)"
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-             )
-
-        except Exception as e:
-            job.status = ProcessingStatus.ERROR
-            job.error_message = str(e)
-            logger.error(f"Audio processing failed: {job.job_id} - {e}")
-
-
-    def _analyze_project_audio(self, job: ProcessingJob) -> None:
-        """
-Analyze all audio tracks in the project.
-
-        
-"""
-        try:
-        """"""
-            analysis_results = {}
-           """"""
-        try:
-        """"""
-            for track in job.project.tracks:
-                if os.path.exists(track.source_path):
-                    track_analysis = self.ffmpeg_interface.analyze_audio(
-                        track.source_path
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-                     )
-                    analysis_results[track.name] = track_analysis
-
-                    logger.info(
-                        f"Analyzed track '{track.name}': {track_analysis.get('duration',"
-#     0):.2f}s""
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-                     )
-
-            job.audio_analysis = analysis_results
-
-            # Calculate total project duration
-            max_duration = 0.0
-            for track in job.project.tracks:
-                track_analysis = analysis_results.get(track.name, {})
-                track_duration = track_analysis.get("duration", 0)
-                track_end = track.start_time + (track.duration or track_duration)
-                max_duration = max(max_duration, track_end)
-
-            job.project.total_duration = max_duration
-
-        except Exception as e:
-            logger.error(f"Audio analysis failed: {e}")
-            raise
-
-
-    def _process_individual_tracks(self, job: ProcessingJob) -> List[str]:
-        """
-Process individual tracks with effects and ducking.
-
-       
-""""""
-
-        processed_tracks = []
-       
-
-        
-       
-"""
-        try:
-       """
-
-        
-       
-
-        processed_tracks = []
-       
-""""""
-            speech_tracks = [t for t in job.project.tracks if t.track_type == "speech"]
-
-            for i, track in enumerate(job.project.tracks):
-                if track.mute:
-                    continue
-
-                job.current_track = track.name
-                track_progress = 30.0 + (i/len(job.project.tracks)) * 30.0
-                job.progress_percentage = track_progress
-
-                processed_path = str(
-                    self.temp_dir/f"processed_{track.name}_{job.job_id}.wav"
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-                 )
-
-                # Apply ducking if needed
-                if track.duck_to_speech and speech_tracks:
-                    logger.info(f"Applying ducking to track: {track.name}")
-
-                    # Use first speech track as trigger
-                    trigger_track = speech_tracks[0]
-                    ducking_settings = track.ducking_settings or DuckingSettings()
-
-                    success = self.ffmpeg_interface.apply_ducking(
-                        main_audio = track.source_path,
-                            trigger_audio = trigger_track.source_path,
-                            output_path = processed_path,
-                            settings = ducking_settings,
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-                             )
-
-                    if success:
-                        processed_tracks.append(processed_path)
-                    else:
-                        logger.warning(
-                            f"Ducking failed for track: {track.name}, using original"
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-                         )
-                        processed_tracks.append(track.source_path)
-                else:
-                    # No ducking needed, use original
-                    processed_tracks.append(track.source_path)
-
-            return processed_tracks
-
-        except Exception as e:
-            logger.error(f"Individual track processing failed: {e}")
-            raise
-
-
-    def _mix_project_tracks(
-        self, job: ProcessingJob, processed_tracks: List[str]
-    ) -> Optional[str]:
-        """
-Mix all processed tracks into a single audio file.
-
-        
-"""
-        try:
-        """
-            mixed_path = str(self.temp_dir/f"mixed_{job.job_id}.wav")
-        """
-
-        try:
-        
-
-       
-""""""
-            # Create temporary tracks list with processed paths
-            temp_tracks = []
-            for i, track in enumerate([t for t in job.project.tracks if not t.mute]):
-                if i < len(processed_tracks):
-                    temp_track = AudioTrack(
-                        name = track.name,
-                            source_path = processed_tracks[i],
-                            track_type = track.track_type,
-                            start_time = track.start_time,
-                            duration = track.duration,
-                            volume = track.volume,
-                            pan = track.pan,
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-                             )
-                    temp_tracks.append(temp_track)
-
-            success = self.ffmpeg_interface.mix_tracks(
-                tracks = temp_tracks,
-                    output_path = mixed_path,
-                    audio_settings = job.project.audio_settings,
-                    total_duration = job.project.total_duration,
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-                     )
-
-            if success:
-                return mixed_path
-            else:
-                return None
-
-        except Exception as e:
-            logger.error(f"Track mixing failed: {e}")
-            return None
-
-
-    def _master_audio(self, job: ProcessingJob, mixed_path: str) -> Optional[str]:
-        """
-Apply mastering to the mixed audio.
-
-        
-"""
-        try:
-        """
-            mastered_path = str(
-                self.temp_dir/f"mastered_{job.job_id}.{job.project.audio_settings.format.value}"
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-             )
-        """
-
-        try:
-        
-
-       
-""""""
-            success = self.ffmpeg_interface.apply_mastering(
-                input_path = mixed_path,
-                    output_path = mastered_path,
-                    settings = job.project.mastering_settings,
-                    audio_settings = job.project.audio_settings,
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-                     )
-
-            if success:
-                return mastered_path
-            else:
-                return None
-
-        except Exception as e:
-            logger.error(f"Audio mastering failed: {e}")
-            return None
-
-
-    def get_job_status(self, job_id: str) -> Optional[ProcessingJob]:
-        """
-Get current status of a processing job.
-
-        
-"""
-        with self._job_lock:
-        """"""
-            """
-
-            return self.active_jobs.get(job_id)
-            
-
-        
-"""
-        with self._job_lock:
-        """"""
-    def cancel_job(self, job_id: str) -> bool:
-        """
-Cancel a running processing job.
-
-        
-"""
-        with self._job_lock:
-        """"""
-            if job_id in self.active_jobs:
-        """
-
-        with self._job_lock:
-        
-
-               
-""""""
-
-                job = self.active_jobs[job_id]
-               
-
-                
-               
-""""""
-
-
-                
-
-               
-
-                job = self.active_jobs[job_id]
-               
-""""""
-                if job.status not in [
-                    ProcessingStatus.COMPLETED,
-                        ProcessingStatus.ERROR,
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-#                         ]:
-                    # Terminate FFmpeg processes
-                    self.ffmpeg_interface.terminate_processes(job.ffmpeg_processes)
-
-                    job.status = ProcessingStatus.CANCELLED
-                    job.error_message = "Job cancelled by user"
-
-                    logger.info(f"Audio processing job cancelled: {job_id}")
-                    return True
-
-        return False
-
-
-    def cleanup_job(self, job_id: str) -> None:
-        """
-Clean up temporary files for a job.
-
-        try:
-           
-""""""
-
-            # Clean up temporary files
-           
-
-            
-           
-"""
-            temp_files = self.temp_dir.glob(f"*{job_id}*")
-            for temp_file in temp_files:
-                try:
-           """
-
-            
-           
-
-            # Clean up temporary files
-           
-""""""
-                    if temp_file.is_file():
-                        temp_file.unlink()
-                except Exception:
-                    pass
-
-            # Remove from active jobs
-            with self._job_lock:
-                if job_id in self.active_jobs:
-                    del self.active_jobs[job_id]
-
-            logger.info(f"Cleaned up audio job: {job_id}")
-
-        except Exception as e:
-            logger.error(f"Audio job cleanup failed: {e}")
-
-
-    def create_podcast_project(
+        input_path: str,
+        output_path: Optional[str] = None,
+        enhancement_level: str = "medium",
+    ) -> AudioProcessingResult:
+        """Enhance audio with automatic processing chain"""
+        # Define enhancement presets
+        presets = {
+            "light": [
+                ProcessingParameters(ProcessingType.NORMALIZATION, intensity=0.8)
+            ],
+            "medium": [
+                ProcessingParameters(ProcessingType.NOISE_REDUCTION, intensity=0.6),
+                ProcessingParameters(
+                    ProcessingType.COMPRESSION, threshold=-15.0, ratio=3.0
+                ),
+                ProcessingParameters(ProcessingType.NORMALIZATION, intensity=1.0),
+            ],
+            "heavy": [
+                ProcessingParameters(ProcessingType.NOISE_REDUCTION, intensity=0.8),
+                ProcessingParameters(
+                    ProcessingType.COMPRESSION, threshold=-12.0, ratio=4.0
+                ),
+                ProcessingParameters(
+                    ProcessingType.EQ, frequency_range=(100.0, 8000.0)
+                ),
+                ProcessingParameters(ProcessingType.NORMALIZATION, intensity=1.0),
+            ],
+        }
+
+        processing_chain = presets.get(enhancement_level, presets["medium"])
+
+        request = AudioProcessingRequest(
+            input_path=input_path,
+            output_path=output_path,
+            processing_chain=processing_chain,
+        )
+
+        return self.processor.process_audio_file(request)
+
+    async def master_audio(
         self,
-            speech_audio: str,
-            background_music: str,
-            output_path: str,
-            project_name: str = "Podcast",
-#             ) -> str:
-        """
-Create a podcast - style project with speech and background music.
+        input_path: str,
+        output_path: Optional[str] = None,
+        target_lufs: float = -14.0,
+    ) -> AudioProcessingResult:
+        """Master audio for broadcast/streaming standards"""
+        mastering_chain = [
+            ProcessingParameters(
+                ProcessingType.EQ,
+                frequency_range=(20.0, 20000.0),
+                custom_params={"gain": 1.0, "q_factor": 0.7},
+            ),
+            ProcessingParameters(
+                ProcessingType.COMPRESSION, threshold=-18.0, ratio=2.5
+            ),
+            ProcessingParameters(
+                ProcessingType.NORMALIZATION,
+                custom_params={"target_level": target_lufs},
+            ),
+        ]
 
+        request = AudioProcessingRequest(
+            input_path=input_path,
+            output_path=output_path,
+            processing_chain=mastering_chain,
+            target_quality=QualityLevel.STUDIO,
+        )
 
-       
-""""""
+        return self.processor.process_audio_file(request)
 
-        # Create tracks
-       
-
-        
-       
-"""
-        speech_track = AudioTrack(
-       """
-
-        
-       
-
-        # Create tracks
-       
-""""""
-            name="speech",
-                source_path = speech_audio,
-                track_type="speech",
-                volume = 1.0,
-                pan = 0.0,
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-                 )
-
-        music_track = AudioTrack(
-            name="background_music",
-                source_path = background_music,
-                track_type="music",
-                volume = 0.3,  # Lower volume for background
-            pan = 0.0,
-                duck_to_speech = True,  # Enable ducking
-            ducking_settings = DuckingSettings(
-                threshold=-25.0, ratio = 4.0, attack = 0.1, release = 0.5, reduction=-8.0
-             ),
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-                 )
-
-        # Create project
-        return self.create_project(
-            name = project_name,
-                tracks=[speech_track, music_track],
-                output_path = output_path,
-                audio_settings = AudioSettings(
-                quality = AudioQuality.PODCAST,
-                    format = AudioFormat.MP3,
-                    bitrate="128k",
-                    sample_rate = 22050,
-                    channels = 1,  # Mono for podcast
-             ),
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-                 )
-
-
-    def get_system_info(self) -> Dict[str, Any]:
-        """Get system information and capabilities."""
+    def get_system_info(self) -> dict[str, Any]:
+        """Get system information and capabilities"""
         return {
-            "ffmpeg_executable": self.ffmpeg_interface.ffmpeg_executable,
-                "temp_directory": str(self.temp_dir),
-                "active_jobs": len(self.active_jobs),
-                "supported_formats": [f.value for f in AudioFormat],
-                "supported_qualities": [q.value for q in AudioQuality],
-                "processing_types": [pt.value for pt in ProcessingType],
-                "ducking_enabled": True,
-                "mastering_enabled": True,
-                 }
+            "numpy_available": np is not None,
+            "scipy_available": signal is not None and wavfile is not None,
+            "librosa_available": librosa is not None,
+            "pydub_available": AudioSegment is not None,
+            "supported_formats": [fmt.value for fmt in AudioFormat],
+            "supported_processing": [proc.value for proc in ProcessingType],
+            "temp_directory": self.temp_dir,
+        }
 
-# Example usage and testing
-if __name__ == "__main__":
-    # Initialize Audio Post - Production system
-    try:
-        audio_pp = AudioPostProduction()
 
-        # Check system capabilities
-        system_info = audio_pp.get_system_info()
-        print("🎵 Audio Post - Production System Information:")
-        for key, value in system_info.items():
-            print(f"  {key}: {value}")
+# Convenience functions
+async def enhance_audio(
+    input_path: str,
+    output_path: Optional[str] = None,
+    enhancement_level: str = "medium",
+) -> AudioProcessingResult:
+    """Convenience function for audio enhancement"""
+    processor = AudioPostProduction()
+    return await processor.enhance_audio(input_path, output_path, enhancement_level)
 
-        # Example podcast project (requires actual audio files)
-        try:
-            speech_file = "sample_speech.wav"
-            music_file = "sample_music.mp3"
-            output_file = "output/podcast_final.mp3"
 
-            if os.path.exists(speech_file) and os.path.exists(music_file):
-                print(f"\\n🎙️ Creating podcast project...")
+async def master_audio(
+    input_path: str, output_path: Optional[str] = None, target_lufs: float = -14.0
+) -> AudioProcessingResult:
+    """Convenience function for audio mastering"""
+    processor = AudioPostProduction()
+    return await processor.master_audio(input_path, output_path, target_lufs)
 
-                # Create podcast project
-                project_id = audio_pp.create_podcast_project(
-                    speech_audio = speech_file,
-                        background_music = music_file,
-                        output_path = output_file,
-                        project_name="Sample Podcast",
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-                         )
 
-                print(f"Project created: {project_id}")
+def analyze_audio_file(file_path: str) -> Optional[AudioMetadata]:
+    """Convenience function for audio analysis"""
+    analyzer = AudioAnalyzer()
+    return analyzer.analyze_audio(file_path)
 
-                # Get project and process it
-                project = AudioProject(
-                    project_id = project_id,
-                        name="Sample Podcast",
-                        tracks=[
-                        AudioTrack("speech", speech_file, "speech"),
-                            AudioTrack("music",
-    music_file, "music",
-#     duck_to_speech = True),
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-                             ],
-                        output_path = output_file,
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-                         )
 
-                # Process project
-                print("Processing audio...")
-                job_id = audio_pp.process_project(project)
-
-                # Monitor progress
-                while True:
-                    job = audio_pp.get_job_status(job_id)
-                    if job:
-                        print(
-                            f"Progress: {job.progress_percentage:.1f}% - {job.current_step}"
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-                         )
-
-                        if job.status in [
-                            ProcessingStatus.COMPLETED,
-                                ProcessingStatus.ERROR,
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-#                                 ]:
-                            break
-
-                    time.sleep(2)
-
-                if job.status == ProcessingStatus.COMPLETED:
-                    print(f"✅ Audio processing completed successfully!")
-                    print(f"   Output: {job.project.output_path}")
-                    print(f"   Processing time: {job.processing_time:.2f}s")
-                    print(f"   Tracks processed: {len(job.project.tracks)}")
-                else:
-                    print(f"❌ Audio processing failed: {job.error_message}")
-
-                # Cleanup
-                audio_pp.cleanup_job(job_id)
-
-            else:
-                print(f"\\n⚠️  Sample files not found:")
-                print(f"   Speech audio: {speech_file}")
-                print(f"   Background music: {music_file}")
-                print(
-                    f"\\n💡 You can test with your own files by updating the paths above."
-# FIXIT: commented possible stray closer
-# FIXIT: commented possible stray closer
-                 )
-
-        except Exception as e:
-            print(f"❌ Error in example usage: {e}")
-
-    except Exception as e:
-        print(f"❌ Failed to initialize Audio Post - Production: {e}")
-        print(f"\\n💡 Make sure FFmpeg is installed and accessible.")
-
-    print(f"\\n🔧 To use Audio Post - Production in production:")
-    print(f"   1. Install FFmpeg with full codec support")
-    print(f"   2. Provide audio files for processing")
-    print(f"   3. Configure audio and mastering settings")
-    print(f"   4. Call audio_pp.process_project(project)")
-    print(f"\\n🎯 Supported operations:")
-    print(f"   • Audio ducking for speech over music")
-    print(f"   • Multi - track mixing and balancing")
-    print(f"   • Professional mastering chain")
-    print(f"   • Loudness normalization (LUFS)")
-    print(f"   • Noise reduction and cleanup")
-    print(f"   • Batch processing for multiple projects")
+def get_audio_info() -> dict[str, Any]:
+    """Get information about audio processing capabilities"""
+    processor = AudioPostProduction()
+    return processor.get_system_info()

@@ -370,7 +370,7 @@
             .search-controls {
                 grid-template-columns: 1fr;
             }
-            
+
             .api-grid {
                 grid-template-columns: 1fr;
             }
@@ -455,7 +455,7 @@
         async function discoverAPIs() {
             const channel = document.getElementById('channelSelect').value;
             const resultsSection = document.getElementById('resultsSection');
-            
+
             // Show loading state
             resultsSection.innerHTML = `
                 <div class="loading">
@@ -481,11 +481,11 @@
                 const data = await response.json();
                 discoveredAPIs = data.apis || {};
                 allAPIs = Object.values(discoveredAPIs).flat();
-                
+
                 displayResults(discoveredAPIs);
                 updateStats();
                 showNotification('APIs discovered successfully!', 'success');
-                
+
             } catch (error) {
                 console.error('Error discovering APIs:', error);
                 resultsSection.innerHTML = `
@@ -500,7 +500,7 @@
 
         async function showFreeAPIs() {
             const resultsSection = document.getElementById('resultsSection');
-            
+
             resultsSection.innerHTML = `
                 <div class="loading">
                     <div class="spinner"></div>
@@ -521,7 +521,7 @@
 
                 const data = await response.json();
                 const freeAPIs = data.apis || [];
-                
+
                 // Group free APIs by channel
                 const groupedAPIs = {};
                 freeAPIs.forEach(api => {
@@ -530,11 +530,11 @@
                     }
                     groupedAPIs[api.channel].push(api);
                 });
-                
+
                 displayResults(groupedAPIs);
                 updateStats(freeAPIs);
                 showNotification('Free APIs loaded successfully!', 'success');
-                
+
             } catch (error) {
                 console.error('Error loading free APIs:', error);
                 resultsSection.innerHTML = `
@@ -549,7 +549,7 @@
 
         function displayResults(apisByChannel) {
             const resultsSection = document.getElementById('resultsSection');
-            
+
             if (Object.keys(apisByChannel).length === 0) {
                 resultsSection.innerHTML = `
                     <div class="empty-state">
@@ -561,13 +561,13 @@
             }
 
             let html = '';
-            
+
             Object.entries(apisByChannel).forEach(([channel, apis]) => {
                 if (apis.length === 0) return;
-                
+
                 const icon = channelIcons[channel] || '🔧';
                 const channelName = channel.charAt(0).toUpperCase() + channel.slice(1);
-                
+
                 html += `
                     <div class="channel-group">
                         <div class="channel-header">
@@ -577,27 +577,27 @@
                         </div>
                         <div class="api-grid">
                 `;
-                
+
                 apis.forEach(api => {
-                    const features = Array.isArray(api.features) ? api.features : 
+                    const features = Array.isArray(api.features) ? api.features :
                                    (typeof api.features === 'string' ? JSON.parse(api.features || '[]') : []);
-                    
+
                     html += createAPICard(api, features);
                 });
-                
+
                 html += `
                         </div>
                     </div>
                 `;
             });
-            
+
             resultsSection.innerHTML = html;
         }
 
         function createAPICard(api, features) {
             const costClass = `cost-${api.cost_model || 'unknown'}`;
             const scorePercentage = ((api.score || 0) / 10) * 100;
-            
+
             return `
                 <div class="api-card">
                     <div class="api-header">
@@ -609,22 +609,22 @@
                             ${api.cost_model || 'Unknown'}
                         </div>
                     </div>
-                    
+
                     <div class="api-description">
                         ${api.description || 'No description available'}
                     </div>
-                    
+
                     <div class="api-features">
                         ${features.map(feature => `<span class="feature-tag">${feature}</span>`).join('')}
                     </div>
-                    
+
                     <div class="api-score">
                         <div class="score-bar">
                             <div class="score-fill" style="width: ${scorePercentage}%"></div>
                         </div>
                         <div class="score-text">${(api.score || 0).toFixed(1)}/10</div>
                     </div>
-                    
+
                     <div class="api-actions">
                         <a href="${api.url}" target="_blank" class="btn btn-primary btn-small">
                             📖 Docs
@@ -639,16 +639,16 @@
 
         function updateStats(customAPIs = null) {
             const apis = customAPIs || allAPIs;
-            
+
             const totalAPIs = apis.length;
-            const freeAPIs = apis.filter(api => 
+            const freeAPIs = apis.filter(api =>
                 api.cost_model === 'free' || api.cost_model === 'freemium'
             ).length;
-            
-            const avgScore = totalAPIs > 0 ? 
-                (apis.reduce((sum, api) => sum + (api.score || 0), 0) / totalAPIs).toFixed(1) : 
+
+            const avgScore = totalAPIs > 0 ?
+                (apis.reduce((sum, api) => sum + (api.score || 0), 0) / totalAPIs).toFixed(1) :
                 '0.0';
-            
+
             document.getElementById('totalAPIs').textContent = totalAPIs;
             document.getElementById('freeAPIs').textContent = freeAPIs;
             document.getElementById('avgScore').textContent = avgScore;
@@ -663,12 +663,12 @@
             const notification = document.createElement('div');
             notification.className = `notification ${type}`;
             notification.textContent = message;
-            
+
             document.body.appendChild(notification);
-            
+
             // Show notification
             setTimeout(() => notification.classList.add('show'), 100);
-            
+
             // Hide and remove notification
             setTimeout(() => {
                 notification.classList.remove('show');

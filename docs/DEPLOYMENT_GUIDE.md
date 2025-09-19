@@ -503,6 +503,6 @@ tar -czf logs_backup_$(date +%Y%m%d).tar.gz logs/```
 
 ---
 
-**Last Updated**: January 2025  
-**Version**: 1.0  
+**Last Updated**: January 2025
+**Version**: 1.0
 **Maintained By**: TRAE AI Development Team

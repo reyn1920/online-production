@@ -88,7 +88,7 @@ try:
     from backend.agents.base_agents import AgentStatus, AgentCapability
     TRAE_AI_AVAILABLE = True
 except ImportError as e:
-    print(f"Warning: Could not import TRAE.AI components: {e}")
+# DEBUG_REMOVED: print statement
     TRAE_AI_AVAILABLE = False
 ```
 

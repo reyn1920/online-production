@@ -46,7 +46,7 @@ python scripts/generate_realistic_avatar.py --tips
 
 3. **Enter Your Script**
    - Write conversational, natural text
-   - Include pauses with "..." 
+   - Include pauses with "..."
    - Add filler words: "so", "well", "you know"
 
 4. **Select Configuration**
@@ -123,21 +123,21 @@ custom_config = RealisticLinlyConfig(
     resolution="1920x1080",
     fps=30,
     bitrate="8M",
-    
+
     # Realism Enhancements
     enhance_face=True,
     gfpgan_strength=0.8,
     restoreformer_strength=0.7,
-    
+
     # Natural Movement
     expression_scale=1.2,
     pose_style="natural",
     eye_blink_frequency=0.4,
-    
+
     # Stabilization
     stabilize_video=True,
     smooth_transitions=True,
-    
+
     # Performance
     batch_size=4,
     use_gpu=True

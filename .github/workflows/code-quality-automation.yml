@@ -123,28 +123,28 @@ jobs:
         import sys
         import os
         sys.path.append('rewritten/integrations')
-        
+
         async def run_quality_checks():
             try:
                 from puppeteer_service import PuppeteerService
                 from mcp_client import MCPClient
-                
+
                 mcp_client = MCPClient()
                 service = PuppeteerService(mcp_client)
-                
+
                 # Run code quality analysis
                 result = await service.run_code_quality_analysis(
                     project_path='.',
                     tools=['flake8', 'pylint', 'bandit']
                 )
-                
+
                 print('Code Quality Analysis Results:')
                 print(f'Overall Score: {result.overall_score}')
                 print(f'Issues Found: {len(result.issues)}')
-                
+
                 for issue in result.issues[:10]:  # Show first 10 issues
                     print(f'- {issue.severity}: {issue.message} ({issue.file}:{issue.line})')
-                
+
                 # Test Netlify deployment preview
                 if os.getenv('NETLIFY_AUTH_TOKEN'):
                     deploy_result = await service.test_netlify_deployment(
@@ -154,13 +154,13 @@ jobs:
                     print(f'Deployment Test: {"PASSED" if deploy_result.success else "FAILED"}')
                     if deploy_result.preview_url:
                         print(f'Preview URL: {deploy_result.preview_url}')
-                
+
                 return result.overall_score >= 7.0  # Minimum quality threshold
-                
+
             except Exception as e:
                 print(f'Error running quality checks: {e}')
                 return False
-        
+
         success = asyncio.run(run_quality_checks())
         sys.exit(0 if success else 1)
         "
@@ -174,28 +174,28 @@ jobs:
         import asyncio
         import sys
         sys.path.append('rewritten')
-        
+
         async def run_web_validation():
             try:
                 from python_syntax_error_fixer import PythonSyntaxFixer
-                
+
                 fixer = PythonSyntaxFixer()
-                
+
                 # Run online validation for Python files
                 result = await fixer.validate_project_online('.')
-                
+
                 print('Web Validation Results:')
                 print(f'Total Files: {result["total_files"]}')
                 print(f'Validated Files: {result["validated_files"]}')
                 print(f'Errors: {len(result["errors"])}')
                 print(f'Warnings: {len(result["warnings"])}')
-                
+
                 return len(result['errors']) == 0
-                
+
             except Exception as e:
                 print(f'Error running web validation: {e}')
                 return True  # Don't fail the build for web validation issues
-        
+
         asyncio.run(run_web_validation())
         "
 
@@ -235,37 +235,37 @@ jobs:
         import sys
         import os
         sys.path.append('rewritten/integrations')
-        
+
         async def check_sonarqube():
             try:
                 from puppeteer_service import PuppeteerService
                 from mcp_client import MCPClient
-                
+
                 if not os.getenv('SONAR_TOKEN'):
                     print('SonarQube not configured, skipping...')
                     return True
-                
+
                 mcp_client = MCPClient()
                 service = PuppeteerService(mcp_client)
-                
+
                 # Automate SonarQube quality gate validation
                 result = await service.validate_sonarqube_quality_gate(
                     project_key=os.getenv('SONAR_PROJECT_KEY'),
                     sonar_url=os.getenv('SONAR_HOST_URL', 'https://sonarcloud.io')
                 )
-                
+
                 print(f'SonarQube Quality Gate: {"PASSED" if result.passed else "FAILED"}')
                 if result.issues:
                     print('Quality Gate Issues:')
                     for issue in result.issues:
                         print(f'- {issue}')
-                
+
                 return result.passed
-                
+
             except Exception as e:
                 print(f'Error checking SonarQube: {e}')
                 return True  # Don't fail build if SonarQube check fails
-        
+
         asyncio.run(check_sonarqube())
         "
       env:
@@ -318,36 +318,36 @@ jobs:
         import sys
         import os
         sys.path.append('rewritten/integrations')
-        
+
         async def validate_deployment():
             try:
                 from puppeteer_service import PuppeteerService
                 from mcp_client import MCPClient
-                
+
                 mcp_client = MCPClient()
                 service = PuppeteerService(mcp_client)
-                
+
                 # Get deployment URL from Netlify
                 deploy_url = os.getenv('DEPLOY_URL', 'https://example.netlify.app')
-                
+
                 # Run post-deployment health checks
                 health_check = await service.run_health_checks(deploy_url)
-                
+
                 print(f'Deployment Health Check: {"PASSED" if health_check.healthy else "FAILED"}')
                 print(f'Response Time: {health_check.response_time}ms')
                 print(f'Status Code: {health_check.status_code}')
-                
+
                 if health_check.errors:
                     print('Health Check Errors:')
                     for error in health_check.errors:
                         print(f'- {error}')
-                
+
                 return health_check.healthy
-                
+
             except Exception as e:
                 print(f'Error validating deployment: {e}')
                 return True  # Don't fail deployment for validation issues
-        
+
         asyncio.run(validate_deployment())
         "
       env:
@@ -372,7 +372,7 @@ jobs:
         import json
         import os
         from datetime import datetime
-        
+
         report = {
             'timestamp': datetime.now().isoformat(),
             'commit': os.getenv('GITHUB_SHA'),
@@ -388,10 +388,10 @@ jobs:
                 'browser_results': os.path.exists('browser-test-results')
             }
         }
-        
+
         with open('quality-report.json', 'w') as f:
             json.dump(report, f, indent=2)
-        
+
         print('Quality Report Generated:')
         print(json.dumps(report, indent=2))
         "
@@ -411,21 +411,21 @@ jobs:
           if (fs.existsSync('quality-report.json')) {
             const report = JSON.parse(fs.readFileSync('quality-report.json', 'utf8'));
             const comment = `## 🔍 Code Quality Report
-            
+
             **Commit:** ${report.commit}
             **Branch:** ${report.branch}
-            
+
             ### Quality Checks Status
             - Static Analysis: ${report.quality_checks.static_analysis}
             - Browser Automation: ${report.quality_checks.browser_automation}
             - SonarQube: ${report.quality_checks.sonarqube}
-            
+
             ### Artifacts Generated
             - Security Reports: ${report.artifacts.security_reports ? '✅' : '❌'}
             - Browser Test Results: ${report.artifacts.browser_results ? '✅' : '❌'}
-            
+
             *Generated at ${report.timestamp}*`;
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,

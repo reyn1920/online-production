@@ -25,7 +25,7 @@ Test each tab to ensure proper switching and content display:
 - [ ] **Logs Tab**: Click and verify log display
 - [ ] **Users Tab**: Click and verify user management interface
 
-**Expected Behavior**: 
+**Expected Behavior**:
 - Active tab should be highlighted
 - Only active tab content should be visible
 - Tab switching should be smooth

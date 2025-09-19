@@ -86,7 +86,7 @@
 <body>
     <div class="container">
         <h1>🐾 Affiliate Data Processing Demo</h1>
-        
+
         <div class="section">
             <h3>📊 Data Source</h3>
             <p>This demo fetches affiliate data from the backend API and processes it using the AffiliateProcessor class.</p>
@@ -111,7 +111,7 @@
                     <span>Not Working</span>
                 </div>
             </div>
-            
+
             <table class="status-table">
                 <thead>
                     <tr>
@@ -193,10 +193,14 @@
 
         async function fetchAndProcessData() {
             try {//Fetch pets affiliates
-                const petsResponse = await fetch("/pets/affiliates');
-                const petsData = await petsResponse.json();//Fetch birds & exotics affiliates (from content API)
-                const birdsResponse = await fetch("/content/birds_exotics_affiliates');
-                const birdsData = await birdsResponse.json();//Prepare data structure for processing
+                const petsResponse = await fetch("/pets/affiliates");
+                const petsData = await petsResponse.json();
+
+                //Fetch birds & exotics affiliates (from content API)
+                const birdsResponse = await fetch("/content/birds_exotics_affiliates");
+                const birdsData = await birdsResponse.json();
+
+                //Prepare data structure for processing
                 const combinedData = {
                     pets_affiliates: petsData.data || [],
                     birds_exotics_affiliates: birdsData.data || birdsData.members || []
@@ -204,7 +208,7 @@
                 document.getElementById('rawOutput').textContent = JSON.stringify(combinedData, null, 2);//Process the data
                 const buckets = processor.processAffiliateData(combinedData);//Display processed buckets
                 displayResults(buckets);
-                
+
             } catch (error) {
                 console.error('Error fetching data:', error);
                 document.getElementById('bucketsOutput').textContent = `Error: ${error.message}`;
@@ -230,7 +234,7 @@
 
         function displayResults(buckets) {//Display processed buckets with status indicators
             let bucketsHtml = 'Processed Affiliate Buckets:\n\n';
-            
+
             Object.entries(buckets).forEach(([channel, affiliates]) => {
                 bucketsHtml += `${channel}:\n`;
                 affiliates.forEach(affiliate => {
@@ -240,7 +244,7 @@
                 });
                 bucketsHtml += '\n';
             });
-            
+
             document.getElementById('bucketsOutput').textContent = bucketsHtml;//Get statistics
             const stats = processor.getStatistics();//Update stats display
             document.getElementById('stats').style.display = 'flex';
@@ -250,7 +254,7 @@
             let channelBreakdown = 'Channel Breakdown with Status:\n\n';
             Object.entries(stats.byChannel).forEach(([channel, count]) => {
                 channelBreakdown += `${channel}: ${count} affiliates\n`;
-                
+
                 const channelBuckets = processor.getBucketsByChannel(channel);
                 channelBuckets.forEach(bucket => {
                     const status = getRandomStatus();
@@ -259,21 +263,21 @@
                 });
                 channelBreakdown += '\n';
             });
-            
+
             document.getElementById('channelOutput').textContent = channelBreakdown;
         }//Helper functions for status indicators
         function getRandomStatus() {
             const statuses = ['active', 'active', 'active', 'disabled', 'error'];
             return statuses[Math.floor(Math.random() * statuses.length)];
         }
-        
+
         function getStatusText(status) {
             const statusMap = {
                 active: '🟢 [ACTIVE]',
                 disabled: '🟣 [DISABLED]',
                 error: '🔴 [ERROR]'
             };
-            
+
             return statusMap[status] || '🔴 [ERROR]';
         }
 

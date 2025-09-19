@@ -1,7 +1,7 @@
-import os
+import os  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
 
-import numpy as np
-import torch
+import numpy as np  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
+import torch  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
 
 
 def load_dir(path, start, end):
@@ -14,4 +14,7 @@ def load_dir(path, start, end):
             imgs_paths.append(os.path.join(path, str(i) + ".jpg"))
     lmss = np.stack(lmss)
     lmss = torch.as_tensor(lmss).cuda()
-    return lmss, imgs_paths
+    return (
+        lmss,
+        imgs_paths,
+    )  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement

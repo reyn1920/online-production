@@ -32,10 +32,10 @@ FAIL_COUNT=0
 run_test() {
     local test_name="$1"
     local test_command="$2"
-    
+
     TEST_COUNT=$((TEST_COUNT + 1))
     echo -e "${BLUE}Test $TEST_COUNT: $test_name${NC}"
-    
+
     if eval "$test_command"; then
         echo -e "${GREEN}✅ PASS${NC}"
         PASS_COUNT=$((PASS_COUNT + 1))
@@ -51,12 +51,12 @@ check_http() {
     local url="$1"
     local expected_status="${2:-200}"
     local description="$3"
-    
+
     for i in $(seq 1 $RETRIES); do
         if response=$(curl -s -w "HTTPSTATUS:%{http_code}" --max-time $TIMEOUT "$url" 2>/dev/null); then
             http_code=$(echo "$response" | tr -d '\n' | sed -e 's/.*HTTPSTATUS://')
             body=$(echo "$response" | sed -e 's/HTTPSTATUS:.*//g')
-            
+
             if [ "$http_code" = "$expected_status" ]; then
                 if [ -n "$description" ]; then
                     echo "  Response: $description check passed"
@@ -68,12 +68,12 @@ check_http() {
         else
             echo "  Attempt $i/$RETRIES failed"
         fi
-        
+
         if [ $i -lt $RETRIES ]; then
             sleep 2
         fi
     done
-    
+
     return 1
 }
 

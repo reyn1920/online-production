@@ -140,13 +140,13 @@ class MasterOrchestrator:
         self.content_repurposer = ContentRepurposingAgent()
         self.sales_funnel_manager = SalesFunnelAgent()
         self.business_generators = self._initialize_business_generators()
-    
+
     async def analyze_market_opportunities(self):
         """Identify trending niches and opportunities"""
         trends = await self.trend_analyzer.get_trending_topics()
         opportunities = await self.trend_analyzer.analyze_monetization_potential(trends)
         return opportunities
-    
+
     async def launch_business_model(self, business_type: str, niche: str):
         """Automatically launch a new business model"""
         generator = self.business_generators[business_type]
@@ -181,12 +181,12 @@ class BusinessModelFactory:
         self.paddle = PaddleAPI()
         self.sendowl = SendOwlAPI()
         self.gumroad = GumroadAPI()
-    
+
     async def create_product(self, platform: str, product_data: dict):
         """Create product on specified platform"""
         api = getattr(self, platform)
         return await api.create_product(product_data)
-    
+
     async def sync_sales_data(self):
         """Sync sales data from all platforms"""
         for platform in self.platforms:
@@ -202,12 +202,12 @@ class AssemblyLineManager:
         self.pandoc = PandocProcessor()
         self.marp = MarpProcessor()
         self.celery_app = get_celery_app()
-    
+
     @celery_task
     async def generate_ebook(self, content: str, metadata: dict):
         """Convert content to EPUB using Pandoc"""
         return await self.pandoc.convert_to_epub(content, metadata)
-    
+
     @celery_task
     async def generate_presentation(self, slides: list, theme: str):
         """Create presentation using Marp"""
@@ -226,7 +226,7 @@ class DistributedWorkforce:
             'windows_pc_1': WindowsWorker(),
             'windows_pc_2': WindowsWorker()
         }
-    
+
     async def distribute_task(self, task: dict):
         """Distribute tasks based on hardware capabilities"""
         if task['type'] in ['ai_generation', 'video_processing']:
@@ -243,7 +243,7 @@ class LocalAIManager:
         self.ollama = OllamaClient()
         self.comfyui = ComfyUIClient()
         self.linly_talker = LinlyTalkerClient()
-    
+
     async def generate_content(self, prompt: str, model_type: str):
         """Generate content using local AI models"""
         if model_type == 'text':

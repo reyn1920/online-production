@@ -548,27 +548,27 @@
             .main-content {
                 grid-template-columns: 1fr;
             }
-            
+
             .metrics-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .form-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .products-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .analytics-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .product-stats {
                 grid-template-columns: 1fr;
             }
-            
+
             .product-actions {
                 grid-template-columns: 1fr;
             }
@@ -587,7 +587,7 @@
             <!-- Control Panel -->
             <div class="control-panel">
                 <h2>Stream Controls</h2>
-                
+
                 <div class="control-group">
                     <label>Stream Status</label>
                     <div style="display: flex; align-items: center; gap: 15px;">
@@ -627,7 +627,7 @@
             <!-- Metrics Panel -->
             <div class="metrics-panel">
                 <h2>Sales Metrics</h2>
-                
+
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <div class="metric-value" id="totalSales">0</div>
@@ -662,7 +662,7 @@
             <div class="products-section">
                 <h2>Digital Products Catalog</h2>
                 <p style="color: #666; margin-bottom: 20px;">Manage your digital products and track sales performance</p>
-                
+
                 <div class="products-grid" id="productsGrid">
                     <!-- Products will be loaded dynamically -->
                 </div>
@@ -671,13 +671,13 @@
             <!-- New Product Form -->
             <div class="new-product-form" id="newProductForm" style="display: none;">
                 <h2>Add New Digital Product</h2>
-                
+
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Product Name</label>
                         <input type="text" id="productName" placeholder="Enter product name">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Category</label>
                         <select id="productCategory">
@@ -690,28 +690,28 @@
                             <option value="other">Other</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Price ($)</label>
                         <input type="number" id="productPrice" placeholder="0.00" min="0" step="0.01">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Product Icon (Emoji)</label>
                         <input type="text" id="productIcon" placeholder="📚" maxlength="2">
                     </div>
-                    
+
                     <div class="form-group" style="grid-column: 1 / -1;">
                         <label>Description</label>
                         <textarea id="productDescription" placeholder="Describe your digital product..."></textarea>
                     </div>
-                    
+
                     <div class="form-group" style="grid-column: 1 / -1;">
                         <label>Download URL</label>
                         <input type="url" id="productDownloadUrl" placeholder="https://example.com/download/product">
                     </div>
                 </div>
-                
+
                 <div style="text-align: center; margin-top: 20px;">
                     <button class="btn btn-success" onclick="createProduct()">✅ Create Product</button>
                     <button class="btn" onclick="hideNewProductForm()">❌ Cancel</button>
@@ -721,26 +721,26 @@
             <!-- Sales Analytics -->
             <div class="sales-analytics">
                 <h2>Sales Analytics</h2>
-                
+
                 <div class="analytics-grid">
                     <div class="analytics-card">
                         <div class="analytics-value" id="todaySales">$0</div>
                         <div class="analytics-label">Today's Sales</div>
                         <div class="analytics-change change-positive" id="todayChange">+0%</div>
                     </div>
-                    
+
                     <div class="analytics-card">
                         <div class="analytics-value" id="weekSales">$0</div>
                         <div class="analytics-label">This Week</div>
                         <div class="analytics-change change-positive" id="weekChange">+0%</div>
                     </div>
-                    
+
                     <div class="analytics-card">
                         <div class="analytics-value" id="avgOrderValue">$0</div>
                         <div class="analytics-label">Avg Order Value</div>
                         <div class="analytics-change change-positive" id="aovChange">+0%</div>
                     </div>
-                    
+
                     <div class="analytics-card">
                         <div class="analytics-value" id="totalCustomers">0</div>
                         <div class="analytics-label">Total Customers</div>
@@ -881,22 +881,22 @@
                 productCard.className = 'product-card';
                 productCard.innerHTML = `
                     ${product.bestseller ? '<div class="bestseller-badge">Bestseller</div>' : ''}
-                    
+
                     <div class="product-image">
                         ${product.icon}
                     </div>
-                    
+
                     <div class="product-header">
                         <div>
                             <div class="product-name">${product.name}</div>
                         </div>
                         <div class="product-category">${product.category}</div>
                     </div>
-                    
+
                     <div class="product-description">
                         ${product.description}
                     </div>
-                    
+
                     <div class="product-stats">
                         <div class="stat-item">
                             <div class="stat-value">${product.sales}</div>
@@ -911,9 +911,9 @@
                             <div class="stat-label">Views</div>
                         </div>
                     </div>
-                    
+
                     <div class="product-price">$${product.price.toFixed(2)}</div>
-                    
+
                     <div class="product-actions">
                         <button class="btn" onclick="editProduct('${product.id}')" style="padding: 10px; font-size: 0.9rem;">
                             ✏️ Edit
@@ -931,7 +931,7 @@
             try {
                 const response = await fetch('/api/revenue/status');
                 const data = await response.json();
-                
+
                 if (data.success && data.streams.digital_products) {
                     const stream = data.streams.digital_products;
                     streamData.status = stream.status;
@@ -939,7 +939,7 @@
                     streamData.monthlyRevenue = stream.monthlyRevenue;
                     streamData.conversionRate = stream.conversionRate;
                     streamData.autoStart = stream.autoStart;
-                    
+
                     updateUI();
                 }
             } catch (error) {
@@ -973,7 +973,7 @@
             document.getElementById('monthlyRevenue').textContent = '$' + streamData.monthlyRevenue.toFixed(2);
             document.getElementById('activeProducts').textContent = streamData.activeProducts.toLocaleString();
             document.getElementById('conversionRate').textContent = streamData.conversionRate.toFixed(1) + '%';
-            
+
             // Update sales goal progress
             const goalPercent = Math.min(100, (streamData.monthlyRevenue/streamData.salesGoal) * 100);
             document.getElementById('salesGoalFill').style.width = goalPercent + '%';
@@ -984,7 +984,7 @@
             document.getElementById('weekSales').textContent = '$' + streamData.analytics.weekSales.toFixed(2);
             document.getElementById('avgOrderValue').textContent = '$' + streamData.analytics.avgOrderValue.toFixed(2);
             document.getElementById('totalCustomers').textContent = streamData.analytics.totalCustomers.toLocaleString();
-            
+
             // Update change indicators
             updateChangeIndicator('todayChange', streamData.analytics.todayChange);
             updateChangeIndicator('weekChange', streamData.analytics.weekChange);
@@ -1002,18 +1002,18 @@
         async function startStream() {
             try {
                 showAlert('Starting Digital Products stream...', 'warning');
-                
+
                 const response = await fetch(`/api/revenue/start/${streamData.streamId}`, {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     streamData.status = 'starting';
                     updateUI();
                     showAlert(result.message, 'success');
-                    
+
                     // Poll for status updates
                     pollStreamStatus();
                 } else {
@@ -1028,18 +1028,18 @@
         async function stopStream() {
             try {
                 showAlert('Stopping Digital Products stream...', 'warning');
-                
+
                 const response = await fetch(`/api/revenue/stop/${streamData.streamId}`, {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     streamData.status = 'stopping';
                     updateUI();
                     showAlert(result.message, 'success');
-                    
+
                     // Poll for status updates
                     pollStreamStatus();
                 } else {
@@ -1054,16 +1054,16 @@
         async function runTests() {
             try {
                 showAlert('Running comprehensive e-commerce tests...', 'warning');
-                
+
                 const testContainer = document.getElementById('testResultsContainer');
                 testContainer.innerHTML = '<div style="text-align: center;"><div class="loading"></div> Running tests...</div>';
-                
+
                 const response = await fetch(`/api/revenue/test/${streamData.streamId}`, {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     displayTestResults(result.results);
                     showAlert('Tests completed successfully', 'success');
@@ -1080,12 +1080,12 @@
         function displayTestResults(results) {
             const container = document.getElementById('testResultsContainer');
             container.innerHTML = '';
-            
+
             Object.keys(results).forEach(testName => {
                 const test = results[testName];
                 const testItem = document.createElement('div');
                 testItem.className = 'test-item';
-                
+
                 testItem.innerHTML = `
                     <div>
                         <strong>${testName}</strong>
@@ -1094,7 +1094,7 @@
                     </div>
                     <div class="test-status test-${test.status}">${test.status}</div>
                 `;
-                
+
                 container.appendChild(testItem);
             });
         }
@@ -1187,7 +1187,7 @@
             if (product) {
                 try {
                     showAlert(`Testing "${product.name}" product...`, 'warning');
-                    
+
                     const response = await fetch('/api/test/product', {
                         method: 'POST',
                         headers: {
@@ -1198,9 +1198,9 @@
                             downloadUrl: product.downloadUrl
                         })
                     });
-                    
+
                     const result = await response.json();
-                    
+
                     if (result.success) {
                         showAlert(`"${product.name}" test passed successfully`, 'success');
                     } else {
@@ -1226,9 +1226,9 @@
                         salesGoal: streamData.salesGoal
                     })
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     showAlert('Configuration saved successfully', 'success');
                 } else {
@@ -1251,7 +1251,7 @@
                         autoStart: streamData.autoStart
                     })
                 });
-                
+
                 if (!response.ok) {
                     console.error('Failed to update auto-start setting');
                 }
@@ -1265,7 +1265,7 @@
                 try {
                     const response = await fetch('/api/revenue/status');
                     const data = await response.json();
-                    
+
                     if (data.success && data.streams.digital_products) {
                         const stream = data.streams.digital_products;
                         const oldStatus = streamData.status;
@@ -1273,13 +1273,13 @@
                         streamData.totalSales = stream.totalSales;
                         streamData.monthlyRevenue = stream.monthlyRevenue;
                         streamData.conversionRate = stream.conversionRate;
-                        
+
                         updateUI();
-                        
+
                         // Stop polling if status is stable
                         if (stream.status === 'active' || stream.status === 'inactive' || stream.status === 'error') {
                             clearInterval(pollInterval);
-                            
+
                             if (stream.status === 'error') {
                                 showAlert('Stream error: ' + (stream.errorMessage || 'Unknown error'), 'error');
                             } else if (oldStatus !== stream.status) {
@@ -1310,30 +1310,30 @@
                 streamData.products.forEach(product => {
                     const newSales = Math.floor(Math.random() * 3);
                     const newViews = Math.floor(Math.random() * 20) + 5;
-                    
+
                     product.sales += newSales;
                     product.revenue += newSales * product.price;
                     product.views += newViews;
                 });
-                
+
                 // Update totals
                 streamData.totalSales = streamData.products.reduce((sum, p) => sum + p.sales, 0);
                 streamData.monthlyRevenue = streamData.products.reduce((sum, p) => sum + p.revenue, 0);
-                streamData.conversionRate = streamData.totalSales > 0 ? 
+                streamData.conversionRate = streamData.totalSales > 0 ?
                     (streamData.totalSales/streamData.products.reduce((sum, p) => sum + p.views, 0)) * 100 : 0;
-                
+
                 // Update analytics
                 streamData.analytics.todaySales = streamData.monthlyRevenue * 0.1;
                 streamData.analytics.weekSales = streamData.monthlyRevenue * 0.3;
                 streamData.analytics.avgOrderValue = streamData.totalSales > 0 ? streamData.monthlyRevenue/streamData.totalSales : 0;
                 streamData.analytics.totalCustomers = Math.floor(streamData.totalSales * 0.8);
-                
+
                 // Simulate changes
                 streamData.analytics.todayChange = (Math.random() - 0.3) * 20;
                 streamData.analytics.weekChange = (Math.random() - 0.2) * 15;
                 streamData.analytics.aovChange = (Math.random() - 0.4) * 10;
                 streamData.analytics.customersChange = (Math.random() - 0.1) * 25;
-                
+
                 updateUI();
                 renderProducts();
             }
@@ -1344,9 +1344,9 @@
             const alert = document.createElement('div');
             alert.className = `alert alert-${type}`;
             alert.textContent = message;
-            
+
             container.appendChild(alert);
-            
+
             // Remove alert after 5 seconds
             setTimeout(() => {
                 if (alert.parentNode) {

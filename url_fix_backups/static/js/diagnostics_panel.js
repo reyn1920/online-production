@@ -107,7 +107,7 @@ class DiagnosticsPanel {
                 display: none;
                 overflow: hidden;
             }
-            
+
             .diagnostics-header {
                 background: #2d2d2d;
                 padding: 10px 15px;
@@ -116,13 +116,13 @@ class DiagnosticsPanel {
                 justify-content: space-between;
                 align-items: center;
             }
-            
+
             .diagnostics-header h3 {
                 margin: 0;
                 font-size: 14px;
                 color: #4CAF50;
             }
-            
+
             .close-btn {
                 background: none;
                 border: none;
@@ -133,17 +133,17 @@ class DiagnosticsPanel {
                 width: 20px;
                 height: 20px;
             }
-            
+
             .close-btn:hover {
                 color: #fff;
             }
-            
+
             .diagnostics-tabs {
                 display: flex;
                 background: #2d2d2d;
                 border-bottom: 1px solid #333;
             }
-            
+
             .tab-btn {
                 flex: 1;
                 background: none;
@@ -154,84 +154,84 @@ class DiagnosticsPanel {
                 font-size: 11px;
                 border-right: 1px solid #333;
             }
-            
+
             .tab-btn:last-child {
                 border-right: none;
             }
-            
+
             .tab-btn.active {
                 background: #1a1a1a;
                 color: #4CAF50;
             }
-            
+
             .diagnostics-content {
                 max-height: 500px;
                 overflow-y: auto;
             }
-            
+
             .tab-content {
                 display: none;
                 padding: 15px;
             }
-            
+
             .tab-content.active {
                 display: block;
             }
-            
+
             .status-grid {
                 display: grid;
                 gap: 8px;
             }
-            
+
             .status-item {
                 display: flex;
                 justify-content: space-between;
                 padding: 6px 0;
                 border-bottom: 1px solid #333;
             }
-            
+
             .status-label {
                 color: #999;
             }
-            
+
             .status-value {
                 color: #e0e0e0;
                 font-weight: bold;
             }
-            
+
             .status-value.ok {
                 color: #4CAF50;
             }
-            
+
             .status-value.error {
                 color: #f44336;
             }
-            
+
             .status-value.warning {
                 color: #ff9800;
             }
-            
+
             .metrics-grid {
                 font-size: 11px;
                 line-height: 1.4;
             }
-            
+
             .action-item {
                 margin-bottom: 15px;
                 padding-bottom: 15px;
                 border-bottom: 1px solid #333;
             }
-            
+
             .action-item:last-child {
                 border-bottom: none;
             }
-            
+
             .action-item h4 {
                 margin: 0 0 8px 0;
                 color: #4CAF50;
                 font-size: 12px;
             }
-            
+
             .curl-command {
                 display: block;
                 background: #0d1117;
@@ -245,7 +245,7 @@ class DiagnosticsPanel {
                 word-break: break-all;
                 white-space: pre-wrap;
             }
-            
+
             .action-item button {
                 background: #238636;
                 border: none;
@@ -256,11 +256,11 @@ class DiagnosticsPanel {
                 font-size: 10px;
                 margin-top: 5px;
             }
-            
+
             .action-item button:hover {
                 background: #2ea043;
             }
-            
+
             #trae-diagnostics-toggle {
                 position: fixed;
                 bottom: 20px;
@@ -276,7 +276,7 @@ class DiagnosticsPanel {
                 z-index: 9999;
                 box-shadow: 0 2px 10px rgba(0,0,0,0.3);
             }
-            
+
             #trae-diagnostics-toggle:hover {
                 background: #45a049;
             }

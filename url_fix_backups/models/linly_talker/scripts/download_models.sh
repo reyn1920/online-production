@@ -174,10 +174,10 @@ fi
 if [ -d "checkpoints/CosyVoice_ckpt" ]; then
   # Create the CosyVoice/pretrained_models directory if it doesn't exist
   mkdir -p CosyVoice/pretrained_models
-  
+
   # Move the CosyVoice-ttsfrd directory to the CosyVoice/pretrained_models directory
   mv checkpoints/CosyVoice_ckpt/CosyVoice-ttsfrd CosyVoice/pretrained_models
-  
+
   # Check if the move operation was successful
   if [ $? -ne 0 ]; then
     echo "Failed to move CosyVoice-ttsfrd directory."
@@ -188,13 +188,13 @@ if [ -d "checkpoints/CosyVoice_ckpt" ]; then
   # Unzip the resource.zip file inside the CosyVoice-ttsfrd directory
   unzip CosyVoice/pretrained_models/CosyVoice-ttsfrd/resource.zip -d CosyVoice/pretrained_models/CosyVoice-ttsfrd
   pip install CosyVoice/pretrained_models/CosyVoice-ttsfrd/ttsfrd-0.3.6-cp38-cp38-linux_x86_64.whl
-  
+
   # Check if the unzip operation was successful
   if [ $? -ne 0 ]; then
     echo "Failed to unzip resource.zip."
     echo "解压 resource.zip 失败。"
     exit 1
-    
+
   fi
 else
   echo "Directory Kedreamix/Linly-Talker/checkpoints/CosyVoice_ckpt does not exist, cannot move CosyVoice model."

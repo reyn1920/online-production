@@ -144,10 +144,10 @@ pip install -r requirements_webui.txt
 
 # 安装有关musetalk依赖
 pip install --no-cache-dir -U  openmim
-mim install mmengine 
-mim install "mmcv>=2.0.1" 
-mim install "mmdet>=3.1.0" 
-mim install "mmpose>=1.1.0" 
+mim install mmengine
+mim install "mmcv>=2.0.1"
+mim install "mmdet>=3.1.0"
+mim install "mmpose>=1.1.0"
 
 # 安装NeRF-based依赖，可能问题较多，可以先放弃
 # 亲测需要有卡开机后再跑这个pytorch3d，需要一定的内存来编译

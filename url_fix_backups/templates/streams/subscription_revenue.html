@@ -531,19 +531,19 @@
             .main-content {
                 grid-template-columns: 1fr;
             }
-            
+
             .metrics-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .config-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .plans-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .plan-stats {
                 grid-template-columns: 1fr;
             }
@@ -562,7 +562,7 @@
             <!-- Control Panel -->
             <div class="control-panel">
                 <h2>Stream Controls</h2>
-                
+
                 <div class="control-group">
                     <label>Stream Status</label>
                     <div style="display: flex; align-items: center; gap: 15px;">
@@ -602,7 +602,7 @@
             <!-- Metrics Panel -->
             <div class="metrics-panel">
                 <h2>Revenue Metrics</h2>
-                
+
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <div class="metric-value" id="monthlyRevenue">$0.00</div>
@@ -637,7 +637,7 @@
             <div class="subscription-plans">
                 <h2>Subscription Plans</h2>
                 <p style="color: #666; margin-bottom: 20px;">Manage your subscription tiers and pricing</p>
-                
+
                 <div class="plans-grid" id="plansGrid">
                     <!-- Plans will be loaded dynamically -->
                 </div>
@@ -646,33 +646,33 @@
             <!-- Configuration Section -->
             <div class="config-section">
                 <h2>Subscription Configuration</h2>
-                
+
                 <div class="config-grid">
                     <div class="form-group">
                         <label>Stripe Publishable Key</label>
                         <input type="text" id="stripePublishableKey" placeholder="pk_live_...">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Stripe Secret Key</label>
                         <input type="password" id="stripeSecretKey" placeholder="sk_live_...">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Webhook Endpoint Secret</label>
                         <input type="password" id="webhookSecret" placeholder="whsec_...">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Trial Period (days)</label>
                         <input type="number" id="trialPeriod" value="14" min="0" max="365">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Grace Period (days)</label>
                         <input type="number" id="gracePeriod" value="3" min="0" max="30">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Billing Cycle</label>
                         <select id="billingCycle">
@@ -687,7 +687,7 @@
             <!-- Subscribers Section -->
             <div class="subscribers-section">
                 <h2>Recent Subscribers</h2>
-                
+
                 <table class="subscribers-table" id="subscribersTable">
                     <thead>
                         <tr>
@@ -827,11 +827,11 @@
                     <div class="plan-name">${plan.name}</div>
                     <div class="plan-price">$${plan.price}</div>
                     <div class="plan-period">per ${plan.period}</div>
-                    
+
                     <ul class="plan-features">
                         ${plan.features.map(feature => `<li>${feature}</li>`).join('')}
                     </ul>
-                    
+
                     <div class="plan-stats">
                         <div class="stat-item">
                             <div class="stat-value">${plan.subscribers}</div>
@@ -842,7 +842,7 @@
                             <div class="stat-label">Revenue</div>
                         </div>
                     </div>
-                    
+
                     <div style="margin-top: 20px;">
                         <button class="btn" onclick="editPlan('${plan.id}')" style="width: 48%; margin-right: 4%;">✏️ Edit</button>
                         <button class="btn btn-success" onclick="createStripeProduct('${plan.id}')" style="width: 48%;">
@@ -886,14 +886,14 @@
             try {
                 const response = await fetch('/api/revenue/status');
                 const data = await response.json();
-                
+
                 if (data.success && data.streams.subscription_revenue) {
                     const stream = data.streams.subscription_revenue;
                     streamData.status = stream.status;
                     streamData.monthlyRevenue = stream.monthlyRevenue;
                     streamData.activeSubscribers = stream.activeSubscribers;
                     streamData.autoStart = stream.autoStart;
-                    
+
                     updateUI();
                 }
             } catch (error) {
@@ -927,7 +927,7 @@
             document.getElementById('activeSubscribers').textContent = streamData.activeSubscribers.toLocaleString();
             document.getElementById('churnRate').textContent = streamData.churnRate.toFixed(1) + '%';
             document.getElementById('avgRevenue').textContent = '$' + streamData.avgRevenue.toFixed(2);
-            
+
             // Update growth progress
             const growthPercent = Math.max(0, Math.min(100, streamData.growthRate));
             document.getElementById('growthFill').style.width = growthPercent + '%';
@@ -948,18 +948,18 @@
         async function startStream() {
             try {
                 showAlert('Starting Subscription Revenue stream...', 'warning');
-                
+
                 const response = await fetch(`/api/revenue/start/${streamData.streamId}`, {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     streamData.status = 'starting';
                     updateUI();
                     showAlert(result.message, 'success');
-                    
+
                     // Poll for status updates
                     pollStreamStatus();
                 } else {
@@ -974,18 +974,18 @@
         async function stopStream() {
             try {
                 showAlert('Stopping Subscription Revenue stream...', 'warning');
-                
+
                 const response = await fetch(`/api/revenue/stop/${streamData.streamId}`, {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     streamData.status = 'stopping';
                     updateUI();
                     showAlert(result.message, 'success');
-                    
+
                     // Poll for status updates
                     pollStreamStatus();
                 } else {
@@ -1000,16 +1000,16 @@
         async function runTests() {
             try {
                 showAlert('Running comprehensive subscription tests...', 'warning');
-                
+
                 const testContainer = document.getElementById('testResultsContainer');
                 testContainer.innerHTML = '<div style="text-align: center;"><div class="loading"></div> Running tests...</div>';
-                
+
                 const response = await fetch(`/api/revenue/test/${streamData.streamId}`, {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     displayTestResults(result.results);
                     showAlert('Tests completed successfully', 'success');
@@ -1026,12 +1026,12 @@
         function displayTestResults(results) {
             const container = document.getElementById('testResultsContainer');
             container.innerHTML = '';
-            
+
             Object.keys(results).forEach(testName => {
                 const test = results[testName];
                 const testItem = document.createElement('div');
                 testItem.className = 'test-item';
-                
+
                 testItem.innerHTML = `
                     <div>
                         <strong>${testName}</strong>
@@ -1040,7 +1040,7 @@
                     </div>
                     <div class="test-status test-${test.status}">${test.status}</div>
                 `;
-                
+
                 container.appendChild(testItem);
             });
         }
@@ -1062,7 +1062,7 @@
             if (plan) {
                 try {
                     showAlert(`Creating Stripe product for ${plan.name}...`, 'warning');
-                    
+
                     const response = await fetch('/api/stripe/create-product', {
                         method: 'POST',
                         headers: {
@@ -1075,9 +1075,9 @@
                             features: plan.features
                         })
                     });
-                    
+
                     const result = await response.json();
-                    
+
                     if (result.success) {
                         plan.stripeProductId = result.productId;
                         plan.stripePriceId = result.priceId;
@@ -1095,18 +1095,18 @@
         async function syncStripe() {
             try {
                 showAlert('Syncing with Stripe...', 'warning');
-                
+
                 const response = await fetch('/api/stripe/sync', {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     streamData.subscribers = result.subscribers;
                     streamData.monthlyRevenue = result.monthlyRevenue;
                     streamData.activeSubscribers = result.activeSubscribers;
-                    
+
                     updateUI();
                     showAlert('Stripe sync completed successfully', 'success');
                 } else {
@@ -1138,9 +1138,9 @@
                         plans: streamData.plans
                     })
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     showAlert('Configuration saved successfully', 'success');
                 } else {
@@ -1163,7 +1163,7 @@
                         autoStart: streamData.autoStart
                     })
                 });
-                
+
                 if (!response.ok) {
                     console.error('Failed to update auto-start setting');
                 }
@@ -1177,20 +1177,20 @@
                 try {
                     const response = await fetch('/api/revenue/status');
                     const data = await response.json();
-                    
+
                     if (data.success && data.streams.subscription_revenue) {
                         const stream = data.streams.subscription_revenue;
                         const oldStatus = streamData.status;
                         streamData.status = stream.status;
                         streamData.monthlyRevenue = stream.monthlyRevenue;
                         streamData.activeSubscribers = stream.activeSubscribers;
-                        
+
                         updateUI();
-                        
+
                         // Stop polling if status is stable
                         if (stream.status === 'active' || stream.status === 'inactive' || stream.status === 'error') {
                             clearInterval(pollInterval);
-                            
+
                             if (stream.status === 'error') {
                                 showAlert('Stream error: ' + (stream.errorMessage || 'Unknown error'), 'error');
                             } else if (oldStatus !== stream.status) {
@@ -1219,7 +1219,7 @@
             if (streamData.status === 'active') {
                 // Simulate new subscribers and revenue
                 const newSubscribers = Math.floor(Math.random() * 3);
-                
+
                 for (let i = 0; i < newSubscribers; i++) {
                     const randomPlan = streamData.plans[Math.floor(Math.random() * streamData.plans.length)];
                     const subscriber = {
@@ -1231,26 +1231,26 @@
                         revenue: randomPlan.price,
                         startDate: new Date().toISOString()
                     };
-                    
+
                     streamData.subscribers.unshift(subscriber);
                     randomPlan.subscribers += 1;
                     randomPlan.revenue += randomPlan.price;
                     streamData.monthlyRevenue += randomPlan.price;
                     streamData.activeSubscribers += 1;
                 }
-                
+
                 // Calculate metrics
-                streamData.avgRevenue = streamData.activeSubscribers > 0 ? 
+                streamData.avgRevenue = streamData.activeSubscribers > 0 ?
                     streamData.monthlyRevenue/streamData.activeSubscribers : 0;
-                
+
                 streamData.churnRate = Math.random() * 5; // 0-5% churn rate
                 streamData.growthRate = Math.random() * 20 + 5; // 5-25% growth rate
-                
+
                 // Keep only recent subscribers (last 50)
                 if (streamData.subscribers.length > 50) {
                     streamData.subscribers = streamData.subscribers.slice(0, 50);
                 }
-                
+
                 updateUI();
                 renderPlans();
             }
@@ -1261,9 +1261,9 @@
             const alert = document.createElement('div');
             alert.className = `alert alert-${type}`;
             alert.textContent = message;
-            
+
             container.appendChild(alert);
-            
+
             // Remove alert after 5 seconds
             setTimeout(() => {
                 if (alert.parentNode) {

@@ -1,48 +1,69 @@
 /**
  * TRAE.AI Dashboard JavaScript
  * Main dashboard functionality and interactions
- *///Enhanced Dashboard JavaScript functionality
+ */
+
+// Enhanced Dashboard JavaScript functionality
 const Dashboard = {
-  refreshInterval: 5000,//5 seconds
+  refreshInterval: 5000, // 5 seconds
   activeModule: 'command-center',
   socket: null,
   charts: {},
-  websocket: null,//Configuration
+  websocket: null,
+
+  // Configuration
   config: {
-    refreshInterval: 30000,//30 seconds
+    refreshInterval: 30000, // 30 seconds
     wsReconnectDelay: 5000,
     apiBaseUrl: '/api',
-    cacheTimeout: 60000,//1 minute cache
-    batchSize: 50,//For pagination
-    debounceDelay: 300//For search
-  },//Authentication state
+    cacheTimeout: 60000, // 1 minute cache
+    batchSize: 50, // For pagination
+    debounceDelay: 300 // For search
+  },
+
+  // Authentication state
   auth: {
     token: null,
     user: null,
     isAuthenticated: false
-  },//Performance optimization
+  },
+
+  // Performance optimization
   cache: new Map(),
   loadingStates: new Set(),
-  debounceTimers: new Map(),//Initialize dashboard
+  debounceTimers: new Map(),
+
+  // Initialize dashboard
   init() {
-    console.log('🚀 Initializing Dashboard...');//Performance monitoring
-    const startTime = performance.now();//Check authentication first
+// DEBUG_REMOVED: console.log('🚀 Initializing Dashboard...');
+
+    // Performance monitoring
+    const startTime = performance.now();
+
+    // Check authentication first
     this.checkAuthentication();
-    
+
     this.setupEventListeners();
     this.initializeModulesLazy();
     this.initializeCharts();
     this.startSmartRefresh();
     this.connectWebSocket();
-    this.loadInitialData();//Setup performance monitoring
+    this.loadInitialData(); // Setup performance monitoring
     this.setupPerformanceMonitoring();
-    
+
     const endTime = performance.now();
     console.log(`✅ Dashboard initialized successfully in ${(endTime - startTime).toFixed(2)}ms`);
-  },//Setup event listeners
-  setupEventListeners() {//Authentication event listeners
-    this.setupAuthEventListeners();//User management event listeners
-    this.setupUserManagementListeners();//Module tab switching
+  },
+
+  // Setup event listeners
+  setupEventListeners() {
+    // Authentication event listeners
+    this.setupAuthEventListeners();
+
+    // User management event listeners
+    this.setupUserManagementListeners();
+
+    // Module tab switching
     document.querySelectorAll('.tab-button, .nav-tab').forEach(button => {
       button.addEventListener('click', e => {
         const moduleId = e.target.dataset.module || e.target.dataset.tab;
@@ -52,7 +73,9 @@ const Dashboard = {
           this.trackAnalytics('tab_switch', { tab: moduleId });
         }
       });
-    });//Refresh buttons
+    });
+
+    // Refresh buttons
     document.querySelectorAll('.refresh-btn, [onclick*="refresh"]').forEach(button => {
       button.addEventListener('click', e => {
         e.preventDefault();
@@ -60,54 +83,76 @@ const Dashboard = {
         this.refreshData(endpoint);
         this.showRefreshAnimation(e.target);
       });
-    });//Form submissions
+    });
+
+    // Form submissions
     document.querySelectorAll('form').forEach(form => {
       form.addEventListener('submit', e => {
         this.handleFormSubmit(e);
       });
-    });//Toggle switches
+    });
+
+    // Toggle switches
     document.querySelectorAll('.toggle-switch').forEach(toggle => {
       toggle.addEventListener('change', e => {
         this.handleToggle(e.target);
       });
-    });//Search functionality
+    });
+
+    // Search functionality
     const searchInput = document.getElementById('searchInput');
     if (searchInput) {
       searchInput.addEventListener('input', this.handleSearch.bind(this));
-    }//Keyboard shortcuts
-    document.addEventListener('keydown', this.handleKeyboardShortcuts.bind(this));//User management event listeners
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', this.handleKeyboardShortcuts.bind(this));
+
+    // User management event listeners
     this.setupUserManagementListeners();
-  },//Authentication event listeners
-  setupAuthEventListeners() {//Login form
+  },
+
+  // Authentication event listeners
+  setupAuthEventListeners() {
+    // Login form
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
       loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
         this.handleLogin();
       });
-    }//Logout button
-    const logoutBtn = document.getElementById('logout-btn');
+    }
+
+     // Logout button
+     const logoutBtn = document.getElementById('logout-btn');
     if (logoutBtn) {
       logoutBtn.addEventListener('click', () => {
         this.handleLogout();
       });
     }
-  },//User management event listeners
-  setupUserManagementListeners() {//Add user button
+  },
+
+  // User management event listeners
+  setupUserManagementListeners() {
+    // Add user button
     const addUserBtn = document.getElementById('add-user-btn');
     if (addUserBtn) {
       addUserBtn.addEventListener('click', () => {
         this.showUserModal();
       });
-    }//User form
-    const userForm = document.getElementById('user-form');
+    }
+
+     // User form
+     const userForm = document.getElementById('user-form');
     if (userForm) {
       userForm.addEventListener('submit', (e) => {
         e.preventDefault();
         this.handleUserSave();
       });
-    }//Close user modal
-    const closeUserModal = document.getElementById('close-user-modal');
+    }
+
+     // Close user modal
+     const closeUserModal = document.getElementById('close-user-modal');
     const cancelUserForm = document.getElementById('cancel-user-form');
     if (closeUserModal) {
       closeUserModal.addEventListener('click', () => {
@@ -119,16 +164,22 @@ const Dashboard = {
         this.hideUserModal();
       });
     }
-  },//Initialize modules
-  initializeModules() {//Initialize modules without loading data (data loading handled by loadAllData)
-    console.log('📊 Modules initialized');
-  },//Initialize modules with lazy loading
-  initializeModulesLazy() {//Initialize only visible charts
-    this.initializeVisibleCharts();//Setup intersection observer for lazy loading
+  },
+
+  // Initialize modules
+  initializeModules() { // Initialize modules without loading data (data loading handled by loadAllData)
+// DEBUG_REMOVED: console.log('📊 Modules initialized');
+  },
+
+  // Initialize modules with lazy loading
+  initializeModulesLazy() { // Initialize only visible charts
+    this.initializeVisibleCharts(); // Setup intersection observer for lazy loading
     this.setupLazyLoading();
-    
-    console.log('📊 Modules initialized with lazy loading');
-  },//Setup lazy loading for charts and heavy components
+
+// DEBUG_REMOVED: console.log('📊 Modules initialized with lazy loading');
+  },
+
+  // Setup lazy loading for charts and heavy components
   setupLazyLoading() {
     if ('IntersectionObserver' in window) {
       const observer = new IntersectionObserver((entries) => {
@@ -136,22 +187,24 @@ const Dashboard = {
           if (entry.isIntersecting) {
             const element = entry.target;
             const chartType = element.dataset.chartType;
-            
+
             if (chartType && !this.charts[chartType]) {
               this.initializeChart(chartType, element);
             }
-            
+
             observer.unobserve(element);
           }
         });
       }, {
         rootMargin: '50px'
-      });//Observe all chart containers
+      }); // Observe all chart containers
       document.querySelectorAll('[data-chart-type]').forEach(el => {
         observer.observe(el);
       });
     }
-  },//Initialize only visible charts
+  },
+
+  // Initialize only visible charts
   initializeVisibleCharts() {
     const visibleCharts = document.querySelectorAll('[data-chart-type]:not([hidden])');
     visibleCharts.forEach(element => {
@@ -160,47 +213,57 @@ const Dashboard = {
         this.initializeChart(chartType, element);
       }
     });
-  },//Setup performance monitoring
-  setupPerformanceMonitoring() {//Monitor memory usage
+  },
+
+  // Setup performance monitoring
+  setupPerformanceMonitoring() { // Monitor memory usage
     if ('memory' in performance) {
       setInterval(() => {
         const memory = performance.memory;
         if (memory.usedJSHeapSize > memory.jsHeapSizeLimit * 0.9) {
-          console.warn('High memory usage detected, clearing cache');
+// DEBUG_REMOVED: console.warn('High memory usage detected, clearing cache');
           this.clearCache();
         }
-      }, 60000);//Check every minute
-    }//Monitor page visibility
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible') {//Refresh data when page becomes visible
+      }, 60000); // Check every minute
+     }
+
+     // Monitor page visibility
+     document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') { // Refresh data when page becomes visible
         this.loadCriticalData();
       }
     });
-  },//Clear cache to free memory
+  },
+
+  // Clear cache to free memory
   clearCache() {
     const oldSize = this.cache.size;
     this.cache.clear();
-    console.log(`🧹 Cleared ${oldSize} cached items`);
-  },//Initialize a specific chart
-  initializeChart(chartType, element) {//Placeholder for chart initialization logic
-    console.log(`Initializing chart: ${chartType}`);
+// DEBUG_REMOVED: console.log(`🧹 Cleared ${oldSize} cached items`);
+  },
+
+  // Initialize a specific chart
+  initializeChart(chartType, element) { // Placeholder for chart initialization logic
+// DEBUG_REMOVED: console.log(`Initializing chart: ${chartType}`);
     this.charts[chartType] = { element, initialized: true };
-  },//Switch between modules
-  switchModule(moduleId) {//Check if user has permission for this module
+  },
+
+  // Switch between modules
+  switchModule(moduleId) { // Check if user has permission for this module
     if (moduleId === 'users' && (!this.auth.user || this.auth.user.role !== 'ADMIN')) {
       this.showError('Access denied. Admin privileges required.');
       return;
-    }//Hide all modules
+    } // Hide all modules
     document.querySelectorAll('.module-content').forEach(module => {
       module.classList.remove('active');
-    });//Remove active class from all tabs
+    }); // Remove active class from all tabs
     document.querySelectorAll('.tab-button').forEach(tab => {
       tab.classList.remove('active');
-    });//Show selected module
+    }); // Show selected module
     const targetModule = document.getElementById(moduleId);
     if (targetModule) {
       targetModule.classList.add('active');
-    }//Activate selected tab
+    } // Activate selected tab
     const targetTab = document.querySelector(`[data-module="${moduleId}"]`);
     if (targetTab) {
       targetTab.classList.add('active');
@@ -208,7 +271,9 @@ const Dashboard = {
 
     this.activeModule = moduleId;
     this.loadModuleData(moduleId);
-  },//Load module-specific data
+  },
+
+  // Load module-specific data
   loadModuleData(moduleId) {
     switch (moduleId) {
       case 'command-center':
@@ -228,10 +293,10 @@ const Dashboard = {
         this.loadUsers();
         break;
     }
-  },//Load reports
+  }, // Load reports
   async loadReports() {
     if (!this.auth.isAuthenticated) return;
-    
+
     try {
       const response = await this.fetchWithAuth('/api/reports');
       const data = await response.json();
@@ -244,7 +309,7 @@ const Dashboard = {
         this.showError('Failed to load reports');
       }
     }
-  },//Update reports display
+  }, // Update reports display
   updateReports(reports) {
     const container = document.getElementById('reports-container');
     if (!container) return;
@@ -271,10 +336,10 @@ const Dashboard = {
       `;
       container.appendChild(reportCard);
     });
-  },//Load database stats
+  }, // Load database stats
   async loadDatabaseStats() {
     if (!this.auth.isAuthenticated) return;
-    
+
     try {
       const response = await this.fetchWithAuth('/api/database/stats');
       const data = await response.json();
@@ -287,7 +352,7 @@ const Dashboard = {
         this.showError('Failed to load database stats');
       }
     }
-  },//Update database stats display
+  }, // Update database stats display
   updateDatabaseStats(stats) {
     Object.entries(stats).forEach(([key, value]) => {
       const element = document.getElementById(`db-${key}`);
@@ -295,10 +360,10 @@ const Dashboard = {
         element.textContent = value;
       }
     });
-  },//Load projects
+  }, // Load projects
   async loadProjects() {
     if (!this.auth.isAuthenticated) return;
-    
+
     try {
       const response = await this.fetchWithAuth('/api/projects');
       const data = await response.json();
@@ -311,7 +376,7 @@ const Dashboard = {
         this.showError('Failed to load projects');
       }
     }
-  },//Update projects display
+  }, // Update projects display
   updateProjects(projects) {
     const container = document.getElementById('projects-container');
     if (!container) return;
@@ -341,53 +406,53 @@ const Dashboard = {
       `;
       container.appendChild(projectCard);
     });
-  },//Check authentication status
-  checkAuthentication() {//Skip authentication - show dashboard directly
+  }, // Check authentication status
+  checkAuthentication() { // Skip authentication - show dashboard directly
     this.auth.token = window.DEMO_TOKEN || 'dev-token';
     this.auth.user = { username: 'demo', full_name: 'Demo User', role: 'ADMIN' };
     this.auth.isAuthenticated = true;
     this.showDashboard();
-  },//Show login modal
+  }, // Show login modal
   showLoginModal() {
     const loginModal = document.getElementById('login-modal');
     if (loginModal) {
       loginModal.classList.remove('hidden');
     }
-  },//Load remembered credentials
+  }, // Load remembered credentials
   loadRememberedCredentials() {
     const rememberMeEnabled = localStorage.getItem('remember_me_enabled');
     const rememberedUsername = localStorage.getItem('remembered_username');
     const rememberedPassword = localStorage.getItem('remembered_password');
-    
+
     if (rememberMeEnabled === 'true' && rememberedUsername && rememberedPassword) {
       const usernameField = document.getElementById('username');
       const passwordField = document.getElementById('password');
       const rememberMeCheckbox = document.getElementById('remember-me');
-      
+
       if (usernameField) usernameField.value = rememberedUsername;
       if (passwordField) passwordField.value = rememberedPassword;
       if (rememberMeCheckbox) rememberMeCheckbox.checked = true;
     }
-  },//Hide login modal
+  }, // Hide login modal
   hideLoginModal() {
     const loginModal = document.getElementById('login-modal');
     if (loginModal) {
       loginModal.classList.add('hidden');
     }
-  },//Show dashboard
+  }, // Show dashboard
   showDashboard() {
     this.hideLoginModal();
     this.updateUserInfo();
-  },//Update user info in UI
+  }, // Update user info in UI
   updateUserInfo() {
     const userInfo = document.getElementById('user-info');
     const userName = document.getElementById('user-name');
-    
+
     if (this.auth.user && userInfo && userName) {
       userName.textContent = `Welcome, ${this.auth.user.full_name || this.auth.user.username}`;
       userInfo.classList.remove('hidden');
     }
-  },//Handle login
+  }, // Handle login
   async handleLogin() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
@@ -395,11 +460,11 @@ const Dashboard = {
     const loginError = document.getElementById('login-error');
     const loginErrorMessage = document.getElementById('login-error-message');
     const loginSubmit = document.getElementById('login-submit');
-    
+
     try {
       loginSubmit.disabled = true;
       loginSubmit.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Signing In...';
-      
+
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
@@ -407,12 +472,12 @@ const Dashboard = {
         },
         body: JSON.stringify({ username, password })
       });
-      
+
       const data = await response.json();
-      
-      if (response.ok) {//Store authentication data
+
+      if (response.ok) { // Store authentication data
         localStorage.setItem('dashboard_token', data.access_token);
-        localStorage.setItem('dashboard_user', JSON.stringify(data.user));//Handle remember me functionality
+        localStorage.setItem('dashboard_user', JSON.stringify(data.user)); // Handle remember me functionality
         if (rememberMe) {
           localStorage.setItem('remembered_username', username);
           localStorage.setItem('remembered_password', password);
@@ -422,11 +487,11 @@ const Dashboard = {
           localStorage.removeItem('remembered_password');
           localStorage.removeItem('remember_me_enabled');
         }
-        
+
         this.auth.token = data.access_token;
         this.auth.user = data.user;
         this.auth.isAuthenticated = true;
-        
+
         this.showDashboard();
         this.showSuccess('Login successful!');
       } else {
@@ -441,28 +506,28 @@ const Dashboard = {
       loginSubmit.disabled = false;
       loginSubmit.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Sign In';
     }
-  },//Handle logout
+  }, // Handle logout
   handleLogout() {
     localStorage.removeItem('dashboard_token');
-    localStorage.removeItem('dashboard_user');//Keep remembered credentials if remember me is enabled
+    localStorage.removeItem('dashboard_user'); // Keep remembered credentials if remember me is enabled
     const rememberMeEnabled = localStorage.getItem('remember_me_enabled');
     if (rememberMeEnabled !== 'true') {
       localStorage.removeItem('remembered_username');
       localStorage.removeItem('remembered_password');
       localStorage.removeItem('remember_me_enabled');
     }
-    
+
     this.auth.token = null;
     this.auth.user = null;
     this.auth.isAuthenticated = false;
-    
+
     this.showLoginModal();
     this.loadRememberedCredentials();
     this.showSuccess('Logged out successfully');
-  },//Load agent status
+  }, // Load agent status
   async loadAgentStatus() {
     if (!this.auth.isAuthenticated) return;
-    
+
     try {
       const response = await this.fetchWithAuth('/api/agents/status');
       const data = await response.json();
@@ -475,7 +540,7 @@ const Dashboard = {
         this.showError('Failed to load agent status');
       }
     }
-  },//Update agent status display
+  }, // Update agent status display
   updateAgentStatus(data) {
     const container = document.getElementById('agent-status');
     if (!container) return;
@@ -503,16 +568,16 @@ const Dashboard = {
             `;
       container.appendChild(agentCard);
     });
-  },//Optimized fetch with caching and error handling
+  }, // Optimized fetch with caching and error handling
   async fetchWithAuth(url, options = {}) {
     const cacheKey = `${url}_${JSON.stringify(options)}`;
-    const useCache = options.cache !== false;//Check cache first
+    const useCache = options.cache !== false; // Check cache first
     if (useCache && this.cache.has(cacheKey)) {
       const cached = this.cache.get(cacheKey);
       if (Date.now() - cached.timestamp < this.config.cacheTimeout) {
         return cached.data;
       }
-    }//Prevent duplicate requests
+    } // Prevent duplicate requests
     if (this.loadingStates.has(cacheKey)) {
       return new Promise((resolve, reject) => {
         const checkLoading = () => {
@@ -529,43 +594,43 @@ const Dashboard = {
         checkLoading();
       });
     }
-    
+
     this.loadingStates.add(cacheKey);
-    
+
     try {
       const headers = {
         'Content-Type': 'application/json',
         ...options.headers
       };
-      
+
       if (this.auth.token) {
         headers['Authorization'] = `Bearer ${this.auth.token}`;
       }
-      
+
       const response = await fetch(url, {
         ...options,
         headers
       });
-      
+
       if (response.status === 401) {
         this.handleLogout();
         throw new Error('Authentication required');
-      }//Cache the response for GET requests
+      } // Cache the response for GET requests
       if (useCache && options.method !== 'POST' && options.method !== 'PUT' && options.method !== 'DELETE') {
         this.cache.set(cacheKey, {
           data: response.clone(),
           timestamp: Date.now()
         });
       }
-      
+
       return response;
     } finally {
       this.loadingStates.delete(cacheKey);
     }
-  },//Load task queue
+  }, // Load task queue
   async loadTaskQueue() {
     if (!this.auth.isAuthenticated) return;
-    
+
     try {
       const response = await this.fetchWithAuth('/api/tasks');
       const data = await response.json();
@@ -578,7 +643,7 @@ const Dashboard = {
         this.showError('Failed to load task queue');
       }
     }
-  },//Update task queue display
+  }, // Update task queue display
   updateTaskQueue(tasks) {
     const container = document.getElementById('task-queue');
     if (!container) return;
@@ -608,10 +673,10 @@ const Dashboard = {
             `;
       container.appendChild(taskCard);
     });
-  },//Load system metrics
+  }, // Load system metrics
   async loadSystemMetrics() {
     if (!this.auth.isAuthenticated) return;
-    
+
     try {
       const response = await this.fetchWithAuth('/api/system/metrics');
       const data = await response.json();
@@ -622,7 +687,7 @@ const Dashboard = {
         this.handleLogout();
       }
     }
-  },//Update system metrics display
+  }, // Update system metrics display
   updateSystemMetrics(metrics) {
     Object.entries(metrics).forEach(([key, value]) => {
       const element = document.getElementById(`metric-${key}`);
@@ -630,10 +695,10 @@ const Dashboard = {
         element.textContent = value;
       }
     });
-  },//Load users (admin only)
+  }, // Load users (admin only)
   async loadUsers() {
     if (!this.auth.isAuthenticated || this.auth.user.role !== 'ADMIN') return;
-    
+
     try {
       const response = await this.fetchWithAuth('/api/users');
       const data = await response.json();
@@ -646,13 +711,13 @@ const Dashboard = {
         this.showError('Failed to load users');
       }
     }
-  },//Update users table
+  }, // Update users table
   updateUsersTable(users) {
     const tbody = document.getElementById('users-table-body');
     if (!tbody) return;
-    
+
     tbody.innerHTML = '';
-    
+
     users.forEach(user => {
       const row = document.createElement('tr');
       row.innerHTML = `
@@ -683,12 +748,12 @@ const Dashboard = {
       `;
       tbody.appendChild(row);
     });
-  },//Show user modal
+  }, // Show user modal
   showUserModal(user = null) {
     const modal = document.getElementById('user-modal');
     const form = document.getElementById('user-form');
     const title = document.getElementById('user-modal-title');
-    
+
     if (user) {
       title.textContent = 'Edit User';
       document.getElementById('user-id').value = user.id;
@@ -702,18 +767,18 @@ const Dashboard = {
       form.reset();
       document.getElementById('user-id').value = '';
     }
-    
+
     modal.classList.remove('hidden');
-  },//Hide user modal
+  }, // Hide user modal
   hideUserModal() {
     const modal = document.getElementById('user-modal');
     modal.classList.add('hidden');
-  },//Handle user save
+  }, // Handle user save
   async handleUserSave() {
     const form = document.getElementById('user-form');
     const formData = new FormData(form);
     const userId = formData.get('id');
-    
+
     const userData = {
       username: formData.get('username'),
       full_name: formData.get('full_name'),
@@ -721,20 +786,20 @@ const Dashboard = {
       role: formData.get('role'),
       is_active: formData.has('is_active')
     };
-    
+
     if (formData.get('password')) {
       userData.password = formData.get('password');
     }
-    
+
     try {
       const url = userId ? `/api/users/${userId}` : '/api/users';
       const method = userId ? 'PUT' : 'POST';
-      
+
       const response = await this.fetchWithAuth(url, {
         method,
         body: JSON.stringify(userData)
       });
-      
+
       if (response.ok) {
         this.showSuccess(userId ? 'User updated successfully' : 'User created successfully');
         this.hideUserModal();
@@ -747,7 +812,7 @@ const Dashboard = {
       console.error('Error saving user:', error);
       this.showError('Failed to save user');
     }
-  },//Edit user
+  }, // Edit user
   async editUser(userId) {
     try {
       const response = await this.fetchWithAuth(`/api/users/${userId}`);
@@ -757,17 +822,17 @@ const Dashboard = {
       console.error('Error loading user:', error);
       this.showError('Failed to load user data');
     }
-  },//Delete user
+  }, // Delete user
   async deleteUser(userId) {
     if (!confirm('Are you sure you want to delete this user?')) {
       return;
     }
-    
+
     try {
       const response = await this.fetchWithAuth(`/api/users/${userId}`, {
         method: 'DELETE'
       });
-      
+
       if (response.ok) {
         this.showSuccess('User deleted successfully');
         this.loadUsers();
@@ -778,10 +843,10 @@ const Dashboard = {
       console.error('Error deleting user:', error);
       this.showError('Failed to delete user');
     }
-  },//Control agent
+  }, // Control agent
   async controlAgent(agentId, action) {
     if (!this.auth.isAuthenticated) return;
-    
+
     try {
       const response = await this.fetchWithAuth(`/api/agents/${agentId}/${action}`, {
         method: 'POST',
@@ -789,7 +854,7 @@ const Dashboard = {
 
       if (response.ok) {
         this.showSuccess(`Agent ${action} successful`);
-        this.loadAgentStatus();//Refresh status
+        this.loadAgentStatus(); // Refresh status
       } else {
         this.showError(`Failed to ${action} agent`);
       }
@@ -801,7 +866,7 @@ const Dashboard = {
         this.showError(`Failed to ${action} agent`);
       }
     }
-  },//Handle form submissions
+  }, // Handle form submissions
   async handleFormSubmit(event) {
     event.preventDefault();
 
@@ -835,7 +900,7 @@ const Dashboard = {
         this.showError('Operation failed');
       }
     }
-  },//Handle toggle switches
+  }, // Handle toggle switches
   async handleToggle(toggle) {
     const setting = toggle.dataset.setting;
     const value = toggle.checked;
@@ -852,7 +917,7 @@ const Dashboard = {
         this.showSuccess('Setting updated');
       } else {
         this.showError('Failed to update setting');
-        toggle.checked = !value;//Revert
+        toggle.checked = !value; // Revert
       }
     } catch (error) {
       console.error('Toggle error:', error);
@@ -861,18 +926,18 @@ const Dashboard = {
       } else {
         this.showError('Failed to update setting');
       }
-      toggle.checked = !value;//Revert
+      toggle.checked = !value; // Revert
     }
-  },//Refresh data
+  }, // Refresh data
   async refreshData(endpoint = 'all') {
     try {
       this.showLoadingState(true);
-      
+
       if (endpoint === 'all') {
         await this.loadAllData();
       } else {
         const response = await fetch(endpoint);
-        const data = await response.json();//Update relevant display based on endpoint
+        const data = await response.json(); // Update relevant display based on endpoint
         if (endpoint.includes('agents')) {
           this.updateAgentStatus(data);
         } else if (endpoint.includes('tasks')) {
@@ -889,41 +954,41 @@ const Dashboard = {
     } finally {
       this.showLoadingState(false);
     }
-  },//Smart refresh with adaptive intervals
+  }, // Smart refresh with adaptive intervals
   startSmartRefresh() {
     if (this.refreshTimer) {
       clearInterval(this.refreshTimer);
     }
-    
+
     let currentInterval = this.config.refreshInterval;
     let consecutiveErrors = 0;
-    
-    const refresh = async () => {//Only refresh if page is visible and user is authenticated
+
+    const refresh = async () => { // Only refresh if page is visible and user is authenticated
       if (document.visibilityState === 'visible' && this.auth.isAuthenticated) {
         try {
           await this.loadCriticalData();
           consecutiveErrors = 0;
-          currentInterval = this.config.refreshInterval;//Reset to normal interval
+          currentInterval = this.config.refreshInterval; // Reset to normal interval
         } catch (error) {
-          consecutiveErrors++;//Exponential backoff on errors
+          consecutiveErrors++; // Exponential backoff on errors
           currentInterval = Math.min(
             this.config.refreshInterval * Math.pow(2, consecutiveErrors),
-            300000//Max 5 minutes
+            300000 // Max 5 minutes
           );
-          console.warn(`Refresh failed, backing off to ${currentInterval}ms`);
+// DEBUG_REMOVED: console.warn(`Refresh failed, backing off to ${currentInterval}ms`);
         }
-      }//Schedule next refresh
+      } // Schedule next refresh
       this.refreshTimer = setTimeout(refresh, currentInterval);
-    };//Start first refresh
-    this.refreshTimer = setTimeout(refresh, 1000);//Initial delay
-    
-    console.log('🔄 Smart refresh started');
-  },//Start auto-refresh (legacy method for compatibility)
+    }; // Start first refresh
+    this.refreshTimer = setTimeout(refresh, 1000); // Initial delay
+
+// DEBUG_REMOVED: console.log('🔄 Smart refresh started');
+  }, // Start auto-refresh (legacy method for compatibility)
   startAutoRefresh() {
     this.startSmartRefresh();
-  },//Connect WebSocket for real-time updates
+  }, // Connect WebSocket for real-time updates
   connectWebSocket() {
-    if (typeof io !== 'undefined') {//Replace existing socket connection with this explicit config:
+    if (typeof io !== 'undefined') { // Replace existing socket connection with this explicit config:
       const socket = io(window.location.origin, {
         path: '/socket.io',
         transports: ['websocket', 'polling'],
@@ -931,19 +996,19 @@ const Dashboard = {
         reconnectionAttempts: 5,
         reconnectionDelay: 1000,
         timeout: 20000,
-        forceNew: true,//prevents cached connection issues
+        forceNew: true, // prevents cached connection issues
       });
 
-      this.socket = socket;//Add connection verification
+      this.socket = socket; // Add connection verification
       socket.on('connect', () => {
-        console.log('✅ Socket.IO connected:', socket.id, 'via', socket.io.engine.transport.name);
+// DEBUG_REMOVED: console.log('✅ Socket.IO connected:', socket.id, 'via', socket.io.engine.transport.name);
         this.updateConnectionStatus(true);
       });
 
       socket.on('disconnect', reason => {
-        console.log('❌ Socket.IO disconnected:', reason);
+// DEBUG_REMOVED: console.log('❌ Socket.IO disconnected:', reason);
         this.updateConnectionStatus(false);
-      });//Set up event handlers
+      }); // Set up event handlers
       socket.on('agent_status_update', data => {
         this.updateAgentStatus(data);
       });
@@ -966,16 +1031,16 @@ const Dashboard = {
 
       socket.on('error', err => console.error('[dashboard socket] error', err));
     }
-  },//Show success message
+  }, // Show success message
   showSuccess(message) {
     this.showAlert(message, 'success');
-  },//Show error message
+  }, // Show error message
   showError(message) {
     this.showAlert(message, 'danger');
-  },//Show warning message
+  }, // Show warning message
   showWarning(message) {
     this.showAlert(message, 'warning');
-  },//Show alert
+  }, // Show alert
   showAlert(message, type = 'info') {
     const alertContainer = document.getElementById('alert-container') || document.body;
 
@@ -988,13 +1053,13 @@ const Dashboard = {
             </button>
         `;
 
-    alertContainer.appendChild(alert);//Auto-remove after 5 seconds
+    alertContainer.appendChild(alert); // Auto-remove after 5 seconds
     setTimeout(() => {
       if (alert.parentElement) {
         alert.remove();
       }
     }, 5000);
-  },//Utility functions
+  }, // Utility functions
   formatDate(dateString) {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -1016,34 +1081,34 @@ const Dashboard = {
 
   formatNumber(num) {
     return new Intl.NumberFormat().format(num);
-  },//Load critical data only (for frequent updates)
+  }, // Load critical data only (for frequent updates)
   async loadCriticalData() {
     if (!this.auth.isAuthenticated) {
       return;
     }
-    
-    try {//Only load essential data for auto-refresh
+
+    try { // Only load essential data for auto-refresh
       const promises = [
         this.loadAgentStatus(),
         this.loadSystemMetrics()
       ];
-      
+
       await Promise.all(promises);
       this.updateLastRefreshTime();
-      
+
     } catch (error) {
       console.error('❌ Error loading critical data:', error);
       if (error.message.includes('401')) {
         this.handleLogout();
       }
-      throw error;//Re-throw for smart refresh error handling
+      throw error; // Re-throw for smart refresh error handling
     }
-  },//New enhanced methods
+  }, // New enhanced methods
   async loadInitialData() {
     if (!this.auth.isAuthenticated) {
       return;
     }
-    
+
     await this.loadAllData();
     this.initializeRealTimeUpdates();
   },
@@ -1052,29 +1117,29 @@ const Dashboard = {
     if (!this.auth.isAuthenticated) {
       return;
     }
-    
+
     try {
-      this.showLoadingState(true);//Load all data concurrently with priority batching
+      this.showLoadingState(true); // Load all data concurrently with priority batching
       const highPriorityPromises = [
         this.loadAgentStatus(),
         this.loadSystemMetrics()
       ];
-      
+
       const lowPriorityPromises = [
         this.loadTaskQueue(),
         this.loadReports(),
         this.loadRecentActivity()
-      ];//Load high priority data first
-      await Promise.all(highPriorityPromises);//Then load low priority data
-      await Promise.all(lowPriorityPromises);//Load users if admin (lowest priority)
+      ]; // Load high priority data first
+      await Promise.all(highPriorityPromises); // Then load low priority data
+      await Promise.all(lowPriorityPromises); // Load users if admin (lowest priority)
       if (this.auth.user && this.auth.user.role === 'ADMIN') {
         await this.loadUsers();
       }
-      
+
       this.showLoadingState(false);
       this.updateLastRefreshTime();
-      
-      console.log('All data loaded successfully');
+
+// DEBUG_REMOVED: console.log('All data loaded successfully');
     } catch (error) {
       console.error('❌ Error loading data:', error);
       if (error.message.includes('401')) {
@@ -1084,28 +1149,28 @@ const Dashboard = {
       }
       this.showLoadingState(false);
     }
-  },//Load recent activity data
+  }, // Load recent activity data
   async loadRecentActivity() {
     if (!this.auth.isAuthenticated) {
-      console.log('Not authenticated, skipping recent activity load');
+// DEBUG_REMOVED: console.log('Not authenticated, skipping recent activity load');
       return;
     }
-    
+
     const activityList = document.getElementById('activity-list');
-    if (!activityList) return;//Show skeleton loading
+    if (!activityList) return; // Show skeleton loading
     const skeleton = document.getElementById('activity-list-skeleton');
     if (skeleton) {
       skeleton.classList.remove('d-none');
     }
-    
+
     try {
       const response = await this.fetchWithAuth('/dashboard/api/recent-activity');
       const data = await response.json();
-      
+
       if (skeleton) {
         skeleton.classList.add('d-none');
       }
-      
+
       if (data.activities && data.activities.length > 0) {
         activityList.innerHTML = data.activities.map(activity => `
           <div class="activity-item p-3 border-b border-gray-200">
@@ -1130,7 +1195,7 @@ const Dashboard = {
         activityList.innerHTML = '<p class="text-center text-red-500">Error loading activity</p>';
       }
     }
-   },//Update last refresh time
+   }, // Update last refresh time
   updateLastRefreshTime() {
     const element = document.getElementById('last-refresh-time');
     if (element) {
@@ -1138,11 +1203,11 @@ const Dashboard = {
     }
   },
 
-  initializeCharts() {//Initialize chart containers for future use
+  initializeCharts() { // Initialize chart containers for future use
     this.charts = {};
   },
 
-  initializeRealTimeUpdates() {//Update current time every second
+  initializeRealTimeUpdates() { // Update current time every second
     setInterval(() => {
       const timeElement = document.getElementById('currentTime');
       if (timeElement) {
@@ -1171,8 +1236,8 @@ const Dashboard = {
   updateConnectionStatus(isConnected) {
     const statusDot = document.querySelector('.pulse-dot');
     if (statusDot) {
-      statusDot.className = isConnected ? 
-        'pulse-dot w-3 h-3 bg-green-400 rounded-full' : 
+      statusDot.className = isConnected ?
+        'pulse-dot w-3 h-3 bg-green-400 rounded-full' :
         'w-3 h-3 bg-red-400 rounded-full';
     }
   },
@@ -1180,7 +1245,7 @@ const Dashboard = {
   addLogEntry(log) {
     const container = document.getElementById('logContainer');
     if (!container) return;
-    
+
     const logElement = document.createElement('div');
     logElement.className = `log-entry mb-1 ${this.getLogLevelClass(log.level)}`;
     logElement.innerHTML = `
@@ -1188,9 +1253,9 @@ const Dashboard = {
       <span class="font-medium">[${log.level.toUpperCase()}]</span>
       <span>${log.message}</span>
     `;
-    
+
     container.appendChild(logElement);
-    container.scrollTop = container.scrollHeight;//Keep only last 100 log entries
+    container.scrollTop = container.scrollHeight; // Keep only last 100 log entries
     const entries = container.querySelectorAll('.log-entry');
     if (entries.length > 100) {
       entries[0].remove();
@@ -1231,28 +1296,28 @@ const Dashboard = {
 
   handleSearch(event) {
     const query = event.target.value.toLowerCase();
-    const searchId = 'global_search';//Clear existing timer
+    const searchId = 'global_search'; // Clear existing timer
     if (this.debounceTimers.has(searchId)) {
       clearTimeout(this.debounceTimers.get(searchId));
-    }//Debounce search
+    } // Debounce search
     const timer = setTimeout(() => {
       this.performSearch(query);
       this.debounceTimers.delete(searchId);
     }, this.config.debounceDelay);
-    
+
     this.debounceTimers.set(searchId, timer);
-  },//Perform actual search
+  }, // Perform actual search
   performSearch(query) {
-    console.log('🔍 Searching for:', query);
-    
-    const startTime = performance.now();//Use document fragment for better performance
+// DEBUG_REMOVED: console.log('🔍 Searching for:', query);
+
+    const startTime = performance.now(); // Use document fragment for better performance
     const searchableElements = document.querySelectorAll('[data-searchable]');
-    let visibleCount = 0;//Batch DOM updates
+    let visibleCount = 0; // Batch DOM updates
     requestAnimationFrame(() => {
       searchableElements.forEach(element => {
         const text = element.textContent.toLowerCase();
         const matches = text.includes(query.toLowerCase());
-        
+
         if (matches || query === '') {
           element.style.display = '';
           visibleCount++;
@@ -1260,7 +1325,7 @@ const Dashboard = {
           element.style.display = 'none';
         }
       });
-      
+
       const endTime = performance.now();
       console.log(`🔍 Search completed in ${(endTime - startTime).toFixed(2)}ms - Found ${visibleCount} results`);
     });
@@ -1272,15 +1337,15 @@ const Dashboard = {
     window.history.replaceState({}, '', url);
   },
 
-  trackAnalytics(event, data) {//Analytics tracking - implement based on your analytics service
-    console.log('Analytics:', event, data);
+  trackAnalytics(event, data) { // Analytics tracking - implement based on your analytics service
+// DEBUG_REMOVED: console.log('Analytics:', event, data);
   },
 
-  updatePerformanceCharts(data) {//Update performance charts with new data
-    console.log('Performance update:', data);
+  updatePerformanceCharts(data) { // Update performance charts with new data
+// DEBUG_REMOVED: console.log('Performance update:', data);
   },
-};//Initialize dashboard when DOM is loaded
+}; // Initialize dashboard when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
   Dashboard.init();
-});//Export for global access
+}); // Export for global access
 window.Dashboard = Dashboard;

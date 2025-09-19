@@ -591,23 +591,23 @@
             .main-content {
                 grid-template-columns: 1fr;
             }
-            
+
             .metrics-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .config-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .endpoints-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .tiers-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .endpoint-stats {
                 grid-template-columns: 1fr;
             }
@@ -626,7 +626,7 @@
             <!-- Control Panel -->
             <div class="control-panel">
                 <h2>Stream Controls</h2>
-                
+
                 <div class="control-group">
                     <label>Stream Status</label>
                     <div style="display: flex; align-items: center; gap: 15px;">
@@ -666,7 +666,7 @@
             <!-- Metrics Panel -->
             <div class="metrics-panel">
                 <h2>API Metrics</h2>
-                
+
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <div class="metric-value" id="totalRequests">0</div>
@@ -701,7 +701,7 @@
             <div class="api-endpoints">
                 <h2>API Endpoints</h2>
                 <p style="color: #666; margin-bottom: 20px;">Manage your monetized API endpoints</p>
-                
+
                 <div class="endpoints-grid" id="endpointsGrid">
                     <!-- Endpoints will be loaded dynamically -->
                 </div>
@@ -711,7 +711,7 @@
             <div class="pricing-tiers">
                 <h2>Pricing Tiers</h2>
                 <p style="color: #666; margin-bottom: 20px;">Configure usage-based pricing models</p>
-                
+
                 <div class="tiers-grid" id="tiersGrid">
                     <!-- Tiers will be loaded dynamically -->
                 </div>
@@ -720,18 +720,18 @@
             <!-- Configuration Section -->
             <div class="config-section">
                 <h2>API Configuration</h2>
-                
+
                 <div class="config-grid">
                     <div class="form-group">
                         <label>Base API URL</label>
                         <input type="text" id="baseApiUrl" placeholder="https://api.yourdomain.com">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Rate Limit (requests/minute)</label>
                         <input type="number" id="rateLimit" value="1000" min="1" max="10000">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Billing Provider</label>
                         <select id="billingProvider">
@@ -740,7 +740,7 @@
                             <option value="square">Square</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Billing Cycle</label>
                         <select id="billingCycle">
@@ -749,12 +749,12 @@
                             <option value="daily">Daily</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Free Tier Limit</label>
                         <input type="number" id="freeTierLimit" value="1000" min="0">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Webhook URL</label>
                         <input type="text" id="webhookUrl" placeholder="https://yourdomain.com/webhook">
@@ -765,7 +765,7 @@
             <!-- API Keys Section -->
             <div class="api-keys-section">
                 <h2>API Keys Management</h2>
-                
+
                 <div id="apiKeysContainer">
                     <p style="text-align: center; color: #666;">No API keys generated yet</p>
                 </div>
@@ -943,9 +943,9 @@
                         <div class="endpoint-name">${endpoint.name}</div>
                         <div class="endpoint-method method-${endpoint.method.toLowerCase()}">${endpoint.method}</div>
                     </div>
-                    
+
                     <div class="endpoint-url">${endpoint.url}</div>
-                    
+
                     <div class="endpoint-stats">
                         <div class="stat-item">
                             <div class="stat-value">${endpoint.requests.toLocaleString()}</div>
@@ -960,11 +960,11 @@
                             <div class="stat-label">Avg Time</div>
                         </div>
                     </div>
-                    
+
                     <div style="margin-bottom: 15px; color: #666; font-size: 0.9rem;">
                         ${endpoint.description}
                     </div>
-                    
+
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <div style="font-weight: bold; color: #2196F3;">$${endpoint.costPerRequest} per request</div>
                         <button class="btn" onclick="testEndpoint('${endpoint.id}')" style="padding: 8px 15px; font-size: 0.9rem;">
@@ -987,11 +987,11 @@
                     <div class="tier-name">${tier.name}</div>
                     <div class="tier-price">$${tier.price}</div>
                     <div class="tier-unit">${tier.unit}</div>
-                    
+
                     <ul class="tier-limits">
                         ${tier.limits.map(limit => `<li>${limit}</li>`).join('')}
                     </ul>
-                    
+
                     <div style="margin-top: 20px;">
                         <button class="btn" onclick="editTier('${tier.id}')" style="width: 100%;">
                             ✏️ Configure Tier
@@ -1019,8 +1019,8 @@
                         <div class="api-key-name">${key.name}</div>
                         <div class="api-key-value">${key.key}</div>
                         <div class="api-key-stats">
-                            Created: ${new Date(key.created).toLocaleDateString()} | 
-                            Requests: ${key.requests.toLocaleString()} | 
+                            Created: ${new Date(key.created).toLocaleDateString()} |
+                            Requests: ${key.requests.toLocaleString()} |
                             Revenue: $${key.revenue.toFixed(2)}
                         </div>
                     </div>
@@ -1038,7 +1038,7 @@
             try {
                 const response = await fetch("/api/revenue/status');
                 const data = await response.json();
-                
+
                 if (data.success && data.streams.api_monetization) {
                     const stream = data.streams.api_monetization;
                     streamData.status = stream.status;
@@ -1046,7 +1046,7 @@
                     streamData.monthlyRevenue = stream.monthlyRevenue;
                     streamData.activeClients = stream.activeClients;
                     streamData.autoStart = stream.autoStart;
-                    
+
                     updateUI();
                 }
             } catch (error) {
@@ -1090,13 +1090,13 @@
         async function startStream() {
             try {
                 showAlert('Starting API Monetization stream...', 'warning');
-                
+
                 const response = await fetch(`/api/revenue/start/${streamData.streamId}`, {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     streamData.status = 'starting';
                     updateUI();
@@ -1114,13 +1114,13 @@
         async function stopStream() {
             try {
                 showAlert('Stopping API Monetization stream...', 'warning');
-                
+
                 const response = await fetch(`/api/revenue/stop/${streamData.streamId}`, {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     streamData.status = 'stopping';
                     updateUI();
@@ -1138,16 +1138,16 @@
         async function runTests() {
             try {
                 showAlert('Running comprehensive API tests...', 'warning');
-                
+
                 const testContainer = document.getElementById('testResultsContainer');
                 testContainer.innerHTML = '<div style="text-align: center;"><div class="loading"></div> Running tests...</div>';
-                
+
                 const response = await fetch(`/api/revenue/test/${streamData.streamId}`, {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     displayTestResults(result.results);
                     showAlert('Tests completed successfully', 'success');
@@ -1164,12 +1164,12 @@
         function displayTestResults(results) {
             const container = document.getElementById('testResultsContainer');
             container.innerHTML = '';
-            
+
             Object.keys(results).forEach(testName => {
                 const test = results[testName];
                 const testItem = document.createElement('div');
                 testItem.className = 'test-item';
-                
+
                 testItem.innerHTML = `
                     <div>
                         <strong>${testName}</strong>
@@ -1178,7 +1178,7 @@
                     </div>
                     <div class="test-status test-${test.status}">${test.status}</div>
                 `;
-                
+
                 container.appendChild(testItem);
             });
         }
@@ -1188,7 +1188,7 @@
             if (endpoint) {
                 try {
                     showAlert(`Testing ${endpoint.name} endpoint...`, 'warning');
-                    
+
                     const response = await fetch("/api/test/endpoint', {
                         method: 'POST',
                         headers: {
@@ -1200,9 +1200,9 @@
                             method: endpoint.method
                         })
                     });
-                    
+
                     const result = await response.json();
-                    
+
                     if (result.success) {
                         showAlert(`${endpoint.name} test passed (${result.responseTime}ms)`, 'success');
                     } else {
@@ -1231,9 +1231,9 @@
             try {
                 const keyName = prompt('Enter a name for this API key:');
                 if (!keyName) return;
-                
+
                 showAlert('Generating new API key...', 'warning');
-                
+
                 const response = await fetch("/api/keys/generate', {
                     method: 'POST',
                     headers: {
@@ -1243,9 +1243,9 @@
                         name: keyName
                     })
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     const newKey = {
                         id: result.keyId,
@@ -1255,7 +1255,7 @@
                         requests: 0,
                         revenue: 0
                     };
-                    
+
                     streamData.apiKeys.unshift(newKey);
                     renderApiKeys();
                     showAlert('API key generated successfully', 'success');
@@ -1272,14 +1272,14 @@
             if (!confirm('Are you sure you want to revoke this API key? This action cannot be undone.')) {
                 return;
             }
-            
+
             try {
                 const response = await fetch(`/api/keys/revoke/${keyId}`, {
                     method: 'DELETE'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     streamData.apiKeys = streamData.apiKeys.filter(key => key.id !== keyId);
                     renderApiKeys();
@@ -1307,9 +1307,9 @@
                         tiers: streamData.tiers
                     })
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     showAlert('Configuration saved successfully', 'success');
                 } else {
@@ -1332,7 +1332,7 @@
                         autoStart: streamData.autoStart
                     })
                 });
-                
+
                 if (!response.ok) {
                     console.error('Failed to update auto-start setting');
                 }
@@ -1346,7 +1346,7 @@
                 try {
                     const response = await fetch("/api/revenue/status');
                     const data = await response.json();
-                    
+
                     if (data.success && data.streams.api_monetization) {
                         const stream = data.streams.api_monetization;
                         const oldStatus = streamData.status;
@@ -1354,11 +1354,11 @@
                         streamData.totalRequests = stream.totalRequests;
                         streamData.monthlyRevenue = stream.monthlyRevenue;
                         streamData.activeClients = stream.activeClients;
-                        
+
                         updateUI();//Stop polling if status is stable
                         if (stream.status === 'active' || stream.status === 'inactive' || stream.status === 'error') {
                             clearInterval(pollInterval);
-                            
+
                             if (stream.status === 'error') {
                                 showAlert('Stream error: ' + (stream.errorMessage || 'Unknown error'), 'error');
                             } else if (oldStatus !== stream.status) {
@@ -1400,7 +1400,7 @@
                     key.requests += newRequests;
                     key.revenue += newRequests * 0.02;//Average cost per request
                 });
-                
+
                 updateUI();
                 renderEndpoints();
             }
@@ -1411,7 +1411,7 @@
             const alert = document.createElement('div');
             alert.className = `alert alert-${type}`;
             alert.textContent = message;
-            
+
             container.appendChild(alert);//Remove alert after 5 seconds
             setTimeout(() => {
                 if (alert.parentNode) {

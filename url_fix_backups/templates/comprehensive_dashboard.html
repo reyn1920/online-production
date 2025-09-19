@@ -322,12 +322,12 @@
                 grid-template-columns: 1fr;
                 gap: 20px;
             }
-            
+
             .metrics-grid {
                 grid-template-columns: repeat(3, 1fr);
             }
         }
-        
+
         @media (max-width: 768px) {
             .header {
                 flex-direction: column;
@@ -339,7 +339,7 @@
             .header h1 {
                 font-size: 1.5rem;
             }
-            
+
             .header-info {
                 flex-wrap: wrap;
                 justify-content: center;
@@ -359,11 +359,11 @@
                 grid-template-columns: repeat(2, 1fr);
                 gap: 12px;
             }
-            
+
             .metric {
                 padding: 12px;
             }
-            
+
             .metric-value {
                 font-size: 1.5rem;
             }
@@ -373,74 +373,74 @@
                 gap: 8px;
                 padding: 8px;
             }
-            
+
             .tab {
                 flex: 1;
                 min-width: 120px;
                 padding: 8px 12px;
                 font-size: 14px;
             }
-            
+
             .card {
                 padding: 16px;
             }
-            
+
             .card-title {
                 font-size: 16px;
             }
-            
+
             .integration-status {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 12px;
             }
-            
+
             .service-list {
                 gap: 8px;
             }
-            
+
             .service-item {
                 padding: 12px;
             }
         }
-        
+
         @media (max-width: 480px) {
             .header h1 {
                 font-size: 1.25rem;
             }
-            
+
             .metrics-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .integration-status {
                 grid-template-columns: 1fr;
             }
-            
+
             .tabs {
                 flex-direction: column;
             }
-            
+
             .tab {
                 min-width: auto;
                 width: 100%;
                 margin-bottom: 4px;
             }
-            
+
             .service-item {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 8px;
             }
-            
+
             .service-info {
                 width: 100%;
             }
-            
+
             .card-status {
                 align-self: flex-end;
             }
         }
-        
+
         /* Touch-friendly improvements */
         @media (hover: none) and (pointer: coarse) {
             .tab {
@@ -449,7 +449,7 @@
                 align-items: center;
                 justify-content: center;
             }
-            
+
             .refresh-btn {
                 min-height: 44px;
                 min-width: 44px;
@@ -471,7 +471,7 @@
     </div>
 
     <div class="refresh-indicator" id="refresh-indicator">Updating...</div>
-    
+
     <div class="alert-banner" id="alert-banner">
         <strong>System Alert:</strong> <span id="alert-message"></span>
     </div>
@@ -774,7 +774,7 @@
             initializeWebSocket();
             loadInitialData();
             startTimeUpdater();
-            
+
             // Auto-refresh every 30 seconds
             setInterval(refreshDashboard, 30000);
         });
@@ -785,15 +785,15 @@
             document.querySelectorAll('.tab-content').forEach(content => {
                 content.classList.remove('active');
             });
-            
+
             // Remove active class from all tabs
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.classList.remove('active');
             });
-            
+
             // Show selected tab content
             document.getElementById(tabName).classList.add('active');
-            
+
             // Add active class to clicked tab
             event.target.classList.add('active');
         }
@@ -852,7 +852,7 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: { 
+                        legend: {
                             labels: { color: '#fff' },
                             position: 'bottom'
                         }
@@ -961,7 +961,7 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: { 
+                        legend: {
                             labels: { color: '#fff' },
                             position: 'bottom'
                         }
@@ -974,7 +974,7 @@
         function initializeWebSocket() {
             try {
                 socket = io();
-                
+
                 socket.on('connect', function() {
                     console.log('Connected to dashboard WebSocket');
                     updateSystemStatus('healthy');
@@ -1002,7 +1002,7 @@
         async function loadInitialData() {
             try {
                 showRefreshIndicator();
-                
+
                 // Load system metrics
                 const systemResponse = await fetch('/api/system/metrics');
                 if (systemResponse.ok) {
@@ -1042,14 +1042,14 @@
         // Update dashboard with new data
         function updateDashboard(data) {
             showRefreshIndicator();
-            
+
             if (data.system) updateSystemMetrics(data.system);
             if (data.revenue) updateRevenueData(data.revenue);
             if (data.services) updateServicesStatus(data.services);
             if (data.integrations) updateIntegrationsStatus(data.integrations);
-            
+
             document.getElementById('last-update').textContent = new Date().toLocaleTimeString();
-            
+
             setTimeout(hideRefreshIndicator, 1000);
         }
 
@@ -1060,19 +1060,19 @@
             document.getElementById('disk-usage').textContent = data.disk_percent?.toFixed(1) + '%' || '--';
             document.getElementById('active-connections').textContent = data.active_connections || '--';
             document.getElementById('system-uptime').textContent = formatUptime(data.uptime_seconds);
-            
+
             // Update health score
              const currentHealthScore = data.health_score || calculateHealthScore(data);
              document.getElementById('health-score').textContent = currentHealthScore.toFixed(0);
-            
+
             // Update dashboard health status
             updateDashboardHealth(data);
-            
+
             // Update alerts if present
             if (data.alerts) {
                 updateSystemAlerts(data.alerts);
             }
-            
+
             // Update health components if present
             if (data.components) {
                 updateHealthComponents(data.components);
@@ -1113,7 +1113,7 @@
             if (charts.revenue && data.revenue_by_stream) {
                 const streams = Object.keys(data.revenue_by_stream);
                 const revenues = streams.map(stream => data.revenue_by_stream[stream].current);
-                
+
                 charts.revenue.data.labels = streams.map(s => s.replace('_', ' ').toUpperCase());
                 charts.revenue.data.datasets[0].data = revenues;
                 charts.revenue.update('none');
@@ -1123,7 +1123,7 @@
             if (charts.revenueAnalytics && data.recent_revenue) {
                 const streams = Object.keys(data.recent_revenue);
                 const revenues = Object.values(data.recent_revenue);
-                
+
                 charts.revenueAnalytics.data.labels = streams.map(s => s.replace('_', ' ').toUpperCase());
                 charts.revenueAnalytics.data.datasets[0].data = revenues;
                 charts.revenueAnalytics.update('none');
@@ -1133,7 +1133,7 @@
             const progressPercent = data.overall_progress || 0;
             let status = 'On Track';
             let statusClass = 'status-healthy';
-            
+
             if (progressPercent < 50) {
                 status = 'Behind';
                 statusClass = 'status-warning';
@@ -1141,7 +1141,7 @@
                 status = 'Critical';
                 statusClass = 'status-error';
             }
-            
+
             const revenueStatusEl = document.getElementById('revenue-status');
             revenueStatusEl.textContent = status;
             revenueStatusEl.className = 'card-status ' + statusClass;
@@ -1199,8 +1199,8 @@
                         <div>
                             <div>${serviceName}</div>
                             <div class="service-details">
-                                CPU: ${serviceData.cpu_percent?.toFixed(1) || 0}% | 
-                                Memory: ${serviceData.memory_mb?.toFixed(0) || 0}MB | 
+                                CPU: ${serviceData.cpu_percent?.toFixed(1) || 0}% |
+                                Memory: ${serviceData.memory_mb?.toFixed(0) || 0}MB |
                                 Response: ${serviceData.response_time_ms?.toFixed(0) || 0}ms
                             </div>
                         </div>
@@ -1210,7 +1210,7 @@
 
                 // Add to appropriate service list
                 if (servicesList) servicesList.appendChild(serviceDiv.cloneNode(true));
-                
+
                 // Categorize services
                 if (serviceName.includes('app') || serviceName.includes('web') || serviceName.includes('api')) {
                     if (appServicesList) appServicesList.appendChild(serviceDiv.cloneNode(true));
@@ -1335,7 +1335,7 @@
                 'affiliate': '🤝',
                 'analytics': '📊'
             };
-            
+
             for (const [key, icon] of Object.entries(icons)) {
                 if (name.toLowerCase().includes(key)) {
                     return icon;
@@ -1356,7 +1356,7 @@
         function updateSystemHealth(score) {
             const healthEl = document.getElementById('system-health');
             const statusEl = document.getElementById('system-status');
-            
+
             if (score >= 80) {
                 healthEl.textContent = 'Healthy';
                 healthEl.className = 'card-status status-healthy';
@@ -1382,12 +1382,12 @@
             const healthStatus = document.getElementById('health-status');
             const healthIcon = document.getElementById('health-icon');
             const healthScoreElement = document.getElementById('health-score');
-            
+
             // Update health score if available
             if (data.health_score !== undefined) {
                 healthScoreElement.textContent = `Score: ${Math.round(data.health_score)}`;
             }
-            
+
             if (data.status === 'healthy') {
                 healthStatus.textContent = 'Healthy';
                 healthStatus.style.color = '#10b981';
@@ -1418,10 +1418,10 @@
         function showAlert(message, severity = 'info') {
             const alertBanner = document.getElementById('alert-banner');
             const alertMessage = document.getElementById('alert-message');
-            
+
             alertMessage.textContent = message;
             alertBanner.className = `alert-banner show alert-${severity}`;
-            
+
             setTimeout(() => {
                 alertBanner.classList.remove('show');
             }, 5000);
@@ -1451,7 +1451,7 @@
         function updateSystemAlerts(alerts) {
             const alertsContainer = document.getElementById('alerts-container');
             const alertsStatus = document.getElementById('alerts-status');
-            
+
             if (!alerts || alerts.length === 0) {
                 alertsContainer.innerHTML = `
                     <div class="service-item">
@@ -1469,19 +1469,19 @@
                 alertsStatus.className = 'card-status status-healthy';
                 return;
             }
-            
+
             alertsContainer.innerHTML = '';
             let criticalCount = 0;
             let warningCount = 0;
-            
+
             alerts.forEach(alert => {
                 const alertDiv = document.createElement('div');
                 alertDiv.className = 'service-item';
-                
+
                 const statusClass = getStatusClass(alert.severity);
                 if (alert.severity === 'critical' || alert.severity === 'error') criticalCount++;
                 if (alert.severity === 'warning') warningCount++;
-                
+
                 alertDiv.innerHTML = `
                     <div class="service-info">
                         <div class="status-indicator ${statusClass}"></div>
@@ -1492,10 +1492,10 @@
                     </div>
                     <div class="card-status ${statusClass}">${alert.severity}</div>
                 `;
-                
+
                 alertsContainer.appendChild(alertDiv);
             });
-            
+
             // Update alerts status
             if (criticalCount > 0) {
                 alertsStatus.textContent = `${criticalCount} Critical`;
@@ -1508,20 +1508,20 @@
                 alertsStatus.className = 'card-status status-healthy';
             }
         }
-        
+
         // Update health components
         function updateHealthComponents(components) {
             const componentsGrid = document.getElementById('components-grid');
             const componentsStatus = document.getElementById('components-status');
-            
+
             componentsGrid.innerHTML = '';
             let healthyCount = 0;
             let totalCount = 0;
-            
+
             Object.entries(components).forEach(([componentName, componentData]) => {
                 totalCount++;
                 if (componentData.status === 'healthy') healthyCount++;
-                
+
                 const statusClass = getStatusClass(componentData.status);
                 const componentDiv = document.createElement('div');
                 componentDiv.className = 'integration-item';
@@ -1530,10 +1530,10 @@
                     <div class="integration-name">${componentName}</div>
                     <div class="card-status ${statusClass}">${componentData.status}</div>
                 `;
-                
+
                 componentsGrid.appendChild(componentDiv);
             });
-            
+
             // Update components status
             if (healthyCount === totalCount) {
                 componentsStatus.textContent = 'All Healthy';
@@ -1546,7 +1546,7 @@
                 componentsStatus.className = 'card-status status-error';
             }
         }
-        
+
         function getComponentIcon(name) {
             const icons = {
                 'database': '🗄️',
@@ -1558,7 +1558,7 @@
                 'security': '🔒',
                 'monitoring': '📊'
             };
-            
+
             for (const [key, icon] of Object.entries(icons)) {
                 if (name.toLowerCase().includes(key)) {
                     return icon;

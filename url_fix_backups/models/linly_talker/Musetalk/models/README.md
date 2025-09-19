@@ -26,7 +26,7 @@ We introduce `MuseTalk`, a **real-time high quality** lip-syncing model (30fps+ 
 1. modifies an unseen face according to the input audio, with a size of face region of `256 x 256`.
 1. supports audio in various languages, such as Chinese, English, and Japanese.
 1. supports real-time inference with 30fps+ on an NVIDIA Tesla V100.
-1. supports modification of the center point of the face region proposes, which **SIGNIFICANTLY** affects generation results. 
+1. supports modification of the center point of the face region proposes, which **SIGNIFICANTLY** affects generation results.
 1. checkpoint available trained on the HDTF dataset.
 1. training codes (comming soon).
 
@@ -121,7 +121,7 @@ MuseTalk was trained in latent spaces, where the images were encoded by a freeze
   </tr>
 </table>
 
-* For video dubbing, we applied a self-developed tool which can detect the talking person. 
+* For video dubbing, we applied a self-developed tool which can detect the talking person.
 
 
 # TODO:
@@ -151,11 +151,11 @@ pip install --editable ./musetalk/whisper
 
 ### mmlab packages
 ```bash
-pip install --no-cache-dir -U openmim 
-mim install mmengine 
-mim install "mmcv>=2.0.1" 
-mim install "mmdet>=3.1.0" 
-mim install "mmpose>=1.1.0" 
+pip install --no-cache-dir -U openmim
+mim install mmengine
+mim install "mmcv>=2.0.1"
+mim install "mmdet>=3.1.0"
+mim install "mmpose>=1.1.0"
 ```
 
 ### Download ffmpeg-static
@@ -200,9 +200,9 @@ Finally, these weights should be organized in `models` as follows:
 ## Quickstart
 
 ### Inference
-Here, we provide the inference script. 
+Here, we provide the inference script.
 ```
-python -m scripts.inference --inference_config configs/inference/test.yaml 
+python -m scripts.inference --inference_config configs/inference/test.yaml
 ```
 configs/inference/test.yaml is the path to the inference configuration file, including video_path and audio_path.
 The video_path should be either a video file or a directory of images.
@@ -210,11 +210,11 @@ The video_path should be either a video file or a directory of images.
 #### Use of bbox_shift to have adjustable results
 :mag_right: We have found that upper-bound of the mask has an important impact on mouth openness. Thus, to control the mask region, we suggest using the `bbox_shift` parameter. Positive values (moving towards the lower half) increase mouth openness, while negative values (moving towards the upper half) decrease mouth openness.
 
-You can start by running with the default configuration to obtain the adjustable value range, and then re-run the script within this range. 
+You can start by running with the default configuration to obtain the adjustable value range, and then re-run the script within this range.
 
-For example, in the case of `Xinying Sun`, after running the default configuration, it shows that the adjustable value rage is [-9, 9]. Then, to decrease the mouth openness, we set the value to be `-7`. 
+For example, in the case of `Xinying Sun`, after running the default configuration, it shows that the adjustable value rage is [-9, 9]. Then, to decrease the mouth openness, we set the value to be `-7`.
 ```
-python -m scripts.inference --inference_config configs/inference/test.yaml --bbox_shift -7 
+python -m scripts.inference --inference_config configs/inference/test.yaml --bbox_shift -7
 ```
 :pushpin: More technical details can be found in [bbox_shift](assets/BBOX_SHIFT.md).
 
@@ -228,14 +228,14 @@ If you want to launch online video chats, you are suggested to generate videos u
 
 
 # Acknowledgement
-1. We thank open-source components like [whisper](https://github.com/isaacOnline/whisper/tree/extract-embeddings), [dwpose](https://github.com/IDEA-Research/DWPose), [face-alignment](https://github.com/1adrianb/face-alignment), [face-parsing](https://github.com/zllrunning/face-parsing.PyTorch), [S3FD](https://github.com/yxlijun/S3FD.pytorch). 
+1. We thank open-source components like [whisper](https://github.com/isaacOnline/whisper/tree/extract-embeddings), [dwpose](https://github.com/IDEA-Research/DWPose), [face-alignment](https://github.com/1adrianb/face-alignment), [face-parsing](https://github.com/zllrunning/face-parsing.PyTorch), [S3FD](https://github.com/yxlijun/S3FD.pytorch).
 1. MuseTalk has referred much to [diffusers](https://github.com/huggingface/diffusers).
 1. MuseTalk has been built on `HDTF` datasets.
 
 Thanks for open-sourcing!
 
 # Limitations
-- Resolution: Though MuseTalk uses a face region size of 256 x 256, which make it better than other open-source methods, it has not yet reached the theoretical resolution bound. We will continue to deal with this problem.  
+- Resolution: Though MuseTalk uses a face region size of 256 x 256, which make it better than other open-source methods, it has not yet reached the theoretical resolution bound. We will continue to deal with this problem.
 If you need higher resolution, you could apply super resolution models such as [GFPGAN](https://github.com/TencentARC/GFPGAN) in combination with MuseTalk.
 
 - Identity preservation: Some details of the original face are not well preserved, such as mustache, lip shape and color.

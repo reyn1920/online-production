@@ -17,7 +17,7 @@ const Cookies = {
 
 const apiClient = {
   get: async (url: string) => ({ data: {} }),
-  post: async <T = any>(url: string, data?: any) => ({ 
+  post: async <T = any>(url: string, data?: any) => ({
     data: {
       access_token: process.env.REACT_APP_MOCK_ACCESS_TOKEN || 'dev_token',
       refresh_token: process.env.REACT_APP_MOCK_REFRESH_TOKEN || 'dev_refresh_token',
@@ -94,7 +94,7 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
         isLoading: true,
         error: null,
       };
-    
+
     case 'LOGIN_SUCCESS':
       return {
         ...state,
@@ -105,7 +105,7 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
         accessToken: action.payload.access_token,
         refreshToken: action.payload.refresh_token,
       };
-    
+
     case 'LOGIN_FAILURE':
       return {
         ...state,
@@ -116,20 +116,20 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
         accessToken: null,
         refreshToken: null,
       };
-    
+
     case 'LOGOUT':
       return {
         ...initialState,
         isLoading: false,
       };
-    
+
     case 'REFRESH_TOKEN_SUCCESS':
       return {
         ...state,
         accessToken: action.payload.access_token,
         error: null,
       };
-    
+
     case 'REFRESH_TOKEN_FAILURE':
       return {
         ...state,
@@ -139,19 +139,19 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
         refreshToken: null,
         error: 'Session expired. Please login again.',
       };
-    
+
     case 'SET_LOADING':
       return {
         ...state,
         isLoading: action.payload,
       };
-    
+
     case 'CLEAR_ERROR':
       return {
         ...state,
         error: null,
       };
-    
+
     default:
       return state;
   }
@@ -196,14 +196,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
         if (storedAccessToken && storedRefreshToken && storedUser) {
           const user = JSON.parse(storedUser);
-          
+
           // Set tokens in API client
           apiClient.setAuthToken(storedAccessToken);
-          
+
           // Verify token is still valid by making a test request
           try {
             await apiClient.get('/health');
-            
+
             dispatch({
               type: 'LOGIN_SUCCESS',
               payload: {
@@ -232,30 +232,30 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Login function
   const login = async (credentials: LoginCredentials): Promise<void> => {
     dispatch({ type: 'LOGIN_START' });
-    
+
     try {
       const response = await apiClient.post<LoginResponse>('/auth/login', credentials);
       const { access_token, refresh_token, user_info, expires_in } = response.data;
-      
+
       // Store tokens and user info
-      Cookies.set(ACCESS_TOKEN_KEY, access_token, { 
+      Cookies.set(ACCESS_TOKEN_KEY, access_token, {
         expires: expires_in / (24 * 60 * 60), // Convert seconds to days
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict'
       });
-      Cookies.set(REFRESH_TOKEN_KEY, refresh_token, { 
+      Cookies.set(REFRESH_TOKEN_KEY, refresh_token, {
         expires: 7, // 7 days
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict'
       });
       localStorage.setItem(USER_KEY, JSON.stringify(user_info));
-      
+
       // Set auth token in API client
       apiClient.setAuthToken(access_token);
-      
+
       dispatch({ type: 'LOGIN_SUCCESS', payload: response.data });
       toast.success(`Welcome back, ${user_info.username}!`);
-      
+
     } catch (error: any) {
       const errorMessage = error.response?.data?.error || 'Login failed. Please try again.';
       dispatch({ type: 'LOGIN_FAILURE', payload: errorMessage });
@@ -276,10 +276,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       Cookies.remove(ACCESS_TOKEN_KEY);
       Cookies.remove(REFRESH_TOKEN_KEY);
       localStorage.removeItem(USER_KEY);
-      
+
       // Clear auth token from API client
       apiClient.clearAuthToken();
-      
+
       dispatch({ type: 'LOGOUT' });
       toast.success('Logged out successfully');
     }
@@ -289,42 +289,42 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const refreshTokens = async (): Promise<void> => {
     try {
       const storedRefreshToken = Cookies.get(REFRESH_TOKEN_KEY);
-      
+
       if (!storedRefreshToken) {
         throw new Error('No refresh token available');
       }
-      
+
       const response = await apiClient.post('/auth/refresh', {
         refresh_token: storedRefreshToken,
       });
-      
+
       const { access_token, expires_in } = response.data;
-      
+
       // Update stored access token
-      Cookies.set(ACCESS_TOKEN_KEY, access_token, { 
+      Cookies.set(ACCESS_TOKEN_KEY, access_token, {
         expires: expires_in / (24 * 60 * 60),
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict'
       });
-      
+
       // Update auth token in API client
       apiClient.setAuthToken(access_token);
-      
-      dispatch({ 
-        type: 'REFRESH_TOKEN_SUCCESS', 
-        payload: { access_token, expires_in } 
+
+      dispatch({
+        type: 'REFRESH_TOKEN_SUCCESS',
+        payload: { access_token, expires_in }
       });
-      
+
     } catch (error) {
       console.error('Token refresh failed:', error);
       dispatch({ type: 'REFRESH_TOKEN_FAILURE' });
-      
+
       // Clear all stored data
       Cookies.remove(ACCESS_TOKEN_KEY);
       Cookies.remove(REFRESH_TOKEN_KEY);
       localStorage.removeItem(USER_KEY);
       apiClient.clearAuthToken();
-      
+
       toast.error('Session expired. Please login again.');
     }
   };
@@ -349,7 +349,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Setup API client interceptor for automatic token refresh on 401
   useEffect(() => {
     const cleanup = apiClient.setupAuthInterceptor(refreshTokens, logout);
-    
+
     return () => {
       // Cleanup interceptor if needed
       if (cleanup && typeof cleanup === 'function') {
@@ -380,11 +380,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 // Hook to use auth context
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
-  
+
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
-  
+
   return context;
 };
 

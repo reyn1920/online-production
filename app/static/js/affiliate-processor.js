@@ -52,7 +52,7 @@
    * @returns {Object} Statistics about the buckets
    */getStatistics() {
     const statusCounts = this.getStatusCounts(this.buckets);
-    
+
     const stats = {
       total: this.buckets.length,
       byChannel: {},
@@ -73,12 +73,12 @@
    * @returns {Object} Status counts
    */getStatusCounts(programs) {
     const counts = { active: 0, disabled: 0, error: 0 };
-    
+
     programs.forEach(program => {
       const status = this.getRandomStatus();//In real app, this would come from actual status
       counts[status]++;
     });
-    
+
     return counts;
   }/**
    * Get a random status for demo purposes
@@ -96,10 +96,10 @@
       disabled: 'purple',
       error: 'red'
     };
-    
+
     const dotClass = statusMap[status] || 'red';
     const pulse = status === 'active' && Math.random() > 0.7 ? ' pulse' : '';
-    
+
     return `<span class="dot ${dotClass}${pulse}"></span>`;
   }
 }//Export for use in other modules

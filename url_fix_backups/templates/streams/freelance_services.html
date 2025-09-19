@@ -632,31 +632,31 @@
             .main-content {
                 grid-template-columns: 1fr;
             }
-            
+
             .metrics-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .form-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .services-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .projects-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .service-stats {
                 grid-template-columns: 1fr;
             }
-            
+
             .project-details {
                 grid-template-columns: 1fr;
             }
-            
+
             .project-actions {
                 grid-template-columns: 1fr;
             }
@@ -675,7 +675,7 @@
             <!-- Control Panel -->
             <div class="control-panel">
                 <h2>Stream Controls</h2>
-                
+
                 <div class="control-group">
                     <label>Stream Status</label>
                     <div style="display: flex; align-items: center; gap: 15px;">
@@ -715,7 +715,7 @@
             <!-- Metrics Panel -->
             <div class="metrics-panel">
                 <h2>Business Metrics</h2>
-                
+
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <div class="metric-value" id="activeProjects">0</div>
@@ -750,7 +750,7 @@
             <div class="services-section">
                 <h2>Service Offerings</h2>
                 <p style="color: #666; margin-bottom: 20px;">Manage your freelance services and pricing</p>
-                
+
                 <div class="services-grid" id="servicesGrid">
                     <!-- Services will be loaded dynamically -->
                 </div>
@@ -760,7 +760,7 @@
             <div class="projects-section">
                 <h2>Current Projects</h2>
                 <p style="color: #666; margin-bottom: 20px;">Track active projects and client work</p>
-                
+
                 <div class="projects-grid" id="projectsGrid">
                     <!-- Projects will be loaded dynamically -->
                 </div>
@@ -769,18 +769,18 @@
             <!-- New Project Form -->
             <div class="new-project-form" id="newProjectForm" style="display: none;">
                 <h2>Create New Project</h2>
-                
+
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Project Title</label>
                         <input type="text" id="projectTitle" placeholder="Enter project title">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Client Name</label>
                         <input type="text" id="projectClient" placeholder="Client name">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Service Type</label>
                         <select id="projectService">
@@ -792,28 +792,28 @@
                             <option value="consulting">Consulting</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Budget ($)</label>
                         <input type="number" id="projectBudget" placeholder="5000" min="100" max="100000">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Estimated Hours</label>
                         <input type="number" id="projectHours" placeholder="40" min="1" max="1000">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Deadline</label>
                         <input type="date" id="projectDeadline">
                     </div>
-                    
+
                     <div class="form-group" style="grid-column: 1 / -1;">
                         <label>Project Description</label>
                         <textarea id="projectDescription" placeholder="Describe the project requirements..."></textarea>
                     </div>
                 </div>
-                
+
                 <div style="text-align: center; margin-top: 20px;">
                     <button class="btn btn-success" onclick="createProject()">✅ Create Project</button>
                     <button class="btn" onclick="hideNewProjectForm()">❌ Cancel</button>
@@ -1033,11 +1033,11 @@
                         </div>
                         <div class="service-status status-${service.status}">${service.status}</div>
                     </div>
-                    
+
                     <div class="service-description">
                         ${service.description}
                     </div>
-                    
+
                     <div class="service-stats">
                         <div class="stat-item">
                             <div class="stat-value">${service.completedProjects}</div>
@@ -1052,14 +1052,14 @@
                             <div class="stat-label">Earnings</div>
                         </div>
                     </div>
-                    
+
                     <div class="service-pricing">
                         <div>
                             <div class="hourly-rate">$${service.hourlyRate}/hr</div>
                             <div class="project-rate">$${service.projectRate.toLocaleString()} project rate</div>
                         </div>
                     </div>
-                    
+
                     <div class="service-actions">
                         <button class="btn" onclick="editService('${service.id}')" style="padding: 10px; font-size: 0.9rem;">
                             ✏️ Edit Rates
@@ -1088,7 +1088,7 @@
                         </div>
                         <div class="project-status status-${project.status}">${project.status}</div>
                     </div>
-                    
+
                     <div class="project-details">
                         <div class="detail-item">
                             <div class="detail-value">$${project.budget.toLocaleString()}</div>
@@ -1107,7 +1107,7 @@
                             <div class="detail-label">Deadline</div>
                         </div>
                     </div>
-                    
+
                     <div class="project-progress">
                         <div class="progress-text">
                             <span>Progress</span>
@@ -1117,17 +1117,17 @@
                             <div class="progress-fill" style="width: ${project.progress}%;"></div>
                         </div>
                     </div>
-                    
+
                     <div style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">
                         ${project.description}
                     </div>
-                    
+
                     <div style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">
                         <strong>Started:</strong> ${new Date(project.startDate).toLocaleDateString()}<br>
                         <strong>Service:</strong> ${project.service.replace('-', ' ')}<br>
                         <strong>Earnings:</strong> $${(project.actualHours * project.hourlyRate).toLocaleString()}
                     </div>
-                    
+
                     <div class="project-actions">
                         <button class="btn" onclick="updateProgress('${project.id}')" style="padding: 8px 12px; font-size: 0.8rem;">
                             📊 Update
@@ -1148,7 +1148,7 @@
             try {
                 const response = await fetch('/api/revenue/status');
                 const data = await response.json();
-                
+
                 if (data.success && data.streams.freelance_services) {
                     const stream = data.streams.freelance_services;
                     streamData.status = stream.status;
@@ -1157,7 +1157,7 @@
                     streamData.monthlyRevenue = stream.monthlyRevenue;
                     streamData.avgHourlyRate = stream.avgHourlyRate;
                     streamData.autoStart = stream.autoStart;
-                    
+
                     updateUI();
                 }
             } catch (error) {
@@ -1191,7 +1191,7 @@
             document.getElementById('totalClients').textContent = streamData.totalClients;
             document.getElementById('monthlyRevenue').textContent = '$' + streamData.monthlyRevenue.toLocaleString();
             document.getElementById('avgHourlyRate').textContent = '$' + Math.round(streamData.avgHourlyRate);
-            
+
             // Update revenue goal progress
             const goalPercent = Math.min(100, (streamData.monthlyRevenue/streamData.revenueGoal) * 100);
             document.getElementById('revenueGoalFill').style.width = goalPercent + '%';
@@ -1201,18 +1201,18 @@
         async function startStream() {
             try {
                 showAlert('Starting Freelance Services stream...', 'warning');
-                
+
                 const response = await fetch(`/api/revenue/start/${streamData.streamId}`, {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     streamData.status = 'starting';
                     updateUI();
                     showAlert(result.message, 'success');
-                    
+
                     // Poll for status updates
                     pollStreamStatus();
                 } else {
@@ -1227,18 +1227,18 @@
         async function stopStream() {
             try {
                 showAlert('Stopping Freelance Services stream...', 'warning');
-                
+
                 const response = await fetch(`/api/revenue/stop/${streamData.streamId}`, {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     streamData.status = 'stopping';
                     updateUI();
                     showAlert(result.message, 'success');
-                    
+
                     // Poll for status updates
                     pollStreamStatus();
                 } else {
@@ -1253,16 +1253,16 @@
         async function runTests() {
             try {
                 showAlert('Running comprehensive freelance services tests...', 'warning');
-                
+
                 const testContainer = document.getElementById('testResultsContainer');
                 testContainer.innerHTML = '<div style="text-align: center;"><div class="loading"></div> Running tests...</div>';
-                
+
                 const response = await fetch(`/api/revenue/test/${streamData.streamId}`, {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     displayTestResults(result.results);
                     showAlert('Tests completed successfully', 'success');
@@ -1279,12 +1279,12 @@
         function displayTestResults(results) {
             const container = document.getElementById('testResultsContainer');
             container.innerHTML = '';
-            
+
             Object.keys(results).forEach(testName => {
                 const test = results[testName];
                 const testItem = document.createElement('div');
                 testItem.className = 'test-item';
-                
+
                 testItem.innerHTML = `
                     <div>
                         <strong>${testName}</strong>
@@ -1293,7 +1293,7 @@
                     </div>
                     <div class="test-status test-${test.status}">${test.status}</div>
                 `;
-                
+
                 container.appendChild(testItem);
             });
         }
@@ -1301,7 +1301,7 @@
         function showNewProjectForm() {
             document.getElementById('newProjectForm').style.display = 'block';
             document.getElementById('projectTitle').focus();
-            
+
             // Set default deadline to 30 days from now
             const defaultDeadline = new Date();
             defaultDeadline.setDate(defaultDeadline.getDate() + 30);
@@ -1393,10 +1393,10 @@
                 if (newRate && !isNaN(newRate) && newRate >= 25 && newRate <= 500) {
                     service.hourlyRate = parseFloat(newRate);
                     service.projectRate = Math.round(service.hourlyRate * 50); // Estimate project rate
-                    
+
                     // Update average hourly rate
                     streamData.avgHourlyRate = streamData.services.reduce((sum, s, _, arr) => sum + s.hourlyRate/arr.length, 0);
-                    
+
                     renderServices();
                     updateUI();
                     showAlert(`Hourly rate updated for "${service.title}"`, 'success');
@@ -1412,7 +1412,7 @@
                 const statuses = ['available', 'busy', 'unavailable'];
                 const currentIndex = statuses.indexOf(service.status);
                 service.status = statuses[(currentIndex + 1) % statuses.length];
-                
+
                 renderServices();
                 showAlert(`Service status changed to ${service.status}`, 'success');
             }
@@ -1424,17 +1424,17 @@
                 const newProgress = prompt(`Enter progress percentage for "${project.title}":`, project.progress);
                 if (newProgress && !isNaN(newProgress) && newProgress >= 0 && newProgress <= 100) {
                     project.progress = parseInt(newProgress);
-                    
+
                     // Update status based on progress
                     if (project.progress === 100) {
                         project.status = 'completed';
                     } else if (project.progress > 0 && project.status === 'pending') {
                         project.status = 'active';
                     }
-                    
+
                     // Update active projects count
                     streamData.activeProjects = streamData.projects.filter(p => p.status === 'active').length;
-                    
+
                     renderProjects();
                     updateUI();
                     showAlert(`Progress updated for "${project.title}"`, 'success');
@@ -1450,10 +1450,10 @@
                 const additionalHours = prompt(`Log additional hours for "${project.title}":`, '8');
                 if (additionalHours && !isNaN(additionalHours) && additionalHours > 0) {
                     project.actualHours += parseFloat(additionalHours);
-                    
+
                     // Update monthly revenue
                     streamData.monthlyRevenue = streamData.projects.reduce((sum, p) => sum + (p.actualHours * p.hourlyRate), 0);
-                    
+
                     renderProjects();
                     updateUI();
                     showAlert(`Logged ${additionalHours} hours for "${project.title}"`, 'success');
@@ -1485,9 +1485,9 @@
                         revenueGoal: streamData.revenueGoal
                     })
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     showAlert('Configuration saved successfully', 'success');
                 } else {
@@ -1510,7 +1510,7 @@
                         autoStart: streamData.autoStart
                     })
                 });
-                
+
                 if (!response.ok) {
                     console.error('Failed to update auto-start setting');
                 }
@@ -1524,7 +1524,7 @@
                 try {
                     const response = await fetch('/api/revenue/status');
                     const data = await response.json();
-                    
+
                     if (data.success && data.streams.freelance_services) {
                         const stream = data.streams.freelance_services;
                         const oldStatus = streamData.status;
@@ -1533,13 +1533,13 @@
                         streamData.totalClients = stream.totalClients;
                         streamData.monthlyRevenue = stream.monthlyRevenue;
                         streamData.avgHourlyRate = stream.avgHourlyRate;
-                        
+
                         updateUI();
-                        
+
                         // Stop polling if status is stable
                         if (stream.status === 'active' || stream.status === 'inactive' || stream.status === 'error') {
                             clearInterval(pollInterval);
-                            
+
                             if (stream.status === 'error') {
                                 showAlert('Stream error: ' + (stream.errorMessage || 'Unknown error'), 'error');
                             } else if (oldStatus !== stream.status) {
@@ -1571,20 +1571,20 @@
                     if (project.status === 'active' && Math.random() < 0.3) {
                         const progressIncrease = Math.floor(Math.random() * 10) + 1;
                         project.progress = Math.min(100, project.progress + progressIncrease);
-                        
+
                         // Log some hours
                         if (Math.random() < 0.5) {
                             const hoursWorked = Math.floor(Math.random() * 4) + 1;
                             project.actualHours += hoursWorked;
                         }
-                        
+
                         // Complete project if 100%
                         if (project.progress === 100) {
                             project.status = 'completed';
                         }
                     }
                 });
-                
+
                 // Update service earnings
                 streamData.services.forEach(service => {
                     if (Math.random() < 0.2) {
@@ -1592,11 +1592,11 @@
                         service.totalEarnings += earningsIncrease;
                     }
                 });
-                
+
                 // Update monthly revenue
                 streamData.monthlyRevenue = streamData.projects.reduce((sum, p) => sum + (p.actualHours * p.hourlyRate), 0);
                 streamData.activeProjects = streamData.projects.filter(p => p.status === 'active').length;
-                
+
                 renderProjects();
                 updateUI();
             }
@@ -1607,9 +1607,9 @@
             const alert = document.createElement('div');
             alert.className = `alert alert-${type}`;
             alert.textContent = message;
-            
+
             alertContainer.appendChild(alert);
-            
+
             setTimeout(() => {
                 if (alert.parentNode) {
                     alert.parentNode.removeChild(alert);

@@ -1,1 +1,3 @@
-from .freq import FreqEncoder
+from .freq import (
+    FreqEncoder,
+)  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement

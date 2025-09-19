@@ -4,7 +4,7 @@
     "description": "Stable Diffusion model configuration and settings",
     "last_updated": "2025-01-09",
     "enabled": true,
-    
+
     "models": {
       "sd_xl_base": {
         "name": "Stable Diffusion XL Base 1.0",
@@ -27,7 +27,7 @@
           "lora": true
         }
       },
-      
+
       "sd_xl_refiner": {
         "name": "Stable Diffusion XL Refiner 1.0",
         "model_id": "stabilityai/stable-diffusion-xl-refiner-1.0",
@@ -40,7 +40,7 @@
         "use_with_base": "sd_xl_base",
         "refiner_start": 0.8
       },
-      
+
       "sd_v1_5": {
         "name": "Stable Diffusion v1.5",
         "model_id": "runwayml/stable-diffusion-v1-5",
@@ -59,7 +59,7 @@
           "lora": true
         }
       },
-      
+
       "sd_inpaint": {
         "name": "Stable Diffusion Inpainting",
         "model_id": "runwayml/stable-diffusion-inpainting",
@@ -75,7 +75,7 @@
           "outpainting": true
         }
       },
-      
+
       "sd_2_1": {
         "name": "Stable Diffusion 2.1",
         "model_id": "stabilityai/stable-diffusion-2-1",
@@ -88,7 +88,7 @@
         "device": "cuda"
       }
     },
-    
+
     "schedulers": {
       "DPMSolverMultistepScheduler": {
         "class_name": "DPMSolverMultistepScheduler",
@@ -107,7 +107,7 @@
           "lower_order_final": true
         }
       },
-      
+
       "DDIMScheduler": {
         "class_name": "DDIMScheduler",
         "config": {
@@ -121,7 +121,7 @@
           "prediction_type": "epsilon"
         }
       },
-      
+
       "EulerDiscreteScheduler": {
         "class_name": "EulerDiscreteScheduler",
         "config": {
@@ -135,7 +135,7 @@
         }
       }
     },
-    
+
     "controlnet_models": {
       "canny": {
         "name": "ControlNet Canny",
@@ -147,7 +147,7 @@
           "high_threshold": 200
         }
       },
-      
+
       "openpose": {
         "name": "ControlNet OpenPose",
         "model_id": "lllyasviel/sd-controlnet-openpose",
@@ -158,7 +158,7 @@
           "image_resolution": 512
         }
       },
-      
+
       "depth": {
         "name": "ControlNet Depth",
         "model_id": "lllyasviel/sd-controlnet-depth",
@@ -170,7 +170,7 @@
         }
       }
     },
-    
+
     "lora_models": {
       "portrait_enhancement": {
         "name": "Portrait Enhancement LoRA",
@@ -179,7 +179,7 @@
         "weight": 0.8,
         "compatible_models": ["sd_xl_base", "sd_v1_5"]
       },
-      
+
       "style_transfer": {
         "name": "Style Transfer LoRA",
         "path": "./models/lora/style_transfer.safetensors",
@@ -188,7 +188,7 @@
         "compatible_models": ["sd_xl_base"]
       }
     },
-    
+
     "generation_parameters": {
       "default": {
         "steps": 20,
@@ -200,7 +200,7 @@
         "height": 512,
         "num_images": 1
       },
-      
+
       "high_quality": {
         "steps": 30,
         "guidance_scale": 8.0,
@@ -211,7 +211,7 @@
         "height": 1024,
         "num_images": 1
       },
-      
+
       "ultra_quality": {
         "steps": 50,
         "guidance_scale": 9.0,
@@ -224,7 +224,7 @@
         "use_refiner": true
       }
     },
-    
+
     "optimization": {
       "memory_efficient_attention": true,
       "use_cpu_offload": false,
@@ -236,7 +236,7 @@
       "torch_compile": false,
       "channels_last": true
     },
-    
+
     "safety": {
       "safety_checker": true,
       "requires_safety_checker": true,
@@ -244,14 +244,14 @@
       "content_filter": true,
       "watermark": false
     },
-    
+
     "paths": {
       "models_dir": "./models/stable-diffusion",
       "cache_dir": "./cache/diffusers",
       "output_dir": "./output/generated_images",
       "temp_dir": "./temp/diffusion"
     },
-    
+
     "hardware": {
       "device": "cuda",
       "device_map": "auto",
@@ -260,7 +260,7 @@
       "use_safetensors": true,
       "low_cpu_mem_usage": true
     },
-    
+
     "api_settings": {
       "max_concurrent_requests": 3,
       "request_timeout": 300,

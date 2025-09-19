@@ -38,7 +38,7 @@ STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)
 if [[ -n "$STAGED_FILES" ]]; then
     # Quick forbidden token check on staged files only
     FORBIDDEN_FOUND=false
-    
+
     while IFS= read -r file; do
         if [[ -f "$ROOT/$file" ]]; then
             # Check for forbidden tokens in staged files
@@ -48,7 +48,7 @@ if [[ -n "$STAGED_FILES" ]]; then
             fi
         fi
     done <<< "$STAGED_FILES"
-    
+
     if [[ "$FORBIDDEN_FOUND" == "true" ]]; then
         echo "❌ Forbidden vocabulary detected in staged files!"
         echo "Please remove banned terms before committing"

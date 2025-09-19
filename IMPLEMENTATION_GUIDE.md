@@ -51,7 +51,7 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str
     full_name: Optional[str] = None
-    
+
     @validator('password')
     def validate_password(cls, v):
         if len(v) < 8:
@@ -215,30 +215,30 @@ class Settings(BaseSettings):
     VERSION: str = "1.0.0"
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
     DEBUG: bool = ENVIRONMENT == "development"
-    
+
     # Security
     SECRET_KEY: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
-    
+
     # Database
     DATABASE_URL: str
-    
+
     # Redis
     REDIS_URL: str = "redis://localhost:6379"
-    
+
     # CORS
     CORS_ORIGINS: List[str] = ["http://localhost:3000"]
     ALLOWED_HOSTS: List[str] = ["localhost", "127.0.0.1"]
-    
+
     # External APIs
     OPENAI_API_KEY: str = ""
     ELEVENLABS_API_KEY: str = ""
-    
+
     # Monitoring
     SENTRY_DSN: str = ""
     LOG_LEVEL: str = "INFO"
-    
+
     class Config:
         env_file = ".env"
         case_sensitive = True
@@ -257,7 +257,7 @@ from app.core.database import Base
 
 class User(Base):
     __tablename__ = "users"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
@@ -320,7 +320,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
         expire = datetime.utcnow() + expires_delta
     else:
         expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    
+
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm="HS256")
     return encoded_jwt
@@ -431,16 +431,16 @@ def setup_logging():
         '%(asctime)s %(name)s %(levelname)s %(message)s',
         datefmt='%Y-%m-%d %H:%M:%S'
     )
-    
+
     # Configure root logger
     root_logger = logging.getLogger()
     root_logger.setLevel(getattr(logging, settings.LOG_LEVEL))
-    
+
     # Console handler
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setFormatter(formatter)
     root_logger.addHandler(console_handler)
-    
+
     # Disable uvicorn default logging
     logging.getLogger("uvicorn.access").disabled = True
 ```
@@ -469,7 +469,7 @@ async def detailed_health_check(db: AsyncSession = Depends(get_db)):
         "timestamp": datetime.utcnow(),
         "services": {}
     }
-    
+
     # Check database
     try:
         await db.execute("SELECT 1")
@@ -477,7 +477,7 @@ async def detailed_health_check(db: AsyncSession = Depends(get_db)):
     except Exception as e:
         health_status["services"]["database"] = f"unhealthy: {str(e)}"
         health_status["status"] = "unhealthy"
-    
+
     # Check Redis
     try:
         r = redis.Redis.from_url(settings.REDIS_URL)
@@ -486,10 +486,10 @@ async def detailed_health_check(db: AsyncSession = Depends(get_db)):
     except Exception as e:
         health_status["services"]["redis"] = f"unhealthy: {str(e)}"
         health_status["status"] = "unhealthy"
-    
+
     if health_status["status"] == "unhealthy":
         raise HTTPException(status_code=503, detail=health_status)
-    
+
     return health_status
 ```
 
@@ -534,7 +534,7 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
-      
+
       redis:
         image: redis:7
         options: >-
@@ -544,68 +544,68 @@ jobs:
           --health-retries 5
         ports:
           - 6379:6379
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      
+
       - name: Cache dependencies
         uses: actions/cache@v3
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install -r requirements-dev.txt
-      
+
       - name: Run linting
         run: |
           flake8 app tests
           black --check app tests
           isort --check-only app tests
-      
+
       - name: Run security scan
         run: |
           bandit -r app
           safety check
-      
+
       - name: Run tests
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
           REDIS_URL: redis://localhost:6379
         run: |
           pytest tests/ -v --cov=app --cov-report=xml
-      
+
       - name: Upload coverage
         uses: codecov/codecov-action@v3
         with:
           file: ./coverage.xml
-  
+
   build:
     needs: test
     runs-on: ubuntu-latest
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      
+
       - name: Login to Container Registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
@@ -616,13 +616,13 @@ jobs:
             ghcr.io/${{ github.repository }}:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-  
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch'
     environment: ${{ github.event.inputs.environment || 'staging' }}
-    
+
     steps:
       - name: Deploy to ${{ github.event.inputs.environment }}
         run: |

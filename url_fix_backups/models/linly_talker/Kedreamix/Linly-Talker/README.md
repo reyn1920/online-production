@@ -24,7 +24,7 @@
 **2024.01 更新** 📆
 
 - **令人兴奋的消息！我现在已经将强大的GeminiPro和Qwen大模型融入到我们的对话场景中。用户现在可以在对话中上传任何图片，为我们的互动增添了全新的层面。**
-- **更新了FastAPI的部署调用方法。** 
+- **更新了FastAPI的部署调用方法。**
 - **更新了微软TTS的高级设置选项，增加声音种类的多样性，以及加入视频字幕加强可视化。**
 - **更新了GPT多轮对话系统，使得对话有上下文联系，提高数字人的交互性和真实感。**
 
@@ -133,7 +133,7 @@ Linly-Talker的设计理念是创造一种全新的人机交互方式，不仅�
 
 - [Baidu (百度云盘)](https://pan.baidu.com/s/1eF13O-8wyw4B3MtesctQyg?pwd=linl) (Password: `linl`)
 - [huggingface](https://huggingface.co/Kedreamix/Linly-Talker)
-- [modelscope](https://www.modelscope.cn/models/Kedreamix/Linly-Talker/summary) 
+- [modelscope](https://www.modelscope.cn/models/Kedreamix/Linly-Talker/summary)
 
 **HuggingFace下载**
 
@@ -188,7 +188,7 @@ port = 7860
 mode = 'api' # api 需要先运行Linly-api-fast.py，暂时仅仅适用于Linly
 
 # 本地端口localhost:127.0.0.1 全局端口转发:"0.0.0.0"
-ip = '127.0.0.1' 
+ip = '127.0.0.1'
 api_port = 7871
 
 # L模型路径 (Linly model path)
@@ -280,7 +280,7 @@ python app_talk.py
 权重文件夹结构如下
 
 ```bash
-Linly-Talker/ 
+Linly-Talker/
 ├── checkpoints
 │   ├── hub
 │   │   └── checkpoints

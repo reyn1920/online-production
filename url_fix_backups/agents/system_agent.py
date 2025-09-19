@@ -5,7 +5,7 @@ import time
 
 
 class SystemAgent(threading.Thread):
-    def __init__(self, bridge, emit_fn=None, interval=60):
+    def __init__(self, bridge, emit_fn: None, interval=60):
         super().__init__(daemon=True)
         self.bridge = bridge
         self.emit_fn = emit_fn
@@ -28,7 +28,7 @@ class SystemAgent(threading.Thread):
             finally:
                 self._stop.wait(self.interval)
 
-    def stop(self, timeout=3.0):
+    def stop(self, timeout=30):
         self._stop.set()
         self.join(timeout=timeout)
         print("[SystemAgent] stopped")

@@ -72,13 +72,13 @@ Navigate to your GitHub repository → Settings → Secrets and variables → Ac
    ```bash
    # Install Netlify CLI
    npm install -g netlify-cli
-   
+
    # Login to Netlify
    netlify login
-   
+
    # Initialize site
    netlify init
-   
+
    # Follow prompts to create new site or link existing
    ```
 
@@ -194,7 +194,7 @@ Ensure your `package.json` has the required build scripts:
    ```bash
    # Build locally
    npm run build
-   
+
    # Deploy to production
    netlify deploy --prod --dir=dist
    ```

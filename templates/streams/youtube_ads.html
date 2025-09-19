@@ -358,11 +358,11 @@
             .main-content {
                 grid-template-columns: 1fr;
             }
-            
+
             .metrics-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .config-grid {
                 grid-template-columns: 1fr;
             }
@@ -381,7 +381,7 @@
             <!-- Control Panel -->
             <div class="control-panel">
                 <h2>Stream Controls</h2>
-                
+
                 <div class="control-group">
                     <label>Stream Status</label>
                     <div style="display: flex; align-items: center; gap: 15px;">
@@ -420,7 +420,7 @@
             <!-- Metrics Panel -->
             <div class="metrics-panel">
                 <h2>Revenue Metrics</h2>
-                
+
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <div class="metric-value" id="currentRevenue">$0.00</div>
@@ -454,33 +454,33 @@
             <!-- Configuration Section -->
             <div class="config-section">
                 <h2>YouTube Configuration</h2>
-                
+
                 <div class="config-grid">
                     <div class="form-group">
                         <label>YouTube Channel ID</label>
                         <input type="text" id="channelId" placeholder="Enter your YouTube Channel ID">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>YouTube API Key</label>
                         <input type="password" id="apiKey" placeholder="Enter your YouTube API Key">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Minimum CPM ($)</label>
                         <input type="number" id="minCpm" value="2.00" step="0.01" min="0">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Target Monthly Views</label>
                         <input type="number" id="targetViews" value="100000" min="1000">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Revenue Share (%)</label>
                         <input type="number" id="revenueShare" value="55" min="0" max="100">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Content Category</label>
                         <select id="contentCategory">
@@ -550,14 +550,14 @@
             try {
                 const response = await fetch("/api/revenue/status');
                 const data = await response.json();
-                
+
                 if (data.success && data.streams.youtube_ads) {
                     const stream = data.streams.youtube_ads;
                     streamData.status = stream.status;
                     streamData.currentRevenue = stream.currentRevenue;
                     streamData.monthlyTarget = stream.monthlyTarget;
                     streamData.autoStart = stream.autoStart;
-                    
+
                     updateUI();
                 }
             } catch (error) {
@@ -598,13 +598,13 @@
         async function startStream() {
             try {
                 showAlert('Starting YouTube Ad Revenue stream...', 'warning');
-                
+
                 const response = await fetch(`/api/revenue/start/${streamData.streamId}`, {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     streamData.status = 'starting';
                     updateUI();
@@ -622,13 +622,13 @@
         async function stopStream() {
             try {
                 showAlert('Stopping YouTube Ad Revenue stream...', 'warning');
-                
+
                 const response = await fetch(`/api/revenue/stop/${streamData.streamId}`, {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     streamData.status = 'stopping';
                     updateUI();
@@ -646,16 +646,16 @@
         async function runTests() {
             try {
                 showAlert('Running comprehensive tests...', 'warning');
-                
+
                 const testContainer = document.getElementById('testResultsContainer');
                 testContainer.innerHTML = '<div style="text-align: center;"><div class="loading"></div> Running tests...</div>';
-                
+
                 const response = await fetch(`/api/revenue/test/${streamData.streamId}`, {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     displayTestResults(result.results);
                     showAlert('Tests completed successfully', 'success');
@@ -672,12 +672,12 @@
         function displayTestResults(results) {
             const container = document.getElementById('testResultsContainer');
             container.innerHTML = '';
-            
+
             Object.keys(results).forEach(testName => {
                 const test = results[testName];
                 const testItem = document.createElement('div');
                 testItem.className = 'test-item';
-                
+
                 testItem.innerHTML = `
                     <div>
                         <strong>${testName}</strong>
@@ -686,7 +686,7 @@
                     </div>
                     <div class="test-status test-${test.status}">${test.status}</div>
                 `;
-                
+
                 container.appendChild(testItem);
             });
         }
@@ -704,9 +704,9 @@
                         config: streamData.config
                     })
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     showAlert('Configuration saved successfully', 'success');
                 } else {
@@ -729,7 +729,7 @@
                         autoStart: streamData.autoStart
                     })
                 });
-                
+
                 if (!response.ok) {
                     console.error('Failed to update auto-start setting');
                 }
@@ -743,17 +743,17 @@
                 try {
                     const response = await fetch("/api/revenue/status');
                     const data = await response.json();
-                    
+
                     if (data.success && data.streams.youtube_ads) {
                         const stream = data.streams.youtube_ads;
                         const oldStatus = streamData.status;
                         streamData.status = stream.status;
                         streamData.currentRevenue = stream.currentRevenue;
-                        
+
                         updateUI();//Stop polling if status is stable
                         if (stream.status === 'active' || stream.status === 'inactive' || stream.status === 'error') {
                             clearInterval(pollInterval);
-                            
+
                             if (stream.status === 'error') {
                                 showAlert('Stream error: ' + (stream.errorMessage || 'Unknown error'), 'error');
                             } else if (oldStatus !== stream.status) {
@@ -781,7 +781,7 @@
             const alert = document.createElement('div');
             alert.className = `alert alert-${type}`;
             alert.textContent = message;
-            
+
             container.appendChild(alert);//Remove alert after 5 seconds
             setTimeout(() => {
                 if (alert.parentNode) {
@@ -795,15 +795,15 @@
                 streamData.currentRevenue += increase;//Update CPM and views
                 const cpmElement = document.getElementById('cpmRate');
                 const viewsElement = document.getElementById('totalViews');
-                
+
                 if (cpmElement && viewsElement) {
                     const newCpm = (2.0 + Math.random() * 2).toFixed(2);
                     const newViews = Math.floor(streamData.currentRevenue/parseFloat(newCpm) * 1000);
-                    
+
                     cpmElement.textContent = '$' + newCpm;
                     viewsElement.textContent = newViews.toLocaleString();
                 }
-                
+
                 updateUI();
             }
         }//Start revenue simulation

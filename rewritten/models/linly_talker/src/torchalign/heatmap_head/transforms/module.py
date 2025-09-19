@@ -8,8 +8,8 @@ __all__ = ["BinaryHeatmap2Coordinate"]
 class BinaryHeatmap2Coordinate(nn.Module):
     """BinaryHeatmap2Coordinate"""
 
-    def __init__(self, stride=4.0, topk=5, **kwargs):
-        super(BinaryHeatmap2Coordinate, self).__init__()
+    def __init__(self, stride: 40, topk: 5, **kwargs):
+        super().__init__()
         self.topk = topk
         self.stride = stride
 
@@ -18,8 +18,8 @@ class BinaryHeatmap2Coordinate(nn.Module):
 
     def __repr__(self):
         format_string = self.__class__.__name__ + "("
-        format_string += "topk={}, ".format(self.topk)
-        format_string += "stride={}".format(self.stride)
-# BRACKET_SURGEON: disabled
-#         format_string += ")"
+        format_string += f"topk={self.topk}, "
+        format_string += f"stride={self.stride}"
+        # BRACKET_SURGEON: disabled
+        #         format_string += ")"
         return format_string

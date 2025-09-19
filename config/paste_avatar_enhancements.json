@@ -3,7 +3,7 @@
     "version": "2.0.0",
     "description": "Enhanced avatar features for paste application with production-ready improvements",
     "last_updated": "2024-01-15",
-    
+
     "avatar_types": {
       "standard_avatar": {
         "name": "Enhanced Standard Avatar (Linly-Talker + TalkingHeads)",
@@ -76,7 +76,7 @@
           }
         }
       },
-      
+
       "3d_avatar": {
         "name": "Enhanced 3D Avatar Pipeline",
         "description": "Advanced 3D character creation with professional animation and rendering",
@@ -149,7 +149,7 @@
         }
       }
     },
-    
+
     "paste_integration": {
       "content_analysis": {
         "enabled": true,
@@ -182,7 +182,7 @@
         ]
       }
     },
-    
+
     "templates": {
       "news_anchor": {
         "description": "Professional news presenter style",
@@ -245,7 +245,7 @@
         "use_cases": ["code_reviews", "technical_explanations", "developer_content"]
       }
     },
-    
+
     "performance_optimizations": {
       "caching": {
         "enabled": true,
@@ -275,7 +275,7 @@
         ]
       }
     },
-    
+
     "api_endpoints": {
       "generate_avatar": {
         "method": "POST",
@@ -325,7 +325,7 @@
         }
       }
     },
-    
+
     "production_features": {
       "monitoring": {
         "enabled": true,
@@ -368,7 +368,7 @@
         ]
       }
     },
-    
+
     "integration_points": {
       "paste_app": {
         "routes": [
@@ -392,7 +392,7 @@
         "content_agent": "Integration with content generation system"
       }
     },
-    
+
     "deployment_considerations": {
       "dependencies": [
         "ffmpeg for video processing",

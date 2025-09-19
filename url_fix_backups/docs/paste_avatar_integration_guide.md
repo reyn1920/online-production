@@ -129,7 +129,7 @@ def get_avatar_templates():
 <!-- Add to your paste form template -->
 <div id="paste-form">
     <!-- Existing paste form elements -->
-    
+
     <!-- Avatar UI will be automatically inserted here -->
     <script src="/static/js/paste_avatar_ui.js"></script>
 </div>

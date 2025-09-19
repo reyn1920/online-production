@@ -4,14 +4,14 @@
     "description": "Comprehensive configuration for all image generation models and providers",
     "last_updated": "2025-01-09",
     "enabled": true,
-    
+
     "provider_hierarchy": {
       "primary": "openai_dalle",
       "secondary": "stability_ai",
       "tertiary": "local_stable_diffusion",
       "fallback": "placeholder_generator"
     },
-    
+
     "providers": {
       "openai_dalle": {
         "name": "OpenAI DALL-E",
@@ -46,7 +46,7 @@
           "api_streaming": false
         }
       },
-      
+
       "stability_ai": {
         "name": "Stability AI",
         "type": "cloud_api",
@@ -80,7 +80,7 @@
           "api_streaming": false
         }
       },
-      
+
       "local_stable_diffusion": {
         "name": "Local Stable Diffusion",
         "type": "local_inference",
@@ -115,7 +115,7 @@
           "offline_operation": true
         }
       },
-      
+
       "midjourney_api": {
         "name": "Midjourney API",
         "type": "cloud_api",
@@ -142,7 +142,7 @@
           "style_presets": true
         }
       },
-      
+
       "replicate_api": {
         "name": "Replicate API",
         "type": "cloud_api",
@@ -166,7 +166,7 @@
           "webhook_support": true
         }
       },
-      
+
       "placeholder_generator": {
         "name": "Placeholder Generator",
         "type": "fallback",
@@ -180,7 +180,7 @@
         }
       }
     },
-    
+
     "model_categories": {
       "photorealistic": {
         "description": "Models optimized for photorealistic image generation",
@@ -191,7 +191,7 @@
         ],
         "use_cases": ["portraits", "product_photography", "realistic_scenes"]
       },
-      
+
       "artistic": {
         "description": "Models optimized for artistic and creative content",
         "recommended_models": [
@@ -201,7 +201,7 @@
         ],
         "use_cases": ["illustrations", "concept_art", "creative_designs"]
       },
-      
+
       "technical": {
         "description": "Models for technical and precise image generation",
         "recommended_models": [
@@ -210,7 +210,7 @@
         ],
         "use_cases": ["diagrams", "technical_illustrations", "precise_editing"]
       },
-      
+
       "avatar_generation": {
         "description": "Models specialized for avatar and character generation",
         "recommended_models": [
@@ -220,7 +220,7 @@
         "use_cases": ["profile_pictures", "character_design", "persona_creation"]
       }
     },
-    
+
     "capability_matrix": {
       "text2img": {
         "providers": ["openai_dalle", "stability_ai", "local_stable_diffusion", "midjourney_api", "replicate_api"],
@@ -255,7 +255,7 @@
         "description": "Low-rank adaptation for custom model fine-tuning"
       }
     },
-    
+
     "routing_rules": {
       "cost_optimization": {
         "enabled": true,
@@ -279,7 +279,7 @@
         "fallback_on_unavailable": true
       }
     },
-    
+
     "load_balancing": {
       "strategy": "weighted_round_robin",
       "weights": {
@@ -295,7 +295,7 @@
         "recovery_timeout": 300
       }
     },
-    
+
     "monitoring": {
       "track_provider_performance": true,
       "track_cost_per_provider": true,

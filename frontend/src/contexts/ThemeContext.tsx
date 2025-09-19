@@ -53,12 +53,12 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     const updateActualTheme = () => {
       const newActualTheme = theme === 'system' ? getSystemTheme() : theme;
       setActualTheme(newActualTheme);
-      
+
       // Update document class
       const root = window.document.documentElement;
       root.classList.remove('light', 'dark');
       root.classList.add(newActualTheme);
-      
+
       // Update meta theme-color
       const metaThemeColor = document.querySelector('meta[name="theme-color"]');
       if (metaThemeColor) {
@@ -75,12 +75,12 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     if (theme === 'system') {
       const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
       const handleChange = () => updateActualTheme();
-      
+
       // Modern browsers
       if (mediaQuery.addEventListener) {
         mediaQuery.addEventListener('change', handleChange);
         return () => mediaQuery.removeEventListener('change', handleChange);
-      } 
+      }
       // Fallback for older browsers
       else if (mediaQuery.addListener) {
         mediaQuery.addListener(handleChange);
@@ -92,7 +92,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   // Set theme function
   const setTheme = (newTheme: Theme) => {
     setThemeState(newTheme);
-    
+
     // Save to localStorage
     if (typeof window !== 'undefined') {
       localStorage.setItem(storageKey, newTheme);
@@ -128,26 +128,26 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
 // Hook to use theme context
 export const useTheme = (): ThemeContextType => {
   const context = useContext(ThemeContext);
-  
+
   if (context === undefined) {
     throw new Error('useTheme must be used within a ThemeProvider');
   }
-  
+
   return context;
 };
 
 // Utility hook for theme-aware styling
 export const useThemeAwareStyle = () => {
   const { actualTheme } = useTheme();
-  
+
   const getThemeClass = (lightClass: string, darkClass: string) => {
     return actualTheme === 'dark' ? darkClass : lightClass;
   };
-  
+
   const getThemeValue = function<T>(lightValue: T, darkValue: T): T {
     return actualTheme === 'dark' ? darkValue : lightValue;
   };
-  
+
   return {
     isDark: actualTheme === 'dark',
     isLight: actualTheme === 'light',

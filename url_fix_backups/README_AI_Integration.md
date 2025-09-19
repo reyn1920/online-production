@@ -92,7 +92,7 @@ print(report)
 ```python
 # Query AI services for coding help
 session = await mcp_ai.interact_with_ai_service(
-    'gemini', 
+    'gemini',
     "How do I implement JWT authentication in Python Flask?"
 )
 

@@ -30,7 +30,7 @@ class APIIntegrations {
                 }
             }
         };
-        
+
         this.rateLimiter = new Map();
         this.cache = new Map();
     }
@@ -294,7 +294,7 @@ class APIIntegrations {
         try {
             // Amazon Product Advertising API 5.0 integration
             // Note: Requires proper AWS signature and authentication
-            
+
             // Simulated data based on research findings
             return Math.random() * 800 + 100;
         } catch (error) {
@@ -411,18 +411,18 @@ class APIIntegrations {
     checkRateLimit(service, limit) {
         const now = Date.now();
         const windowStart = now - 60000; // 1 minute window
-        
+
         if (!this.rateLimiter.has(service)) {
             this.rateLimiter.set(service, []);
         }
-        
+
         const requests = this.rateLimiter.get(service);
         const recentRequests = requests.filter(time => time > windowStart);
-        
+
         if (recentRequests.length >= limit) {
             return false;
         }
-        
+
         recentRequests.push(now);
         this.rateLimiter.set(service, recentRequests);
         return true;
@@ -506,21 +506,21 @@ if (typeof module !== 'undefined' && module.exports) {
 
 /**
  * Usage Example:
- * 
+ *
  * const api = new APIIntegrations();
- * 
+ *
  * // Get YouTube channel data
  * const youtubeData = await api.getYouTubeChannelData('UC_x5XG1OV2P6uZZ5FSM9Ttw');
- * 
+ *
  * // Get TikTok creator data
  * const tiktokData = await api.getTikTokCreatorData('access_token_here');
- * 
+ *
  * // Get affiliate marketing data
  * const affiliateData = await api.getAffiliateData();
- * 
+ *
  * // Get brand partnerships
  * const partnerships = await api.getBrandPartnerships();
- * 
+ *
  * // Health check
  * const health = await api.healthCheck();
  */

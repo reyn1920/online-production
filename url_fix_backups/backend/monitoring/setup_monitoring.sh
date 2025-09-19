@@ -43,46 +43,46 @@ command_exists() {
 # Function to check prerequisites
 check_prerequisites() {
     print_status "Checking prerequisites..."
-    
+
     local missing_deps=()
-    
+
     if ! command_exists docker; then
         missing_deps+=("docker")
     fi
-    
+
     if ! command_exists docker-compose; then
         missing_deps+=("docker-compose")
     fi
-    
+
     if ! command_exists curl; then
         missing_deps+=("curl")
     fi
-    
+
     if [ ${#missing_deps[@]} -ne 0 ]; then
         print_error "Missing required dependencies: ${missing_deps[*]}"
         print_status "Please install the missing dependencies and run this script again."
-        
+
         print_status "Installation commands:"
         echo "  macOS: brew install docker docker-compose curl"
         echo "  Ubuntu: sudo apt-get install docker.io docker-compose curl"
         echo "  CentOS: sudo yum install docker docker-compose curl"
-        
+
         exit 1
     fi
-    
+
     # Check if Docker daemon is running
     if ! docker info >/dev/null 2>&1; then
         print_error "Docker daemon is not running. Please start Docker and try again."
         exit 1
     fi
-    
+
     print_success "All prerequisites are satisfied."
 }
 
 # Function to create environment file
 create_env_file() {
     print_status "Creating environment configuration..."
-    
+
     if [ ! -f "$ENV_FILE" ]; then
         cat > "$ENV_FILE" << EOF
 # Trae AI Monitoring Stack Environment Configuration
@@ -132,11 +132,11 @@ EOF
 # Function to create additional configuration files
 create_additional_configs() {
     print_status "Creating additional configuration files..."
-    
+
     # Create Grafana provisioning directory
     mkdir -p "$MONITORING_DIR/grafana-provisioning/datasources"
     mkdir -p "$MONITORING_DIR/grafana-provisioning/dashboards"
-    
+
     # Create Grafana datasource configuration
     cat > "$MONITORING_DIR/grafana-provisioning/datasources/prometheus.yml" << EOF
 apiVersion: 1
@@ -148,20 +148,20 @@ datasources:
     url: http://prometheus:9090
     isDefault: true
     editable: true
-    
+
   - name: Loki
     type: loki
     access: proxy
     url: http://loki:3100
     editable: true
-    
+
   - name: Jaeger
     type: jaeger
     access: proxy
     url: http://jaeger:16686
     editable: true
 EOF
-    
+
     # Create Grafana dashboard provisioning
     cat > "$MONITORING_DIR/grafana-provisioning/dashboards/dashboard.yml" << EOF
 apiVersion: 1
@@ -177,7 +177,7 @@ providers:
     options:
       path: /var/lib/grafana/dashboards
 EOF
-    
+
     # Create blackbox exporter configuration
     cat > "$MONITORING_DIR/blackbox.yml" << EOF
 modules:
@@ -191,7 +191,7 @@ modules:
       follow_redirects: true
       fail_if_ssl: false
       fail_if_not_ssl: false
-      
+
   http_post_2xx:
     prober: http
     timeout: 5s
@@ -200,16 +200,16 @@ modules:
       headers:
         Content-Type: application/json
       body: '{"test": "data"}'
-      
+
   tcp_connect:
     prober: tcp
     timeout: 5s
-    
+
   icmp:
     prober: icmp
     timeout: 5s
 EOF
-    
+
     # Create Loki configuration
     cat > "$MONITORING_DIR/loki-config.yml" << EOF
 auth_enabled: false
@@ -250,7 +250,7 @@ schema_config:
 ruler:
   alertmanager_url: http://alertmanager:9093
 EOF
-    
+
     # Create Promtail configuration
     cat > "$MONITORING_DIR/promtail-config.yml" << EOF
 server:
@@ -271,7 +271,7 @@ scrape_configs:
         labels:
           job: varlogs
           __path__: /var/log/*log
-          
+
   - job_name: containers
     static_configs:
       - targets:
@@ -279,7 +279,7 @@ scrape_configs:
         labels:
           job: containerlogs
           __path__: /var/lib/docker/containers/*/*log
-          
+
   - job_name: trae-app
     static_configs:
       - targets:
@@ -288,7 +288,7 @@ scrape_configs:
           job: trae-app
           __path__: /app/logs/*.log
 EOF
-    
+
     # Create Nginx configuration
     cat > "$MONITORING_DIR/nginx.conf" << EOF
 events {
@@ -299,19 +299,19 @@ http {
     upstream grafana {
         server grafana:3000;
     }
-    
+
     upstream prometheus {
         server prometheus:9090;
     }
-    
+
     upstream app {
         server trae-app:8000;
     }
-    
+
     server {
         listen 80;
         server_name localhost;
-        
+
         # Enable nginx status for monitoring
         location /nginx_status {
             stub_status on;
@@ -320,14 +320,14 @@ http {
             allow 172.0.0.0/8;
             deny all;
         }
-        
+
         # Health check endpoint
         location /health {
             access_log off;
             return 200 "healthy\n";
             add_header Content-Type text/plain;
         }
-        
+
         # Grafana
         location /grafana/ {
             proxy_pass http://grafana/;
@@ -336,7 +336,7 @@ http {
             proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto \$scheme;
         }
-        
+
         # Prometheus
         location /prometheus/ {
             proxy_pass http://prometheus/;
@@ -345,7 +345,7 @@ http {
             proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto \$scheme;
         }
-        
+
         # Application
         location / {
             proxy_pass http://app;
@@ -357,23 +357,23 @@ http {
     }
 }
 EOF
-    
+
     print_success "Additional configuration files created."
 }
 
 # Function to create SSL certificates (self-signed for development)
 create_ssl_certificates() {
     print_status "Creating SSL certificates..."
-    
+
     mkdir -p "$MONITORING_DIR/ssl"
-    
+
     if [ ! -f "$MONITORING_DIR/ssl/nginx.crt" ]; then
         openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
             -keyout "$MONITORING_DIR/ssl/nginx.key" \
             -out "$MONITORING_DIR/ssl/nginx.crt" \
             -subj "/C=US/ST=State/L=City/O=Organization/CN=localhost" \
             2>/dev/null || print_warning "OpenSSL not available, skipping SSL certificate generation."
-        
+
         if [ -f "$MONITORING_DIR/ssl/nginx.crt" ]; then
             print_success "SSL certificates created."
         fi
@@ -385,7 +385,7 @@ create_ssl_certificates() {
 # Function to pull Docker images
 pull_docker_images() {
     print_status "Pulling Docker images..."
-    
+
     local images=(
         "prom/prometheus:latest"
         "grafana/grafana:latest"
@@ -401,61 +401,61 @@ pull_docker_images() {
         "grafana/promtail:latest"
         "jaegertracing/all-in-one:latest"
     )
-    
+
     for image in "${images[@]}"; do
         print_status "Pulling $image..."
         docker pull "$image" || print_warning "Failed to pull $image"
     done
-    
+
     print_success "Docker images pulled."
 }
 
 # Function to start monitoring stack
 start_monitoring_stack() {
     print_status "Starting monitoring stack..."
-    
+
     cd "$MONITORING_DIR"
-    
+
     # Create networks if they don't exist
     docker network create trae-monitoring 2>/dev/null || true
     docker network create trae-app 2>/dev/null || true
-    
+
     # Start the stack
     docker-compose -f "$DOCKER_COMPOSE_FILE" up -d
-    
+
     print_success "Monitoring stack started."
 }
 
 # Function to wait for services to be ready
 wait_for_services() {
     print_status "Waiting for services to be ready..."
-    
+
     local services=(
         "http://localhost:9090/-/ready:Prometheus"
         "http://localhost:3000/api/health:Grafana"
         "http://localhost:9093/-/ready:Alertmanager"
         "http://localhost:6379:Redis"
     )
-    
+
     for service in "${services[@]}"; do
         local url="${service%:*}"
         local name="${service#*:}"
-        
+
         print_status "Waiting for $name to be ready..."
-        
+
         local retries=30
         local count=0
-        
+
         while [ $count -lt $retries ]; do
             if curl -s "$url" >/dev/null 2>&1; then
                 print_success "$name is ready."
                 break
             fi
-            
+
             count=$((count + 1))
             sleep 2
         done
-        
+
         if [ $count -eq $retries ]; then
             print_warning "$name did not become ready within expected time."
         fi
@@ -465,17 +465,17 @@ wait_for_services() {
 # Function to import Grafana dashboard
 import_grafana_dashboard() {
     print_status "Importing Grafana dashboard..."
-    
+
     # Wait a bit more for Grafana to be fully ready
     sleep 10
-    
+
     # Import the dashboard via API
     curl -X POST \
         -H "Content-Type: application/json" \
         -d @"$MONITORING_DIR/grafana_dashboard.json" \
         "http://admin:admin123@localhost:3000/api/dashboards/db" \
         2>/dev/null || print_warning "Failed to import Grafana dashboard via API. You can import it manually."
-    
+
     print_success "Grafana dashboard import attempted."
 }
 
@@ -511,9 +511,9 @@ display_access_info() {
 # Function to run health checks
 run_health_checks() {
     print_status "Running health checks..."
-    
+
     local failed_checks=()
-    
+
     # Check if containers are running
     local containers=(
         "trae-prometheus"
@@ -522,29 +522,29 @@ run_health_checks() {
         "trae-node-exporter"
         "trae-redis"
     )
-    
+
     for container in "${containers[@]}"; do
         if ! docker ps --format "table {{.Names}}" | grep -q "$container"; then
             failed_checks+=("Container $container is not running")
         fi
     done
-    
+
     # Check service endpoints
     local endpoints=(
         "http://localhost:9090/-/ready:Prometheus"
         "http://localhost:3000/api/health:Grafana"
         "http://localhost:9093/-/ready:Alertmanager"
     )
-    
+
     for endpoint in "${endpoints[@]}"; do
         local url="${endpoint%:*}"
         local name="${endpoint#*:}"
-        
+
         if ! curl -s "$url" >/dev/null 2>&1; then
             failed_checks+=("$name endpoint is not responding")
         fi
     done
-    
+
     if [ ${#failed_checks[@]} -eq 0 ]; then
         print_success "All health checks passed."
     else
@@ -558,7 +558,7 @@ run_health_checks() {
 # Function to create backup script
 create_backup_script() {
     print_status "Creating backup script..."
-    
+
     cat > "$MONITORING_DIR/backup_monitoring.sh" << 'EOF'
 #!/bin/bash
 
@@ -596,7 +596,7 @@ rm -rf "$BACKUP_DIR"
 
 echo "Backup completed successfully."
 EOF
-    
+
     chmod +x "$MONITORING_DIR/backup_monitoring.sh"
     print_success "Backup script created at $MONITORING_DIR/backup_monitoring.sh"
 }
@@ -606,7 +606,7 @@ main() {
     echo "🚀 Trae AI Zero-Cost Monitoring Stack Setup"
     echo "==========================================="
     echo
-    
+
     check_prerequisites
     create_env_file
     create_additional_configs
@@ -617,10 +617,10 @@ main() {
     import_grafana_dashboard
     run_health_checks
     create_backup_script
-    
+
     echo
     display_access_info
-    
+
     print_success "Setup completed successfully! 🎉"
 }
 

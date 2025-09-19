@@ -154,13 +154,13 @@ The startup system will close these resource-heavy apps:
    ```bash
    # Check if Ollama is installed
    which ollama
-   
+
    # Install Ollama manually if needed
    brew install ollama
-   
+
    # Start Ollama service
    ollama serve
-   
+
    # Test Ollama
    ollama list
    ```
@@ -169,11 +169,11 @@ The startup system will close these resource-heavy apps:
    ```bash
    # Check if Chrome is installed
    open -a "Google Chrome" --version
-   
+
    # Manually open Chrome with tabs
    open -a "Google Chrome"
    open -u "http://localhost:8000"
-   
+
    # Reset Chrome if needed
    killall "Google Chrome"
    ./start_app.sh start
@@ -261,7 +261,7 @@ python3 system_dashboard.py
 2. **Check all services**:
    ```bash
    ./start_app.sh status
-   
+
    # Verify individual services
    ps aux | grep ollama
    ps aux | grep chrome
@@ -278,7 +278,7 @@ python3 system_dashboard.py
    ```bash
    # Test Ollama
    curl http://localhost:11434/api/tags
-   
+
    # Check Ollama models
    ollama list
    ```
@@ -376,6 +376,6 @@ python3 system_dashboard.py
 
 ---
 
-*Last Updated: January 2025*  
-*Version: 1.0.0*  
+*Last Updated: January 2025*
+*Version: 1.0.0*
 *Status: Production Ready* ✅

@@ -65,9 +65,9 @@ command_exists() {
 # Health monitoring task
 health_monitor() {
     log_info "Starting health monitoring task"
-    
+
     cd "$PROJECT_ROOT"
-    
+
     # Check if dashboard is running
     local dashboard_port=${DASHBOARD_PORT:-8083}
     if curl -s "http://127.0.0.1:$dashboard_port/api/status" >/dev/null 2>&1; then
@@ -81,11 +81,11 @@ health_monitor() {
             log_info "Dashboard restart attempted"
         fi
     fi
-    
+
     # Check disk space
     local disk_usage
     disk_usage=$(df "$PROJECT_ROOT" | awk 'NR==2 {print $5}' | sed 's/%//')
-    
+
     if [[ $disk_usage -lt 80 ]]; then
         log_success "Disk usage OK: ${disk_usage}%"
     elif [[ $disk_usage -lt 90 ]]; then
@@ -96,12 +96,12 @@ health_monitor() {
         cleanup_logs
         cleanup_backups
     fi
-    
+
     # Check memory usage
     if command_exists "free"; then
         local memory_usage
         memory_usage=$(free | awk 'NR==2{printf "%.0f", $3*100/$2 }')
-        
+
         if [[ $memory_usage -lt 80 ]]; then
             log_success "Memory usage OK: ${memory_usage}%"
         elif [[ $memory_usage -lt 90 ]]; then
@@ -110,17 +110,17 @@ health_monitor() {
             log_error "Memory usage critical: ${memory_usage}%"
         fi
     fi
-    
+
     log_info "Health monitoring task completed"
 }
 
 # Log cleanup task
 cleanup_logs() {
     log_info "Starting log cleanup task"
-    
+
     # Remove logs older than 30 days
     find "$LOG_DIR" -name "*.log" -type f -mtime +30 -delete 2>/dev/null || true
-    
+
     # Keep only last 100 lines of main log files
     for log_file in "$LOG_DIR"/*.log; do
         if [[ -f "$log_file" && $(wc -l < "$log_file") -gt 1000 ]]; then
@@ -129,21 +129,21 @@ cleanup_logs() {
             log_info "Truncated log file: $(basename "$log_file")"
         fi
     done
-    
+
     log_success "Log cleanup completed"
 }
 
 # Backup cleanup task
 cleanup_backups() {
     log_info "Starting backup cleanup task"
-    
+
     local backup_dir="$PROJECT_ROOT/backups"
-    
+
     if [[ -d "$backup_dir" ]]; then
         # Keep only last 10 backups
         local backup_count
         backup_count=$(find "$backup_dir" -maxdepth 1 -type d -name "backup_*" | wc -l)
-        
+
         if [[ $backup_count -gt 10 ]]; then
             log_info "Cleaning up old backups (keeping 10 most recent)"
             find "$backup_dir" -maxdepth 1 -type d -name "backup_*" -printf '%T@ %p\n' 2>/dev/null | \
@@ -160,15 +160,15 @@ cleanup_backups() {
 # Security scan task
 security_scan() {
     log_info "Starting security scan task"
-    
+
     cd "$PROJECT_ROOT"
-    
+
     # Run security scanner if available
     if [[ -f "backend/security/security_scanner.py" ]]; then
         log_info "Running security scanner"
-        
+
         local scan_output="$LOG_DIR/security_scan_cron_$TIMESTAMP.json"
-        
+
         if python3 backend/security/security_scanner.py --target . --output "$scan_output" >> "$CRON_LOG" 2>&1; then
             log_success "Security scan completed successfully"
         else
@@ -177,13 +177,13 @@ security_scan() {
     else
         log_warn "Security scanner not available"
     fi
-    
+
     # Run compliance validator if available
     if [[ -f "backend/security/compliance_validator.py" ]]; then
         log_info "Running compliance validation"
-        
+
         local compliance_output="$LOG_DIR/compliance_cron_$TIMESTAMP.json"
-        
+
         if python3 backend/security/compliance_validator.py --base-dir . --output "$compliance_output" >> "$CRON_LOG" 2>&1; then
             log_success "Compliance validation passed"
         else
@@ -192,22 +192,22 @@ security_scan() {
     else
         log_warn "Compliance validator not available"
     fi
-    
+
     log_info "Security scan task completed"
 }
 
 # Database maintenance task
 database_maintenance() {
     log_info "Starting database maintenance task"
-    
+
     cd "$PROJECT_ROOT"
-    
+
     # Check main database
     if [[ -f "trae_ai.db" ]]; then
         local db_size
         db_size=$(du -h "trae_ai.db" | cut -f1)
         log_info "Main database size: $db_size"
-        
+
         # Run VACUUM if database is large
         if command_exists "sqlite3"; then
             log_info "Running database VACUUM"
@@ -217,42 +217,42 @@ database_maintenance() {
     else
         log_warn "Main database not found"
     fi
-    
+
     # Check intelligence database
     if [[ -f "right_perspective.db" ]]; then
         local db_size
         db_size=$(du -h "right_perspective.db" | cut -f1)
         log_info "Intelligence database size: $db_size"
-        
+
         if command_exists "sqlite3"; then
             log_info "Running intelligence database VACUUM"
             sqlite3 "right_perspective.db" "VACUUM;" 2>/dev/null || log_warn "Intelligence database VACUUM failed"
         fi
     fi
-    
+
     log_info "Database maintenance task completed"
 }
 
 # Asset processing task
 asset_processing() {
     log_info "Starting asset processing task"
-    
+
     cd "$PROJECT_ROOT"
-    
+
     local incoming_dir="assets/incoming"
     local releases_dir="assets/releases"
-    
+
     if [[ -d "$incoming_dir" ]]; then
         local file_count
         file_count=$(find "$incoming_dir" -type f | wc -l)
-        
+
         if [[ $file_count -gt 0 ]]; then
             log_info "Found $file_count files in incoming directory"
-            
+
             # Run synthesizer if available
             if [[ -f "scripts/synthesize_release_v3.py" ]]; then
                 log_info "Running release synthesizer"
-                
+
                 if python3 scripts/synthesize_release_v3.py --input-dir "$incoming_dir" --output-dir "$releases_dir" >> "$CRON_LOG" 2>&1; then
                     log_success "Asset processing completed"
                 else
@@ -267,18 +267,18 @@ asset_processing() {
     else
         log_warn "Incoming assets directory not found"
     fi
-    
+
     log_info "Asset processing task completed"
 }
 
 # System metrics collection
 collect_metrics() {
     log_info "Starting metrics collection task"
-    
+
     cd "$PROJECT_ROOT"
-    
+
     local metrics_file="$LOG_DIR/metrics_$TIMESTAMP.json"
-    
+
     # Collect system metrics
     cat > "$metrics_file" << EOF
 {
@@ -298,7 +298,7 @@ collect_metrics() {
     }
 }
 EOF
-    
+
     log_success "Metrics collected: $metrics_file"
     log_info "Metrics collection task completed"
 }
@@ -306,17 +306,17 @@ EOF
 # Install cron jobs
 install_cron() {
     print_info "Installing TRAE.AI cron jobs"
-    
+
     local cron_script="$SCRIPT_DIR/cron.sh"
     local temp_cron="/tmp/trae_cron_$$"
-    
+
     # Get current crontab (if any)
     crontab -l 2>/dev/null > "$temp_cron" || touch "$temp_cron"
-    
+
     # Remove existing TRAE.AI cron jobs
     grep -v "# TRAE.AI" "$temp_cron" > "${temp_cron}.clean" || touch "${temp_cron}.clean"
     mv "${temp_cron}.clean" "$temp_cron"
-    
+
     # Add new cron jobs
     cat >> "$temp_cron" << EOF
 
@@ -342,7 +342,7 @@ install_cron() {
 # Metrics collection hourly
 0 * * * * $cron_script collect-metrics >> $CRON_LOG 2>&1 # TRAE.AI
 EOF
-    
+
     # Install the new crontab
     if crontab "$temp_cron"; then
         print_success "Cron jobs installed successfully"
@@ -353,9 +353,9 @@ EOF
         rm -f "$temp_cron"
         return 1
     fi
-    
+
     rm -f "$temp_cron"
-    
+
     # Show installed cron jobs
     print_info "Installed cron jobs:"
     crontab -l | grep "# TRAE.AI" | while read -r line; do
@@ -366,14 +366,14 @@ EOF
 # Remove cron jobs
 remove_cron() {
     print_info "Removing TRAE.AI cron jobs"
-    
+
     local temp_cron="/tmp/trae_cron_$$"
-    
+
     # Get current crontab
     if crontab -l 2>/dev/null > "$temp_cron"; then
         # Remove TRAE.AI cron jobs
         grep -v "# TRAE.AI" "$temp_cron" > "${temp_cron}.clean" || touch "${temp_cron}.clean"
-        
+
         # Install cleaned crontab
         if crontab "${temp_cron}.clean"; then
             print_success "TRAE.AI cron jobs removed"
@@ -382,7 +382,7 @@ remove_cron() {
             print_error "Failed to remove cron jobs"
             log_error "Failed to remove cron jobs"
         fi
-        
+
         rm -f "$temp_cron" "${temp_cron}.clean"
     else
         print_info "No existing crontab found"
@@ -393,7 +393,7 @@ remove_cron() {
 show_cron_status() {
     print_info "TRAE.AI Cron Job Status"
     echo
-    
+
     if crontab -l 2>/dev/null | grep -q "# TRAE.AI"; then
         print_success "TRAE.AI cron jobs are installed"
         echo
@@ -404,7 +404,7 @@ show_cron_status() {
     else
         print_warning "No TRAE.AI cron jobs found"
     fi
-    
+
     echo
     print_info "Recent cron log entries:"
     if [[ -f "$CRON_LOG" ]]; then
@@ -431,11 +431,11 @@ Commands:
   database-maintenance  Run database maintenance task
   asset-processing      Run asset processing task
   collect-metrics       Run metrics collection task
-  
+
   install-cron          Install all cron jobs
   remove-cron           Remove all TRAE.AI cron jobs
   status                Show cron job status
-  
+
 Examples:
   $0 health-monitor     # Run health monitoring
   $0 install-cron       # Install cron jobs
@@ -449,12 +449,12 @@ EOF
 # Main execution
 main() {
     local command="${1:-}"
-    
+
     # Create log entry for script execution
     log_info "Cron script started with command: ${command:-'none'}"
     log_info "Project root: $PROJECT_ROOT"
     log_info "Cron log: $CRON_LOG"
-    
+
     case "$command" in
         "health-monitor")
             health_monitor
@@ -496,7 +496,7 @@ main() {
             exit 1
             ;;
     esac
-    
+
     log_info "Cron script completed for command: $command"
 }
 

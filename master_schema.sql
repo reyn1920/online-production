@@ -2,7 +2,7 @@
 -- TRAE.AI MASTER DATABASE SCHEMA
 -- Production-ready consolidated schema for all TRAE.AI system databases
 -- ============================================================================
--- 
+--
 -- This master schema consolidates all database tables from:
 -- - right_perspective.db (hypocrisy tracking, research, API management)
 -- - intelligence.db (news analysis, trending topics)
@@ -602,7 +602,7 @@ CREATE INDEX IF NOT EXISTS idx_secrets_created ON secrets(created_at);
 
 -- Active APIs View
 CREATE VIEW IF NOT EXISTS active_apis AS
-SELECT 
+SELECT
     service_name,
     api_name,
     capability,
@@ -612,12 +612,12 @@ SELECT
     daily_usage_count,
     daily_limit,
     (CAST(daily_usage_count AS REAL) / NULLIF(daily_limit, 0)) * 100 AS usage_percentage
-FROM api_registry 
+FROM api_registry
 WHERE is_active = 1 AND status = 'active';
 
 -- Recent Hypocrisy Findings View
 CREATE VIEW IF NOT EXISTS recent_hypocrisy_findings AS
-SELECT 
+SELECT
     id,
     subject_name,
     topic,
@@ -626,25 +626,25 @@ SELECT
     verification_status,
     content_used,
     created_at
-FROM hypocrisy_tracker 
+FROM hypocrisy_tracker
 WHERE created_at > datetime('now', '-30 days')
 ORDER BY severity_score DESC, created_at DESC;
 
 -- Trending Topics View
 CREATE VIEW IF NOT EXISTS current_trending_topics AS
-SELECT 
+SELECT
     keyword,
     frequency,
     trend_score,
     trend_direction,
     last_updated
-FROM trend_analysis 
+FROM trend_analysis
 WHERE last_updated > datetime('now', '-24 hours')
 ORDER BY trend_score DESC, frequency DESC;
 
 -- System Health View
 CREATE VIEW IF NOT EXISTS system_health_overview AS
-SELECT 
+SELECT
     'APIs' as component,
     COUNT(*) as total,
     SUM(CASE WHEN health_status = 'healthy' THEN 1 ELSE 0 END) as healthy,
@@ -652,7 +652,7 @@ SELECT
     SUM(CASE WHEN health_status = 'unhealthy' THEN 1 ELSE 0 END) as unhealthy
 FROM api_registry WHERE is_active = 1
 UNION ALL
-SELECT 
+SELECT
     'Tasks' as component,
     COUNT(*) as total,
     SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as healthy,
@@ -665,28 +665,28 @@ FROM task_queue WHERE created_at > datetime('now', '-24 hours');
 -- ============================================================================
 
 -- Update timestamps trigger for api_registry
-CREATE TRIGGER IF NOT EXISTS update_api_registry_timestamp 
+CREATE TRIGGER IF NOT EXISTS update_api_registry_timestamp
 AFTER UPDATE ON api_registry
 BEGIN
     UPDATE api_registry SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
 END;
 
 -- Update timestamps trigger for author_personas
-CREATE TRIGGER IF NOT EXISTS update_author_personas_timestamp 
+CREATE TRIGGER IF NOT EXISTS update_author_personas_timestamp
 AFTER UPDATE ON author_personas
 BEGIN
     UPDATE author_personas SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
 END;
 
 -- Update timestamps trigger for hypocrisy_tracker
-CREATE TRIGGER IF NOT EXISTS update_hypocrisy_tracker_timestamp 
+CREATE TRIGGER IF NOT EXISTS update_hypocrisy_tracker_timestamp
 AFTER UPDATE ON hypocrisy_tracker
 BEGIN
     UPDATE hypocrisy_tracker SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
 END;
 
 -- Update timestamps trigger for secrets
-CREATE TRIGGER IF NOT EXISTS update_secrets_timestamp 
+CREATE TRIGGER IF NOT EXISTS update_secrets_timestamp
 AFTER UPDATE ON secrets
 BEGIN
     UPDATE secrets SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
@@ -696,7 +696,7 @@ END;
 CREATE TRIGGER IF NOT EXISTS validate_hypocrisy_scores
 BEFORE INSERT ON hypocrisy_tracker
 BEGIN
-    SELECT CASE 
+    SELECT CASE
         WHEN NEW.severity_score < 1 OR NEW.severity_score > 10 THEN
             RAISE(ABORT, 'Severity score must be between 1 and 10')
         WHEN NEW.confidence_score < 0.0 OR NEW.confidence_score > 1.0 THEN
@@ -750,7 +750,7 @@ INSERT INTO system_metrics (metric_name, metric_value, metric_unit, component) V
 -- Total indexes: 50+
 -- Total views: 4
 -- Total triggers: 4
--- 
+--
 -- This schema provides a comprehensive foundation for the TRAE.AI system
 -- with proper indexing, data integrity, and performance optimization.
 --

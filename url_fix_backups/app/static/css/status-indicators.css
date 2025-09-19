@@ -120,11 +120,11 @@
     flex-direction: column;
     gap: 10px;
   }
-  
+
   .status-table {
     font-size: 14px;
   }
-  
+
   .status-table th,
   .status-table td {
     padding: 8px;

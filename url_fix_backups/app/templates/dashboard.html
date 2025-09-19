@@ -21,7 +21,7 @@
         .gpu-accelerated { transform: translateZ(0); will-change: transform; }
         .optimized-scroll { -webkit-overflow-scrolling: touch; scroll-behavior: smooth; }
         .d-none { display: none !important; }
-        
+
         /* Avatar Styles */
         .avatar-container {
             display: flex;
@@ -31,13 +31,13 @@
             padding: 8px;
             backdrop-filter: blur(10px);
         }
-        
+
         .avatar-display {
             display: flex;
             align-items: center;
             gap: 8px;
         }
-        
+
         .avatar-preview-mini {
             width: 48px;
             height: 48px;
@@ -51,28 +51,28 @@
             border: 2px solid rgba(255, 255, 255, 0.3);
             transition: all 0.3s ease;
         }
-        
+
         .avatar-preview-mini:hover {
             transform: scale(1.05);
             border-color: rgba(255, 255, 255, 0.6);
         }
-        
+
         .avatar-preview-mini img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-        
+
         .avatar-placeholder {
             color: rgba(255, 255, 255, 0.8);
         }
-        
+
         .avatar-controls {
             display: flex;
             flex-direction: column;
             gap: 4px;
         }
-        
+
         .avatar-btn {
             background: rgba(255, 255, 255, 0.2);
             border: none;
@@ -83,20 +83,20 @@
             transition: all 0.2s ease;
             font-size: 12px;
         }
-        
+
         .avatar-btn:hover {
             background: rgba(255, 255, 255, 0.3);
             transform: translateY(-1px);
         }
-        
+
         .avatar-btn:active {
             transform: translateY(0);
         }
-        
+
         .avatar-generating {
             animation: pulse 2s infinite;
         }
-        
+
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.7; }
@@ -127,7 +127,7 @@
                         <span id="currentTime"></span>
                     </div>
                 </div>
-                
+
                 <!-- Avatar Component -->
                 <div class="avatar-container ml-6">
                     <div class="avatar-display" id="dashboard-avatar">
@@ -158,38 +158,38 @@
                 <h2 class="text-2xl font-bold text-gray-800">Login Required</h2>
                 <p class="text-gray-600">Please sign in to access the dashboard</p>
             </div>
-            
+
             <form id="login-form" class="space-y-4">
                 <div>
                     <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
                     <input type="text" id="username" name="username" required value="reyn1920"
                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 </div>
-                
+
                 <div>
                     <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
                     <input type="password" id="password" name="password" required value="$Vessel56"
                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 </div>
-                
+
                 <div class="flex items-center">
-                    <input type="checkbox" id="remember-me" name="remember" 
+                    <input type="checkbox" id="remember-me" name="remember"
                            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
                     <label for="remember-me" class="ml-2 block text-sm text-gray-700">
                         Remember me
                     </label>
                 </div>
-                
+
                 <div id="login-error" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
                     <span id="login-error-message"></span>
                 </div>
-                
-                <button type="submit" id="login-submit" 
+
+                <button type="submit" id="login-submit"
                         class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200">
                     <i class="fas fa-sign-in-alt mr-2"></i>Sign In
                 </button>
             </form>
-            
+
             <div class="mt-6 text-center text-sm text-gray-600">
                 <p>Default credentials:</p>
                 <p class="font-mono bg-gray-100 p-2 rounded mt-2">
@@ -224,7 +224,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Tab Content -->
         <div id="overview-tab" class="tab-content">
             <!-- Enhanced Metrics Cards -->
@@ -284,7 +284,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Analytics Tab -->
         <div id="analytics-tab" class="tab-content hidden">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 lazy-load" data-chart-type="analytics-dashboard">
@@ -382,7 +382,7 @@
                         <i class="fas fa-plus mr-2"></i>Add User
                     </button>
                 </div>
-                
+
                 <div class="overflow-x-auto">
                     <table class="min-w-full table-auto">
                         <thead class="bg-gray-50">
@@ -411,55 +411,55 @@
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
-                
+
                 <form id="user-form" class="space-y-4">
                     <input type="hidden" id="user-id" name="user_id">
-                    
+
                     <div>
                         <label for="user-username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
-                        <input type="text" id="user-username" name="username" required 
+                        <input type="text" id="user-username" name="username" required
                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     </div>
-                    
+
                     <div>
                         <label for="user-email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                        <input type="email" id="user-email" name="email" required 
+                        <input type="email" id="user-email" name="email" required
                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     </div>
-                    
+
                     <div>
                         <label for="user-full-name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                        <input type="text" id="user-full-name" name="full_name" required 
+                        <input type="text" id="user-full-name" name="full_name" required
                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     </div>
-                    
+
                     <div>
                         <label for="user-role" class="block text-sm font-medium text-gray-700 mb-1">Role</label>
-                        <select id="user-role" name="role" required 
+                        <select id="user-role" name="role" required
                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             <option value="VIEWER">Viewer</option>
                             <option value="EDITOR">Editor</option>
                             <option value="ADMIN">Admin</option>
                         </select>
                     </div>
-                    
+
                     <div id="password-section">
                         <label for="user-password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                        <input type="password" id="user-password" name="password" 
+                        <input type="password" id="user-password" name="password"
                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         <p class="text-sm text-gray-500 mt-1">Leave blank to keep current password (edit mode)</p>
                     </div>
-                    
+
                     <div id="user-form-error" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
                         <span id="user-form-error-message"></span>
                     </div>
-                    
+
                     <div class="flex space-x-3">
-                        <button type="button" id="cancel-user-form" 
+                        <button type="button" id="cancel-user-form"
                                 class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 font-medium py-2 px-4 rounded-lg transition-all duration-200">
                             Cancel
                         </button>
-                        <button type="submit" id="save-user" 
+                        <button type="submit" id="save-user"
                                 class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200">
                             <i class="fas fa-save mr-2"></i>Save
                         </button>
@@ -467,7 +467,7 @@
                 </form>
             </div>
         </div>
-        
+
         <!-- File Manager Modal -->
         <div id="file-manager-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
             <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-4xl max-h-[90vh] overflow-hidden">
@@ -477,7 +477,7 @@
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
-                
+
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
                     <!-- File Upload Section -->
                     <div class="space-y-4">
@@ -497,7 +497,7 @@
                             <p id="upload-status" class="text-sm text-gray-600 mt-2">Uploading...</p>
                         </div>
                     </div>
-                    
+
                     <!-- Files List Section -->
                     <div class="space-y-4">
                         <div class="flex justify-between items-center">
@@ -515,7 +515,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Paste Integration Modal -->
         <div id="paste-integration-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
             <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-3xl max-h-[90vh] overflow-hidden">
@@ -525,7 +525,7 @@
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
-                
+
                 <div class="space-y-6">
                     <!-- Paste Content Section -->
                     <div>
@@ -540,7 +540,7 @@
                             </button>
                         </div>
                     </div>
-                    
+
                     <!-- Avatar Generation Section -->
                     <div class="border-t pt-6">
                         <h4 class="text-lg font-medium text-gray-800 mb-3">Avatar Generation</h4>
@@ -571,7 +571,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Integration Status -->
                     <div class="border-t pt-6">
                         <h4 class="text-lg font-medium text-gray-800 mb-3">Integration Status</h4>
@@ -583,7 +583,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Quick Actions Panel -->
         <div class="fixed bottom-6 right-6 z-50">
             <div class="bg-white rounded-xl shadow-xl p-4 glass-effect">
@@ -611,7 +611,7 @@
             </div>
         </div>
     </div>
-    
+
     <script src="/static/js/dashboard.js?v=1.1"></script>
     <script src="/static/js/paste_avatar_ui.js"></script>
     <script>
@@ -624,34 +624,34 @@
                 this.userId = 'dashboard_user_' + Date.now();
                 this.init();
             }
-            
+
             async init() {
                 // Initialize avatar UI when needed
                 document.getElementById('generate-dashboard-avatar').addEventListener('click', () => {
                     this.generateAvatar();
                 });
-                
+
                 document.getElementById('avatar-settings').addEventListener('click', () => {
                     this.showAvatarSettings();
                 });
-                
+
                 // Add chat functionality
                 this.initializeChat();
-                
+
                 // Load existing avatar if available
                 this.loadExistingAvatar();
             }
-            
+
             initializeChat() {
                 // Add click handler to avatar for chat
                 document.getElementById('avatar-preview-mini').addEventListener('click', () => {
                     this.toggleChat();
                 });
-                
+
                 // Create chat interface
                 this.createChatInterface();
             }
-            
+
             createChatInterface() {
                 const chatInterface = document.createElement('div');
                 chatInterface.id = 'avatar-chat-interface';
@@ -666,10 +666,10 @@
                     <div class="h-64 overflow-y-auto p-3 space-y-2" id="chat-messages"></div>
                     <div class="p-3 border-t">
                         <div class="flex space-x-2">
-                            <input type="text" id="chat-input" placeholder="Ask me anything..." 
-                                   class="flex-1 border border-gray-300 rounded px-3 py-2 text-sm" 
+                            <input type="text" id="chat-input" placeholder="Ask me anything..."
+                                   class="flex-1 border border-gray-300 rounded px-3 py-2 text-sm"
                                    onkeypress="if(event.key==='Enter') dashboardAvatar.sendMessage()">
-                            <button onclick="dashboardAvatar.sendMessage()" 
+                            <button onclick="dashboardAvatar.sendMessage()"
                                     class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded text-sm">
                                 <i class="fas fa-paper-plane"></i>
                             </button>
@@ -682,33 +682,33 @@
                     </div>
                 `;
                 document.body.appendChild(chatInterface);
-                
+
                 // Add welcome message
                 this.addChatMessage('assistant', 'Hello! I\'m your personal assistant. I can help you with system status, tasks, and answer questions about your dashboard.');
             }
-            
+
             toggleChat() {
                 const chatInterface = document.getElementById('avatar-chat-interface');
                 chatInterface.classList.toggle('hidden');
-                
+
                 if (!chatInterface.classList.contains('hidden')) {
                     document.getElementById('chat-input').focus();
                 }
             }
-            
+
             async sendMessage() {
                 const input = document.getElementById('chat-input');
                 const message = input.value.trim();
-                
+
                 if (!message) return;
-                
+
                 // Add user message to chat
                 this.addChatMessage('user', message);
                 input.value = '';
-                
+
                 // Show typing indicator
                 this.showTypingIndicator();
-                
+
                 try {
                     // Send to AI chat endpoint
                     const response = await fetch('/chat/ai', {
@@ -726,11 +726,11 @@
                             provider: 'openai'
                         })
                     });
-                    
+
                     const result = await response.json();
-                    
+
                     this.hideTypingIndicator();
-                    
+
                     if (result.response) {
                         this.addChatMessage('assistant', result.response);
                         this.conversationHistory.push({user: message, assistant: result.response});
@@ -743,24 +743,24 @@
                     this.addChatMessage('assistant', 'I encountered an error. Please try again.');
                 }
             }
-            
+
             enhanceMessageWithContext(message) {
                 const context = this.getDashboardContext();
                 return `As a personal assistant for the TRAE.AI dashboard, please help with: ${message}\n\nCurrent dashboard context: ${JSON.stringify(context)}`;
             }
-            
+
             getDashboardContext() {
                 // Gather current dashboard state
                 const activeTab = document.querySelector('.tab-button.active')?.textContent || 'overview';
                 const systemStatus = document.querySelector('.status-indicator')?.textContent || 'unknown';
-                
+
                 return {
                     active_tab: activeTab,
                     system_status: systemStatus,
                     timestamp: new Date().toISOString()
                 };
             }
-            
+
             async quickAction(action) {
                 switch(action) {
                     case 'status':
@@ -776,44 +776,44 @@
                         break;
                 }
             }
-            
+
             async sendSystemStatusUpdate() {
                 try {
                     const response = await fetch('/dashboard/api/status');
                     const status = await response.json();
-                    
+
                     const statusMessage = `System Status:\n• Uptime: ${status.uptime || 'Unknown'}\n• Active Sessions: ${status.active_sessions || 0}\n• API Calls: ${status.api_calls || 0}\n• Status: ${status.status || 'Running'}`;
-                    
+
                     this.addChatMessage('assistant', statusMessage);
                 } catch (error) {
                     this.addChatMessage('assistant', 'Unable to fetch system status at the moment.');
                 }
             }
-            
+
             async sendTasksUpdate() {
                 const tasksMessage = 'Current system activities:\n• Dashboard monitoring: Active\n• Content generation: Running\n• Avatar system: Operational\n• API services: Online\n\nAll systems are functioning normally.';
                 this.addChatMessage('assistant', tasksMessage);
             }
-            
+
             addChatMessage(sender, message) {
                 const messagesContainer = document.getElementById('chat-messages');
                 const messageDiv = document.createElement('div');
                 messageDiv.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
-                
+
                 const messageBubble = document.createElement('div');
                 messageBubble.className = `max-w-xs px-3 py-2 rounded-lg text-sm ${
-                    sender === 'user' 
-                        ? 'bg-blue-600 text-white' 
+                    sender === 'user'
+                        ? 'bg-blue-600 text-white'
                         : 'bg-gray-100 text-gray-800'
                 }`;
                 messageBubble.style.whiteSpace = 'pre-wrap';
                 messageBubble.textContent = message;
-                
+
                 messageDiv.appendChild(messageBubble);
                 messagesContainer.appendChild(messageDiv);
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
             }
-            
+
             showTypingIndicator() {
                 const indicator = document.createElement('div');
                 indicator.id = 'typing-indicator';
@@ -826,25 +826,25 @@
                 document.getElementById('chat-messages').appendChild(indicator);
                 document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
             }
-            
+
             hideTypingIndicator() {
                 const indicator = document.getElementById('typing-indicator');
                 if (indicator) {
                     indicator.remove();
                 }
             }
-            
+
             async generateAvatar() {
                 const btn = document.getElementById('generate-dashboard-avatar');
                 const preview = document.getElementById('avatar-preview-mini');
-                
+
                 try {
                     btn.disabled = true;
                     preview.classList.add('avatar-generating');
-                    
+
                     // Get sample content for avatar generation
                     const sampleContent = "Welcome to the dashboard! I'm your AI assistant ready to help you manage your system.";
-                    
+
                     const response = await fetch('/paste/avatar/generate', {
                         method: 'POST',
                         headers: {
@@ -858,9 +858,9 @@
                             template: 'professional_presenter'
                         })
                     });
-                    
+
                     const result = await response.json();
-                    
+
                     if (result.success && result.avatar_url) {
                         this.displayAvatar(result.avatar_url);
                         this.showNotification('Avatar generated successfully!', 'success');
@@ -875,22 +875,22 @@
                     preview.classList.remove('avatar-generating');
                 }
             }
-            
+
             displayAvatar(avatarUrl) {
                 const preview = document.getElementById('avatar-preview-mini');
                 preview.innerHTML = `<img src="${avatarUrl}" alt="Dashboard Avatar" />`;
-                
+
                 // Store avatar URL for persistence
                 localStorage.setItem('dashboard_avatar_url', avatarUrl);
             }
-            
+
             loadExistingAvatar() {
                 const savedAvatarUrl = localStorage.getItem('dashboard_avatar_url');
                 if (savedAvatarUrl) {
                     this.displayAvatar(savedAvatarUrl);
                 }
             }
-            
+
             showAvatarSettings() {
                 // Create a simple settings modal
                 const modal = document.createElement('div');
@@ -935,40 +935,40 @@
                 `;
                 document.body.appendChild(modal);
             }
-            
+
             applySettings() {
                 const style = document.getElementById('avatar-style-select').value;
                 const voice = document.getElementById('voice-style-select').value;
-                
+
                 // Store settings
                 localStorage.setItem('avatar_style', style);
                 localStorage.setItem('avatar_voice', voice);
-                
+
                 this.showNotification('Settings saved! Generate a new avatar to apply changes.', 'info');
             }
-            
+
             showNotification(message, type = 'info') {
                 const notification = document.createElement('div');
                 notification.className = `fixed top-4 right-4 z-50 px-4 py-2 rounded-lg text-white transition-all duration-300 ${
-                    type === 'success' ? 'bg-green-500' : 
+                    type === 'success' ? 'bg-green-500' :
                     type === 'error' ? 'bg-red-500' : 'bg-blue-500'
                 }`;
                 notification.textContent = message;
-                
+
                 document.body.appendChild(notification);
-                
+
                 setTimeout(() => {
                     notification.style.opacity = '0';
                     setTimeout(() => notification.remove(), 300);
                 }, 3000);
             }
         }
-        
+
         // Initialize dashboard avatar when page loads
         document.addEventListener('DOMContentLoaded', () => {
             window.dashboardAvatar = new DashboardAvatar();
         });
-        
+
         // Function to run dashboard tests
         function runDashboardTests() {
             if (window.dashboardTester) {
@@ -983,7 +983,7 @@
             }
         }
     </script>
-    
+
     <script>
         // Enhanced Dashboard Initialization
         document.addEventListener('DOMContentLoaded', function() {
@@ -993,11 +993,11 @@
         function initializeDashboard() {
             updateCurrentTime();
             setInterval(updateCurrentTime, 1000);
-            
+
             setupTabNavigation();
             initializeCharts();
             loadDashboardData();
-            
+
             // Auto-refresh data every 30 seconds
             setInterval(loadDashboardData, 30000);
         }
@@ -1022,7 +1022,7 @@
                 tab.classList.remove('active');
             });
             document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-            
+
             // Show/hide tab content
             document.querySelectorAll('.tab-content').forEach(content => {
                 content.classList.add('hidden');
@@ -1037,7 +1037,7 @@
                     fetch('/dashboard/api/services').then(r => r.json()),
                     fetch('/dashboard/api/system-info').then(r => r.json())
                 ]);
-                
+
                 updateMetrics(metrics.metrics);
                 updateServices(services.services);
                 updateSystemInfo(systemInfo.system_info);
@@ -1054,7 +1054,7 @@
         function updateServices(services) {
             const grid = document.getElementById('servicesGrid');
             if (!grid) return;
-            
+
             grid.innerHTML = Object.entries(services).map(([key, service]) => `
                 <div class="service-card">
                     <div class="flex items-center justify-between mb-3">
@@ -1083,7 +1083,7 @@
         function updateSystemInfo(systemInfo) {
             const container = document.getElementById('systemInfo');
             if (!container || !systemInfo) return;
-            
+
             container.innerHTML = `
                 <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
                     <span class="font-medium">Platform:</span>
@@ -1171,12 +1171,12 @@
         function showNotification(message, type = 'info') {
             const notification = document.createElement('div');
             notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg text-white ${
-                type === 'success' ? 'bg-green-500' : 
+                type === 'success' ? 'bg-green-500' :
                 type === 'error' ? 'bg-red-500' : 'bg-blue-500'
             }`;
             notification.textContent = message;
             document.body.appendChild(notification);
-            
+
             setTimeout(() => {
                 notification.remove();
             }, 3000);
@@ -1516,7 +1516,7 @@
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
     </script>
-    
+
     <!-- Dashboard Functionality Test Script -->
     <script src="/static/js/test_dashboard_functionality.js"></script>
 </body>

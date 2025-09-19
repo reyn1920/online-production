@@ -19,7 +19,7 @@ Based on analysis of your system configuration, here's the current status of API
 
 #### AI & Language Models
 - **OpenAI GPT** - `OPENAI_API_KEY` (commented out)
-- **Anthropic Claude** - `ANTHROPIC_API_KEY` (commented out) 
+- **Anthropic Claude** - `ANTHROPIC_API_KEY` (commented out)
 - **Google AI** - `GOOGLE_API_KEY` (commented out)
 - **ElevenLabs** - `ELEVENLABS_API_KEY` (not in .env)
 - **Stability AI** - `STABILITY_API_KEY` (not in .env)

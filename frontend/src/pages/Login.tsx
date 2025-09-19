@@ -7,24 +7,24 @@ const Login: React.FC = () => {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  
+
   const { login, isAuthenticated } = useAuth();
   const { actualTheme } = useTheme();
   const location = useLocation();
-  
+
   // Redirect to intended page after login
   const from = (location.state as any)?.from?.pathname || '/channels';
-  
+
   // Redirect if already authenticated
   if (isAuthenticated) {
     return <Navigate to={from} replace />;
   }
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
-    
+
     try {
       await login(credentials);
       // Navigation will happen automatically due to auth state change
@@ -34,12 +34,12 @@ const Login: React.FC = () => {
       setIsLoading(false);
     }
   };
-  
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setCredentials(prev => ({ ...prev, [name]: value }));
   };
-  
+
   return (
     <div className={`min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 ${
       actualTheme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'
@@ -60,7 +60,7 @@ const Login: React.FC = () => {
             Access your enterprise-grade AI platform
           </p>
         </div>
-        
+
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
@@ -102,7 +102,7 @@ const Login: React.FC = () => {
               />
             </div>
           </div>
-          
+
           {error && (
             <div className={`rounded-md p-4 ${
               actualTheme === 'dark' ? 'bg-red-900 border-red-700' : 'bg-red-50 border-red-200'
@@ -121,7 +121,7 @@ const Login: React.FC = () => {
               </div>
             </div>
           )}
-          
+
           <div>
             <button
               type="submit"
@@ -142,7 +142,7 @@ const Login: React.FC = () => {
               )}
             </button>
           </div>
-          
+
           <div className={`text-center text-sm ${
             actualTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'
           }`}>
@@ -152,7 +152,7 @@ const Login: React.FC = () => {
             </p>
           </div>
         </form>
-        
+
         {/* Features showcase */}
         <div className={`mt-8 p-4 rounded-lg ${
           actualTheme === 'dark' ? 'bg-gray-800' : 'bg-white'

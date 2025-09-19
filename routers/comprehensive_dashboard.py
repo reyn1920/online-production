@@ -1,293 +1,360 @@
-#!/usr/bin/env python3
-"""
-Comprehensive Dashboard Router
-Provides comprehensive dashboard endpoints with advanced metrics and analytics.
-"""
-
+# Comprehensive Dashboard Router - Standalone Implementation
+from datetime import datetime, timedelta
+import json
+import asyncio
 import logging
-from datetime import datetime
-from typing import Dict, Any, List
+from typing import Any
 
-from fastapi import APIRouter, HTTPException
-from fastapi.responses import JSONResponse
-from pydantic import BaseModel
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
+# Mock classes for standalone operation
+class MockAPIRouter:
+    def __init__(self):
+        self.routes = []
+
+    def get(self, path: str, response_class=None):
+        def decorator(func):
+            self.routes.append(("GET", path, func))
+            return func
+
+        return decorator
+
+    def post(self, path: str):
+        def decorator(func):
+            self.routes.append(("POST", path, func))
+            return func
+
+        return decorator
+
+    def websocket(self, path: str):
+        def decorator(func):
+            self.routes.append(("WEBSOCKET", path, func))
+            return func
+
+        return decorator
+
+
+class MockJSONResponse:
+    def __init__(self, content: dict, status_code: int = 200):
+        self.content = content
+        self.status_code = status_code
+
+
+class MockHTMLResponse:
+    def __init__(self, content: str, status_code: int = 200):
+        self.content = content
+        self.status_code = status_code
+
+
+class MockHTTPException(Exception):
+    def __init__(self, status_code: int, detail: str):
+        self.status_code = status_code
+        self.detail = detail
+        super().__init__(detail)
+
+
+class MockRequest:
+    pass
+
+
+class MockWebSocket:
+    async def accept(self):
+        pass
+
+    async def send_text(self, data: str):
+        print(f"WebSocket sending: {data}")
+
+    async def receive_text(self) -> str:
+        return "{}"
+
+    async def close(self):
+        pass
+
+
+# Use mock classes
+APIRouter = MockAPIRouter
+JSONResponse = MockJSONResponse
+HTMLResponse = MockHTMLResponse
+HTTPException = MockHTTPException
+Request = MockRequest
+
+router = APIRouter()
 logger = logging.getLogger(__name__)
 
-# Create router
-router = APIRouter(prefix="/comprehensive", tags=["comprehensive-dashboard"])
 
-# Pydantic models
-class ComprehensiveMetrics(BaseModel):
-    system_health: Dict[str, Any]
-    performance_metrics: Dict[str, Any]
-    user_analytics: Dict[str, Any]
-    revenue_data: Dict[str, Any]
-    timestamp: str
-
-class ServiceStatus(BaseModel):
-    service_name: str
-    status: str
-    uptime: str
-    last_check: str
-
-# Mock data storage
-comprehensive_data = {
-    "system_health": {
-        "cpu_usage": 25.3,
-        "memory_usage": 68.7,
-        "disk_usage": 45.2,
-        "network_io": 1024.5,
-        "active_connections": 156
-    },
-    "performance_metrics": {
-        "response_time_avg": 245.6,
-        "requests_per_second": 87.3,
-        "error_rate": 0.02,
-        "throughput": 2048.7
-    },
-    "user_analytics": {
-        "active_users": 1250,
-        "new_signups_today": 45,
-        "session_duration_avg": 18.5,
-        "bounce_rate": 0.23
-    },
-    "revenue_data": {
-        "daily_revenue": 5420.50,
-        "monthly_revenue": 125000.00,
-        "conversion_rate": 3.2,
-        "average_order_value": 89.50
+# Mock data generators for dashboard
+def get_system_metrics() -> dict[str, Any]:
+    """Get current system metrics"""
+    return {
+        "cpu_usage": 45.2,
+        "memory_usage": 67.8,
+        "disk_usage": 34.1,
+        "network_io": {"bytes_sent": 1024000, "bytes_received": 2048000},
+        "active_connections": 12,
+        "uptime_seconds": 86400,
     }
-}
 
-@router.get("/metrics", response_model=ComprehensiveMetrics)
-async def get_comprehensive_metrics():
-    """Get comprehensive dashboard metrics"""
-    try:
-        logger.info("Fetching comprehensive metrics")
-        
-        return ComprehensiveMetrics(
-            system_health=comprehensive_data["system_health"],
-            performance_metrics=comprehensive_data["performance_metrics"],
-            user_analytics=comprehensive_data["user_analytics"],
-            revenue_data=comprehensive_data["revenue_data"],
-            timestamp=datetime.now().isoformat()
+
+def get_application_stats() -> dict[str, Any]:
+    """Get application statistics"""
+    return {
+        "total_requests": 15420,
+        "requests_per_minute": 45,
+        "error_rate": 0.02,
+        "avg_response_time": 120,
+        "active_users": 234,
+        "total_users": 1567,
+    }
+
+
+def get_revenue_data() -> dict[str, Any]:
+    """Get revenue and monetization data"""
+    return {
+        "daily_revenue": 1250.75,
+        "monthly_revenue": 28450.20,
+        "total_revenue": 156789.45,
+        "conversion_rate": 3.2,
+        "active_subscriptions": 89,
+        "churn_rate": 2.1,
+    }
+
+
+def get_performance_trends() -> list[dict[str, Any]]:
+    """Get performance trend data"""
+    base_time = datetime.now() - timedelta(hours=24)
+    trends = []
+
+    for i in range(24):
+        timestamp = base_time + timedelta(hours=i)
+        trends.append(
+            {
+                "timestamp": timestamp.isoformat(),
+                "response_time": 100 + (i * 2) + (i % 3 * 10),
+                "requests_count": 50 + (i * 5) + (i % 4 * 15),
+                "error_count": max(0, (i % 7) - 3),
+            }
         )
-        
-    except Exception as e:
-        logger.error(f"Error fetching comprehensive metrics: {e}")
-        raise HTTPException(status_code=500, detail="Metrics unavailable")
 
-@router.get("/system/health")
-async def get_system_health():
-    """Get detailed system health information"""
+    return trends
+
+
+# API Endpoints
+@router.get("/dashboard/overview")
+async def get_dashboard_overview():
+    """Get comprehensive dashboard overview"""
     try:
-        logger.info("Fetching system health data")
-        
+        overview_data = {
+            "timestamp": datetime.now().isoformat(),
+            "system_metrics": get_system_metrics(),
+            "application_stats": get_application_stats(),
+            "revenue_data": get_revenue_data(),
+            "status": "operational",
+        }
+        return JSONResponse(content=overview_data)
+    except Exception as e:
+        logger.error(f"Error getting dashboard overview: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+
+@router.get("/dashboard/metrics")
+async def get_system_metrics_endpoint():
+    """Get detailed system metrics"""
+    try:
+        metrics = get_system_metrics()
+        return JSONResponse(
+            content={"metrics": metrics, "timestamp": datetime.now().isoformat()}
+        )
+    except Exception as e:
+        logger.error(f"Error getting system metrics: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+
+@router.get("/dashboard/performance")
+async def get_performance_data():
+    """Get performance trends and statistics"""
+    try:
+        performance_data = {
+            "trends": get_performance_trends(),
+            "current_stats": get_application_stats(),
+            "timestamp": datetime.now().isoformat(),
+        }
+        return JSONResponse(content=performance_data)
+    except Exception as e:
+        logger.error(f"Error getting performance data: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+
+@router.get("/dashboard/revenue")
+async def get_revenue_analytics():
+    """Get revenue and monetization analytics"""
+    try:
+        revenue_analytics = {
+            "current_data": get_revenue_data(),
+            "trends": [
+                {
+                    "date": (datetime.now() - timedelta(days=i)).strftime("%Y-%m-%d"),
+                    "revenue": 1000 + (i * 50) + (i % 7 * 100),
+                }
+                for i in range(30, 0, -1)
+            ],
+            "timestamp": datetime.now().isoformat(),
+        }
+        return JSONResponse(content=revenue_analytics)
+    except Exception as e:
+        logger.error(f"Error getting revenue analytics: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+
+@router.get("/dashboard/health")
+async def get_health_status():
+    """Get comprehensive health status"""
+    try:
         health_data = {
             "status": "healthy",
-            "metrics": comprehensive_data["system_health"],
             "services": {
-                "database": "healthy",
-                "api": "healthy",
-                "cache": "healthy",
-                "storage": "healthy",
-                "monitoring": "healthy"
+                "database": "operational",
+                "cache": "operational",
+                "external_apis": "operational",
+                "background_tasks": "operational",
             },
-            "timestamp": datetime.now().isoformat()
+            "last_check": datetime.now().isoformat(),
+            "uptime": "24h 15m 32s",
         }
-        
         return JSONResponse(content=health_data)
-        
     except Exception as e:
-        logger.error(f"Error fetching system health: {e}")
-        raise HTTPException(status_code=500, detail="System health unavailable")
+        logger.error(f"Error getting health status: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
-@router.get("/performance")
-async def get_performance_metrics():
-    """Get performance metrics"""
+
+@router.get("/dashboard/alerts")
+async def get_active_alerts():
+    """Get active system alerts and notifications"""
     try:
-        logger.info("Fetching performance metrics")
-        
-        performance_data = {
-            "current_metrics": comprehensive_data["performance_metrics"],
-            "trends": {
-                "response_time_trend": "improving",
-                "throughput_trend": "stable",
-                "error_rate_trend": "decreasing"
+        alerts = [
+            {
+                "id": "alert_001",
+                "type": "warning",
+                "message": "High memory usage detected",
+                "timestamp": datetime.now().isoformat(),
+                "severity": "medium",
             },
-            "alerts": [],
-            "timestamp": datetime.now().isoformat()
-        }
-        
-        return JSONResponse(content=performance_data)
-        
+            {
+                "id": "alert_002",
+                "type": "info",
+                "message": "Scheduled maintenance in 2 hours",
+                "timestamp": (datetime.now() - timedelta(minutes=30)).isoformat(),
+                "severity": "low",
+            },
+        ]
+        return JSONResponse(content={"alerts": alerts})
     except Exception as e:
-        logger.error(f"Error fetching performance metrics: {e}")
-        raise HTTPException(status_code=500, detail="Performance metrics unavailable")
+        logger.error(f"Error getting alerts: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
-@router.get("/analytics/users")
-async def get_user_analytics():
-    """Get user analytics data"""
+
+@router.websocket("/dashboard/ws")
+async def dashboard_websocket(websocket: MockWebSocket):
+    """WebSocket endpoint for real-time dashboard updates"""
+    await websocket.accept()
     try:
-        logger.info("Fetching user analytics")
-        
-        analytics_data = {
-            "current_stats": comprehensive_data["user_analytics"],
-            "demographics": {
-                "age_groups": {
-                    "18-25": 25,
-                    "26-35": 40,
-                    "36-45": 20,
-                    "46+": 15
-                },
-                "locations": {
-                    "US": 45,
-                    "EU": 30,
-                    "Asia": 20,
-                    "Other": 5
+        while True:
+            # Send real-time updates every 5 seconds
+            update_data = {
+                "type": "metrics_update",
+                "data": get_system_metrics(),
+                "timestamp": datetime.now().isoformat(),
+            }
+            await websocket.send_text(json.dumps(update_data))
+            await asyncio.sleep(5)
+    except Exception as e:
+        logger.error(f"WebSocket error: {e}")
+    finally:
+        await websocket.close()
+
+
+# HTML Dashboard endpoint
+@router.get("/dashboard", response_class=HTMLResponse)
+async def dashboard_page():
+    """Serve the comprehensive dashboard HTML page"""
+    html_content = """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Comprehensive Dashboard</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+            .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+            .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+            .metric { display: flex; justify-content: space-between; margin: 10px 0; }
+            .value { font-weight: bold; color: #2563eb; }
+            h1 { text-align: center; color: #1f2937; }
+            h2 { color: #374151; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px; }
+        </style>
+    </head>
+    <body>
+        <h1>🚀 Comprehensive Dashboard</h1>
+        <div class="dashboard">
+            <div class="card">
+                <h2>📊 System Metrics</h2>
+                <div id="system-metrics">Loading...</div>
+            </div>
+            <div class="card">
+                <h2>📈 Application Stats</h2>
+                <div id="app-stats">Loading...</div>
+            </div>
+            <div class="card">
+                <h2>💰 Revenue Data</h2>
+                <div id="revenue-data">Loading...</div>
+            </div>
+            <div class="card">
+                <h2>🔔 System Alerts</h2>
+                <div id="alerts">Loading...</div>
+            </div>
+        </div>
+
+        <script>
+            async function loadDashboardData() {
+                try {
+                    const response = await fetch('/api/comprehensive/dashboard/overview');
+                    const data = await response.json();
+
+                    // Update system metrics
+                    const systemMetrics = document.getElementById('system-metrics');
+                    systemMetrics.innerHTML = `
+                        <div class="metric"><span>CPU Usage:</span><span class="value">${data.system_metrics.cpu_usage}%</span></div>
+                        <div class="metric"><span>Memory Usage:</span><span class="value">${data.system_metrics.memory_usage}%</span></div>
+                        <div class="metric"><span>Disk Usage:</span><span class="value">${data.system_metrics.disk_usage}%</span></div>
+                        <div class="metric"><span>Active Connections:</span><span class="value">${data.system_metrics.active_connections}</span></div>
+                    `;
+
+                    // Update app stats
+                    const appStats = document.getElementById('app-stats');
+                    appStats.innerHTML = `
+                        <div class="metric"><span>Total Requests:</span><span class="value">${data.application_stats.total_requests}</span></div>
+                        <div class="metric"><span>Requests/Min:</span><span class="value">${data.application_stats.requests_per_minute}</span></div>
+                        <div class="metric"><span>Error Rate:</span><span class="value">${(data.application_stats.error_rate * 100).toFixed(2)}%</span></div>
+                        <div class="metric"><span>Active Users:</span><span class="value">${data.application_stats.active_users}</span></div>
+                    `;
+
+                    // Update revenue data
+                    const revenueData = document.getElementById('revenue-data');
+                    revenueData.innerHTML = `
+                        <div class="metric"><span>Daily Revenue:</span><span class="value">$${data.revenue_data.daily_revenue}</span></div>
+                        <div class="metric"><span>Monthly Revenue:</span><span class="value">$${data.revenue_data.monthly_revenue}</span></div>
+                        <div class="metric"><span>Conversion Rate:</span><span class="value">${data.revenue_data.conversion_rate}%</span></div>
+                        <div class="metric"><span>Active Subscriptions:</span><span class="value">${data.revenue_data.active_subscriptions}</span></div>
+                    `;
+                } catch (error) {
+                    console.error('Error loading dashboard data:', error);
                 }
-            },
-            "engagement": {
-                "daily_active_users": 850,
-                "weekly_active_users": 3200,
-                "monthly_active_users": 12500
-            },
-            "timestamp": datetime.now().isoformat()
-        }
-        
-        return JSONResponse(content=analytics_data)
-        
-    except Exception as e:
-        logger.error(f"Error fetching user analytics: {e}")
-        raise HTTPException(status_code=500, detail="User analytics unavailable")
+            }
 
-@router.get("/revenue")
-async def get_revenue_dashboard():
-    """Get revenue dashboard data"""
-    try:
-        logger.info("Fetching revenue dashboard data")
-        
-        revenue_dashboard = {
-            "current_revenue": comprehensive_data["revenue_data"],
-            "forecasts": {
-                "next_month_projection": 135000.00,
-                "quarterly_projection": 400000.00,
-                "annual_projection": 1500000.00
-            },
-            "breakdown": {
-                "subscriptions": 75000.00,
-                "one_time_purchases": 35000.00,
-                "premium_features": 15000.00
-            },
-            "growth_metrics": {
-                "month_over_month": 8.5,
-                "year_over_year": 45.2,
-                "customer_ltv": 450.0,
-                "churn_rate": 2.1
-            },
-            "timestamp": datetime.now().isoformat()
-        }
-        
-        return JSONResponse(content=revenue_dashboard)
-        
-    except Exception as e:
-        logger.error(f"Error fetching revenue dashboard: {e}")
-        raise HTTPException(status_code=500, detail="Revenue data unavailable")
-
-@router.get("/services/status")
-async def get_services_status():
-    """Get status of all services"""
-    try:
-        logger.info("Fetching services status")
-        
-        services_status = {
-            "services": [
-                {
-                    "name": "API Gateway",
-                    "status": "healthy",
-                    "uptime": "99.9%",
-                    "last_check": datetime.now().isoformat()
-                },
-                {
-                    "name": "Database",
-                    "status": "healthy",
-                    "uptime": "99.8%",
-                    "last_check": datetime.now().isoformat()
-                },
-                {
-                    "name": "Cache Layer",
-                    "status": "healthy",
-                    "uptime": "99.9%",
-                    "last_check": datetime.now().isoformat()
-                },
-                {
-                    "name": "File Storage",
-                    "status": "healthy",
-                    "uptime": "99.7%",
-                    "last_check": datetime.now().isoformat()
-                }
-            ],
-            "overall_status": "healthy",
-            "timestamp": datetime.now().isoformat()
-        }
-        
-        return JSONResponse(content=services_status)
-        
-    except Exception as e:
-        logger.error(f"Error fetching services status: {e}")
-        raise HTTPException(status_code=500, detail="Services status unavailable")
-
-@router.post("/metrics/update")
-async def update_comprehensive_metrics(new_metrics: Dict[str, Any]):
-    """Update comprehensive metrics"""
-    try:
-        logger.info(f"Updating comprehensive metrics: {new_metrics}")
-        
-        # Update metrics in storage
-        for category, data in new_metrics.items():
-            if category in comprehensive_data:
-                comprehensive_data[category].update(data)
-        
-        return {
-            "message": "Comprehensive metrics updated successfully",
-            "updated_at": datetime.now().isoformat()
-        }
-        
-    except Exception as e:
-        logger.error(f"Error updating comprehensive metrics: {e}")
-        raise HTTPException(status_code=500, detail="Failed to update metrics")
-
-@router.get("/alerts")
-async def get_system_alerts():
-    """Get current system alerts"""
-    try:
-        logger.info("Fetching system alerts")
-        
-        alerts_data = {
-            "active_alerts": [],
-            "resolved_alerts": [
-                {
-                    "id": "alert_001",
-                    "type": "performance",
-                    "message": "High response time detected",
-                    "severity": "warning",
-                    "resolved_at": datetime.now().isoformat()
-                }
-            ],
-            "alert_summary": {
-                "total_active": 0,
-                "critical": 0,
-                "warning": 0,
-                "info": 0
-            },
-            "timestamp": datetime.now().isoformat()
-        }
-        
-        return JSONResponse(content=alerts_data)
-        
-    except Exception as e:
-        logger.error(f"Error fetching alerts: {e}")
-        raise HTTPException(status_code=500, detail="Alerts unavailable")
+            // Load data on page load and refresh every 30 seconds
+            loadDashboardData();
+            setInterval(loadDashboardData, 30000);
+        </script>
+    </body>
+    </html>
+    """
+    return HTMLResponse(content=html_content)

@@ -38,21 +38,21 @@ test_endpoint() {
     local endpoint="$2"
     local expected_status="${3:-200}"
     local description="$4"
-    
+
     TEST_COUNT=$((TEST_COUNT + 1))
     info "Testing $description ($method $endpoint)"
-    
+
     local response
     local status_code
-    
+
     if response=$(curl -s -w "\n%{http_code}" -X "$method" "$BASE_URL$endpoint" 2>/dev/null); then
         status_code=$(echo "$response" | tail -n1)
         response_body=$(echo "$response" | head -n -1)
-        
+
         if [ "$status_code" = "$expected_status" ]; then
             log "✅ PASS: $description (HTTP $status_code)"
             PASS_COUNT=$((PASS_COUNT + 1))
-            
+
             # Try to parse JSON if it looks like JSON
             if echo "$response_body" | jq . >/dev/null 2>&1; then
                 echo "$response_body" | jq -C . | head -3
@@ -76,15 +76,15 @@ test_redirect() {
     local endpoint="$1"
     local expected_location="$2"
     local description="$3"
-    
+
     TEST_COUNT=$((TEST_COUNT + 1))
     info "Testing $description (GET $endpoint)"
-    
+
     local headers
     if headers=$(curl -s -I "$BASE_URL$endpoint" 2>/dev/null); then
         local status_line=$(echo "$headers" | head -n1)
         local location=$(echo "$headers" | grep -i "^location:" | cut -d' ' -f2- | tr -d '\r')
-        
+
         if echo "$status_line" | grep -q "30[1-8]"; then
             if [ "$location" = "$expected_location" ]; then
                 log "✅ PASS: $description (redirects to $location)"

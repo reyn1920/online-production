@@ -36,20 +36,20 @@ run_test_suite() {
     local suite_name="$1"
     local test_command="$2"
     local required="${3:-true}"
-    
+
     echo -e "${BLUE}🔍 Running $suite_name...${NC}"
     echo "Command: $test_command"
     echo ""
-    
+
     TOTAL_TESTS=$((TOTAL_TESTS + 1))
-    
+
     if eval "$test_command"; then
         echo -e "${GREEN}✅ $suite_name: PASSED${NC}"
         PASSED_TESTS=$((PASSED_TESTS + 1))
     else
         echo -e "${RED}❌ $suite_name: FAILED${NC}"
         FAILED_TESTS=$((FAILED_TESTS + 1))
-        
+
         if [ "$required" = "true" ]; then
             echo -e "${RED}Required test suite failed. Aborting.${NC}"
             exit 1

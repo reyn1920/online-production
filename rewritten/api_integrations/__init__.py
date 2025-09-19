@@ -1,17 +1,41 @@
 # API Integrations Module
 # Comprehensive integration layer for external services
 
-from .arxiv_api import ArxivAPI
-from .base_api import APIError, BaseAPI, RateLimitError
-from .github_api import GitHubAPI
-from .google_trends import GoogleTrendsAPI
-from .groq_api import GroqAPI
-from .guardian_api import GuardianAPI
-from .huggingface_api import HuggingFaceAPI
-from .nytimes_api import NYTimesAPI
-from .pexels_api import PexelsAPI
-from .reddit_api import RedditAPI
-from .youtube_api import YouTubeAPI
+from .arxiv_api import (
+    ArxivAPI,
+)  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
+from .base_api import (
+    APIError,
+    BaseAPI,
+    RateLimitError,
+)  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
+from .github_api import (
+    GitHubAPI,
+)  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
+from .google_trends import (
+    GoogleTrendsAPI,
+)  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
+from .groq_api import (
+    GroqAPI,
+)  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
+from .guardian_api import (
+    GuardianAPI,
+)  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
+from .huggingface_api import (
+    HuggingFaceAPI,
+)  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
+from .nytimes_api import (
+    NYTimesAPI,
+)  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
+from .pexels_api import (
+    PexelsAPI,
+)  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
+from .reddit_api import (
+    RedditAPI,
+)  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
+from .youtube_api import (
+    YouTubeAPI,
+)  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
 
 __all__ = [
     "ArxivAPI",
@@ -27,5 +51,6 @@ __all__ = [
     "PexelsAPI",
     "RedditAPI",
     "YouTubeAPI",
-# BRACKET_SURGEON: disabled
-# ]
+    # "BRACKET_SURGEON": disabled
+    # ]
+]

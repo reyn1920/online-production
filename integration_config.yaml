@@ -15,25 +15,25 @@ database:
   content_db: "data/content_management.db"
   task_queue_db: "data/task_queue.db"
   analytics_db: "data/analytics.db"
-  
+
   # Schema integration mapping
   schema_files:
     - "schema.sql"
     - "master_schema.sql"
     - "init-db.sql"
-  
+
   # Table relationships
   table_relationships:
     users:
       - user_sessions
       - user_preferences
       - content_projects
-    
+
     content_projects:
       - content_generation_jobs
       - content_schedule
       - marketing_campaigns
-    
+
     tasks:
       - task_dependencies
       - task_execution_log
@@ -45,24 +45,24 @@ server:
   port: 8000
   debug: false
   reload: false
-  
+
   # Multiple server integration
   services:
     main_app:
       port: 8000
       module: "main:app"
       type: "fastapi"
-    
+
     paste_app:
       port: 3001
       module: "paste_app:app"
       type: "flask"
-    
+
     demo_avatar:
       port: 3002
       module: "demo_realistic_avatar:app"
       type: "custom"
-    
+
     static_server:
       port: 3000
       type: "http_server"
@@ -79,7 +79,7 @@ components:
       - "backend.task_queue_manager"
       - "backend.api_orchestrator"
       - "backend.core.database"
-    
+
     agents:
       system_agent:
         enabled: true
@@ -87,21 +87,21 @@ components:
           - "system_monitoring"
           - "health_checks"
           - "resource_management"
-      
+
       research_agent:
         enabled: true
         capabilities:
           - "web_research"
           - "data_analysis"
           - "content_research"
-      
+
       content_agent:
         enabled: true
         capabilities:
           - "content_generation"
           - "script_writing"
           - "social_media_posts"
-  
+
   # Frontend Components
   frontend:
     enabled: true
@@ -112,30 +112,30 @@ components:
       - "static.js.chat"
       - "static.js.paste_avatar_ui"
       - "static.js.diagnostics_panel"
-    
+
     ui_components:
       dashboard:
         template: "app/templates/dashboard.html"
         static_files:
           - "static/css/dashboard.css"
           - "static/js/dashboard.js"
-      
+
       chat_interface:
         module: "static/js/chat.js"
         websocket_endpoint: "/ws/chat"
-      
+
       avatar_ui:
         module: "static/js/paste_avatar_ui.js"
         features:
           - "real_time_preview"
           - "template_suggestions"
           - "batch_processing"
-      
+
       diagnostics:
         module: "static/js/diagnostics_panel.js"
         auto_refresh: true
         metrics_endpoint: "/api/diagnostics"
-  
+
   # Content Management
   content_management:
     enabled: true
@@ -144,18 +144,18 @@ components:
       videos: "outputs/videos"
       pdfs: "outputs/pdfs"
       images: "outputs/images"
-    
+
     templates:
       directory: "content/templates"
       script_template: "content/script_template.md"
       production_checklist: "content/production_checklist.md"
-    
+
     automated_studio:
       voice_synthesis: true
       avatar_creation: true
       video_editing: true
       batch_processing: true
-  
+
   # Monitoring and Analytics
   monitoring:
     enabled: true
@@ -163,18 +163,18 @@ components:
       - "monitoring.performance_monitor"
       - "monitoring.error_tracker"
       - "monitoring.analytics"
-    
+
     metrics:
       performance_tracking: true
       error_logging: true
       user_analytics: true
       system_health: true
-    
+
     dashboards:
       grafana:
         enabled: false  # Zero-cost compliance
         config_dir: "grafana"
-      
+
       custom_dashboard:
         enabled: true
         endpoint: "/monitoring/dashboard"
@@ -190,28 +190,108 @@ api:
     user_management: "/api/users"
     dashboard_data: "/api/dashboard"
     websocket: "/ws"
-  
+
   # External API integrations (zero-cost focus)
   external_integrations:
     ollama:
       enabled: true
       cost: "free"
       endpoint: "http://localhost:11434"
+      default_model: "llama3.1"
+
+      # Comprehensive model options organized by category
       models:
-        - "llama2"
-        - "codellama"
-    
+        # General Purpose Models
+        general:
+          - "llama3.1:8b"      # Latest Llama 3.1 8B - balanced performance
+          - "llama3.1:70b"     # Latest Llama 3.1 70B - high performance
+          - "llama3:8b"        # Llama 3 8B - stable version
+          - "llama3:70b"       # Llama 3 70B - high performance
+          - "llama2:7b"        # Llama 2 7B - lightweight
+          - "llama2:13b"       # Llama 2 13B - medium performance
+          - "llama2:70b"       # Llama 2 70B - high performance
+          - "mistral:7b"       # Mistral 7B - efficient general purpose
+          - "mixtral:8x7b"     # Mixtral 8x7B - mixture of experts
+          - "gemma:2b"         # Google Gemma 2B - ultra lightweight
+          - "gemma:7b"         # Google Gemma 7B - balanced
+
+        # Code-Specialized Models
+        coding:
+          - "codellama:7b"     # Code Llama 7B - code generation
+          - "codellama:13b"    # Code Llama 13B - better code understanding
+          - "codellama:34b"    # Code Llama 34B - advanced coding
+          - "deepseek-coder:6.7b"  # DeepSeek Coder - specialized coding
+          - "deepseek-coder:33b"   # DeepSeek Coder 33B - advanced coding
+          - "wizardcoder:15b"  # WizardCoder - code generation
+          - "wizardcoder:33b"  # WizardCoder 33B - advanced coding
+          - "starcoder:15b"    # StarCoder - code completion
+          - "codeqwen:7b"      # CodeQwen - multilingual coding
+
+        # Lightweight/Fast Models
+        lightweight:
+          - "phi3:3.8b"        # Microsoft Phi-3 - ultra efficient
+          - "phi3:14b"         # Microsoft Phi-3 14B - balanced efficiency
+          - "qwen2:0.5b"       # Qwen2 0.5B - minimal resource usage
+          - "qwen2:1.5b"       # Qwen2 1.5B - lightweight
+          - "qwen2:7b"         # Qwen2 7B - balanced performance
+          - "tinyllama:1.1b"   # TinyLlama - extremely lightweight
+
+        # Specialized Models
+        specialized:
+          - "llava:7b"         # LLaVA - vision and language
+          - "llava:13b"        # LLaVA 13B - better vision understanding
+          - "bakllava:7b"      # BakLLaVA - vision model
+          - "moondream:1.8b"   # Moondream - vision model
+          - "neural-chat:7b"   # Neural Chat - conversation optimized
+          - "orca-mini:3b"     # Orca Mini - instruction following
+          - "vicuna:7b"        # Vicuna - chat optimized
+          - "vicuna:13b"       # Vicuna 13B - better chat
+
+        # Experimental/Advanced Models
+        experimental:
+          - "dolphin-mixtral:8x7b"  # Dolphin Mixtral - uncensored
+          - "solar:10.7b"      # Solar - Korean-English bilingual
+          - "openchat:7b"      # OpenChat - conversation
+          - "starling-lm:7b"   # Starling - RLHF trained
+          - "zephyr:7b"        # Zephyr - instruction tuned
+          - "nous-hermes2:10.7b"    # Nous Hermes - reasoning
+          - "wizard-vicuna-uncensored:13b"  # Uncensored model
+
+      # Model configuration options
+      configuration:
+        temperature: 0.8
+        max_tokens: 800
+        top_p: 0.9
+        top_k: 40
+        repeat_penalty: 1.1
+        context_length: 4096
+        timeout: 30
+        connect_timeout: 10
+        read_timeout: 60
+        debug: false
+        verbose: false
+
+      # Model recommendations by use case
+      recommendations:
+        development: "codellama:13b"
+        production: "llama3.1:8b"
+        lightweight: "phi3:3.8b"
+        coding: "deepseek-coder:6.7b"
+        chat: "neural-chat:7b"
+        vision: "llava:7b"
+        experimental: "dolphin-mixtral:8x7b"
+
     local_models:
       enabled: true
       cost: "free"
       directory: "models/"
-    
+
     # Paid APIs (disabled by default for zero-cost)
     openai:
       enabled: false
       cost: "paid"
       note: "Enable only if budget allows"
-    
+
     anthropic:
       enabled: false
       cost: "paid"
@@ -222,20 +302,20 @@ task_queue:
   enabled: true
   backend: "sqlite"
   database: "data/task_queue.db"
-  
+
   task_types:
     - "CONTENT_GENERATION"
     - "RESEARCH"
     - "SYSTEM_MAINTENANCE"
     - "USER_REQUEST"
     - "ANALYTICS"
-  
+
   priorities:
     - "LOW"
     - "MEDIUM"
     - "HIGH"
     - "URGENT"
-  
+
   workers:
     max_concurrent: 5
     retry_attempts: 3
@@ -247,28 +327,28 @@ security:
     enabled: true
     method: "session_based"
     session_timeout: 3600
-  
+
   authorization:
     roles:
       - "admin"
       - "user"
       - "guest"
-    
+
     permissions:
       admin:
         - "system_management"
         - "user_management"
         - "content_management"
         - "monitoring_access"
-      
+
       user:
         - "content_creation"
         - "dashboard_access"
         - "task_submission"
-      
+
       guest:
         - "limited_access"
-  
+
   data_protection:
     encrypt_sensitive_data: true
     secure_sessions: true
@@ -278,28 +358,28 @@ security:
 # Content Generation Pipeline
 content_pipeline:
   enabled: true
-  
+
   stages:
     research:
       agent: "research_agent"
       timeout: 120
       output_format: "json"
-    
+
     script_generation:
       agent: "content_agent"
       timeout: 180
       templates: "content/templates/"
-    
+
     voice_synthesis:
       service: "automated_studio"
       output_dir: "outputs/audio"
       formats: ["mp3", "wav"]
-    
+
     avatar_creation:
       service: "automated_studio"
       output_dir: "outputs/videos"
       formats: ["mp4", "webm"]
-    
+
     final_assembly:
       service: "automated_studio"
       output_dir: "outputs/final"
@@ -313,7 +393,7 @@ websockets:
     system_updates: "/ws/system"
     task_updates: "/ws/tasks"
     content_updates: "/ws/content"
-  
+
   features:
     real_time_messaging: true
     system_notifications: true
@@ -325,23 +405,23 @@ storage:
   local_storage:
     enabled: true
     base_directory: "data/"
-    
+
     directories:
       user_data: "data/users/"
       content_assets: "data/assets/"
       generated_content: "outputs/"
       system_logs: "logs/"
       backups: "backups/"
-  
+
   content_management:
     forbidden_terms:
       file: "data/forbidden_terms.json"
       enabled: true
-    
+
     monetization:
       orders_file: "data/monetization/orders.json"
       revenue_tracking: true
-  
+
   backup_strategy:
     enabled: true
     frequency: "daily"
@@ -355,12 +435,12 @@ integration_rules:
     avoid_paid_apis: true
     prefer_open_source: true
     minimize_external_dependencies: true
-  
+
   no_delete_policy:
     preserve_existing_files: true
     backup_before_changes: true
     version_control_integration: true
-  
+
   performance_optimization:
     lazy_loading: true
     caching_enabled: true
@@ -370,7 +450,7 @@ integration_rules:
 # Deployment Configuration
 deployment:
   mode: "integrated"
-  
+
   startup_sequence:
     1: "Initialize databases"
     2: "Start task queue system"
@@ -378,13 +458,13 @@ deployment:
     4: "Start web services"
     5: "Enable monitoring"
     6: "Activate WebSocket connections"
-  
+
   health_checks:
     database_connectivity: true
     agent_responsiveness: true
     api_endpoint_availability: true
     websocket_functionality: true
-  
+
   graceful_shutdown:
     enabled: true
     timeout_seconds: 30
@@ -393,18 +473,18 @@ deployment:
 # Logging Configuration
 logging:
   level: "INFO"
-  
+
   handlers:
     file:
       enabled: true
       filename: "logs/master_integration.log"
       max_size: "10MB"
       backup_count: 5
-    
+
     console:
       enabled: true
       format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-  
+
   loggers:
     master_integration: "INFO"
     task_queue: "INFO"
@@ -428,17 +508,17 @@ performance:
     connection_pool_size: 10
     query_timeout: 30
     enable_wal_mode: true
-  
+
   task_queue:
     batch_size: 10
     processing_interval: 1
     max_retries: 3
-  
+
   content_generation:
     parallel_processing: true
     max_concurrent_jobs: 3
     cache_generated_content: true
-  
+
   web_server:
     worker_processes: 1
     max_connections: 100
@@ -456,16 +536,16 @@ monitoring_thresholds:
 # Integration Testing
 testing:
   enabled: true
-  
+
   test_suites:
     unit_tests: "tests/unit/"
     integration_tests: "tests/integration/"
     end_to_end_tests: "tests/e2e/"
-  
+
   test_data:
     fixtures: "tests/fixtures/"
     mock_data: "tests/mock_data/"
-  
+
   continuous_testing:
     enabled: false  # Enable in development
     test_on_file_change: false

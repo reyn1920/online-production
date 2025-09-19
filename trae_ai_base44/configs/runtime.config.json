@@ -1,5 +1,5 @@
 {
-  "mode": "local", 
+  "mode": "local",
   "guards": {
     "rule1": true,
     "upr": true

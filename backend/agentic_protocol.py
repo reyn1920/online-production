@@ -1,1426 +1,470 @@
-#!/usr/bin/env python3
-"""
-TRAE.AI Agentic Protocol Implementation
+"""Agentic Protocol Implementation
 
-Base44 Agentic Protocol with Intelligent Mode Switching and Failsafe Mechanisms
-"""""""""
-
-System Constitution Adherence:
-- 100% Live Code: All agents produce executable, production-ready code
-- Zero-Cost Stack: Uses only free, open-source tools and APIs
-- Additive Evolution: Builds upon existing systems without breaking changes
-- Secure Design: Implements robust security and error handling
-
-
-
+This module defines the core protocol for agent communication and coordination
+in the online production system.
 """
 
-import json
 import logging
-import sqlite3
-import threading
-import time
-import uuid
-from dataclasses import dataclass
-from datetime import datetime, timedelta
+from abc import ABC, abstractmethod
+from dataclasses import dataclass, asdict
+from datetime import datetime
 from enum import Enum
-from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Optional, Any, Callable
+from uuid import uuid4
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.FileHandler("logs/agentic_protocol.log"),
-        logging.StreamHandler(),
-     ],
- )
 logger = logging.getLogger(__name__)
 
 
-class AgentMode(Enum):
-    """Agent operational modes"""
+class MessageType(Enum):
+    """Types of messages in the agentic protocol."""
 
-    AUTONOMOUS = "autonomous"
-    SUPERVISED = "supervised"
-    MANUAL = "manual"
-    EMERGENCY = "emergency"
-    MAINTENANCE = "maintenance"
+    TASK_REQUEST = "task_request"
+    TASK_RESPONSE = "task_response"
+    STATUS_UPDATE = "status_update"
+    ERROR = "error"
+    HEARTBEAT = "heartbeat"
+    COORDINATION = "coordination"
+    RESOURCE_REQUEST = "resource_request"
+    RESOURCE_RESPONSE = "resource_response"
 
 
 class AgentStatus(Enum):
-    """Agent status states"""
+    """Status of an agent."""
 
-    ACTIVE = "active"
     IDLE = "idle"
     BUSY = "busy"
     ERROR = "error"
     OFFLINE = "offline"
-    RECOVERING = "recovering"
+    INITIALIZING = "initializing"
 
 
-class TaskPriority(Enum):
-    """
-Task priority levels
+class TaskStatus(Enum):
+    """Status of a task."""
 
-
-    CRITICAL = 1
-    HIGH = 2
-    MEDIUM = 3
-    LOW = 4
-    BACKGROUND = 5
-
-
-class FailsafeLevel(Enum):
-    
-"""Failsafe escalation levels"""
-
-    WARNING = "warning"
-    CAUTION = "caution"
-    CRITICAL = "critical"
-    EMERGENCY = "emergency"
+    PENDING = "pending"
+    IN_PROGRESS = "in_progress"
+    COMPLETED = "completed"
+    FAILED = "failed"
+    CANCELLED = "cancelled"
 
 
 @dataclass
-class AgentTask:
-    """Represents a task for an agent"""
+class AgentCapability:
+    """Represents a capability that an agent possesses."""
 
-    id: str
-    agent_id: str
-    task_type: str
-    priority: TaskPriority
-    payload: Dict[str, Any]
-    created_at: datetime
-    scheduled_at: Optional[datetime] = None
-    started_at: Optional[datetime] = None
-    completed_at: Optional[datetime] = None
-    status: str = "pending"
-    result: Optional[Dict[str, Any]] = None
-    error: Optional[str] = None
-    retry_count: int = 0
-    max_retries: int = 3
-
-
-@dataclass
-class AgentMetrics:
-    """
-Agent performance metrics
-
-
-    tasks_completed: int = 0
-    tasks_failed: int = 0
-    average_response_time: float = 0.0
-    uptime_percentage: float = 100.0
-    last_activity: Optional[datetime] = None
-    error_rate: float = 0.0
-   
-""""""
-
-    efficiency_score: float = 100.0
-   
-
-    
-   
-"""
-@dataclass
-class FailsafeEvent:
-    """
-Failsafe system event
-
-
-    id: str
-    level: FailsafeLevel
-    agent_id: str
-    event_type: str
+    name: str
+    version: str
     description: str
+    parameters: dict[str, Any]
+
+
+@dataclass
+class AgentInfo:
+    """Information about an agent."""
+
+    agent_id: str
+    name: str
+    status: AgentStatus
+    capabilities: list[AgentCapability]
+    last_heartbeat: datetime
+    metadata: dict[str, Any]
+
+
+@dataclass
+class Task:
+    """Represents a task in the system."""
+
+    task_id: str
+    task_type: str
+    payload: dict[str, Any]
+    priority: int = 0
+    timeout: Optional[int] = None
+    created_at: Optional[datetime] = None
+    assigned_to: Optional[str] = None
+    status: TaskStatus = TaskStatus.PENDING
+    result: Optional[dict[str, Any]] = None
+    error: Optional[str] = None
+
+    def __post_init__(self):
+        if self.created_at is None:
+            self.created_at = datetime.utcnow()
+
+
+@dataclass
+class Message:
+    """Base message structure for agent communication."""
+
+    message_id: str
+    message_type: MessageType
+    sender_id: str
+    recipient_id: Optional[str]
     timestamp: datetime
-    resolved: bool = False
-    resolution_time: Optional[datetime] = None
-   
-""""""
+    payload: dict[str, Any]
+    correlation_id: Optional[str] = None
 
-    actions_taken: List[str] = None
-   
+    def __post_init__(self):
+        if not self.message_id:
+            self.message_id = str(uuid4())
+        if not self.timestamp:
+            self.timestamp = datetime.utcnow()
 
-    
-   
-"""
-class AgenticProtocol:
-    """Main Agentic Protocol Implementation"""
+    def to_dict(self) -> dict[str, Any]:
+        """Convert message to dictionary."""
+        result = asdict(self)
+        result["message_type"] = self.message_type.value
+        result["timestamp"] = self.timestamp.isoformat()
+        return result
 
-    def __init__(self, db_path: str = "data/agentic_protocol.db"):
-        self.db_path = db_path
-        self.agents: Dict[str, "BaseAgent"] = {}
-        self.task_queue: List[AgentTask] = []
-        self.failsafe_events: List[FailsafeEvent] = []
-        self.system_mode = AgentMode.AUTONOMOUS
-        self.is_running = False
-        self.lock = threading.Lock()
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> "Message":
+        """Create message from dictionary."""
+        data["message_type"] = MessageType(data["message_type"])
+        data["timestamp"] = datetime.fromisoformat(data["timestamp"])
+        return cls(**data)
 
-        # Initialize database
-        self._init_database()
 
-        # Start background processes
-        self._start_background_processes()
+class MessageHandler(ABC):
+    """Abstract base class for message handlers."""
 
-        logger.info("Agentic Protocol initialized successfully")
+    @abstractmethod
+    async def handle_message(self, message: Message) -> Optional[Message]:
+        """Handle an incoming message and optionally return a response."""
 
-    def _init_database(self):
-        """
-Initialize SQLite database for persistent storage
 
-       
-""""""
+class AgentState(Enum):
+    """Agent execution states"""
 
-        Path(self.db_path).parent.mkdir(parents=True, exist_ok=True)
-       
+    IDLE = "idle"
+    RUNNING = "running"
+    PAUSED = "paused"
+    ERROR = "error"
+    COMPLETED = "completed"
 
-        
-       
-"""
-        with sqlite3.connect(self.db_path) as conn:
-            conn.executescript(
-               """
-CREATE TABLE IF NOT EXISTS agents (
-                    id TEXT PRIMARY KEY,
-                        name TEXT NOT NULL,
-                        type TEXT NOT NULL,
-                        mode TEXT NOT NULL,
-                        status TEXT NOT NULL,
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        last_activity TIMESTAMP,
-                        config TEXT
 
-#                 );
-""""""
-        Path(self.db_path).parent.mkdir(parents=True, exist_ok=True)
-       """
+class BaseAgent(ABC):
+    """Base class for all agents in the system"""
 
-        
-       
-
-                CREATE TABLE IF NOT EXISTS tasks (
-                    id TEXT PRIMARY KEY,
-                        agent_id TEXT NOT NULL,
-                        task_type TEXT NOT NULL,
-                        priority INTEGER NOT NULL,
-                        payload TEXT NOT NULL,
-                        status TEXT NOT NULL,
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        scheduled_at TIMESTAMP,
-                        started_at TIMESTAMP,
-                        completed_at TIMESTAMP,
-                        result TEXT,
-                        error TEXT,
-                        retry_count INTEGER DEFAULT 0,
-                        FOREIGN KEY (agent_id) REFERENCES agents (id)
-#                 );
-
-                CREATE TABLE IF NOT EXISTS failsafe_events (
-                    id TEXT PRIMARY KEY,
-                        level TEXT NOT NULL,
-                        agent_id TEXT NOT NULL,
-                        event_type TEXT NOT NULL,
-                        description TEXT NOT NULL,
-                        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        resolved BOOLEAN DEFAULT FALSE,
-                        resolution_time TIMESTAMP,
-                        actions_taken TEXT
-#                 );
-
-                CREATE TABLE IF NOT EXISTS metrics (
-                    agent_id TEXT PRIMARY KEY,
-                        tasks_completed INTEGER DEFAULT 0,
-                        tasks_failed INTEGER DEFAULT 0,
-                        average_response_time REAL DEFAULT 0.0,
-                        uptime_percentage REAL DEFAULT 100.0,
-                        last_activity TIMESTAMP,
-                        error_rate REAL DEFAULT 0.0,
-                        efficiency_score REAL DEFAULT 100.0,
-                        FOREIGN KEY (agent_id) REFERENCES agents (id)
-#                 );
-           
-""""""
-
-            
-
-             
-            
-"""
-             )
-            """"""
-            
-           """
-
-    def _start_background_processes(self):
-        """
-        Start background monitoring and processing threads
-        """"""
-
-        
-       
-
-        self.is_running = True
-       
-""""""
-
-        # Task processor thread
-        threading.Thread(target=self._process_tasks, daemon=True).start()
-       
-
-        
-       
-"""
-        self.is_running = True
-       """
-
-        
-       
-
-        # Health monitor thread
-        threading.Thread(target=self._monitor_health, daemon=True).start()
-
-        # Failsafe monitor thread
-        threading.Thread(target=self._monitor_failsafes, daemon=True).start()
-
-        # Metrics collector thread
-       
-""""""
-
-        threading.Thread(target=self._collect_metrics, daemon=True).start()
-       
-
-        
-       
-"""
-    def register_agent(self, agent: "BaseAgent") -> bool:
-        """
-Register a new agent with the protocol
-
-        try:
-            
-"""
-            with self.lock:
-            """"""
-                if agent.id in self.agents:
-                    logger.warning(f"Agent {agent.id} already registered")
-            """
-
-            with self.lock:
-            
-
-           
-""""""
-                    return False
-
-                self.agents[agent.id] = agent
-
-                # Store in database
-                with sqlite3.connect(self.db_path) as conn:
-                    conn.execute(
-                        "INSERT OR REPLACE INTO agents (id, name, type, mode, status, config) VALUES (?, ?, ?, ?, ?, ?)",
-                        (
-                            agent.id,
-                            agent.name,
-                            agent.agent_type,
-                            agent.mode.value,
-                            agent.status.value,
-                            json.dumps(agent.config),
-                         ),
-                     )
-
-                    # Initialize metrics
-                    conn.execute(
-                        "INSERT OR REPLACE INTO metrics (agent_id) VALUES (?)",
-                        (agent.id,),
-                     )
-
-                logger.info(f"Agent {agent.id} registered successfully")
-                return True
-
-        except Exception as e:
-            logger.error(f"Failed to register agent {agent.id}: {e}")
-            return False
-
-    def unregister_agent(self, agent_id: str) -> bool:
-        """
-Unregister an agent from the protocol
-
-        try:
-            
-"""
-            with self.lock:
-            """"""
-                if agent_id not in self.agents:
-                    logger.warning(f"Agent {agent_id} not found")
-            """
-
-            with self.lock:
-            
-
-           
-""""""
-                    return False
-
-                # Gracefully shutdown agent
-                agent = self.agents[agent_id]
-                agent.shutdown()
-
-                del self.agents[agent_id]
-
-                # Update database
-                with sqlite3.connect(self.db_path) as conn:
-                    conn.execute("UPDATE agents SET status = 'offline' WHERE id = ?", (agent_id,))
-
-                logger.info(f"Agent {agent_id} unregistered successfully")
-                return True
-
-        except Exception as e:
-            logger.error(f"Failed to unregister agent {agent_id}: {e}")
-            return False
-
-    def submit_task(self, task: AgentTask) -> bool:
-        """
-Submit a task to the protocol
-
-        try:
-            with self.lock:
-               
-""""""
-
-                # Validate agent exists
-               
-
-                
-               
-"""
-                if task.agent_id not in self.agents:
-                    logger.error(f"Agent {task.agent_id} not found for task {task.id}")
-               """
-
-                
-               
-
-                # Validate agent exists
-               
-""""""
-                    return False
-
-                # Add to queue
-                self.task_queue.append(task)
-                self.task_queue.sort(key=lambda t: t.priority.value)
-
-                # Store in database
-                with sqlite3.connect(self.db_path) as conn:
-                    conn.execute(
-                        "INSERT INTO tasks (id, agent_id, task_type, priority, payload, status, scheduled_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                        (
-                            task.id,
-                            task.agent_id,
-                            task.task_type,
-                            task.priority.value,
-                            json.dumps(task.payload),
-                            task.status,
-                            task.scheduled_at,
-                         ),
-                     )
-
-                logger.info(f"Task {task.id} submitted for agent {task.agent_id}")
-                return True
-
-        except Exception as e:
-            logger.error(f"Failed to submit task {task.id}: {e}")
-            return False
-
-    def _process_tasks(self):
-        """
-Background task processing loop
-
-        while self.is_running:
-            try:
-                
-"""
-                with self.lock:
-                """"""
-                    if not self.task_queue:
-                        time.sleep(1)
-                       """
-
-                        
-                       
-
-                        continue
-                       
-""""""
-
-                
-
-                with self.lock:
-                
-""""""
-                
-               """
-                    # Get next task
-                    task = self.task_queue.pop(0)
-
-                    # Check if scheduled time has arrived
-                    if task.scheduled_at and datetime.now() < task.scheduled_at:
-                        self.task_queue.append(task)
-                        time.sleep(1)
-                        continue
-
-                    # Get agent
-                    agent = self.agents.get(task.agent_id)
-                    if not agent:
-                        logger.error(f"Agent {task.agent_id} not found for task {task.id}")
-                        continue
-
-                    # Check agent availability
-                    if agent.status != AgentStatus.ACTIVE and agent.status != AgentStatus.IDLE:
-                        # Re - queue task
-                        self.task_queue.append(task)
-                        time.sleep(1)
-                        continue
-
-                # Execute task (outside lock to prevent blocking)
-                self._execute_task(agent, task)
-
-            except Exception as e:
-                logger.error(f"Error in task processing loop: {e}")
-                time.sleep(5)
-
-    def _execute_task(self, agent: "BaseAgent", task: AgentTask):
-        """Execute a task on an agent"""
-        try:
-            task.started_at = datetime.now()
-            task.status = "running"
-
-            # Update database
-            with sqlite3.connect(self.db_path) as conn:
-                conn.execute(
-                    "UPDATE tasks SET status = 'running', started_at = ? WHERE id = ?",
-                    (task.started_at, task.id),
-                 )
-
-            # Execute task
-            result = agent.execute_task(task)
-
-            # Handle result
-            if result.get("success", False):
-                task.status = "completed"
-                task.completed_at = datetime.now()
-                task.result = result
-
-                # Update metrics
-                self._update_agent_metrics(
-                    agent.id,
-                    success=True,
-                    response_time=(task.completed_at - task.started_at).total_seconds(),
-                 )
-
-                logger.info(f"Task {task.id} completed successfully")
-
-            else:
-                task.status = "failed"
-                task.error = result.get("error", "Unknown error")
-                task.retry_count += 1
-
-                # Update metrics
-                self._update_agent_metrics(agent.id, success=False)
-
-                # Retry if possible
-                if task.retry_count < task.max_retries:
-                    task.status = "pending"
-                    task.scheduled_at = datetime.now() + timedelta(minutes=task.retry_count * 5)
-                    with self.lock:
-                        self.task_queue.append(task)
-                    logger.warning(
-                        f"Task {task.id} failed, retrying ({task.retry_count}/{task.max_retries})"
-                     )
-                else:
-                    logger.error(
-                        f"Task {task.id} failed permanently after {task.max_retries} retries"
-                     )
-                    self._trigger_failsafe(
-                        agent.id,
-                        FailsafeLevel.WARNING,
-                        "task_failure",
-                        f"Task {task.id} failed permanently",
-                     )
-
-            # Update database
-            with sqlite3.connect(self.db_path) as conn:
-                conn.execute(
-                    "UPDATE tasks SET status = ?, completed_at = ?, result = ?, error = ?, retry_count = ? WHERE id = ?",
-                    (
-                        task.status,
-                        task.completed_at,
-                        json.dumps(task.result) if task.result else None,
-                        task.error,
-                        task.retry_count,
-                        task.id,
-                     ),
-                 )
-
-        except Exception as e:
-            logger.error(f"Error executing task {task.id}: {e}")
-            task.status = "error"
-            task.error = str(e)
-            self._trigger_failsafe(agent.id, FailsafeLevel.CRITICAL, "task_execution_error", str(e))
-
-    def _monitor_health(self):
-        """
-Monitor agent health and system status
-
-        while self.is_running:
-            try:
-                with self.lock:
-                    for agent_id, agent in self.agents.items():
-                       
-""""""
-
-                        # Check agent responsiveness
-                       
-
-                        
-                       
-"""
-                        if not agent.is_responsive():
-                            logger.warning(f"Agent {agent_id} is not responsive")
-                            self._trigger_failsafe(
-                                agent_id,
-                                FailsafeLevel.CAUTION,
-                                "unresponsive",
-                                "Agent not responding to health checks",
-                             )
-                       """
-
-                        
-                       
-
-                        # Check agent responsiveness
-                       
-""""""
-                        # Check resource usage
-                        resource_usage = agent.get_resource_usage()
-                        if resource_usage.get("cpu_percent", 0) > 90:
-                            self._trigger_failsafe(
-                                agent_id,
-                                FailsafeLevel.WARNING,
-                                "high_cpu",
-                                f"CPU usage: {resource_usage['cpu_percent']}%",
-                             )
-
-                        if resource_usage.get("memory_percent", 0) > 90:
-                            self._trigger_failsafe(
-                                agent_id,
-                                FailsafeLevel.WARNING,
-                                "high_memory",
-                                f"Memory usage: {resource_usage['memory_percent']}%",
-                             )
-
-                time.sleep(30)  # Check every 30 seconds
-
-            except Exception as e:
-                logger.error(f"Error in health monitoring: {e}")
-                time.sleep(60)
-
-    def _monitor_failsafes(self):
-        """
-Monitor and handle failsafe events
-
-        while self.is_running:
-            try:
-               
-""""""
-
-                # Check for unresolved critical events
-               
-
-                
-               
-"""
-                critical_events = [
-                    e
-                    for e in self.failsafe_events
-               """
-
-                
-               
-
-                # Check for unresolved critical events
-               
-""""""
-
-                    if not e.resolved
-                    and e.level in [FailsafeLevel.CRITICAL, FailsafeLevel.EMERGENCY]
-                
-
-                 
-                
-"""
-                 ]
-                """
-
-                 
-                
-
-                for event in critical_events:
-                
-""""""
-
-                 ]
-                
-
-                 
-                
-"""
-                    if datetime.now() - event.timestamp > timedelta(minutes=5):
-                        self._escalate_failsafe(event)
-
-                time.sleep(60)  # Check every minute
-
-            except Exception as e:
-                logger.error(f"Error in failsafe monitoring: {e}")
-                time.sleep(60)
-
-    def _collect_metrics(self):
-        """
-Collect and update agent metrics
-
-        while self.is_running:
-            try:
-                with self.lock:
-                    
-"""
-                    for agent_id, agent in self.agents.items():
-                    """"""
-                        metrics = agent.get_metrics()
-                       """"""
-                    for agent_id, agent in self.agents.items():
-                    """"""
-                        # Update database
-                        with sqlite3.connect(self.db_path) as conn:
-                            conn.execute(
-                                "UPDATE metrics SET last_activity = ?, uptime_percentage = ?, efficiency_score = ? WHERE agent_id = ?",
-                                (
-                                    datetime.now(),
-                                    metrics.uptime_percentage,
-                                    metrics.efficiency_score,
-                                    agent_id,
-                                 ),
-                             )
-
-                time.sleep(300)  # Collect every 5 minutes
-
-            except Exception as e:
-                logger.error(f"Error collecting metrics: {e}")
-                time.sleep(300)
-
-    def _update_agent_metrics(self, agent_id: str, success: bool, response_time: float = 0.0):
-        """
-Update agent performance metrics
-
-        try:
-            
-"""
-            with sqlite3.connect(self.db_path) as conn:
-            """"""
-                if success:
-                    conn.execute(
-                        "UPDATE metrics SET tasks_completed = tasks_completed + 1, average_response_time = (average_response_time + ?)/2 WHERE agent_id = ?",
-                        (response_time, agent_id),
-                     )
-                else:
-                    conn.execute(
-                        "UPDATE metrics SET tasks_failed = tasks_failed + 1 WHERE agent_id = ?",
-                        (agent_id,),
-                     )
-        except Exception as e:
-            logger.error(f"Error updating agent metrics: {e}")
-            """
-
-            with sqlite3.connect(self.db_path) as conn:
-            
-
-           
-""""""
-        # Calculate error rate
-        try:
-            with sqlite3.connect(self.db_path) as conn:
-                cursor = conn.execute(
-                    "SELECT tasks_completed, tasks_failed FROM metrics WHERE agent_id = ?",
-                    (agent_id,),
-                 )
-                row = cursor.fetchone()
-                if row:
-                    completed, failed = row
-                    total = completed + failed
-                    error_rate = (failed / total * 100) if total > 0 else 0
-
-                    conn.execute(
-                        "UPDATE metrics SET error_rate = ? WHERE agent_id = ?",
-                        (error_rate, agent_id),
-                     )
-
-        except Exception as e:
-            logger.error(f"Error updating metrics for agent {agent_id}: {e}")
-
-    def _trigger_failsafe(
-        self, agent_id: str, level: FailsafeLevel, event_type: str, description: str
-    ):
-        """
-Trigger a failsafe event
-
-        
-"""
-        try:
-        """
-
-            event = FailsafeEvent(
-        
-
-        try:
-        
-"""
-                id=str(uuid.uuid4()),
-                level=level,
-                agent_id=agent_id,
-                event_type=event_type,
-                description=description,
-                timestamp=datetime.now(),
-                actions_taken=[],
-            """
-
-             
-            
-
-             )
-            
-""""""
-
-            self.failsafe_events.append(event)
-            
-
-             
-            
-"""
-             )
-            """"""
-            # Store in database
-            with sqlite3.connect(self.db_path) as conn:
-                conn.execute(
-                    "INSERT INTO failsafe_events (id, level, agent_id, event_type, description, timestamp) VALUES (?, ?, ?, ?, ?, ?)",
-                    (
-                        event.id,
-                        event.level.value,
-                        event.agent_id,
-                        event.event_type,
-                        event.description,
-                        event.timestamp,
-                     ),
-                 )
-
-            # Take immediate action based on level
-            self._handle_failsafe_event(event)
-
-            logger.warning(f"Failsafe triggered: {level.value} - {description}")
-
-        except Exception as e:
-            logger.error(f"Error triggering failsafe: {e}")
-
-    def _handle_failsafe_event(self, event: FailsafeEvent):
-        """
-Handle a failsafe event based on its level
-
-        
-"""
-        try:
-        """"""
-            actions = []
-           """"""
-        try:
-        """"""
-            if event.level == FailsafeLevel.WARNING:
-                actions.append("logged_warning")
-
-            elif event.level == FailsafeLevel.CAUTION:
-                # Attempt agent recovery
-                if event.agent_id in self.agents:
-                    agent = self.agents[event.agent_id]
-                    if agent.recover():
-                        actions.append("agent_recovered")
-                        event.resolved = True
-                        event.resolution_time = datetime.now()
-                    else:
-                        actions.append("recovery_failed")
-                        # Escalate to critical
-                        self._trigger_failsafe(
-                            event.agent_id,
-                            FailsafeLevel.CRITICAL,
-                            "recovery_failed",
-                            "Agent recovery failed",
-                         )
-
-            elif event.level == FailsafeLevel.CRITICAL:
-                # Restart agent
-                if event.agent_id in self.agents:
-                    agent = self.agents[event.agent_id]
-                    if agent.restart():
-                        actions.append("agent_restarted")
-                        event.resolved = True
-                        event.resolution_time = datetime.now()
-                    else:
-                        actions.append("restart_failed")
-                        # Escalate to emergency
-                        self._trigger_failsafe(
-                            event.agent_id,
-                            FailsafeLevel.EMERGENCY,
-                            "restart_failed",
-                            "Agent restart failed",
-                         )
-
-            elif event.level == FailsafeLevel.EMERGENCY:
-                # Switch to manual mode and alert
-                self.system_mode = AgentMode.EMERGENCY
-                actions.append("switched_to_emergency_mode")
-                actions.append("alert_sent")
-
-                # Disable problematic agent
-                if event.agent_id in self.agents:
-                    self.agents[event.agent_id].disable()
-                    actions.append("agent_disabled")
-
-            event.actions_taken = actions
-
-            # Update database
-            with sqlite3.connect(self.db_path) as conn:
-                conn.execute(
-                    "UPDATE failsafe_events SET resolved = ?, resolution_time = ?, actions_taken = ? WHERE id = ?",
-                    (
-                        event.resolved,
-                        event.resolution_time,
-                        json.dumps(actions),
-                        event.id,
-                     ),
-                 )
-
-        except Exception as e:
-            logger.error(f"Error handling failsafe event {event.id}: {e}")
-
-    def _escalate_failsafe(self, event: FailsafeEvent):
-        """
-Escalate an unresolved failsafe event
-
-        if event.level == FailsafeLevel.WARNING:
-            new_level = FailsafeLevel.CAUTION
-        elif event.level == FailsafeLevel.CAUTION:
-            new_level = FailsafeLevel.CRITICAL
-        elif event.level == FailsafeLevel.CRITICAL:
-            new_level = FailsafeLevel.EMERGENCY
-        else:
-            
-"""
-            return  # Already at highest level
-            """"""
-        self._trigger_failsafe(
-            event.agent_id,
-            new_level,
-            f"escalated_{event.event_type}",
-            f"Escalated from {event.level.value}: {event.description}",
-         )
-            """
-
-            return  # Already at highest level
-            
-
-           
-""""""
-
-    def get_system_status(self) -> Dict[str, Any]:
-        """
-        Get comprehensive system status
-        """
-        try:
-            """
-
-            with self.lock:
-            
-
-                agent_statuses = {
-                    agent_id: agent.status.value for agent_id, agent in self.agents.items()
-                
-""""""
-
-                 }
-                
-
-                 
-                
-""""""
-
-            with self.lock:
-            
-
-           
-""""""
-                return {
-                    "system_mode": self.system_mode.value,
-                    "total_agents": len(self.agents),
-                    "active_agents": len(
-                        [a for a in self.agents.values() if a.status == AgentStatus.ACTIVE]
-                     ),
-                    "pending_tasks": len(self.task_queue),
-                    "unresolved_failsafes": len(
-                        [e for e in self.failsafe_events if not e.resolved]
-                     ),
-                    "agent_statuses": agent_statuses,
-                    "uptime": (time.time() - self.start_time if hasattr(self, "start_time") else 0),
-                 }
-        except Exception as e:
-            logger.error(f"Error getting system status: {e}")
-            return {"error": str(e)}
-
-    def shutdown(self):
-        """Gracefully shutdown the protocol"""
-        logger.info("Shutting down Agentic Protocol...")
-
-        self.is_running = False
-
-        # Shutdown all agents
-        with self.lock:
-            for agent in self.agents.values():
-                agent.shutdown()
-
-        logger.info("Agentic Protocol shutdown complete")
-
-
-class BaseAgent:
-    """Base class for all agents in the protocol"""
-
-    def __init__(self, agent_id: str, name: str, agent_type: str, config: Dict[str, Any] = None):
-        self.id = agent_id
+    def __init__(self, agent_id: str, name: str):
+        self.agent_id = agent_id
         self.name = name
-        self.agent_type = agent_type
-        self.config = config or {}
-        self.mode = AgentMode.AUTONOMOUS
-        self.status = AgentStatus.IDLE
+        self.state = AgentState.IDLE
+        self.logger = logging.getLogger(f"agent.{name}")
         self.created_at = datetime.now()
         self.last_activity = datetime.now()
-        self.metrics = AgentMetrics()
 
-        logger.info(f"Agent {self.id} ({self.name}) initialized")
+    @abstractmethod
+    def execute(self, task: dict[str, Any]) -> dict[str, Any]:
+        """Execute a task"""
 
-    def execute_task(self, task: AgentTask) -> Dict[str, Any]:
-        """Execute a task - to be implemented by subclasses"""
-        raise NotImplementedError("Subclasses must implement execute_task")
+    @abstractmethod
+    def validate_task(self, task: dict[str, Any]) -> bool:
+        """Validate if task can be executed"""
 
-    def is_responsive(self) -> bool:
-        """
-Check if agent is responsive
-
-        try:
-           
-""""""
-
-            # Simple health check - can be overridden by subclasses
-           
-
-            
-           
-"""
-            return self.status != AgentStatus.ERROR and self.status != AgentStatus.OFFLINE
-        except Exception:
-           """
-
-            
-           
-
-            # Simple health check - can be overridden by subclasses
-           
-""""""
-
-            
-
-            return False
-            
-""""""
-
-            
-           
-
-            
-"""
-
-            return False
-
-            """"""
-    def get_resource_usage(self) -> Dict[str, float]:
-        """
-Get current resource usage
-
-       
-""""""
-
-        # Basic implementation - can be overridden by subclasses
-       
-
-        
-       
-"""
-        return {"cpu_percent": 0.0, "memory_percent": 0.0, "disk_usage": 0.0}
-       """
-
-        
-       
-
-        # Basic implementation - can be overridden by subclasses
-       
-""""""
-
-    def get_metrics(self) -> AgentMetrics:
-        """
-        Get agent metrics
-        """"""
-
-        return self.metrics
-        
-
-       
-""""""
-
-        
-
-
-        return self.metrics
-
-        
-""""""
-
-        
-       
-
-    def recover(self) -> bool:
-        
-"""Attempt to recover from error state"""
-
-        
-
-        try:
-        
-""""""
-        
-       """
-            if self.status == AgentStatus.ERROR:
-                self.status = AgentStatus.IDLE
-                logger.info(f"Agent {self.id} recovered successfully")
-        """
-
-        try:
-        
-
-       
-""""""
-                return True
-            return True
-        except Exception as e:
-            logger.error(f"Agent {self.id} recovery failed: {e}")
-            return False
-
-    def restart(self) -> bool:
-        """Restart the agent"""
-        try:
-            self.status = AgentStatus.OFFLINE
-            # Perform restart logic here
-            time.sleep(1)  # Simulate restart time
-            self.status = AgentStatus.IDLE
-            logger.info(f"Agent {self.id} restarted successfully")
-            return True
-        except Exception as e:
-            logger.error(f"Agent {self.id} restart failed: {e}")
-            return False
-
-    def disable(self):
-        """Disable the agent"""
-        self.status = AgentStatus.OFFLINE
-        logger.warning(f"Agent {self.id} disabled")
-
-    def shutdown(self):
-        """Gracefully shutdown the agent"""
-        self.status = AgentStatus.OFFLINE
-        logger.info(f"Agent {self.id} shutdown")
-
-
-# Example specialized agent implementations
-
-
-class ContentCreationAgent(BaseAgent):
-    """Agent specialized for content creation tasks"""
-
-    def __init__(self, agent_id: str):
-        super().__init__(agent_id, "Content Creator", "content_creation")
-
-    def execute_task(self, task: AgentTask) -> Dict[str, Any]:
-        """
-Execute content creation task
-
-        try:
-            self.status = AgentStatus.BUSY
-           
-""""""
-
-            self.last_activity = datetime.now()
-           
-
-            
-           
-"""
-            task_type = task.task_type
-            payload = task.payload
-
-            if task_type == "generate_script":
-                result = self._generate_script(payload)
-            elif task_type == "create_thumbnail":
-                result = self._create_thumbnail(payload)
-            elif task_type == "optimize_seo":
-                result = self._optimize_seo(payload)
-            else:
-                return {"success": False, "error": f"Unknown task type: {task_type}"}
-
-            self.status = AgentStatus.IDLE
-            return {"success": True, "result": result}
-
-        except Exception as e:
-            self.status = AgentStatus.ERROR
-            logger.error(f"Content creation task failed: {e}")
-            return {"success": False, "error": str(e)}
-
-    def _generate_script(self, payload: Dict[str, Any]) -> Dict[str, Any]:
-        """
-Generate video script
-
-       
-""""""
-
-        # Implement script generation logic
-       
-
-        
-       
-"""
-        return {"script": "Generated script content", "duration": 300}
-       """
-
-        
-       
-
-        # Implement script generation logic
-       
-""""""
-
-    def _create_thumbnail(self, payload: Dict[str, Any]) -> Dict[str, Any]:
-        
-Create video thumbnail
-""""""
-
-        
-       
-
-        # Implement thumbnail creation logic
-       
-""""""
-        return {"thumbnail_url": "https://example.com/thumbnail.jpg"}
-       """
-
-        
-       
-
-        # Implement thumbnail creation logic
-       
-""""""
-
-    def _optimize_seo(self, payload: Dict[str, Any]) -> Dict[str, Any]:
-        
-Optimize content for SEO
-""""""
-
-        
-       
-
-        # Implement SEO optimization logic
-       
-""""""
+    def get_status(self) -> dict[str, Any]:
+        """Get current agent status"""
         return {
-            "title": "Optimized title",
-            "description": "Optimized description",
-            "tags": ["tag1", "tag2"],
+            "agent_id": self.agent_id,
+            "name": self.name,
+            "state": self.state.value,
+            "created_at": self.created_at.isoformat(),
+            "last_activity": self.last_activity.isoformat(),
         }
-       """
 
-        
-       
 
-        # Implement SEO optimization logic
-       
-""""""
+class AgentProtocol(ABC):
+    """Abstract base class for agent protocol implementation."""
 
-class MarketingAgent(BaseAgent):
-    
-Agent specialized for marketing tasks
-"""
+    def __init__(self, agent_id: str, name: str):
+        self.agent_id = agent_id
+        self.name = name
+        self.status = AgentStatus.INITIALIZING
+        self.capabilities: list[AgentCapability] = []
+        self.message_handlers: dict[MessageType, MessageHandler] = {}
+        self.tasks: dict[str, Task] = {}
+        self.last_heartbeat = datetime.utcnow()
+        self.metadata: dict[str, Any] = {}
 
-    def __init__(self, agent_id: str):
-        super().__init__(agent_id, "Marketing Specialist", "marketing")
+    @abstractmethod
+    async def send_message(self, message: Message) -> bool:
+        """Send a message to another agent or the coordinator."""
 
-    def execute_task(self, task: AgentTask) -> Dict[str, Any]:
-        """
-Execute marketing task
+    @abstractmethod
+    async def receive_message(self) -> Optional[Message]:
+        """Receive a message from the message queue."""
 
+    def register_handler(self, message_type: MessageType, handler: MessageHandler):
+        """Register a message handler for a specific message type."""
+        self.message_handlers[message_type] = handler
+
+    def add_capability(self, capability: AgentCapability):
+        """Add a capability to this agent."""
+        self.capabilities.append(capability)
+
+    async def process_message(self, message: Message) -> Optional[Message]:
+        """Process an incoming message using registered handlers."""
+        handler = self.message_handlers.get(message.message_type)
+        if handler:
+            try:
+                return await handler.handle_message(message)
+            except Exception as e:
+                logger.error(f"Error processing message {message.message_id}: {e}")
+                return self.create_error_message(message, str(e))
+        else:
+            logger.warning(f"No handler for message type {message.message_type}")
+            return None
+
+    def create_message(
+        self,
+        message_type: MessageType,
+        recipient_id: Optional[str],
+        payload: dict[str, Any],
+        correlation_id: Optional[str] = None,
+    ) -> Message:
+        """Create a new message."""
+        return Message(
+            message_id=str(uuid4()),
+            message_type=message_type,
+            sender_id=self.agent_id,
+            recipient_id=recipient_id,
+            timestamp=datetime.utcnow(),
+            payload=payload,
+            correlation_id=correlation_id,
+        )
+
+    def create_error_message(self, original_message: Message, error: str) -> Message:
+        """Create an error response message."""
+        return self.create_message(
+            MessageType.ERROR,
+            original_message.sender_id,
+            {"error": error, "original_message_id": original_message.message_id},
+            original_message.message_id,
+        )
+
+    def create_task_response(
+        self, task: Task, success: bool, result: Optional[dict[str, Any]] = None
+    ) -> Message:
+        """Create a task response message."""
+        payload = {
+            "task_id": task.task_id,
+            "success": success,
+            "result": result or {},
+            "status": task.status.value,
+        }
+        return self.create_message(MessageType.TASK_RESPONSE, None, payload)
+
+    async def send_heartbeat(self):
+        """Send a heartbeat message."""
+        self.last_heartbeat = datetime.utcnow()
+        heartbeat_message = self.create_message(
+            MessageType.HEARTBEAT,
+            None,  # Broadcast to coordinator
+            {
+                "status": self.status.value,
+                "capabilities": [asdict(cap) for cap in self.capabilities],
+                "metadata": self.metadata,
+            },
+        )
+        await self.send_message(heartbeat_message)
+
+    async def request_task(
+        self, task_type: str, payload: dict[str, Any], priority: int = 0
+    ) -> str:
+        """Request a new task to be executed."""
+        task_id = str(uuid4())
+        task_request = self.create_message(
+            MessageType.TASK_REQUEST,
+            None,  # Send to coordinator
+            {
+                "task_id": task_id,
+                "task_type": task_type,
+                "payload": payload,
+                "priority": priority,
+            },
+        )
+        await self.send_message(task_request)
+        return task_id
+
+    async def update_status(self, status: AgentStatus):
+        """Update agent status."""
+        self.status = status
+        status_message = self.create_message(
+            MessageType.STATUS_UPDATE,
+            None,
+            {"status": status.value, "timestamp": datetime.utcnow().isoformat()},
+        )
+        await self.send_message(status_message)
+
+    def get_info(self) -> AgentInfo:
+        """Get agent information."""
+        return AgentInfo(
+            agent_id=self.agent_id,
+            name=self.name,
+            status=self.status,
+            capabilities=self.capabilities,
+            last_heartbeat=self.last_heartbeat,
+            metadata=self.metadata,
+        )
+
+
+class TaskHandler(MessageHandler):
+    """Handler for task-related messages."""
+
+    def __init__(self, agent: AgentProtocol, task_executor: Callable[[Task], Any]):
+        self.agent = agent
+        self.task_executor = task_executor
+
+    async def handle_message(self, message: Message) -> Optional[Message]:
+        """Handle task request messages."""
+        if message.message_type == MessageType.TASK_REQUEST:
+            return await self.handle_task_request(message)
+        return None
+
+    async def handle_task_request(self, message: Message) -> Message:
+        """Handle a task request."""
         try:
-            self.status = AgentStatus.BUSY
-           
-""""""
+            payload = message.payload
+            task = Task(
+                task_id=payload["task_id"],
+                task_type=payload["task_type"],
+                payload=payload["payload"],
+                priority=payload.get("priority", 0),
+            )
 
-            self.last_activity = datetime.now()
-           
+            # Update agent status
+            await self.agent.update_status(AgentStatus.BUSY)
 
-            
-           
-"""
-            task_type = task.task_type
-            payload = task.payload
+            # Execute the task
+            task.status = TaskStatus.IN_PROGRESS
+            self.agent.tasks[task.task_id] = task
 
-            if task_type == "create_campaign":
-                result = self._create_campaign(payload)
-            elif task_type == "analyze_performance":
-                result = self._analyze_performance(payload)
-            elif task_type == "optimize_ads":
-                result = self._optimize_ads(payload)
-            else:
-                return {"success": False, "error": f"Unknown task type: {task_type}"}
+            try:
+                result = await self.task_executor(task)
+                task.result = result
+                task.status = TaskStatus.COMPLETED
+                success = True
+            except Exception as e:
+                task.error = str(e)
+                task.status = TaskStatus.FAILED
+                success = False
+                logger.error(f"Task {task.task_id} failed: {e}")
 
-            self.status = AgentStatus.IDLE
-            return {"success": True, "result": result}
+            # Update agent status back to idle
+            await self.agent.update_status(AgentStatus.IDLE)
+
+            return self.agent.create_task_response(task, success, task.result)
 
         except Exception as e:
-            self.status = AgentStatus.ERROR
-            logger.error(f"Marketing task failed: {e}")
-            return {"success": False, "error": str(e)}
-
-    def _create_campaign(self, payload: Dict[str, Any]) -> Dict[str, Any]:
-        """
-Create marketing campaign
-
-       
-""""""
-
-        # Implement campaign creation logic
-       
-
-        
-       
-"""
-        return {"campaign_id": "camp_123", "status": "active"}
-       """
-
-        
-       
-
-        # Implement campaign creation logic
-       
-""""""
-
-    def _analyze_performance(self, payload: Dict[str, Any]) -> Dict[str, Any]:
-        
-Analyze marketing performance
-""""""
-
-        
-       
-
-        # Implement performance analysis logic
-       
-""""""
-        return {"ctr": 2.5, "conversion_rate": 1.2, "roi": 150}
-       """
-
-        
-       
-
-        # Implement performance analysis logic
-       
-""""""
-
-    def _optimize_ads(self, payload: Dict[str, Any]) -> Dict[str, Any]:
-        
-Optimize advertising campaigns
-""""""
-
-        
-       
-
-        # Implement ad optimization logic
-       
-""""""
-        return {"optimizations_applied": 5, "expected_improvement": "15%"}
-       """
-
-        
-       
-
-        # Implement ad optimization logic
-       
-""""""
-
-# Factory function to create agents
+            logger.error(f"Error handling task request: {e}")
+            return self.agent.create_error_message(message, str(e))
 
 
-def create_agent(agent_type: str, agent_id: str = None) -> BaseAgent:
-    
-Factory function to create agents of different types
-"""
-    if agent_id is None:
-        agent_id = f"{agent_type}_{uuid.uuid4().hex[:8]}"
+class CoordinationProtocol:
+    """Protocol for coordinating multiple agents."""
 
-    if agent_type == "content_creation":
-        return ContentCreationAgent(agent_id)
-    elif agent_type == "marketing":
-        return MarketingAgent(agent_id)
-    else:
-        return BaseAgent(agent_id, f"Generic {agent_type}", agent_type)
+    def __init__(self):
+        self.agents: dict[str, AgentInfo] = {}
+        self.pending_tasks: dict[str, Task] = {}
+        self.completed_tasks: dict[str, Task] = {}
+
+    def register_agent(self, agent_info: AgentInfo):
+        """Register an agent with the coordinator."""
+        self.agents[agent_info.agent_id] = agent_info
+        logger.info(f"Agent {agent_info.name} ({agent_info.agent_id}) registered")
+
+    def unregister_agent(self, agent_id: str):
+        """Unregister an agent."""
+        if agent_id in self.agents:
+            agent_info = self.agents.pop(agent_id)
+            logger.info(f"Agent {agent_info.name} ({agent_id}) unregistered")
+
+    def find_capable_agents(self, required_capability: str) -> list[AgentInfo]:
+        """Find agents with a specific capability."""
+        capable_agents = []
+        for agent_info in self.agents.values():
+            if agent_info.status == AgentStatus.IDLE:
+                for capability in agent_info.capabilities:
+                    if capability.name == required_capability:
+                        capable_agents.append(agent_info)
+                        break
+        return capable_agents
+
+    def assign_task(self, task: Task, agent_id: str) -> bool:
+        """Assign a task to a specific agent."""
+        if agent_id in self.agents:
+            agent_info = self.agents[agent_id]
+            if agent_info.status == AgentStatus.IDLE:
+                task.assigned_to = agent_id
+                task.status = TaskStatus.IN_PROGRESS
+                self.pending_tasks[task.task_id] = task
+                agent_info.status = AgentStatus.BUSY
+                return True
+        return False
+
+    def complete_task(self, task_id: str, result: dict[str, Any]):
+        """Mark a task as completed."""
+        if task_id in self.pending_tasks:
+            task = self.pending_tasks.pop(task_id)
+            task.status = TaskStatus.COMPLETED
+            task.result = result
+            self.completed_tasks[task_id] = task
+
+            # Update agent status back to idle
+            if task.assigned_to and task.assigned_to in self.agents:
+                self.agents[task.assigned_to].status = AgentStatus.IDLE
+
+    def fail_task(self, task_id: str, error: str):
+        """Mark a task as failed."""
+        if task_id in self.pending_tasks:
+            task = self.pending_tasks.pop(task_id)
+            task.status = TaskStatus.FAILED
+            task.error = error
+            self.completed_tasks[task_id] = task
+
+            # Update agent status back to idle
+            if task.assigned_to and task.assigned_to in self.agents:
+                self.agents[task.assigned_to].status = AgentStatus.IDLE
+
+    def get_system_status(self) -> dict[str, Any]:
+        """Get overall system status."""
+        return {
+            "total_agents": len(self.agents),
+            "idle_agents": len(
+                [a for a in self.agents.values() if a.status == AgentStatus.IDLE]
+            ),
+            "busy_agents": len(
+                [a for a in self.agents.values() if a.status == AgentStatus.BUSY]
+            ),
+            "pending_tasks": len(self.pending_tasks),
+            "completed_tasks": len(self.completed_tasks),
+            "agents": {aid: asdict(info) for aid, info in self.agents.items()},
+        }
 
 
-# Main execution
-if __name__ == "__main__":
-    # Initialize protocol
-    protocol = AgenticProtocol()
+# Global coordination protocol instance
+coordinator = CoordinationProtocol()
 
-    # Create and register agents
-    content_agent = create_agent("content_creation")
-    marketing_agent = create_agent("marketing")
 
-    protocol.register_agent(content_agent)
-    protocol.register_agent(marketing_agent)
+def create_agent(
+    agent_id: str, name: str, capabilities: list[AgentCapability]
+) -> AgentProtocol:
+    """Factory function to create a new agent."""
+    # This would be implemented by specific agent types
+    raise NotImplementedError("Specific agent implementations should override this")
 
-    # Submit test tasks
-    test_task = AgentTask(
-        id=str(uuid.uuid4()),
-        agent_id=content_agent.id,
-        task_type="generate_script",
-        priority=TaskPriority.HIGH,
-        payload={"topic": "AI in 2024", "duration": 300},
-        created_at=datetime.now(),
-     )
 
-    protocol.submit_task(test_task)
+async def start_agent_system():
+    """Initialize and start the agent system."""
+    logger.info("Starting agent system...")
+    # Initialize coordination protocol
+    # Start message brokers
+    # Register default agents
+    logger.info("Agent system started successfully")
 
-    # Keep running
-    try:
-        while True:
-            status = protocol.get_system_status()
-            logger.info(f"System Status: {status}")
-            time.sleep(60)
-    except KeyboardInterrupt:
-        logger.info("Shutting down...")
-        protocol.shutdown()
+
+async def shutdown_agent_system():
+    """Gracefully shutdown the agent system."""
+    logger.info("Shutting down agent system...")
+    # Cleanup resources
+    # Stop message brokers
+    # Save state if needed
+    logger.info("Agent system shutdown complete")

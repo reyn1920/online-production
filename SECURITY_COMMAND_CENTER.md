@@ -1,6 +1,6 @@
 # 🎯 SECURITY COMMAND CENTER
 
-**MISSION CONTROL FOR YOUR SECURITY OPERATIONS**  
+**MISSION CONTROL FOR YOUR SECURITY OPERATIONS**
 **Status:** ACTIVE | **Priority:** MAXIMUM | **Classification:** CONFIDENTIAL
 
 ---
@@ -92,7 +92,7 @@ ls -la .env* 2>/dev/null || echo "No .env files found"
 generate_secure_key() {
     local key_type=$1
     local length=${2:-32}
-    echo "${key_type}-$(date +%s)-$(python -c "import secrets; print(secrets.token_hex($length))")" 
+    echo "${key_type}-$(date +%s)-$(python -c "import secrets; print(secrets.token_hex($length))")"
 }
 
 # Usage examples:
@@ -106,13 +106,13 @@ generate_secure_key() {
 # Remove personal information
 cleanup_personal_info() {
     echo "🧹 CLEANING PERSONAL INFORMATION..."
-    
+
     # Replace personal email with test email
     find . -name "*.py" -o -name "*.js" -o -name "*.json" | xargs sed -i.bak 's/brianinpty@gmail.com/test@example.com/g'
-    
+
     # Replace personal phone numbers
     find . -name "*.py" -o -name "*.js" -o -name "*.json" | xargs sed -i.bak 's/+1-555-123-4567/+1-555-000-0000/g'
-    
+
     echo "✅ Personal information cleanup complete"
     echo "📋 Backup files created with .bak extension"
 }
@@ -154,7 +154,7 @@ cleanup_personal_info() {
    ```bash
    # Stop all running services
    docker-compose down
-   
+
    # Disable network access if needed
    # sudo ifconfig en0 down  # Use with extreme caution
    ```
@@ -163,7 +163,7 @@ cleanup_personal_info() {
    ```bash
    # Check what was accessed
    grep -r "$(date +%Y-%m-%d)"/var/log/2>/dev/null | tail -50
-   
+
    # Check for unauthorized changes
    git status
    git log --oneline -10
@@ -173,7 +173,7 @@ cleanup_personal_info() {
    ```bash
    # Rotate all credentials immediately
    cp .env.development .env.development.incident.$(date +%Y%m%d_%H%M%S)
-   
+
    # Generate emergency credentials
    python -c "import secrets; print('EMERGENCY_KEY=' + secrets.token_hex(32))"
    ```
@@ -285,6 +285,6 @@ All the information is secure in your hands. Use this command center to systemat
 
 ---
 
-*Last Updated: January 9, 2025*  
-*Next Review: January 16, 2025*  
+*Last Updated: January 9, 2025*
+*Next Review: January 16, 2025*
 *Classification: CONFIDENTIAL*

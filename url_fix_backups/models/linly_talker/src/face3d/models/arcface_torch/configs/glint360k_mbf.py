@@ -10,12 +10,12 @@ config.network = "mbf"
 config.resume = False
 config.output = None
 config.embedding_size = 512
-config.sample_rate = 0.1
+config.sample_rate = 1
 config.fp16 = True
-config.momentum = 0.9
+config.momentum = 9
 config.weight_decay = 2e-4
 config.batch_size = 128
-config.lr = 0.1  # batch size is 512
+config.lr = 1  # batch size is 512
 
 config.rec = "/train_tmp / glint360k"
 config.num_classes = 360232

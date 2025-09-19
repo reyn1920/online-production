@@ -8,14 +8,14 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         .avatar-preview {
-            background: linear-gradient(45deg, #f0f0f0 25%, transparent 25%), 
-                        linear-gradient(-45deg, #f0f0f0 25%, transparent 25%), 
-                        linear-gradient(45deg, transparent 75%, #f0f0f0 75%), 
+            background: linear-gradient(45deg, #f0f0f0 25%, transparent 25%),
+                        linear-gradient(-45deg, #f0f0f0 25%, transparent 25%),
+                        linear-gradient(45deg, transparent 75%, #f0f0f0 75%),
                         linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
             background-size: 20px 20px;
             background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
         }
-        
+
         .color-picker {
             width: 40px;
             height: 40px;
@@ -25,34 +25,34 @@
             cursor: pointer;
             transition: transform 0.2s;
         }
-        
+
         .color-picker:hover {
             transform: scale(1.1);
         }
-        
+
         .color-picker.selected {
             border-color: #3b82f6;
             box-shadow: 0 0 0 2px #3b82f6;
         }
-        
+
         .style-card {
             transition: all 0.3s ease;
         }
-        
+
         .style-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
-        
+
         .style-card.selected {
             border-color: #3b82f6;
             background-color: #eff6ff;
         }
-        
+
         .slider-container {
             position: relative;
         }
-        
+
         .slider {
             -webkit-appearance: none;
             appearance: none;
@@ -61,7 +61,7 @@
             background: #e5e7eb;
             outline: none;
         }
-        
+
         .slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
@@ -72,7 +72,7 @@
             cursor: pointer;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
-        
+
         .slider::-moz-range-thumb {
             width: 20px;
             height: 20px;
@@ -82,7 +82,7 @@
             border: none;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
-        
+
         .loading-spinner {
             border: 3px solid #f3f3f3;
             border-top: 3px solid #3b82f6;
@@ -91,22 +91,22 @@
             height: 30px;
             animation: spin 1s linear infinite;
         }
-        
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        
+
         .upload-area {
             border: 2px dashed #d1d5db;
             transition: all 0.3s ease;
         }
-        
+
         .upload-area:hover {
             border-color: #3b82f6;
             background-color: #f8fafc;
         }
-        
+
         .upload-area.dragover {
             border-color: #3b82f6;
             background-color: #eff6ff;
@@ -132,7 +132,7 @@
                         <i class="fas fa-eye mr-2 text-blue-600"></i>
                         Preview
                     </h2>
-                    
+
                     <div class="avatar-preview rounded-lg p-4 mb-4 flex items-center justify-center" style="min-height: 300px;">
                         <div id="avatarPreview" class="max-w-full max-h-full">
                             <div class="w-48 h-48 bg-gray-200 rounded-full flex items-center justify-center">
@@ -140,7 +140,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="flex space-x-2">
                         <button id="generateBtn" class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
                             <i class="fas fa-magic mr-2"></i>
@@ -151,7 +151,7 @@
                             Download
                         </button>
                     </div>
-                    
+
                     <div id="loadingIndicator" class="hidden flex items-center justify-center mt-4">
                         <div class="loading-spinner"></div>
                         <span class="ml-3 text-gray-600">Generating avatar...</span>
@@ -166,14 +166,14 @@
                         <i class="fas fa-sliders-h mr-2 text-blue-600"></i>
                         Customization Options
                     </h2>
-                    
+
                     <!-- Upload Custom Image -->
                     <div class="mb-8">
                         <h3 class="text-lg font-medium mb-4 text-gray-700">
                             <i class="fas fa-upload mr-2 text-green-600"></i>
                             Upload Custom Image
                         </h3>
-                        
+
                         <div id="uploadArea" class="upload-area rounded-lg p-8 text-center cursor-pointer">
                             <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
                             <p class="text-gray-600 mb-2">Drag and drop an image here, or click to select</p>
@@ -181,14 +181,14 @@
                             <input type="file" id="imageUpload" accept="image/*" class="hidden">
                         </div>
                     </div>
-                    
+
                     <!-- Style Selection -->
                     <div class="mb-8">
                         <h3 class="text-lg font-medium mb-4 text-gray-700">
                             <i class="fas fa-palette mr-2 text-purple-600"></i>
                             Avatar Style
                         </h3>
-                        
+
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                             <div class="style-card border-2 border-gray-200 rounded-lg p-4 cursor-pointer" data-style="geometric">
                                 <div class="text-center">
@@ -197,7 +197,7 @@
                                     <p class="text-sm text-gray-500">Clean shapes</p>
                                 </div>
                             </div>
-                            
+
                             <div class="style-card border-2 border-gray-200 rounded-lg p-4 cursor-pointer" data-style="organic">
                                 <div class="text-center">
                                     <i class="fas fa-leaf text-2xl text-green-600 mb-2"></i>
@@ -205,7 +205,7 @@
                                     <p class="text-sm text-gray-500">Natural forms</p>
                                 </div>
                             </div>
-                            
+
                             <div class="style-card border-2 border-gray-200 rounded-lg p-4 cursor-pointer" data-style="professional">
                                 <div class="text-center">
                                     <i class="fas fa-briefcase text-2xl text-gray-600 mb-2"></i>
@@ -213,7 +213,7 @@
                                     <p class="text-sm text-gray-500">Business look</p>
                                 </div>
                             </div>
-                            
+
                             <div class="style-card border-2 border-gray-200 rounded-lg p-4 cursor-pointer" data-style="artistic">
                                 <div class="text-center">
                                     <i class="fas fa-paint-brush text-2xl text-red-600 mb-2"></i>
@@ -221,7 +221,7 @@
                                     <p class="text-sm text-gray-500">Creative flair</p>
                                 </div>
                             </div>
-                            
+
                             <div class="style-card border-2 border-gray-200 rounded-lg p-4 cursor-pointer" data-style="minimal">
                                 <div class="text-center">
                                     <i class="fas fa-circle text-2xl text-gray-400 mb-2"></i>
@@ -229,7 +229,7 @@
                                     <p class="text-sm text-gray-500">Simple design</p>
                                 </div>
                             </div>
-                            
+
                             <div class="style-card border-2 border-gray-200 rounded-lg p-4 cursor-pointer" data-style="golden_ratio">
                                 <div class="text-center">
                                     <i class="fas fa-star text-2xl text-yellow-600 mb-2"></i>
@@ -239,14 +239,14 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Color Scheme -->
                     <div class="mb-8">
                         <h3 class="text-lg font-medium mb-4 text-gray-700">
                             <i class="fas fa-tint mr-2 text-blue-600"></i>
                             Color Scheme
                         </h3>
-                        
+
                         <div class="flex flex-wrap gap-3">
                             <div class="color-picker" style="background: linear-gradient(45deg, #000, #fff);" data-scheme="monochrome" title="Monochrome"></div>
                             <div class="color-picker" style="background: linear-gradient(45deg, #ff6b6b, #4ecdc4);" data-scheme="complementary" title="Complementary"></div>
@@ -256,14 +256,14 @@
                             <div class="color-picker" style="background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);" data-scheme="vibrant" title="Vibrant"></div>
                         </div>
                     </div>
-                    
+
                     <!-- Advanced Settings -->
                     <div class="mb-8">
                         <h3 class="text-lg font-medium mb-4 text-gray-700">
                             <i class="fas fa-cogs mr-2 text-gray-600"></i>
                             Advanced Settings
                         </h3>
-                        
+
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Complexity</label>
@@ -275,7 +275,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Symmetry</label>
                                 <div class="slider-container">
@@ -286,7 +286,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Golden Ratio Emphasis</label>
                                 <div class="slider-container">
@@ -297,7 +297,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Size (px)</label>
                                 <select id="sizeSelect" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -309,7 +309,7 @@
                                 </select>
                             </div>
                         </div>
-                        
+
                         <div class="mt-4">
                             <label class="flex items-center">
                                 <input type="checkbox" id="transparentBg" class="mr-2" checked>
@@ -317,19 +317,19 @@
                             </label>
                         </div>
                     </div>
-                    
+
                     <!-- Action Buttons -->
                     <div class="flex flex-wrap gap-3">
                         <button id="randomizeBtn" class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors">
                             <i class="fas fa-random mr-2"></i>
                             Randomize
                         </button>
-                        
+
                         <button id="resetBtn" class="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors">
                             <i class="fas fa-undo mr-2"></i>
                             Reset
                         </button>
-                        
+
                         <button id="saveBtn" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors">
                             <i class="fas fa-save mr-2"></i>
                             Save Avatar
@@ -338,7 +338,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Channel Selection Modal -->
         <div id="channelModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4">

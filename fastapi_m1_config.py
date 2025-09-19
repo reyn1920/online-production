@@ -15,10 +15,11 @@ WORKER_TMP_DIR = "/tmp"
 
 # M1 Specific Optimizations
 USE_UVLOOP = True  # Enable uvloop for better async performance
-USE_MPS = True     # Enable Metal Performance Shaders
+USE_MPS = True  # Enable Metal Performance Shaders
 
 # Environment Variables for M1
-import os
+import os  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
+
 os.environ["PYTORCH_ENABLE_MPS_FALLBACK"] = "1"
 os.environ["OMP_NUM_THREADS"] = "8"
 os.environ["MKL_NUM_THREADS"] = "8"
@@ -37,4 +38,6 @@ worker_tmp_dir = WORKER_TMP_DIR
 accesslog = "-"
 errorlog = "-"
 loglevel = "info"
-access_log_format = '%%(h)s %%(l)s %%(u)s %%(t)s "%%(r)s" %%(s)s %%(b)s "%%(f)s" "%%(a)s" %%(D)s'
+access_log_format = (
+    '%%(h)s %%(l)s %%(u)s %%(t)s "%%(r)s" %%(s)s %%(b)s "%%(f)s" "%%(a)s" %%(D)s'
+)

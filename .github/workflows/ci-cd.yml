@@ -54,12 +54,12 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           brew install --cask sublime-text
-          
+
       - name: Code formatting check
         run: |
           black --check --diff .
           isort --check-only --diff .
-          
+
       - name: Sublime Text formatting validation
         if: runner.os == 'macOS'
         run: |

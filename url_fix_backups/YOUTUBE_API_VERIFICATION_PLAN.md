@@ -13,19 +13,19 @@ This document outlines the comprehensive testing and verification steps for the 
    YOUTUBE_CLIENT_ID=your_youtube_client_id_here
    YOUTUBE_CLIENT_SECRET=your_youtube_client_secret_here
    YOUTUBE_REFRESH_TOKEN=your_youtube_refresh_token_here
-   
+
    # OAuth Configuration
    YT_CLIENT_ID=your_youtube_client_id_here
    YT_CLIENT_SECRET=your_youtube_client_secret_here
    YT_REDIRECT_URI=http://127.0.0.1:8000/oauth2/callback/youtube
    YT_SCOPES="https://www.googleapis.com/auth/youtube.upload https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/yt-analytics.readonly"
-   
+
    # Feature Flags
    FEATURE_YT_UPLOADS=true
    FEATURE_YT_ANALYTICS=true
    FEATURE_AUTO_COMMENTS=false
    FEATURE_AUTO_COMMUNITY_POSTS=false
-   
+
    # Provider Configuration
    YOUTUBE_PROVIDER_ENABLED=true
    YOUTUBE_PROVIDER_PRIORITY=1

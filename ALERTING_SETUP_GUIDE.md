@@ -162,7 +162,7 @@ msg['To'] = 'admin@your-domain.com'
 
 smtp.send_message(msg)
 smtp.quit()
-print('Email sent successfully')
+# DEBUG_REMOVED: print statement
 "
 ```
 

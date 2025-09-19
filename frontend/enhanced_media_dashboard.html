@@ -308,15 +308,15 @@
         });//Socket.IO connection
         function initializeSocket() {
             socket = io();
-            
+
             socket.on('connect', function() {
                 console.log('Connected to server');
             });
-            
+
             socket.on('dashboard_update', function(data) {
                 updateDashboard(data);
             });
-            
+
             socket.on('job_update', function(data) {
                 updateJobStatus(data);
             });
@@ -341,7 +341,7 @@
         }//Update system metrics
         function updateSystemMetrics(metrics) {
             if (!metrics) return;
-            
+
             document.getElementById('cpuUsage').textContent = `${metrics.cpu_usage?.toFixed(1) || 0}%`;
             document.getElementById('memoryUsage').textContent = `${metrics.memory_usage?.toFixed(1) || 0}%`;
             document.getElementById('gpuUsage').textContent = `${metrics.gpu_usage?.toFixed(1) || 0}%`;
@@ -350,7 +350,7 @@
         function updateCloudSoftware(integrations) {
             const container = document.getElementById('cloudSoftwareGrid');
             if (!container || !integrations) return;
-            
+
             const cloudSoftware = [
                 { name: 'Lingo Blaster', category: 'automation', icon: 'fas fa-language' },
                 { name: 'Captionizer', category: 'video_editing', icon: 'fas fa-closed-captioning' },
@@ -360,7 +360,7 @@
                 { name: 'Background Music', category: 'background_music', icon: 'fas fa-music' },
                 { name: 'Scriptelo', category: 'script_writing', icon: 'fas fa-file-text' }
             ];
-            
+
             container.innerHTML = cloudSoftware.map(software => `
                 <div class="software-card">
                     <div class="flex items-center justify-between mb-3">
@@ -383,7 +383,7 @@
         function updateDaVinciStatus(status) {
             const container = document.getElementById('davinciStatus');
             if (!container || !status) return;
-            
+
             container.innerHTML = `
                 <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <span class="font-medium">Installation Status:</span>
@@ -425,7 +425,7 @@
         function updateBlenderStatus(status) {
             const container = document.getElementById('blenderStatus');
             if (!container || !status) return;
-            
+
             container.innerHTML = `
                 <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <span class="font-medium">Installation Status:</span>
@@ -465,9 +465,9 @@
         function updateRecentJobs(jobs) {
             const container = document.getElementById('recentJobs');
             if (!container || !jobs) return;
-            
+
             document.getElementById('activeJobs').textContent = jobs.length;
-            
+
             container.innerHTML = jobs.slice(0, 5).map(job => `
                 <div class="p-3 bg-gray-50 rounded-lg">
                     <div class="flex items-center justify-between mb-2">
@@ -483,14 +483,14 @@
         function updateSystemHealth(health) {
             const container = document.getElementById('systemHealth');
             if (!container || !health) return;
-            
+
             const healthItems = [
                 { name: 'Database', status: 'healthy' },
                 { name: 'File System', status: 'healthy' },
                 { name: 'Network', status: 'healthy' },
                 { name: 'Services', status: 'healthy' }
             ];
-            
+
             container.innerHTML = healthItems.map(item => `
                 <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <span class="font-medium">${item.name}</span>

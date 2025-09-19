@@ -588,27 +588,27 @@
             .main-content {
                 grid-template-columns: 1fr;
             }
-            
+
             .metrics-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .form-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .campaigns-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .brands-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
-            
+
             .campaign-stats {
                 grid-template-columns: 1fr;
             }
-            
+
             .campaign-actions {
                 grid-template-columns: 1fr;
             }
@@ -627,7 +627,7 @@
             <!-- Control Panel -->
             <div class="control-panel">
                 <h2>Stream Controls</h2>
-                
+
                 <div class="control-group">
                     <label>Stream Status</label>
                     <div style="display: flex; align-items: center; gap: 15px;">
@@ -667,7 +667,7 @@
             <!-- Metrics Panel -->
             <div class="metrics-panel">
                 <h2>Campaign Metrics</h2>
-                
+
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <div class="metric-value" id="activeCampaigns">0</div>
@@ -702,7 +702,7 @@
             <div class="campaigns-section">
                 <h2>Active Campaigns</h2>
                 <p style="color: #666; margin-bottom: 20px;">Manage your sponsored content campaigns and track performance</p>
-                
+
                 <div class="campaigns-grid" id="campaignsGrid">
                     <!-- Campaigns will be loaded dynamically -->
                 </div>
@@ -711,13 +711,13 @@
             <!-- New Campaign Form -->
             <div class="new-campaign-form" id="newCampaignForm" style="display: none;">
                 <h2>Create New Sponsored Campaign</h2>
-                
+
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Brand Name</label>
                         <input type="text" id="campaignBrand" placeholder="Enter brand name">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Campaign Type</label>
                         <select id="campaignType">
@@ -729,28 +729,28 @@
                             <option value="webinar">Webinar</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Payment Amount ($)</label>
                         <input type="number" id="campaignPayment" placeholder="0.00" min="0" step="0.01">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Deadline</label>
                         <input type="date" id="campaignDeadline">
                     </div>
-                    
+
                     <div class="form-group" style="grid-column: 1 / -1;">
                         <label>Campaign Description</label>
                         <textarea id="campaignDescription" placeholder="Describe the sponsored content requirements..."></textarea>
                     </div>
-                    
+
                     <div class="form-group" style="grid-column: 1 / -1;">
                         <label>Brand Contact Email</label>
                         <input type="email" id="campaignContact" placeholder="brand@example.com">
                     </div>
                 </div>
-                
+
                 <div style="text-align: center; margin-top: 20px;">
                     <button class="btn btn-success" onclick="createCampaign()">✅ Create Campaign</button>
                     <button class="btn" onclick="hideNewCampaignForm()">❌ Cancel</button>
@@ -761,7 +761,7 @@
             <div class="brands-section">
                 <h2>Brand Partners</h2>
                 <p style="color: #666; margin-bottom: 20px;">Your active brand partnerships and collaboration rates</p>
-                
+
                 <div class="brands-grid" id="brandsGrid">
                     <!-- Brands will be loaded dynamically -->
                 </div>
@@ -929,7 +929,7 @@
                 campaignCard.className = 'campaign-card';
                 campaignCard.innerHTML = `
                     ${campaign.priority ? '<div class="priority-badge">Priority</div>' : ''}
-                    
+
                     <div class="campaign-header">
                         <div>
                             <div class="campaign-brand">${campaign.brand}</div>
@@ -937,11 +937,11 @@
                         </div>
                         <div class="campaign-status status-${campaign.status}">${campaign.status}</div>
                     </div>
-                    
+
                     <div class="campaign-description">
                         ${campaign.description}
                     </div>
-                    
+
                     <div class="campaign-stats">
                         <div class="stat-item">
                             <div class="stat-value">${campaign.views.toLocaleString()}</div>
@@ -956,9 +956,9 @@
                             <div class="stat-label">Deadline</div>
                         </div>
                     </div>
-                    
+
                     <div class="campaign-payment">$${campaign.payment.toFixed(2)}</div>
-                    
+
                     <div class="campaign-actions">
                         <button class="btn" onclick="editCampaign('${campaign.id}')" style="padding: 10px; font-size: 0.9rem;">
                             ✏️ Edit
@@ -996,7 +996,7 @@
             try {
                 const response = await fetch('/api/revenue/status');
                 const data = await response.json();
-                
+
                 if (data.success && data.streams.sponsored_content) {
                     const stream = data.streams.sponsored_content;
                     streamData.status = stream.status;
@@ -1005,7 +1005,7 @@
                     streamData.totalViews = stream.totalViews;
                     streamData.engagementRate = stream.engagementRate;
                     streamData.autoStart = stream.autoStart;
-                    
+
                     updateUI();
                 }
             } catch (error) {
@@ -1039,7 +1039,7 @@
             document.getElementById('monthlyEarnings').textContent = '$' + streamData.monthlyEarnings.toFixed(2);
             document.getElementById('totalViews').textContent = streamData.totalViews.toLocaleString();
             document.getElementById('engagementRate').textContent = streamData.engagementRate.toFixed(1) + '%';
-            
+
             // Update revenue goal progress
             const goalPercent = Math.min(100, (streamData.monthlyEarnings/streamData.revenueGoal) * 100);
             document.getElementById('revenueGoalFill').style.width = goalPercent + '%';
@@ -1049,18 +1049,18 @@
         async function startStream() {
             try {
                 showAlert('Starting Sponsored Content stream...', 'warning');
-                
+
                 const response = await fetch(`/api/revenue/start/${streamData.streamId}`, {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     streamData.status = 'starting';
                     updateUI();
                     showAlert(result.message, 'success');
-                    
+
                     // Poll for status updates
                     pollStreamStatus();
                 } else {
@@ -1075,18 +1075,18 @@
         async function stopStream() {
             try {
                 showAlert('Stopping Sponsored Content stream...', 'warning');
-                
+
                 const response = await fetch(`/api/revenue/stop/${streamData.streamId}`, {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     streamData.status = 'stopping';
                     updateUI();
                     showAlert(result.message, 'success');
-                    
+
                     // Poll for status updates
                     pollStreamStatus();
                 } else {
@@ -1101,16 +1101,16 @@
         async function runTests() {
             try {
                 showAlert('Running comprehensive sponsored content tests...', 'warning');
-                
+
                 const testContainer = document.getElementById('testResultsContainer');
                 testContainer.innerHTML = '<div style="text-align: center;"><div class="loading"></div> Running tests...</div>';
-                
+
                 const response = await fetch(`/api/revenue/test/${streamData.streamId}`, {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     displayTestResults(result.results);
                     showAlert('Tests completed successfully', 'success');
@@ -1127,12 +1127,12 @@
         function displayTestResults(results) {
             const container = document.getElementById('testResultsContainer');
             container.innerHTML = '';
-            
+
             Object.keys(results).forEach(testName => {
                 const test = results[testName];
                 const testItem = document.createElement('div');
                 testItem.className = 'test-item';
-                
+
                 testItem.innerHTML = `
                     <div>
                         <strong>${testName}</strong>
@@ -1141,7 +1141,7 @@
                     </div>
                     <div class="test-status test-${test.status}">${test.status}</div>
                 `;
-                
+
                 container.appendChild(testItem);
             });
         }
@@ -1234,7 +1234,7 @@
             if (campaign) {
                 try {
                     showAlert(`Testing "${campaign.brand}" campaign...`, 'warning');
-                    
+
                     const response = await fetch('/api/test/campaign', {
                         method: 'POST',
                         headers: {
@@ -1245,9 +1245,9 @@
                             contact: campaign.contact
                         })
                     });
-                    
+
                     const result = await response.json();
-                    
+
                     if (result.success) {
                         showAlert(`"${campaign.brand}" campaign test passed successfully`, 'success');
                     } else {
@@ -1274,9 +1274,9 @@
                         revenueGoal: streamData.revenueGoal
                     })
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     showAlert('Configuration saved successfully', 'success');
                 } else {
@@ -1299,7 +1299,7 @@
                         autoStart: streamData.autoStart
                     })
                 });
-                
+
                 if (!response.ok) {
                     console.error('Failed to update auto-start setting');
                 }
@@ -1313,7 +1313,7 @@
                 try {
                     const response = await fetch('/api/revenue/status');
                     const data = await response.json();
-                    
+
                     if (data.success && data.streams.sponsored_content) {
                         const stream = data.streams.sponsored_content;
                         const oldStatus = streamData.status;
@@ -1322,13 +1322,13 @@
                         streamData.monthlyEarnings = stream.monthlyEarnings;
                         streamData.totalViews = stream.totalViews;
                         streamData.engagementRate = stream.engagementRate;
-                        
+
                         updateUI();
-                        
+
                         // Stop polling if status is stable
                         if (stream.status === 'active' || stream.status === 'inactive' || stream.status === 'error') {
                             clearInterval(pollInterval);
-                            
+
                             if (stream.status === 'error') {
                                 showAlert('Stream error: ' + (stream.errorMessage || 'Unknown error'), 'error');
                             } else if (oldStatus !== stream.status) {
@@ -1360,20 +1360,20 @@
                     if (campaign.status === 'active') {
                         const newViews = Math.floor(Math.random() * 500) + 100;
                         const engagementIncrease = (Math.random() - 0.5) * 2;
-                        
+
                         campaign.views += newViews;
                         campaign.engagement = Math.max(0, campaign.engagement + engagementIncrease);
                     }
                 });
-                
+
                 // Update totals
                 streamData.totalViews = streamData.campaigns.reduce((sum, c) => sum + c.views, 0);
-                streamData.engagementRate = streamData.campaigns.length > 0 ? 
+                streamData.engagementRate = streamData.campaigns.length > 0 ?
                     streamData.campaigns.reduce((sum, c) => sum + c.engagement, 0) / streamData.campaigns.length : 0;
                 streamData.monthlyEarnings = streamData.campaigns
                     .filter(c => c.status === 'completed')
                     .reduce((sum, c) => sum + c.payment, 0);
-                
+
                 updateUI();
                 renderCampaigns();
             }
@@ -1384,9 +1384,9 @@
             const alert = document.createElement('div');
             alert.className = `alert alert-${type}`;
             alert.textContent = message;
-            
+
             container.appendChild(alert);
-            
+
             // Remove alert after 5 seconds
             setTimeout(() => {
                 if (alert.parentNode) {

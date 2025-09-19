@@ -3,7 +3,7 @@
 -- Run this on any existing databases that have the old api_discovery_tasks structure
 
 -- First, create a backup of the existing table
-CREATE TABLE IF NOT EXISTS api_discovery_tasks_backup AS 
+CREATE TABLE IF NOT EXISTS api_discovery_tasks_backup AS
 SELECT * FROM api_discovery_tasks;
 
 -- Drop the existing table
@@ -34,8 +34,8 @@ CREATE TABLE IF NOT EXISTS api_discovery_tasks (
 INSERT INTO api_discovery_tasks (
     id, task_name, task_type, status, created_at
 )
-SELECT 
-    id, 
+SELECT
+    id,
     task_name,
     'api_research' as task_type, -- Default task_type for migrated records
     status,
@@ -47,11 +47,11 @@ WHERE EXISTS (SELECT 1 FROM api_discovery_tasks_backup);
 -- DROP TABLE api_discovery_tasks_backup;
 
 -- Add indexes for better performance
-CREATE INDEX IF NOT EXISTS idx_api_discovery_tasks_status 
+CREATE INDEX IF NOT EXISTS idx_api_discovery_tasks_status
 ON api_discovery_tasks(status, priority DESC);
 
-CREATE INDEX IF NOT EXISTS idx_api_discovery_tasks_created_at 
+CREATE INDEX IF NOT EXISTS idx_api_discovery_tasks_created_at
 ON api_discovery_tasks(created_at DESC);
 
-CREATE INDEX IF NOT EXISTS idx_api_discovery_tasks_assigned_agent 
+CREATE INDEX IF NOT EXISTS idx_api_discovery_tasks_assigned_agent
 ON api_discovery_tasks(assigned_agent, status);

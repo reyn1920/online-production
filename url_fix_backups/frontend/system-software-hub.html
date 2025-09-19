@@ -407,11 +407,11 @@
             .command-form {
                 grid-template-columns: 1fr;
             }
-            
+
             .software-categories {
                 grid-template-columns: 1fr;
             }
-            
+
             .status-overview {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -532,10 +532,10 @@
             try {
                 const response = await fetch('/api/software/status');
                 const data = await response.json();
-                
+
                 softwareData = data.software;
                 availableSoftware = Object.keys(softwareData).filter(key => softwareData[key].available);
-                
+
                 updateStatusOverview(data);
                 renderSoftwareCategories();
             } catch (error) {
@@ -548,12 +548,12 @@
         function updateStatusOverview(data) {
             document.getElementById('totalSoftware').textContent = data.total_software;
             document.getElementById('availableSoftware').textContent = data.available_count;
-            
+
             const creativeCount = Object.values(data.software)
                 .filter(s => s.integration_type === 'creative' && s.available).length;
             const developmentCount = Object.values(data.software)
                 .filter(s => s.integration_type === 'development' && s.available).length;
-            
+
             document.getElementById('creativeSoftware').textContent = creativeCount;
             document.getElementById('developmentSoftware').textContent = developmentCount;
         }
@@ -575,7 +575,7 @@
             Object.entries(categories).forEach(([categoryKey, category]) => {
                 const categoryData = Object.entries(softwareData)
                     .filter(([key, software]) => software.integration_type === categoryKey);
-                
+
                 if (categoryData.length === 0) return;
 
                 const categoryElement = document.createElement('div');
@@ -595,8 +595,8 @@
                                 <div class="software-status">
                                     <div class="status-indicator ${software.available ? 'available' : 'unavailable'}"></div>
                                     <div class="software-actions">
-                                        <button class="action-btn launch-btn" 
-                                                onclick="launchSoftware('${key}')" 
+                                        <button class="action-btn launch-btn"
+                                                onclick="launchSoftware('${key}')"
                                                 ${!software.available ? 'disabled' : ''}>
                                             ${software.available ? 'Launch' : 'Unavailable'}
                                         </button>
@@ -614,7 +614,7 @@
         function populateSoftwareSelect() {
             const select = document.getElementById('softwareSelect');
             select.innerHTML = '<option value="">Select software...</option>';
-            
+
             availableSoftware.forEach(key => {
                 const software = softwareData[key];
                 const option = document.createElement('option');
@@ -638,9 +638,9 @@
                         args: []
                     })
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     showNotification(`${softwareData[softwareKey].name} launched successfully`, 'success');
                 } else {
@@ -657,14 +657,14 @@
             const software = document.getElementById('softwareSelect').value;
             const command = document.getElementById('commandInput').value;
             const argsText = document.getElementById('argsInput').value;
-            
+
             if (!software || !command) {
                 showNotification('Please select software and enter a command', 'error');
                 return;
             }
-            
+
             const args = argsText ? argsText.split(' ').filter(arg => arg.trim()) : [];
-            
+
             try {
                 const response = await fetch('/api/software/execute', {
                     method: 'POST',
@@ -677,9 +677,9 @@
                         args: args
                     })
                 });
-                
+
                 const result = await response.json();
-                
+
                 // Show output panel
                 const outputPanel = document.getElementById('commandOutput');
                 outputPanel.classList.add('show');
@@ -694,7 +694,7 @@
                         <pre style="background: #742a2a; padding: 10px; border-radius: 4px;">${result.stderr}</pre>
                     ` : ''}
                 `;
-                
+
                 showNotification(
                     result.success ? 'Command executed successfully' : 'Command execution failed',
                     result.success ? 'success' : 'error'
@@ -719,14 +719,14 @@
                         pipeline_type: pipelineType
                     })
                 });
-                
+
                 const result = await response.json();
-                
+
                 showNotification(
                     `${pipelineType.replace('_', ' ')} pipeline executed`,
                     'success'
                 );
-                
+
                 console.log('Pipeline result:', result);
             } catch (error) {
                 console.error('Error executing pipeline:', error);
@@ -739,7 +739,7 @@
             const notification = document.getElementById('notification');
             notification.textContent = message;
             notification.className = `notification ${type} show`;
-            
+
             setTimeout(() => {
                 notification.classList.remove('show');
             }, 3000);

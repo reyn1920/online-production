@@ -86,7 +86,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
   // Check channel access requirements
   if (requiredChannels.length > 0 && user) {
-    const hasChannelAccess = requiredChannels.some(channelId => 
+    const hasChannelAccess = requiredChannels.some(channelId =>
       user.channel_access?.includes(channelId) || false
     );
     if (!hasChannelAccess) {

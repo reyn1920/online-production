@@ -10,7 +10,7 @@ const Dashboard = {
   socket: null,
   charts: {},
   websocket: null,
-  
+
   // Configuration
   config: {
     refreshInterval: 30000, // 30 seconds
@@ -20,14 +20,14 @@ const Dashboard = {
     batchSize: 50, // For pagination
     debounceDelay: 300 // For search
   },
-  
+
   // Authentication state
   auth: {
     token: null,
     user: null,
     isAuthenticated: false
   },
-  
+
   // Performance optimization
   cache: new Map(),
   loadingStates: new Set(),
@@ -36,23 +36,23 @@ const Dashboard = {
   // Initialize dashboard
   init() {
     console.log('🚀 Initializing Dashboard...');
-    
+
     // Performance monitoring
     const startTime = performance.now();
-    
+
     // Check authentication first
     this.checkAuthentication();
-    
+
     this.setupEventListeners();
     this.initializeModulesLazy();
     this.initializeCharts();
     this.startSmartRefresh();
     this.connectWebSocket();
     this.loadInitialData();
-    
+
     // Setup performance monitoring
     this.setupPerformanceMonitoring();
-    
+
     const endTime = performance.now();
     console.log(`✅ Dashboard initialized successfully in ${(endTime - startTime).toFixed(2)}ms`);
   },
@@ -61,10 +61,10 @@ const Dashboard = {
   setupEventListeners() {
     // Authentication event listeners
     this.setupAuthEventListeners();
-    
+
     // User management event listeners
     this.setupUserManagementListeners();
-    
+
     // Module tab switching
     document.querySelectorAll('.tab-button, .nav-tab').forEach(button => {
       button.addEventListener('click', e => {
@@ -109,7 +109,7 @@ const Dashboard = {
 
     // Keyboard shortcuts
     document.addEventListener('keydown', this.handleKeyboardShortcuts.bind(this));
-    
+
     // User management event listeners
     this.setupUserManagementListeners();
   },
@@ -124,7 +124,7 @@ const Dashboard = {
         this.handleLogin();
       });
     }
-    
+
     // Logout button
     const logoutBtn = document.getElementById('logout-btn');
     if (logoutBtn) {
@@ -133,7 +133,7 @@ const Dashboard = {
       });
     }
   },
-  
+
   // User management event listeners
   setupUserManagementListeners() {
     // Add user button
@@ -143,7 +143,7 @@ const Dashboard = {
         this.showUserModal();
       });
     }
-    
+
     // User form
     const userForm = document.getElementById('user-form');
     if (userForm) {
@@ -152,7 +152,7 @@ const Dashboard = {
         this.handleUserSave();
       });
     }
-    
+
     // Close user modal
     const closeUserModal = document.getElementById('close-user-modal');
     const cancelUserForm = document.getElementById('cancel-user-form');
@@ -173,18 +173,18 @@ const Dashboard = {
     // Initialize modules without loading data (data loading handled by loadAllData)
     console.log('📊 Modules initialized');
   },
-  
+
   // Initialize modules with lazy loading
   initializeModulesLazy() {
     // Initialize only visible charts
     this.initializeVisibleCharts();
-    
+
     // Setup intersection observer for lazy loading
     this.setupLazyLoading();
-    
+
     console.log('📊 Modules initialized with lazy loading');
   },
-  
+
   // Setup lazy loading for charts and heavy components
   setupLazyLoading() {
     if ('IntersectionObserver' in window) {
@@ -193,25 +193,25 @@ const Dashboard = {
           if (entry.isIntersecting) {
             const element = entry.target;
             const chartType = element.dataset.chartType;
-            
+
             if (chartType && !this.charts[chartType]) {
               this.initializeChart(chartType, element);
             }
-            
+
             observer.unobserve(element);
           }
         });
       }, {
         rootMargin: '50px'
       });
-      
+
       // Observe all chart containers
       document.querySelectorAll('[data-chart-type]').forEach(el => {
         observer.observe(el);
       });
     }
   },
-  
+
   // Initialize only visible charts
   initializeVisibleCharts() {
     const visibleCharts = document.querySelectorAll('[data-chart-type]:not([hidden])');
@@ -222,7 +222,7 @@ const Dashboard = {
       }
     });
   },
-  
+
   // Setup performance monitoring
   setupPerformanceMonitoring() {
     // Monitor memory usage
@@ -235,7 +235,7 @@ const Dashboard = {
         }
       }, 60000); // Check every minute
     }
-    
+
     // Monitor page visibility
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible') {
@@ -244,14 +244,14 @@ const Dashboard = {
       }
     });
   },
-  
+
   // Clear cache to free memory
   clearCache() {
     const oldSize = this.cache.size;
     this.cache.clear();
     console.log(`🧹 Cleared ${oldSize} cached items`);
   },
-  
+
   // Initialize a specific chart
   initializeChart(chartType, element) {
     // Placeholder for chart initialization logic
@@ -266,7 +266,7 @@ const Dashboard = {
       this.showError('Access denied. Admin privileges required.');
       return;
     }
-    
+
     // Hide all modules
     document.querySelectorAll('.module-content').forEach(module => {
       module.classList.remove('active');
@@ -318,7 +318,7 @@ const Dashboard = {
   // Load reports
   async loadReports() {
     if (!this.auth.isAuthenticated) return;
-    
+
     try {
       const response = await this.fetchWithAuth('/api/reports');
       const data = await response.json();
@@ -365,7 +365,7 @@ const Dashboard = {
   // Load database stats
   async loadDatabaseStats() {
     if (!this.auth.isAuthenticated) return;
-    
+
     try {
       const response = await this.fetchWithAuth('/api/database/stats');
       const data = await response.json();
@@ -393,7 +393,7 @@ const Dashboard = {
   // Load projects
   async loadProjects() {
     if (!this.auth.isAuthenticated) return;
-    
+
     try {
       const response = await this.fetchWithAuth('/api/projects');
       const data = await response.json();
@@ -448,7 +448,7 @@ const Dashboard = {
     this.auth.isAuthenticated = true;
     this.showDashboard();
   },
-  
+
   // Show login modal
   showLoginModal() {
     const loginModal = document.getElementById('login-modal');
@@ -456,24 +456,24 @@ const Dashboard = {
       loginModal.classList.remove('hidden');
     }
   },
-  
+
   // Load remembered credentials
   loadRememberedCredentials() {
     const rememberMeEnabled = localStorage.getItem('remember_me_enabled');
     const rememberedUsername = localStorage.getItem('remembered_username');
     const rememberedPassword = localStorage.getItem('remembered_password');
-    
+
     if (rememberMeEnabled === 'true' && rememberedUsername && rememberedPassword) {
       const usernameField = document.getElementById('username');
       const passwordField = document.getElementById('password');
       const rememberMeCheckbox = document.getElementById('remember-me');
-      
+
       if (usernameField) usernameField.value = rememberedUsername;
       if (passwordField) passwordField.value = rememberedPassword;
       if (rememberMeCheckbox) rememberMeCheckbox.checked = true;
     }
   },
-  
+
   // Hide login modal
   hideLoginModal() {
     const loginModal = document.getElementById('login-modal');
@@ -481,24 +481,24 @@ const Dashboard = {
       loginModal.classList.add('hidden');
     }
   },
-  
+
   // Show dashboard
   showDashboard() {
     this.hideLoginModal();
     this.updateUserInfo();
   },
-  
+
   // Update user info in UI
   updateUserInfo() {
     const userInfo = document.getElementById('user-info');
     const userName = document.getElementById('user-name');
-    
+
     if (this.auth.user && userInfo && userName) {
       userName.textContent = `Welcome, ${this.auth.user.full_name || this.auth.user.username}`;
       userInfo.classList.remove('hidden');
     }
   },
-  
+
   // Handle login
   async handleLogin() {
     const username = document.getElementById('username').value;
@@ -507,11 +507,11 @@ const Dashboard = {
     const loginError = document.getElementById('login-error');
     const loginErrorMessage = document.getElementById('login-error-message');
     const loginSubmit = document.getElementById('login-submit');
-    
+
     try {
       loginSubmit.disabled = true;
       loginSubmit.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Signing In...';
-      
+
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
@@ -519,14 +519,14 @@ const Dashboard = {
         },
         body: JSON.stringify({ username, password })
       });
-      
+
       const data = await response.json();
-      
+
       if (response.ok) {
         // Store authentication data
         localStorage.setItem('dashboard_token', data.access_token);
         localStorage.setItem('dashboard_user', JSON.stringify(data.user));
-        
+
         // Handle remember me functionality
         if (rememberMe) {
           localStorage.setItem('remembered_username', username);
@@ -537,11 +537,11 @@ const Dashboard = {
           localStorage.removeItem('remembered_password');
           localStorage.removeItem('remember_me_enabled');
         }
-        
+
         this.auth.token = data.access_token;
         this.auth.user = data.user;
         this.auth.isAuthenticated = true;
-        
+
         this.showDashboard();
         this.showSuccess('Login successful!');
       } else {
@@ -557,12 +557,12 @@ const Dashboard = {
       loginSubmit.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Sign In';
     }
   },
-  
+
   // Handle logout
   handleLogout() {
     localStorage.removeItem('dashboard_token');
     localStorage.removeItem('dashboard_user');
-    
+
     // Keep remembered credentials if remember me is enabled
     const rememberMeEnabled = localStorage.getItem('remember_me_enabled');
     if (rememberMeEnabled !== 'true') {
@@ -570,11 +570,11 @@ const Dashboard = {
       localStorage.removeItem('remembered_password');
       localStorage.removeItem('remember_me_enabled');
     }
-    
+
     this.auth.token = null;
     this.auth.user = null;
     this.auth.isAuthenticated = false;
-    
+
     this.showLoginModal();
     this.loadRememberedCredentials();
     this.showSuccess('Logged out successfully');
@@ -583,7 +583,7 @@ const Dashboard = {
   // Load agent status
   async loadAgentStatus() {
     if (!this.auth.isAuthenticated) return;
-    
+
     try {
       const response = await this.fetchWithAuth('/api/agents/status');
       const data = await response.json();
@@ -632,7 +632,7 @@ const Dashboard = {
   async fetchWithAuth(url, options = {}) {
     const cacheKey = `${url}_${JSON.stringify(options)}`;
     const useCache = options.cache !== false;
-    
+
     // Check cache first
     if (useCache && this.cache.has(cacheKey)) {
       const cached = this.cache.get(cacheKey);
@@ -640,7 +640,7 @@ const Dashboard = {
         return cached.data;
       }
     }
-    
+
     // Prevent duplicate requests
     if (this.loadingStates.has(cacheKey)) {
       return new Promise((resolve, reject) => {
@@ -658,29 +658,29 @@ const Dashboard = {
         checkLoading();
       });
     }
-    
+
     this.loadingStates.add(cacheKey);
-    
+
     try {
       const headers = {
         'Content-Type': 'application/json',
         ...options.headers
       };
-      
+
       if (this.auth.token) {
         headers['Authorization'] = `Bearer ${this.auth.token}`;
       }
-      
+
       const response = await fetch(url, {
         ...options,
         headers
       });
-      
+
       if (response.status === 401) {
         this.handleLogout();
         throw new Error('Authentication required');
       }
-      
+
       // Cache the response for GET requests
       if (useCache && options.method !== 'POST' && options.method !== 'PUT' && options.method !== 'DELETE') {
         this.cache.set(cacheKey, {
@@ -688,7 +688,7 @@ const Dashboard = {
           timestamp: Date.now()
         });
       }
-      
+
       return response;
     } finally {
       this.loadingStates.delete(cacheKey);
@@ -698,7 +698,7 @@ const Dashboard = {
   // Load task queue
   async loadTaskQueue() {
     if (!this.auth.isAuthenticated) return;
-    
+
     try {
       const response = await this.fetchWithAuth('/api/tasks');
       const data = await response.json();
@@ -748,7 +748,7 @@ const Dashboard = {
   // Load system metrics
   async loadSystemMetrics() {
     if (!this.auth.isAuthenticated) return;
-    
+
     try {
       const response = await this.fetchWithAuth('/api/system/metrics');
       const data = await response.json();
@@ -774,7 +774,7 @@ const Dashboard = {
   // Load users (admin only)
   async loadUsers() {
     if (!this.auth.isAuthenticated || this.auth.user.role !== 'ADMIN') return;
-    
+
     try {
       const response = await this.fetchWithAuth('/api/users');
       const data = await response.json();
@@ -788,14 +788,14 @@ const Dashboard = {
       }
     }
   },
-  
+
   // Update users table
   updateUsersTable(users) {
     const tbody = document.getElementById('users-table-body');
     if (!tbody) return;
-    
+
     tbody.innerHTML = '';
-    
+
     users.forEach(user => {
       const row = document.createElement('tr');
       row.innerHTML = `
@@ -827,13 +827,13 @@ const Dashboard = {
       tbody.appendChild(row);
     });
   },
-  
+
   // Show user modal
   showUserModal(user = null) {
     const modal = document.getElementById('user-modal');
     const form = document.getElementById('user-form');
     const title = document.getElementById('user-modal-title');
-    
+
     if (user) {
       title.textContent = 'Edit User';
       document.getElementById('user-id').value = user.id;
@@ -847,22 +847,22 @@ const Dashboard = {
       form.reset();
       document.getElementById('user-id').value = '';
     }
-    
+
     modal.classList.remove('hidden');
   },
-  
+
   // Hide user modal
   hideUserModal() {
     const modal = document.getElementById('user-modal');
     modal.classList.add('hidden');
   },
-  
+
   // Handle user save
   async handleUserSave() {
     const form = document.getElementById('user-form');
     const formData = new FormData(form);
     const userId = formData.get('id');
-    
+
     const userData = {
       username: formData.get('username'),
       full_name: formData.get('full_name'),
@@ -870,20 +870,20 @@ const Dashboard = {
       role: formData.get('role'),
       is_active: formData.has('is_active')
     };
-    
+
     if (formData.get('password')) {
       userData.password = formData.get('password');
     }
-    
+
     try {
       const url = userId ? `/api/users/${userId}` : '/api/users';
       const method = userId ? 'PUT' : 'POST';
-      
+
       const response = await this.fetchWithAuth(url, {
         method,
         body: JSON.stringify(userData)
       });
-      
+
       if (response.ok) {
         this.showSuccess(userId ? 'User updated successfully' : 'User created successfully');
         this.hideUserModal();
@@ -897,7 +897,7 @@ const Dashboard = {
       this.showError('Failed to save user');
     }
   },
-  
+
   // Edit user
   async editUser(userId) {
     try {
@@ -909,18 +909,18 @@ const Dashboard = {
       this.showError('Failed to load user data');
     }
   },
-  
+
   // Delete user
   async deleteUser(userId) {
     if (!confirm('Are you sure you want to delete this user?')) {
       return;
     }
-    
+
     try {
       const response = await this.fetchWithAuth(`/api/users/${userId}`, {
         method: 'DELETE'
       });
-      
+
       if (response.ok) {
         this.showSuccess('User deleted successfully');
         this.loadUsers();
@@ -936,7 +936,7 @@ const Dashboard = {
   // Control agent
   async controlAgent(agentId, action) {
     if (!this.auth.isAuthenticated) return;
-    
+
     try {
       const response = await this.fetchWithAuth(`/api/agents/${agentId}/${action}`, {
         method: 'POST',
@@ -1028,7 +1028,7 @@ const Dashboard = {
   async refreshData(endpoint = 'all') {
     try {
       this.showLoadingState(true);
-      
+
       if (endpoint === 'all') {
         await this.loadAllData();
       } else {
@@ -1059,10 +1059,10 @@ const Dashboard = {
     if (this.refreshTimer) {
       clearInterval(this.refreshTimer);
     }
-    
+
     let currentInterval = this.config.refreshInterval;
     let consecutiveErrors = 0;
-    
+
     const refresh = async () => {
       // Only refresh if page is visible and user is authenticated
       if (document.visibilityState === 'visible' && this.auth.isAuthenticated) {
@@ -1080,17 +1080,17 @@ const Dashboard = {
           console.warn(`Refresh failed, backing off to ${currentInterval}ms`);
         }
       }
-      
+
       // Schedule next refresh
       this.refreshTimer = setTimeout(refresh, currentInterval);
     };
-    
+
     // Start first refresh
     this.refreshTimer = setTimeout(refresh, 1000); // Initial delay
-    
+
     console.log('🔄 Smart refresh started');
   },
-  
+
   // Start auto-refresh (legacy method for compatibility)
   startAutoRefresh() {
     this.startSmartRefresh();
@@ -1215,17 +1215,17 @@ const Dashboard = {
     if (!this.auth.isAuthenticated) {
       return;
     }
-    
+
     try {
       // Only load essential data for auto-refresh
       const promises = [
         this.loadAgentStatus(),
         this.loadSystemMetrics()
       ];
-      
+
       await Promise.all(promises);
       this.updateLastRefreshTime();
-      
+
     } catch (error) {
       console.error('❌ Error loading critical data:', error);
       if (error.message.includes('401')) {
@@ -1234,13 +1234,13 @@ const Dashboard = {
       throw error; // Re-throw for smart refresh error handling
     }
   },
-  
+
   // New enhanced methods
   async loadInitialData() {
     if (!this.auth.isAuthenticated) {
       return;
     }
-    
+
     await this.loadAllData();
     this.initializeRealTimeUpdates();
   },
@@ -1249,36 +1249,36 @@ const Dashboard = {
     if (!this.auth.isAuthenticated) {
       return;
     }
-    
+
     try {
       this.showLoadingState(true);
-      
+
       // Load all data concurrently with priority batching
       const highPriorityPromises = [
         this.loadAgentStatus(),
         this.loadSystemMetrics()
       ];
-      
+
       const lowPriorityPromises = [
         this.loadTaskQueue(),
         this.loadReports(),
         this.loadRecentActivity()
       ];
-      
+
       // Load high priority data first
       await Promise.all(highPriorityPromises);
-      
+
       // Then load low priority data
       await Promise.all(lowPriorityPromises);
-      
+
       // Load users if admin (lowest priority)
       if (this.auth.user && this.auth.user.role === 'ADMIN') {
         await this.loadUsers();
       }
-      
+
       this.showLoadingState(false);
       this.updateLastRefreshTime();
-      
+
       console.log('All data loaded successfully');
     } catch (error) {
       console.error('❌ Error loading data:', error);
@@ -1297,24 +1297,24 @@ const Dashboard = {
       console.log('Not authenticated, skipping recent activity load');
       return;
     }
-    
+
     const activityList = document.getElementById('activity-list');
     if (!activityList) return;
-    
+
     // Show skeleton loading
     const skeleton = document.getElementById('activity-list-skeleton');
     if (skeleton) {
       skeleton.classList.remove('d-none');
     }
-    
+
     try {
       const response = await this.fetchWithAuth('/dashboard/api/recent-activity');
       const data = await response.json();
-      
+
       if (skeleton) {
         skeleton.classList.add('d-none');
       }
-      
+
       if (data.activities && data.activities.length > 0) {
         activityList.innerHTML = data.activities.map(activity => `
           <div class="activity-item p-3 border-b border-gray-200">
@@ -1340,7 +1340,7 @@ const Dashboard = {
       }
     }
    },
- 
+
     // Update last refresh time
   updateLastRefreshTime() {
     const element = document.getElementById('last-refresh-time');
@@ -1384,8 +1384,8 @@ const Dashboard = {
   updateConnectionStatus(isConnected) {
     const statusDot = document.querySelector('.pulse-dot');
     if (statusDot) {
-      statusDot.className = isConnected ? 
-        'pulse-dot w-3 h-3 bg-green-400 rounded-full' : 
+      statusDot.className = isConnected ?
+        'pulse-dot w-3 h-3 bg-green-400 rounded-full' :
         'w-3 h-3 bg-red-400 rounded-full';
     }
   },
@@ -1393,7 +1393,7 @@ const Dashboard = {
   addLogEntry(log) {
     const container = document.getElementById('logContainer');
     if (!container) return;
-    
+
     const logElement = document.createElement('div');
     logElement.className = `log-entry mb-1 ${this.getLogLevelClass(log.level)}`;
     logElement.innerHTML = `
@@ -1401,10 +1401,10 @@ const Dashboard = {
       <span class="font-medium">[${log.level.toUpperCase()}]</span>
       <span>${log.message}</span>
     `;
-    
+
     container.appendChild(logElement);
     container.scrollTop = container.scrollHeight;
-    
+
     // Keep only last 100 log entries
     const entries = container.querySelectorAll('.log-entry');
     if (entries.length > 100) {
@@ -1447,37 +1447,37 @@ const Dashboard = {
   handleSearch(event) {
     const query = event.target.value.toLowerCase();
     const searchId = 'global_search';
-    
+
     // Clear existing timer
     if (this.debounceTimers.has(searchId)) {
       clearTimeout(this.debounceTimers.get(searchId));
     }
-    
+
     // Debounce search
     const timer = setTimeout(() => {
       this.performSearch(query);
       this.debounceTimers.delete(searchId);
     }, this.config.debounceDelay);
-    
+
     this.debounceTimers.set(searchId, timer);
   },
-  
+
   // Perform actual search
   performSearch(query) {
     console.log('🔍 Searching for:', query);
-    
+
     const startTime = performance.now();
-    
+
     // Use document fragment for better performance
     const searchableElements = document.querySelectorAll('[data-searchable]');
     let visibleCount = 0;
-    
+
     // Batch DOM updates
     requestAnimationFrame(() => {
       searchableElements.forEach(element => {
         const text = element.textContent.toLowerCase();
         const matches = text.includes(query.toLowerCase());
-        
+
         if (matches || query === '') {
           element.style.display = '';
           visibleCount++;
@@ -1485,7 +1485,7 @@ const Dashboard = {
           element.style.display = 'none';
         }
       });
-      
+
       const endTime = performance.now();
       console.log(`🔍 Search completed in ${(endTime - startTime).toFixed(2)}ms - Found ${visibleCount} results`);
     });

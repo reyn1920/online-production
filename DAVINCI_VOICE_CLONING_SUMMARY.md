@@ -17,7 +17,7 @@ Successfully implemented a comprehensive voice cloning system that uses audio sa
 
 **Voice Samples Created:**
 - `narrator.aiff` - Professional narrator voice
-- `assistant.aiff` - AI assistant voice  
+- `assistant.aiff` - AI assistant voice
 - `presenter.aiff` - Presentation/demo voice
 
 **Engines Available:**
@@ -43,7 +43,7 @@ Successfully implemented a comprehensive voice cloning system that uses audio sa
 ### DaVinci Resolve Voice Synthesis Landscape
 
 1. **No Built-in TTS**: DaVinci Resolve lacks native text-to-speech capabilities
-2. **Third-party Solutions**: 
+2. **Third-party Solutions**:
    - Epidemic Sound AI voice cloning plugin
    - Soundly plugin for basic TTS
    - GitHub TTS plugins for Azure, MiniMax, Edge TTS
