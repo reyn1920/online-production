@@ -241,7 +241,7 @@ mypy==1.7.1
 pre-commit==3.6.0
 
 # Performance
-gunicorn==21.2.0
+gunicorn==23.0.0
 gevent==23.9.1
 aiofiles==23.2.1
 orjson==3.9.10
