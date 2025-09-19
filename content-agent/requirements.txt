@@ -18,7 +18,7 @@ hiredis==2.2.3
 
 # Task Queue
 celery==5.3.4
-kombu==5.3.4
+kombu==5.5.4
 
 # HTTP Client
 httpx==0.25.2
