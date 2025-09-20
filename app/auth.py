@@ -3,17 +3,17 @@ Authentication system for the application.
 Provides user authentication, authorization, and session management.
 """
 
-import secrets
-import jwt
-from datetime import datetime, timedelta
-from dataclasses import dataclass
-from enum import Enum
-import bcrypt
 import asyncio
-from functools import wraps
 import logging
-from typing import Optional
-from typing import Any
+import secrets
+from dataclasses import dataclass
+from datetime import datetime, timedelta
+from enum import Enum
+from functools import wraps
+from typing import Any, Optional
+
+import bcrypt
+import jwt
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -107,9 +107,7 @@ class JWTManager:
         self.secret_key = secret_key
         self.algorithm = algorithm
 
-    def create_token(
-        self, user_id: str, role: UserRole, expires_in_hours: int = 24
-    ) -> str:
+    def create_token(self, user_id: str, role: UserRole, expires_in_hours: int = 24) -> str:
         """Create a JWT token for a user."""
         payload = {
             "user_id": user_id,
@@ -172,9 +170,7 @@ class SessionManager:
         """Remove expired sessions."""
         current_time = datetime.now()
         expired_sessions = [
-            sid
-            for sid, session in self.sessions.items()
-            if session.expires_at <= current_time
+            sid for sid, session in self.sessions.items() if session.expires_at <= current_time
         ]
         for sid in expired_sessions:
             del self.sessions[sid]
@@ -262,14 +258,10 @@ class AuthenticationSystem:
         user = self.user_manager.get_user_by_email(email)
 
         if not user:
-            return AuthResult(
-                status=AuthStatus.USER_NOT_FOUND, message="User not found"
-            )
+            return AuthResult(status=AuthStatus.USER_NOT_FOUND, message="User not found")
 
         if not user.is_active:
-            return AuthResult(
-                status=AuthStatus.ACCOUNT_LOCKED, message="Account is deactivated"
-            )
+            return AuthResult(status=AuthStatus.ACCOUNT_LOCKED, message="Account is deactivated")
 
         if self.user_manager.is_account_locked(user):
             return AuthResult(
@@ -282,9 +274,7 @@ class AuthenticationSystem:
             if user.failed_login_attempts >= self.max_failed_attempts:
                 self.user_manager.lock_user_account(user.id)
 
-            return AuthResult(
-                status=AuthStatus.INVALID_CREDENTIALS, message="Invalid credentials"
-            )
+            return AuthResult(status=AuthStatus.INVALID_CREDENTIALS, message="Invalid credentials")
 
         # Reset failed attempts on successful login
         user.failed_login_attempts = 0
@@ -358,12 +348,7 @@ async def main():
         user_agent="Test Client",
     )
 
-    if (
-        result.status == AuthStatus.SUCCESS
-        and result.user
-        and result.session
-        and result.token
-    ):
+    if result.status == AuthStatus.SUCCESS and result.user and result.session and result.token:
         print(f"Authentication successful for user: {result.user.username}")
         print(f"Token: {result.token}")
         print(f"Session ID: {result.session.session_id}")

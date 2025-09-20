@@ -6,16 +6,15 @@ Provides APIs for connecting different system components and external services.
 import asyncio
 import json
 import logging
-from dataclasses import dataclass, asdict
+import time
+import uuid
+from abc import ABC, abstractmethod
+from dataclasses import asdict, dataclass
 from enum import Enum
+from typing import Any, Callable, Optional
+
 import aiohttp
 import websockets
-from abc import ABC, abstractmethod
-import uuid
-import time
-from typing import Optional
-from typing import Any
-from typing import Callable
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -183,9 +182,7 @@ class HTTPConnector(ServiceConnector):
         start_time = time.time()
         try:
             if self.session:
-                async with self.session.get(
-                    f"{self.config.endpoint}/health"
-                ) as response:
+                async with self.session.get(f"{self.config.endpoint}/health") as response:
                     response_time = time.time() - start_time
                     status = (
                         ConnectionStatus.CONNECTED
@@ -281,14 +278,10 @@ class MessageRouter:
         """Add a message handler for a service."""
         self.message_handlers[service_id] = handler
 
-    async def route_message(
-        self, message: Message, bridge: "SystemBridge"
-    ) -> list[Message]:
+    async def route_message(self, message: Message, bridge: "SystemBridge") -> list[Message]:
         """Route a message to appropriate services."""
         results = []
-        target_services = self.routes.get(
-            message.source_service, [message.target_service]
-        )
+        target_services = self.routes.get(message.source_service, [message.target_service])
 
         for target_service in target_services:
             if target_service in bridge.connectors:
@@ -362,9 +355,7 @@ class SystemBridge:
                 results[service_id] = False
         return results
 
-    async def send_message(
-        self, target_service: str, message: Message
-    ) -> Optional[Message]:
+    async def send_message(self, target_service: str, message: Message) -> Optional[Message]:
         """Send a message to a specific service."""
         connector = self.connectors.get(target_service)
         if not connector:
@@ -414,9 +405,7 @@ class SystemBridge:
                     health_status = await self.get_all_service_health()
                     for service_id, health in health_status.items():
                         if health.status == ConnectionStatus.ERROR:
-                            logger.warning(
-                                f"Service {service_id} is unhealthy: {health.status}"
-                            )
+                            logger.warning(f"Service {service_id} is unhealthy: {health.status}")
 
                     await asyncio.sleep(interval)
                 except Exception as e:
@@ -493,9 +482,7 @@ async def main():
     # Check health
     health_status = await system_bridge.get_all_service_health()
     for service_id, health in health_status.items():
-        print(
-            f"Service {service_id}: {health.status} (Response time: {health.response_time:.3f}s)"
-        )
+        print(f"Service {service_id}: {health.status} (Response time: {health.response_time:.3f}s)")
 
     # Start monitoring
     await system_bridge.start_health_monitoring()

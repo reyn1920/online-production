@@ -3,15 +3,16 @@ Trae.ai Unified Development Environment - Main FastAPI Server
 Provides endpoints for SOLO agent execution, Genesis interviews, and orchestrator events.
 """
 
-from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
 import asyncio
 import json
 import logging
-from typing import Any, Optional
-import uvicorn
 from datetime import datetime
+from typing import Any, Optional
+
+import uvicorn
+from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -129,9 +130,7 @@ async def execute_solo_goal(request: SOLOExecuteRequest):
 
     except Exception as e:
         logger.error(f"Error executing SOLO goal: {str(e)}")
-        raise HTTPException(
-            status_code=500, detail=f"Failed to execute SOLO goal: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Failed to execute SOLO goal: {str(e)}")
 
 
 @app.post("/genesis/start_interview", response_model=GenesisInterviewResponse)
@@ -185,9 +184,7 @@ async def start_genesis_interview(request: GenesisInterviewRequest):
 
     except Exception as e:
         logger.error(f"Error starting Genesis interview: {str(e)}")
-        raise HTTPException(
-            status_code=500, detail=f"Failed to start Genesis interview: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Failed to start Genesis interview: {str(e)}")
 
 
 @app.websocket("/ws/orchestrator_events")
@@ -196,9 +193,7 @@ async def orchestrator_websocket(websocket: WebSocket):
     WebSocket endpoint for streaming orchestrator events
     """
     await websocket.accept()
-    connection_id = (
-        f"ws_conn_{len(websocket_connections) + 1}_{datetime.now().strftime('%H%M%S')}"
-    )
+    connection_id = f"ws_conn_{len(websocket_connections) + 1}_{datetime.now().strftime('%H%M%S')}"
     websocket_connections[connection_id] = websocket
 
     logger.info(f"WebSocket connection established: {connection_id}")
@@ -365,6 +360,4 @@ async def get_genesis_interview(interview_id: str):
 
 
 if __name__ == "__main__":
-    uvicorn.run(
-        "main_server:app", host="0.0.0.0", port=8001, reload=True, log_level="info"
-    )
+    uvicorn.run("main_server:app", host="0.0.0.0", port=8001, reload=True, log_level="info")

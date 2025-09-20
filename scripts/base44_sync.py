@@ -4,13 +4,13 @@ Base44 Synchronization System
 Automatically applies Base44 updates to online production environment
 """
 
-import os
-import sys
 import json
-import shutil
 import logging
-from pathlib import Path
+import os
+import shutil
+import sys
 from datetime import datetime
+from pathlib import Path
 
 # Configure logging
 logging.basicConfig(

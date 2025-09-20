@@ -57,9 +57,7 @@ class LegacyCodeAdapter:
     def __init__(self):
         self.gateway = ResilientAIGateway()
 
-    async def chat_completion(
-        self, platform: str, message: str, session_id=None
-    ) -> dict:
+    async def chat_completion(self, platform: str, message: str, session_id=None) -> dict:
         """
         Legacy-compatible method that mimics WebAIClient.chat_completion
         but uses the resilient gateway internally
@@ -91,9 +89,7 @@ class LegacyCodeAdapter:
         """Legacy-compatible session stats"""
         status = self.gateway.get_gateway_status()
         return {
-            "active_sessions": (
-                1 if status["health_summary"]["healthy_providers"] > 0 else 0
-            ),
+            "active_sessions": (1 if status["health_summary"]["healthy_providers"] > 0 else 0),
             "total_sessions": status["metrics"]["total_requests"],
             "gateway_status": status,
         }
@@ -122,9 +118,7 @@ async def demonstrate_integration():
     adapter = LegacyCodeAdapter()
 
     # This looks like the old WebAIClient API but uses the gateway
-    legacy_response = await adapter.chat_completion(
-        "chatgpt", "What is machine learning?"
-    )
+    legacy_response = await adapter.chat_completion("chatgpt", "What is machine learning?")
     print(f"Legacy Response Success: {legacy_response['success']}")
     if legacy_response["success"]:
         print(f"Response: {legacy_response['response'][:100]}...")

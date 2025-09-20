@@ -32,13 +32,17 @@ class ServiceRegistry:
     async def initialize_all(self) -> None:
         if self._initialized:
             return
-        all_services: List[BaseService] = list(self._services.values()) + list(self._singletons.values())
+        all_services: List[BaseService] = list(self._services.values()) + list(
+            self._singletons.values()
+        )
         init_tasks = [s.initialize() for s in all_services if hasattr(s, "initialize")]
         await asyncio.gather(*init_tasks)
         self._initialized = True
 
     async def shutdown_all(self) -> None:
-        all_services: List[BaseService] = list(self._services.values()) + list(self._singletons.values())
+        all_services: List[BaseService] = list(self._services.values()) + list(
+            self._singletons.values()
+        )
         shutdown_tasks = [s.shutdown() for s in all_services if hasattr(s, "shutdown")]
         await asyncio.gather(*shutdown_tasks)
         self._initialized = False

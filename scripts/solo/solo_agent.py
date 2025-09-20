@@ -12,7 +12,7 @@ import uuid
 from datetime import datetime
 from typing import Any, Optional
 
-from .tool_runner import run_tool, plan_goal, async_run_tool, async_plan_goal
+from .tool_runner import async_plan_goal, async_run_tool, plan_goal, run_tool
 
 logger = logging.getLogger(__name__)
 
@@ -22,9 +22,7 @@ class SOLOAgent:
     Self-Organizing Learning Operations Agent with self-healing capabilities.
     """
 
-    def __init__(
-        self, agent_id: Optional[str] = None, config: Optional[dict[str, Any]] = None
-    ):
+    def __init__(self, agent_id: Optional[str] = None, config: Optional[dict[str, Any]] = None):
         self.agent_id = agent_id or str(uuid.uuid4())
         self.config = config or {}
         self.execution_history: list[dict[str, Any]] = []
@@ -42,9 +40,7 @@ class SOLOAgent:
             "execution_count": len(self.execution_history),
             "failed_actions": len(self.failed_actions),
             "recovery_attempts": self.recovery_attempts,
-            "last_execution": (
-                self.execution_history[-1] if self.execution_history else None
-            ),
+            "last_execution": (self.execution_history[-1] if self.execution_history else None),
         }
 
     async def execute_goal_async(
@@ -133,9 +129,7 @@ class SOLOAgent:
             result = await async_run_tool(tool_name, *tool_args, **tool_kwargs)
 
             # Verify the action
-            verification_result = await self._verify_action_async(
-                tool_name, result, step
-            )
+            verification_result = await self._verify_action_async(tool_name, result, step)
 
             if not verification_result["success"]:
                 self.logger.warning(
@@ -143,9 +137,7 @@ class SOLOAgent:
                 )
 
                 # Attempt self-healing
-                healing_result = await self._attempt_self_healing(
-                    step, result, verification_result
-                )
+                healing_result = await self._attempt_self_healing(step, result, verification_result)
 
                 if not healing_result["success"]:
                     self.logger.error(f"❌ Self-healing failed for step {i + 1}")
@@ -270,9 +262,7 @@ class SOLOAgent:
             return {"success": False, "reason": "npm command failed", "details": stderr}
 
         # Check for dependency vulnerabilities (if audit command)
-        if "audit" in step.get("args", []) and "vulnerabilities" in result.get(
-            "stdout", ""
-        ):
+        if "audit" in step.get("args", []) and "vulnerabilities" in result.get("stdout", ""):
             return {
                 "success": False,
                 "reason": "Security vulnerabilities detected",
@@ -469,9 +459,7 @@ def verify_action(tool_name: str, result: dict[str, Any]) -> bool:
     # This is the most important step to prevent regressions.
     test_result = run_tool("pytest", "--quicktest")  # Example command
     if test_result.get("code", 0) != 0:
-        print(
-            "❌ [Verifier] SELF-HEALING TRIGGERED: Action broke the test suite! Rolling back."
-        )
+        print("❌ [Verifier] SELF-HEALING TRIGGERED: Action broke the test suite! Rolling back.")
         # In a real system, you would add logic here to revert the last change.
         return False
 
@@ -494,9 +482,7 @@ def execute(goal: str):
 
         # --- THE CRITICAL UPGRADE ---
         if not verify_action(tool_to_run, result):
-            print(
-                "🛑 [SOLO Agent] Halting plan due to verification failure. Re-planning..."
-            )
+            print("🛑 [SOLO Agent] Halting plan due to verification failure. Re-planning...")
             # Here, you would call the Dynamic Planner to create a new plan
             # based on the new failure context.
             break  # Stop the current failed plan

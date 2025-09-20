@@ -3,15 +3,14 @@
 AI Video Pipeline - Automated video processing and generation system
 """
 
-import os
-import sys
 import asyncio
 import logging
+import os
+import sys
+from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
-from dataclasses import dataclass, asdict
 from enum import Enum
-from typing import Optional
-from typing import Any
+from typing import Any, Optional
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -58,17 +57,13 @@ class AIVideoPipeline:
         # Ensure output directory exists
         os.makedirs(output_dir, exist_ok=True)
 
-    def create_job(
-        self, input_path: str, output_format: VideoFormat = VideoFormat.MP4
-    ) -> str:
+    def create_job(self, input_path: str, output_format: VideoFormat = VideoFormat.MP4) -> str:
         """Create a new video processing job"""
         job_id = f"job_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{len(self.jobs)}"
 
         # Generate output path
         base_name = os.path.splitext(os.path.basename(input_path))[0]
-        output_path = os.path.join(
-            self.output_dir, f"{base_name}_{job_id}.{output_format.value}"
-        )
+        output_path = os.path.join(self.output_dir, f"{base_name}_{job_id}.{output_format.value}")
 
         job = VideoJob(
             id=job_id,
@@ -243,32 +238,16 @@ def get_pipeline_status() -> dict[str, Any]:
     return {
         "total_jobs": len(video_pipeline.jobs),
         "pending_jobs": len(
-            [
-                j
-                for j in video_pipeline.jobs.values()
-                if j.status == ProcessingStatus.PENDING
-            ]
+            [j for j in video_pipeline.jobs.values() if j.status == ProcessingStatus.PENDING]
         ),
         "processing_jobs": len(
-            [
-                j
-                for j in video_pipeline.jobs.values()
-                if j.status == ProcessingStatus.PROCESSING
-            ]
+            [j for j in video_pipeline.jobs.values() if j.status == ProcessingStatus.PROCESSING]
         ),
         "completed_jobs": len(
-            [
-                j
-                for j in video_pipeline.jobs.values()
-                if j.status == ProcessingStatus.COMPLETED
-            ]
+            [j for j in video_pipeline.jobs.values() if j.status == ProcessingStatus.COMPLETED]
         ),
         "failed_jobs": len(
-            [
-                j
-                for j in video_pipeline.jobs.values()
-                if j.status == ProcessingStatus.FAILED
-            ]
+            [j for j in video_pipeline.jobs.values() if j.status == ProcessingStatus.FAILED]
         ),
         "queue_length": len(video_pipeline.processing_queue),
     }

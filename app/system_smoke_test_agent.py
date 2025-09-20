@@ -7,13 +7,14 @@ for the TRAE.AI dashboard system.
 
 import asyncio
 import logging
+import sqlite3
 import time
-from datetime import datetime, timezone
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from enum import Enum
+
 import aiohttp
 import psutil
-import sqlite3
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -155,11 +156,7 @@ class SystemSmokeTestAgent:
                 warnings.append(f"High disk usage: {disk.percent}%")
 
             status = TestResult.WARNING if warnings else TestResult.PASS
-            message = (
-                "; ".join(warnings)
-                if warnings
-                else "System resources within normal limits"
-            )
+            message = "; ".join(warnings) if warnings else "System resources within normal limits"
 
             return SmokeTestResult(
                 test_name="system_resources",
@@ -314,9 +311,7 @@ class SystemSmokeTestAgent:
             # Test local application endpoint
             timeout = aiohttp.ClientTimeout(total=5)
             async with aiohttp.ClientSession() as session:
-                async with session.get(
-                    "http://localhost:8000", timeout=timeout
-                ) as response:
+                async with session.get("http://localhost:8000", timeout=timeout) as response:
                     if response.status == 200:
                         return SmokeTestResult(
                             test_name="application_endpoints",
@@ -349,15 +344,9 @@ class SystemSmokeTestAgent:
             "status": self.status.value,
             "last_run": self.last_run.isoformat() if self.last_run else None,
             "test_count": len(self.test_results),
-            "passed_tests": len(
-                [r for r in self.test_results if r.status == TestResult.PASS]
-            ),
-            "failed_tests": len(
-                [r for r in self.test_results if r.status == TestResult.FAIL]
-            ),
-            "warning_tests": len(
-                [r for r in self.test_results if r.status == TestResult.WARNING]
-            ),
+            "passed_tests": len([r for r in self.test_results if r.status == TestResult.PASS]),
+            "failed_tests": len([r for r in self.test_results if r.status == TestResult.FAIL]),
+            "warning_tests": len([r for r in self.test_results if r.status == TestResult.WARNING]),
         }
 
     def get_test_results(self) -> list[dict[str, Any]]:

@@ -1,8 +1,8 @@
 # Comprehensive Dashboard Router - Standalone Implementation
-from datetime import datetime, timedelta
-import json
 import asyncio
+import json
 import logging
+from datetime import datetime, timedelta
 from typing import Any
 
 
@@ -160,9 +160,7 @@ async def get_system_metrics_endpoint():
     """Get detailed system metrics"""
     try:
         metrics = get_system_metrics()
-        return JSONResponse(
-            content={"metrics": metrics, "timestamp": datetime.now().isoformat()}
-        )
+        return JSONResponse(content={"metrics": metrics, "timestamp": datetime.now().isoformat()})
     except Exception as e:
         logger.error(f"Error getting system metrics: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")

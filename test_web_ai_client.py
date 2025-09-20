@@ -4,8 +4,8 @@ Test script for WebAI Client - ChatGPT Session Management Fix
 """
 
 import asyncio
-import sys
 import json
+import sys
 from pathlib import Path
 
 # Add the current directory to the path for the fixed client
@@ -36,9 +36,7 @@ async def test_chatgpt_session_management():
     try:
         session = client.get_session(session_id)
         if session:
-            print(
-                f"✅ Retrieved session: {session.session_id} for platform: {session.platform}"
-            )
+            print(f"✅ Retrieved session: {session.session_id} for platform: {session.platform}")
         else:
             print("❌ Session not found")
             return False

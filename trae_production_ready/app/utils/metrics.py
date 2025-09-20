@@ -30,9 +30,7 @@ class PrometheusMiddleware(BaseHTTPMiddleware):
             status_code=response.status_code,
         ).inc()
 
-        REQUEST_DURATION.labels(
-            method=request.method, endpoint=request.url.path
-        ).observe(duration)
+        REQUEST_DURATION.labels(method=request.method, endpoint=request.url.path).observe(duration)
 
         return response
 

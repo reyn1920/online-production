@@ -9,7 +9,7 @@ import json
 import os
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Any, Dict, List, Optional
 
 
 class CodeSymbolExtractor(ast.NodeVisitor):
@@ -148,9 +148,7 @@ class CrossReferenceAgent:
                 "complexity": 0,
             }
 
-    def analyze_function_in_file(
-        self, file_path: Path, func_name: str
-    ) -> Dict[str, Any]:
+    def analyze_function_in_file(self, file_path: Path, func_name: str) -> Dict[str, Any]:
         """Analyze a specific function in a file with proper error handling."""
         file_analysis = self.analyze_file_symbols(file_path)
 
@@ -194,18 +192,13 @@ class CrossReferenceAgent:
                     tree = ast.parse(content)
 
                     for node in ast.walk(tree):
-                        if (
-                            isinstance(node, ast.FunctionDef)
-                            and "test" in node.name.lower()
-                        ):
+                        if isinstance(node, ast.FunctionDef) and "test" in node.name.lower():
                             # Check if this test function references our target function
                             test_source = ast.get_source_segment(content, node)
                             if test_source and func_name in test_source:
                                 test_case = {
                                     "test_name": node.name,
-                                    "test_file": str(
-                                        test_file.relative_to(self.tests_dir)
-                                    ),
+                                    "test_file": str(test_file.relative_to(self.tests_dir)),
                                     "line_number": node.lineno,
                                     "assertions": self._extract_assertions(node),
                                 }
@@ -226,9 +219,7 @@ class CrossReferenceAgent:
             if isinstance(node, ast.Call):
                 if isinstance(node.func, ast.Attribute) and "assert" in node.func.attr:
                     assertions.append(node.func.attr)
-                elif isinstance(node.func, ast.Name) and node.func.id.startswith(
-                    "assert"
-                ):
+                elif isinstance(node.func, ast.Name) and node.func.id.startswith("assert"):
                     assertions.append(node.func.id)
 
         return assertions
@@ -310,15 +301,11 @@ class CrossReferenceAgent:
                 new_args = new_func.get("args", [])
                 old_args = old_func.get("args", [])
                 if new_args != old_args:
-                    issues.append(
-                        f"Function signature changed: {old_args} -> {new_args}"
-                    )
+                    issues.append(f"Function signature changed: {old_args} -> {new_args}")
 
         return issues
 
-    def generate_validation_report(
-        self, analysis_results: List[Dict[str, Any]]
-    ) -> Dict[str, Any]:
+    def generate_validation_report(self, analysis_results: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Generate a comprehensive validation report with proper type safety."""
         total_functions = len(analysis_results)
         functions_with_tests = sum(
@@ -345,9 +332,7 @@ class CrossReferenceAgent:
 
     def run_full_analysis(self, output_file: Optional[str] = None) -> Dict[str, Any]:
         """Run complete three-way validation analysis."""
-        print(
-            "🔍 [CrossReferenceAgent] Starting type-safe three-way validation analysis..."
-        )
+        print("🔍 [CrossReferenceAgent] Starting type-safe three-way validation analysis...")
 
         analysis_results: List[Dict[str, Any]] = []
 

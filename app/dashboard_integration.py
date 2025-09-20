@@ -6,11 +6,10 @@ Provides unified interface for dashboard data aggregation and visualization.
 import asyncio
 import json
 import logging
+from abc import ABC, abstractmethod
 from datetime import datetime, timedelta
 from enum import Enum
-from abc import ABC, abstractmethod
-from typing import Any
-from typing import Optional
+from typing import Any, Optional
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -121,9 +120,7 @@ class DataSource(ABC):
         self.cache: dict[str, Any] = {}
 
     @abstractmethod
-    async def fetch_data(
-        self, query: str, params: dict[str, Any] = None
-    ) -> list[DataPoint]:
+    async def fetch_data(self, query: str, params: dict[str, Any] = None) -> list[DataPoint]:
         """Fetch data from the source."""
 
     @abstractmethod
@@ -134,9 +131,7 @@ class DataSource(ABC):
 class APIDataSource(DataSource):
     """Data source for REST APIs."""
 
-    async def fetch_data(
-        self, query: str, params: dict[str, Any] = None
-    ) -> list[DataPoint]:
+    async def fetch_data(self, query: str, params: dict[str, Any] = None) -> list[DataPoint]:
         """Fetch data from API endpoint."""
         try:
             # Simulate API call
@@ -167,9 +162,7 @@ class APIDataSource(DataSource):
 class DatabaseDataSource(DataSource):
     """Data source for databases."""
 
-    async def fetch_data(
-        self, query: str, params: dict[str, Any] = None
-    ) -> list[DataPoint]:
+    async def fetch_data(self, query: str, params: dict[str, Any] = None) -> list[DataPoint]:
         """Fetch data from database."""
         try:
             # Simulate database query
@@ -251,16 +244,12 @@ class Widget:
         if not self.data:
             return {"count": 0, "latest": None, "average": 0}
 
-        numeric_values = [
-            dp.value for dp in self.data if isinstance(dp.value, (int, float))
-        ]
+        numeric_values = [dp.value for dp in self.data if isinstance(dp.value, (int, float))]
 
         return {
             "count": len(self.data),
             "latest": self.data[0].value if self.data else None,
-            "average": (
-                sum(numeric_values) / len(numeric_values) if numeric_values else 0
-            ),
+            "average": (sum(numeric_values) / len(numeric_values) if numeric_values else 0),
             "last_refresh": self.last_refresh.isoformat(),
         }
 
@@ -285,9 +274,7 @@ class Dashboard:
         """Remove a widget from the dashboard."""
         if widget_id in self.widgets:
             del self.widgets[widget_id]
-            logger.info(
-                f"Removed widget {widget_id} from dashboard {self.config.dashboard_id}"
-            )
+            logger.info(f"Removed widget {widget_id} from dashboard {self.config.dashboard_id}")
             return True
         return False
 
@@ -372,9 +359,7 @@ class DashboardIntegration:
                     widget = Widget(widget_config, data_source)
                     dashboard.add_widget(widget)
                 else:
-                    logger.warning(
-                        f"Data source not found for widget: {widget_config.widget_id}"
-                    )
+                    logger.warning(f"Data source not found for widget: {widget_config.widget_id}")
 
             self.dashboards[config.dashboard_id] = dashboard
             logger.info(f"Created dashboard: {config.dashboard_id}")

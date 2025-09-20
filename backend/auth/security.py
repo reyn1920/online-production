@@ -7,17 +7,18 @@ for the TRAE.AI authentication system.
 Author: TRAE.AI System
 """
 
-import os
-import jwt
-import bcrypt
-from datetime import datetime, timedelta, timezone
-from typing import Optional, Any
-from fastapi import HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from pydantic import BaseModel
-import secrets
 import hashlib
 import logging
+import os
+import secrets
+from datetime import datetime, timedelta, timezone
+from typing import Any, Optional
+
+import bcrypt
+import jwt
+from fastapi import HTTPException, status
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from pydantic import BaseModel
 
 logger = logging.getLogger(__name__)
 
@@ -30,12 +31,8 @@ class SecurityConfig:
     def __init__(self):
         self.jwt_secret_key = os.getenv("JWT_SECRET_KEY", self._generate_secret_key())
         self.jwt_algorithm = "HS256"
-        self.access_token_expire_minutes = int(
-            os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30")
-        )
-        self.refresh_token_expire_days = int(
-            os.getenv("REFRESH_TOKEN_EXPIRE_DAYS", "7")
-        )
+        self.access_token_expire_minutes = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
+        self.refresh_token_expire_days = int(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS", "7"))
         self.password_min_length = 8
         self.max_login_attempts = 5
         self.lockout_duration_minutes = 15
@@ -95,9 +92,7 @@ class PasswordManager:
     def verify_password(password: str, hashed_password: str) -> bool:
         """Verify a password against its hash"""
         try:
-            return bcrypt.checkpw(
-                password.encode("utf-8"), hashed_password.encode("utf-8")
-            )
+            return bcrypt.checkpw(password.encode("utf-8"), hashed_password.encode("utf-8"))
         except Exception as e:
             logger.error(f"Password verification error: {e}")
             return False
@@ -184,9 +179,7 @@ class JWTManager:
 
             # Check if token is expired
             exp = payload.get("exp")
-            if exp and datetime.fromtimestamp(exp, tz=timezone.utc) < datetime.now(
-                timezone.utc
-            ):
+            if exp and datetime.fromtimestamp(exp, tz=timezone.utc) < datetime.now(timezone.utc):
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired"
                 )
@@ -196,16 +189,8 @@ class JWTManager:
                 username=payload.get("username"),
                 roles=payload.get("roles", []),
                 token_type=payload.get("token_type", "access"),
-                exp=(
-                    datetime.fromtimestamp(payload.get("exp"))
-                    if payload.get("exp")
-                    else None
-                ),
-                iat=(
-                    datetime.fromtimestamp(payload.get("iat"))
-                    if payload.get("iat")
-                    else None
-                ),
+                exp=(datetime.fromtimestamp(payload.get("exp")) if payload.get("exp") else None),
+                iat=(datetime.fromtimestamp(payload.get("iat")) if payload.get("iat") else None),
             )
 
         except jwt.ExpiredSignatureError:
@@ -214,9 +199,7 @@ class JWTManager:
             )
         except jwt.InvalidTokenError as e:
             logger.error(f"Invalid token: {e}")
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
-            )
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
 
     @staticmethod
     def create_token_response(
@@ -233,8 +216,7 @@ class JWTManager:
             access_token=access_token,
             refresh_token=refresh_token,
             expires_in=security_config.access_token_expire_minutes * 60,
-            user_info=user_info
-            or {"user_id": user_id, "username": username, "roles": roles or []},
+            user_info=user_info or {"user_id": user_id, "username": username, "roles": roles or []},
         )
 
 
@@ -247,9 +229,7 @@ class SecurityMiddleware:
     def __init__(self):
         self.bearer_scheme = HTTPBearer()
 
-    async def get_current_user(
-        self, credentials: HTTPAuthorizationCredentials
-    ) -> TokenData:
+    async def get_current_user(self, credentials: HTTPAuthorizationCredentials) -> TokenData:
         """Get current user from JWT token"""
         token = credentials.credentials
         token_data = JWTManager.verify_token(token)
@@ -295,8 +275,7 @@ class RateLimiter:
         attempts = [
             attempt
             for attempt in attempts
-            if now - attempt
-            < timedelta(minutes=security_config.lockout_duration_minutes)
+            if now - attempt < timedelta(minutes=security_config.lockout_duration_minutes)
         ]
         self.attempts[identifier] = attempts
 

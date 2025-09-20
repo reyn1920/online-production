@@ -1,7 +1,7 @@
 """API Discovery routes for exposing available endpoints and documentation."""
 
-from typing import Optional
 import logging
+from typing import Optional
 
 # Proper FastAPI imports
 try:
@@ -193,9 +193,7 @@ class APIDiscoveryService:
             return endpoints
         except Exception as e:
             logger.error(f"Error getting available endpoints: {e}")
-            raise HTTPException(
-                status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to get endpoints"
-            )
+            raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to get endpoints")
 
     @staticmethod
     def get_service_info() -> ServiceInfo:
@@ -209,9 +207,7 @@ class APIDiscoveryService:
             )
         except Exception as e:
             logger.error(f"Error getting service info: {e}")
-            raise HTTPException(
-                status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to get service info"
-            )
+            raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to get service info")
 
     @staticmethod
     def get_api_discovery() -> APIDiscoveryResponse:

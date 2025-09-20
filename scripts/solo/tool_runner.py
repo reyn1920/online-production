@@ -8,8 +8,7 @@ import asyncio
 import logging
 import subprocess
 import sys
-from typing import Any
-from typing import Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 

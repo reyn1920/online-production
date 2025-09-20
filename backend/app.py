@@ -2,9 +2,8 @@ from pathlib import Path
 
 import httpx
 from fastapi import FastAPI
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
 
 # Import all routers
 from routers.production_health import router as production_health_router
@@ -31,7 +30,7 @@ except ImportError:
     runtime_router = None
 
 try:
-    from auth.routes import auth_router, users_router, admin_router
+    from auth.routes import admin_router, auth_router, users_router
 except ImportError:
     auth_router = users_router = admin_router = None
 
@@ -130,12 +129,8 @@ async def get_production_status():
             main_api_response = await client.get("http://localhost:8000/health")
             channels_response = await client.get("http://localhost:8000/channels")
 
-        main_api_data = (
-            main_api_response.json() if main_api_response.status_code == 200 else {}
-        )
-        channels_data = (
-            channels_response.json() if channels_response.status_code == 200 else []
-        )
+        main_api_data = main_api_response.json() if main_api_response.status_code == 200 else {}
+        channels_data = channels_response.json() if channels_response.status_code == 200 else []
 
         # Combine with Base44 status
         return {
@@ -149,9 +144,7 @@ async def get_production_status():
             "services": {
                 "base44": "✅ Online",
                 "main_api": (
-                    "✅ Connected"
-                    if main_api_response.status_code == 200
-                    else "❌ Disconnected"
+                    "✅ Connected" if main_api_response.status_code == 200 else "❌ Disconnected"
                 ),
                 "database": "✅ Passing",
                 "monitoring": "Online",

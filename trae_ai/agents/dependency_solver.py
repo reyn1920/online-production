@@ -1,8 +1,8 @@
 from pathlib import Path
+
 from trae_ai.oracle.agents import query_llm
-from trae_ai.workbench.verified_corrector import (
-    VerifiedCorrector,
-)  # We reuse the verifier
+from trae_ai.workbench.verified_corrector import \
+    VerifiedCorrector  # We reuse the verifier
 
 
 class DependencySolver:
@@ -37,9 +37,7 @@ class DependencySolver:
 
         proposed_deps = query_llm(prompt, model="wizardcoder:33b")
 
-        print(
-            "\n✅ [DependencySolver] A new, conflict-free dependency list has been generated."
-        )
+        print("\n✅ [DependencySolver] A new, conflict-free dependency list has been generated.")
 
         # We now use the same self-healing logic to verify the change
         verifier = VerifiedCorrector()
@@ -47,9 +45,7 @@ class DependencySolver:
 
         if is_safe:
             requirements_file.write_text(proposed_deps)
-            print(
-                "🎉 [DependencySolver] Dependencies successfully resolved and verified!"
-            )
+            print("🎉 [DependencySolver] Dependencies successfully resolved and verified!")
         else:
             print(
                 "❌ [DependencySolver] The proposed dependency changes broke the test suite. Reverting."

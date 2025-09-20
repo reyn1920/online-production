@@ -6,17 +6,14 @@ Provides comprehensive metric tracking, aggregation, and reporting capabilities.
 import asyncio
 import json
 import logging
+import statistics
+import threading
 import time
+from abc import ABC, abstractmethod
+from collections import defaultdict, deque
 from datetime import datetime, timedelta
 from enum import Enum
-from collections import defaultdict, deque
-import threading
-from abc import ABC, abstractmethod
-import statistics
-from typing import Union
-from typing import Optional
-from typing import Any
-from typing import Callable
+from typing import Any, Callable, Optional, Union
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -199,22 +196,16 @@ class Metric:
         except Exception as e:
             logger.error(f"Error recording metric {self.config.name}: {e}")
 
-    async def increment(
-        self, amount: Union[int, float] = 1, tags: Optional[dict[str, str]] = None
-    ):
+    async def increment(self, amount: Union[int, float] = 1, tags: Optional[dict[str, str]] = None):
         """Increment a counter metric."""
         if self.config.metric_type != MetricType.COUNTER:
-            logger.warning(
-                f"Increment called on non-counter metric: {self.config.name}"
-            )
+            logger.warning(f"Increment called on non-counter metric: {self.config.name}")
             return
 
         current = self.current_value or 0
         await self.record(current + amount, tags)
 
-    async def set_gauge(
-        self, value: Union[int, float], tags: Optional[dict[str, str]] = None
-    ):
+    async def set_gauge(self, value: Union[int, float], tags: Optional[dict[str, str]] = None):
         """Set a gauge metric value."""
         if self.config.metric_type != MetricType.GAUGE:
             logger.warning(f"Set gauge called on non-gauge metric: {self.config.name}")
@@ -227,18 +218,12 @@ class Metric:
     ) -> Any:
         """Time an operation and record the duration."""
         if self.config.metric_type != MetricType.TIMER:
-            logger.warning(
-                f"Time operation called on non-timer metric: {self.config.name}"
-            )
+            logger.warning(f"Time operation called on non-timer metric: {self.config.name}")
             return await operation()
 
         start_time = time.time()
         try:
-            result = (
-                await operation()
-                if asyncio.iscoroutinefunction(operation)
-                else operation()
-            )
+            result = await operation() if asyncio.iscoroutinefunction(operation) else operation()
             duration = (time.time() - start_time) * 1000  # Convert to milliseconds
             await self.record(duration, tags)
             return result
@@ -276,13 +261,9 @@ class Metric:
                 )
             elif not condition_met and self.alert_states.get(threshold.name, False):
                 self.alert_states[threshold.name] = False
-                logger.info(
-                    f"Threshold alert resolved: {self.config.name} {threshold.name}"
-                )
+                logger.info(f"Threshold alert resolved: {self.config.name} {threshold.name}")
 
-    async def get_statistics(
-        self, start_time: datetime, end_time: datetime
-    ) -> dict[str, Any]:
+    async def get_statistics(self, start_time: datetime, end_time: datetime) -> dict[str, Any]:
         """Get statistical summary for the metric over a time range."""
         values = await self.storage.get_metrics(self.config.name, start_time, end_time)
 
@@ -376,11 +357,7 @@ class MetricsCollector:
             return await metric.time_operation(operation, tags)
         else:
             logger.warning(f"Timer metric not found: {name}")
-            return (
-                await operation()
-                if asyncio.iscoroutinefunction(operation)
-                else operation()
-            )
+            return await operation() if asyncio.iscoroutinefunction(operation) else operation()
 
     def create_counter(
         self, name: str, description: str, tags: Optional[dict[str, str]] = None
@@ -439,9 +416,7 @@ class MetricsCollector:
                 "unit": metric.config.unit.value,
                 "description": metric.config.description,
                 "current_value": metric.current_value,
-                "last_updated": (
-                    metric.last_updated.isoformat() if metric.last_updated else None
-                ),
+                "last_updated": (metric.last_updated.isoformat() if metric.last_updated else None),
                 "stats_last_hour": stats,
             }
 
@@ -466,9 +441,7 @@ class MetricsCollector:
 
                 stats = data["stats_last_hour"]
                 if stats["count"] > 0:
-                    lines.append(
-                        f"  Last Hour: {stats['count']} values, avg={stats['avg']:.2f}"
-                    )
+                    lines.append(f"  Last Hour: {stats['count']} values, avg={stats['avg']:.2f}")
 
             return "\n".join(lines)
 
@@ -521,9 +494,7 @@ async def increment(
     await metrics_collector.increment_counter(name, amount, tags)
 
 
-async def gauge(
-    name: str, value: Union[int, float], tags: Optional[dict[str, str]] = None
-):
+async def gauge(name: str, value: Union[int, float], tags: Optional[dict[str, str]] = None):
     """Set a gauge metric value."""
     await metrics_collector.set_gauge(name, value, tags)
 
@@ -543,9 +514,7 @@ def create_standard_metrics():
     metrics_collector.create_timer("http_request_duration", "HTTP request duration")
 
     # System metrics
-    metrics_collector.create_gauge(
-        "memory_usage_bytes", "Memory usage in bytes", MetricUnit.BYTES
-    )
+    metrics_collector.create_gauge("memory_usage_bytes", "Memory usage in bytes", MetricUnit.BYTES)
     metrics_collector.create_gauge(
         "cpu_usage_percent", "CPU usage percentage", MetricUnit.PERCENTAGE
     )
@@ -568,12 +537,8 @@ async def main():
 
     try:
         # Simulate some metric recording
-        await increment(
-            "http_requests_total", tags={"method": "GET", "endpoint": "/api/users"}
-        )
-        await increment(
-            "http_requests_total", tags={"method": "POST", "endpoint": "/api/users"}
-        )
+        await increment("http_requests_total", tags={"method": "GET", "endpoint": "/api/users"})
+        await increment("http_requests_total", tags={"method": "POST", "endpoint": "/api/users"})
         await gauge("active_users", 150)
         await gauge("memory_usage_bytes", 1024 * 1024 * 512)  # 512MB
 

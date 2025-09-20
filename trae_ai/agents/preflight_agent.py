@@ -1,5 +1,6 @@
 # trae_ai/agents/preflight_agent.py
 import shutil
+
 import psutil  # You'll need to run: pip install psutil
 
 MIN_DISK_GB = 5  # Minimum required free disk space in GB

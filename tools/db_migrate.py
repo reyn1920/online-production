@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
+import glob
 import os
 import sqlite3
-import glob
 
-DB_PATH = os.environ.get(
-    "TRAE_DB_PATH", os.path.join(os.getcwd(), "data", "trae_ai.db")
-)
+DB_PATH = os.environ.get("TRAE_DB_PATH", os.path.join(os.getcwd(), "data", "trae_ai.db"))
 os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
 
 
@@ -16,9 +14,7 @@ def main():
     )
     for f in sorted(glob.glob(os.path.join("migrations", "*.sql"))):
         name = os.path.basename(f)
-        if conn.execute(
-            "SELECT 1 FROM schema_migrations WHERE name=?", (name,)
-        ).fetchone():
+        if conn.execute("SELECT 1 FROM schema_migrations WHERE name=?", (name,)).fetchone():
             continue
         with open(f, encoding="utf-8") as fh:
             sql = fh.read()

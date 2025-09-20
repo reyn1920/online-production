@@ -4,22 +4,20 @@ TRAE AI Disaster Recovery System
 Unified interface for all disaster recovery operations.
 """
 
-import sys
-import subprocess
 import argparse
-from pathlib import Path
-from typing import Optional, List, Dict, Any
 import logging
+import subprocess
+import sys
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 # Setup logging
 logging.basicConfig(
     level=logging.INFO,
     format="[%(asctime)s] %(levelname)s: %(message)s",
     handlers=[
-        logging.FileHandler(
-            f"disaster_recovery_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
-        ),
+        logging.FileHandler(f"disaster_recovery_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"),
         logging.StreamHandler(),
     ],
 )
@@ -55,9 +53,7 @@ class DisasterRecoverySystem:
         """Print info message."""
         print(f"ℹ️  {message}")
 
-    def run_command(
-        self, command: List[str], cwd: Optional[Path] = None
-    ) -> Dict[str, Any]:
+    def run_command(self, command: List[str], cwd: Optional[Path] = None) -> Dict[str, Any]:
         """Run a command and return the result."""
         try:
             self.logger.info(f"Running command: {' '.join(command)}")
@@ -259,20 +255,12 @@ def main():
     """Main entry point."""
     parser = argparse.ArgumentParser(description="TRAE AI Disaster Recovery System")
     parser.add_argument("--health", action="store_true", help="Run system health check")
-    parser.add_argument(
-        "--recover", type=str, help="Recover specific file using Git Time Machine"
-    )
-    parser.add_argument(
-        "--rollback", action="store_true", help="Perform production rollback"
-    )
+    parser.add_argument("--recover", type=str, help="Recover specific file using Git Time Machine")
+    parser.add_argument("--rollback", action="store_true", help="Perform production rollback")
     parser.add_argument("--backup", action="store_true", help="Create system backup")
     parser.add_argument("--security", action="store_true", help="Run security scan")
-    parser.add_argument(
-        "--full-recovery", action="store_true", help="Perform full system recovery"
-    )
-    parser.add_argument(
-        "--interactive", action="store_true", help="Interactive recovery mode"
-    )
+    parser.add_argument("--full-recovery", action="store_true", help="Perform full system recovery")
+    parser.add_argument("--interactive", action="store_true", help="Interactive recovery mode")
 
     args = parser.parse_args()
 

@@ -1,11 +1,12 @@
 """RuntimeHQ API endpoints for runtime monitoring and management."""
 
-from typing import Optional, Any
-from datetime import datetime
 import logging
 import os
-import psutil
 import time
+from datetime import datetime
+from typing import Any, Optional
+
+import psutil
 
 # Simple fallback classes for missing dependencies
 
@@ -166,9 +167,7 @@ class RuntimeHQService:
                 memory_used=memory.used,
                 memory_total=memory.total,
                 disk_percent=(
-                    disk.percent
-                    if hasattr(disk, "percent")
-                    else (disk.used / disk.total * 100)
+                    disk.percent if hasattr(disk, "percent") else (disk.used / disk.total * 100)
                 ),
                 disk_used=disk.used,
                 disk_total=disk.total,
@@ -253,9 +252,7 @@ class RuntimeHQService:
             return logs[:limit]
         except Exception as e:
             logger.error(f"Error getting recent logs: {e}")
-            raise HTTPException(
-                status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to get logs"
-            )
+            raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to get logs")
 
     @staticmethod
     def update_config(config_update: ConfigUpdate) -> dict[str, Any]:
@@ -263,9 +260,7 @@ class RuntimeHQService:
         try:
             # This is a simplified implementation
             # In a real application, you would update actual configuration
-            logger.info(
-                f"Config update requested: {config_update.key} = {config_update.value}"
-            )
+            logger.info(f"Config update requested: {config_update.key} = {config_update.value}")
 
             return {
                 "success": True,
@@ -294,9 +289,7 @@ class RuntimeHQService:
             }
         except Exception as e:
             logger.error(f"Error restarting service: {e}")
-            raise HTTPException(
-                status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to restart service"
-            )
+            raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to restart service")
 
 
 # API Router

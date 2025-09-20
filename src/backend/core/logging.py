@@ -10,22 +10,22 @@ from typing import Optional
 
 class StructuredLogger:
     """Structured logger wrapper for consistent logging."""
-    
+
     def __init__(self, name: str):
         self.logger = logging.getLogger(name)
-    
+
     def info(self, message: str, **kwargs):
         """Log info message."""
         self.logger.info(message, extra=kwargs)
-    
+
     def error(self, message: str, **kwargs):
         """Log error message."""
         self.logger.error(message, extra=kwargs)
-    
+
     def warning(self, message: str, **kwargs):
         """Log warning message."""
         self.logger.warning(message, extra=kwargs)
-    
+
     def debug(self, message: str, **kwargs):
         """Log debug message."""
         self.logger.debug(message, extra=kwargs)

@@ -4,10 +4,11 @@ AI Integrated Dashboard - Advanced AI-powered dashboard with machine learning ca
 
 import asyncio
 import logging
+from dataclasses import asdict, dataclass
 from datetime import datetime
-from typing import Optional, Any
-from dataclasses import dataclass, asdict
 from enum import Enum
+from typing import Any, Optional
+
 import numpy as np
 
 # Configure logging
@@ -97,9 +98,7 @@ class AIModelManager:
             logger.error(f"Failed to load model {model_name}: {e}")
             return False
 
-    async def predict(
-        self, model_name: str, data: dict[str, Any]
-    ) -> Optional[dict[str, Any]]:
+    async def predict(self, model_name: str, data: dict[str, Any]) -> Optional[dict[str, Any]]:
         """Make prediction using specified model"""
         if model_name not in self.models:
             logger.error(f"Model {model_name} not found")
@@ -170,9 +169,7 @@ class InsightGenerator:
         try:
             # Performance insight
             if "metrics" in data:
-                performance_insight = await self._generate_performance_insight(
-                    data["metrics"]
-                )
+                performance_insight = await self._generate_performance_insight(data["metrics"])
                 if performance_insight:
                     insights.append(performance_insight)
 
@@ -196,9 +193,7 @@ class InsightGenerator:
             logger.error(f"Failed to generate insights: {e}")
             return []
 
-    async def _generate_performance_insight(
-        self, metrics: dict[str, float]
-    ) -> Optional[AIInsight]:
+    async def _generate_performance_insight(self, metrics: dict[str, float]) -> Optional[AIInsight]:
         """Generate performance-related insight"""
         try:
             avg_performance = sum(metrics.values()) / len(metrics)
@@ -206,7 +201,9 @@ class InsightGenerator:
             if avg_performance > 0.8:
                 insight_type = "positive"
                 title = "Excellent Performance Detected"
-                description = f"System performance is exceptional with average score of {avg_performance:.2f}"
+                description = (
+                    f"System performance is exceptional with average score of {avg_performance:.2f}"
+                )
                 recommendations = [
                     "Maintain current optimization strategies",
                     "Consider scaling up operations",
@@ -223,7 +220,9 @@ class InsightGenerator:
             else:
                 insight_type = "neutral"
                 title = "Moderate Performance"
-                description = f"System performance is moderate with average score of {avg_performance:.2f}"
+                description = (
+                    f"System performance is moderate with average score of {avg_performance:.2f}"
+                )
                 recommendations = [
                     "Monitor trends",
                     "Identify improvement opportunities",
@@ -244,9 +243,7 @@ class InsightGenerator:
             logger.error(f"Failed to generate performance insight: {e}")
             return None
 
-    async def _generate_trend_insight(
-        self, time_series: list[float]
-    ) -> Optional[AIInsight]:
+    async def _generate_trend_insight(self, time_series: list[float]) -> Optional[AIInsight]:
         """Generate trend-related insight"""
         try:
             if len(time_series) < 2:
@@ -295,9 +292,7 @@ class InsightGenerator:
             logger.error(f"Failed to generate trend insight: {e}")
             return None
 
-    async def _generate_anomaly_insight(
-        self, data: dict[str, Any]
-    ) -> Optional[AIInsight]:
+    async def _generate_anomaly_insight(self, data: dict[str, Any]) -> Optional[AIInsight]:
         """Generate anomaly-related insight"""
         try:
             # Simulate anomaly detection
@@ -469,8 +464,7 @@ class AIIntegratedDashboard:
         return {
             "models": list(self.model_manager.models.keys()),
             "metrics": {
-                name: asdict(metrics)
-                for name, metrics in self.model_manager.model_metrics.items()
+                name: asdict(metrics) for name, metrics in self.model_manager.model_metrics.items()
             },
             "total_predictions": len(self.model_manager.prediction_cache),
             "last_updated": datetime.now(),

@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Optional
 
-from .base_agents import BaseAgent, AgentCapability
+from .base_agents import AgentCapability, BaseAgent
 
 
 @dataclass
@@ -53,9 +53,7 @@ class ContentAgent(BaseAgent):
     """
 
     def __init__(self, agent_id: Optional[str] = None, name: Optional[str] = None):
-        super().__init__(
-            agent_id=agent_id or "content_agent", name=name or "Content Agent"
-        )
+        super().__init__(agent_id=agent_id or "content_agent", name=name or "Content Agent")
         self.logger = logging.getLogger(__name__)
 
         # Content templates for different platforms
@@ -219,9 +217,7 @@ class ContentAgent(BaseAgent):
             "timestamp": datetime.now().isoformat(),
         }
 
-    async def _analyze_content_performance(
-        self, task: dict[str, Any]
-    ) -> dict[str, Any]:
+    async def _analyze_content_performance(self, task: dict[str, Any]) -> dict[str, Any]:
         """
         Analyze content performance metrics
         """
@@ -255,9 +251,7 @@ class ContentAgent(BaseAgent):
         """
         Generate content strategy
         """
-        target_platforms = task.get(
-            "platforms", ["twitter", "facebook", "truth_social"]
-        )
+        target_platforms = task.get("platforms", ["twitter", "facebook", "truth_social"])
         duration = task.get("duration", "30_days")
 
         strategy = ContentStrategy(
@@ -290,9 +284,7 @@ class ContentAgent(BaseAgent):
             "timestamp": datetime.now().isoformat(),
         }
 
-    async def _create_cross_platform_content(
-        self, task: dict[str, Any]
-    ) -> dict[str, Any]:
+    async def _create_cross_platform_content(self, task: dict[str, Any]) -> dict[str, Any]:
         """
         Create content optimized for multiple platforms
         """
@@ -304,9 +296,7 @@ class ContentAgent(BaseAgent):
         for platform in platforms:
             if platform in self.content_templates:
                 template = self.content_templates[platform]
-                content = self._generate_platform_specific_content(
-                    topic, platform, template
-                )
+                content = self._generate_platform_specific_content(topic, platform, template)
                 cross_platform_content[platform] = content
 
         return {

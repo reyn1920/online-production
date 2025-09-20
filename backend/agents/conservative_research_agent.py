@@ -13,10 +13,11 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Optional
 
+from .base_agents import AgentCapability, BaseAgent
+
 # import requests
 # from bs4 import BeautifulSoup
 
-from .base_agents import BaseAgent, AgentCapability
 
 
 @dataclass
@@ -237,9 +238,7 @@ class ConservativeResearchAgent(BaseAgent):
             "timestamp": datetime.now().isoformat(),
         }
 
-    async def _generate_conservative_content(
-        self, task: dict[str, Any]
-    ) -> dict[str, Any]:
+    async def _generate_conservative_content(self, task: dict[str, Any]) -> dict[str, Any]:
         """
         Generate conservative content based on research
         """

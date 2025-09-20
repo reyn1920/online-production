@@ -1,11 +1,9 @@
 import asyncio
-from datetime import datetime
 import logging
-from enum import Enum
 import uuid
-from typing import Any
-from typing import Optional
-from typing import Callable
+from datetime import datetime
+from enum import Enum
+from typing import Any, Callable, Optional
 
 
 class TaskStatus(Enum):
@@ -21,9 +19,7 @@ class TaskStatus(Enum):
 class Task:
     """Task representation"""
 
-    def __init__(
-        self, task_id: str, task_type: str, data: dict[str, Any], priority: int = 0
-    ):
+    def __init__(self, task_id: str, task_type: str, data: dict[str, Any], priority: int = 0):
         self.task_id = task_id
         self.task_type = task_type
         self.data = data
@@ -82,16 +78,12 @@ class TaskQueueManager:
         await asyncio.gather(*self.workers, return_exceptions=True)
         self.workers.clear()
 
-    def register_handler(
-        self, task_type: str, handler: Callable[[dict[str, Any]], Any]
-    ):
+    def register_handler(self, task_type: str, handler: Callable[[dict[str, Any]], Any]):
         """Register a task handler for a specific task type"""
         self.task_handlers[task_type] = handler
         self.logger.info(f"Registered handler for task type: {task_type}")
 
-    async def add_task(
-        self, task_type: str, data: dict[str, Any], priority: int = 0
-    ) -> str:
+    async def add_task(self, task_type: str, data: dict[str, Any], priority: int = 0) -> str:
         """Add a task to the queue"""
         task_id = str(uuid.uuid4())
         task = Task(task_id, task_type, data, priority)
@@ -173,9 +165,7 @@ class TaskQueueManager:
                         self.failed_tasks.append(task)
                         del self.active_tasks[task.task_id]
 
-                        self.logger.error(
-                            f"Task {task.task_id} failed permanently: {str(e)}"
-                        )
+                        self.logger.error(f"Task {task.task_id} failed permanently: {str(e)}")
 
                 # Mark task as done in queue
                 self.task_queue.task_done()
@@ -215,9 +205,7 @@ class TaskQueueManager:
             "priority": task.priority,
             "created_at": task.created_at.isoformat(),
             "started_at": task.started_at.isoformat() if task.started_at else None,
-            "completed_at": (
-                task.completed_at.isoformat() if task.completed_at else None
-            ),
+            "completed_at": (task.completed_at.isoformat() if task.completed_at else None),
             "result": task.result,
             "error": task.error,
             "retry_count": task.retry_count,

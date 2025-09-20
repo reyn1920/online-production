@@ -3,17 +3,16 @@
 AI Debug Assistant - Intelligent debugging and troubleshooting system
 """
 
-import os
-import sys
 import ast
-import traceback
 import logging
+import os
 import re
+import sys
+import traceback
+from dataclasses import asdict, dataclass
 from datetime import datetime
-from dataclasses import dataclass, asdict
 from enum import Enum
-from typing import Optional
-from typing import Any
+from typing import Any, Optional
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -229,9 +228,7 @@ class AIDebugAssistant:
 
         return "Review the syntax around the indicated line"
 
-    def _get_code_snippet(
-        self, content: str, line_number: Optional[int], context: int = 2
-    ) -> str:
+    def _get_code_snippet(self, content: str, line_number: Optional[int], context: int = 2) -> str:
         """Get code snippet around the error line"""
         if line_number is None:
             return ""
@@ -247,9 +244,7 @@ class AIDebugAssistant:
 
         return "\n".join(snippet_lines)
 
-    def analyze_exception(
-        self, exception: Exception, file_path: str = ""
-    ) -> DebugIssue:
+    def analyze_exception(self, exception: Exception, file_path: str = "") -> DebugIssue:
         """Analyze a runtime exception"""
         exc_type = type(exception).__name__
         exc_msg = str(exception)
@@ -293,9 +288,7 @@ class AIDebugAssistant:
             "FileNotFoundError": "Check if the file path is correct and the file exists",
         }
 
-        return suggestions.get(
-            exc_type, "Review the error message and stack trace for clues"
-        )
+        return suggestions.get(exc_type, "Review the error message and stack trace for clues")
 
     def get_issues_by_severity(self, severity: Severity) -> list[DebugIssue]:
         """Get issues filtered by severity"""
@@ -303,9 +296,7 @@ class AIDebugAssistant:
 
     def get_issues_by_type(self, issue_type: IssueType) -> list[DebugIssue]:
         """Get issues filtered by type"""
-        return [
-            issue for issue in self.issues.values() if issue.issue_type == issue_type
-        ]
+        return [issue for issue in self.issues.values() if issue.issue_type == issue_type]
 
     def generate_report(self) -> dict[str, Any]:
         """Generate a comprehensive debug report"""

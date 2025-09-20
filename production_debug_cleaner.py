@@ -11,15 +11,13 @@ This script removes all debug-related code from the production codebase:
 - test print statements in documentation
 """
 
+import ast
+import logging
 import os
 import re
 from pathlib import Path
-import ast
-import logging
 
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 
@@ -244,10 +242,7 @@ class ProductionDebugCleaner:
                 nonlocal changes_made
                 code_block = match.group(0)
                 # Only remove if it's clearly a debug print, not an example
-                if (
-                    "example" not in code_block.lower()
-                    and "demo" not in code_block.lower()
-                ):
+                if "example" not in code_block.lower() and "demo" not in code_block.lower():
                     cleaned_block = re.sub(
                         r"^\s*print\([^)]*\)\s*$",
                         "# DEBUG_REMOVED: print statement",
@@ -260,9 +255,7 @@ class ProductionDebugCleaner:
                     return cleaned_block
                 return code_block
 
-            content = re.sub(
-                print_in_code_pattern, replace_print_in_code, content, flags=re.DOTALL
-            )
+            content = re.sub(print_in_code_pattern, replace_print_in_code, content, flags=re.DOTALL)
 
             if changes_made:
                 with open(file_path, "w", encoding="utf-8") as f:

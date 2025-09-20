@@ -65,8 +65,7 @@ def categorize_files(files):
             elif "routers/" in file_path:
                 categories["python_routers"].append(file_path)
             elif any(
-                core in file_path
-                for core in ["api_security", "autonomous_decision", "main", "app"]
+                core in file_path for core in ["api_security", "autonomous_decision", "main", "app"]
             ):
                 categories["python_core"].append(file_path)
             else:

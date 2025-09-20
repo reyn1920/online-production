@@ -24,39 +24,23 @@ class ProjectCreate(BaseModel):
     """Project creation model."""
 
     title: str = Field(..., min_length=1, max_length=255, description="Project title")
-    description: Optional[str] = Field(
-        None, max_length=1000, description="Project description"
-    )
+    description: Optional[str] = Field(None, max_length=1000, description="Project description")
     channel_id: Optional[UUID] = Field(None, description="Associated channel ID")
-    target_keywords: Optional[str] = Field(
-        None, max_length=500, description="Target keywords"
-    )
-    target_audience: Optional[str] = Field(
-        None, max_length=255, description="Target audience"
-    )
+    target_keywords: Optional[str] = Field(None, max_length=500, description="Target keywords")
+    target_audience: Optional[str] = Field(None, max_length=255, description="Target audience")
 
 
 class ProjectUpdate(BaseModel):
     """Project update model."""
 
-    title: Optional[str] = Field(
-        None, min_length=1, max_length=255, description="Project title"
-    )
-    description: Optional[str] = Field(
-        None, max_length=1000, description="Project description"
-    )
+    title: Optional[str] = Field(None, min_length=1, max_length=255, description="Project title")
+    description: Optional[str] = Field(None, max_length=1000, description="Project description")
     status: Optional[ProjectStatus] = Field(None, description="Project status")
     channel_id: Optional[UUID] = Field(None, description="Associated channel ID")
-    target_keywords: Optional[str] = Field(
-        None, max_length=500, description="Target keywords"
-    )
-    target_audience: Optional[str] = Field(
-        None, max_length=255, description="Target audience"
-    )
+    target_keywords: Optional[str] = Field(None, max_length=500, description="Target keywords")
+    target_audience: Optional[str] = Field(None, max_length=255, description="Target audience")
     estimated_views: Optional[int] = Field(None, ge=0, description="Estimated views")
-    estimated_revenue: Optional[float] = Field(
-        None, ge=0.0, description="Estimated revenue"
-    )
+    estimated_revenue: Optional[float] = Field(None, ge=0.0, description="Estimated revenue")
 
 
 class ProjectResponse(BaseModel):
@@ -105,31 +89,21 @@ async def create_project(
         return ProjectResponse(
             id=str(project.id),
             title=str(project.title),
-            description=str(project.description)
-            if project.description is not None
-            else None,
+            description=str(project.description) if project.description is not None else None,
             status=str(project.status),
             target_keywords=(
-                str(project.target_keywords)
-                if project.target_keywords is not None
-                else None
+                str(project.target_keywords) if project.target_keywords is not None else None
             ),
             target_audience=(
-                str(project.target_audience)
-                if project.target_audience is not None
-                else None
+                str(project.target_audience) if project.target_audience is not None else None
             ),
             estimated_views=int(project.estimated_views),
             estimated_revenue=float(project.estimated_revenue),
             owner_id=str(project.owner_id),
-            channel_id=str(project.channel_id)
-            if project.channel_id is not None
-            else None,
+            channel_id=str(project.channel_id) if project.channel_id is not None else None,
             created_at=project.created_at.isoformat(),
             updated_at=project.updated_at.isoformat(),
-            channel_name=str(project.channel.name)
-            if project.channel is not None
-            else None,
+            channel_name=str(project.channel.name) if project.channel is not None else None,
         )
 
     except HTTPException:
@@ -144,9 +118,7 @@ async def create_project(
 
 @router.get("/", response_model=List[ProjectResponse])
 async def get_projects(
-    status_filter: Optional[ProjectStatus] = Query(
-        None, description="Filter by project status"
-    ),
+    status_filter: Optional[ProjectStatus] = Query(None, description="Filter by project status"),
     channel_id: Optional[UUID] = Query(None, description="Filter by channel ID"),
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(db_manager.get_session),
@@ -172,12 +144,8 @@ async def get_projects(
                 title=str(project.title),
                 description=str(project.description) if project.description else None,
                 status=str(project.status),
-                target_keywords=str(project.target_keywords)
-                if project.target_keywords
-                else None,
-                target_audience=str(project.target_audience)
-                if project.target_audience
-                else None,
+                target_keywords=str(project.target_keywords) if project.target_keywords else None,
+                target_audience=str(project.target_audience) if project.target_audience else None,
                 estimated_views=int(project.estimated_views),
                 estimated_revenue=float(project.estimated_revenue),
                 owner_id=str(project.owner_id),
@@ -205,26 +173,18 @@ async def get_project(
 ) -> ProjectResponse:
     """Get a specific project by ID."""
     try:
-        project = await ProjectService.get_project_by_id(
-            session, project_id, current_user.id
-        )
+        project = await ProjectService.get_project_by_id(session, project_id, current_user.id)
 
         if not project:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="Project not found"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
 
         return ProjectResponse(
             id=str(project.id),
             title=str(project.title),
             description=str(project.description) if project.description else None,
             status=str(project.status),
-            target_keywords=str(project.target_keywords)
-            if project.target_keywords
-            else None,
-            target_audience=str(project.target_audience)
-            if project.target_audience
-            else None,
+            target_keywords=str(project.target_keywords) if project.target_keywords else None,
+            target_audience=str(project.target_audience) if project.target_audience else None,
             estimated_views=int(project.estimated_views),
             estimated_revenue=float(project.estimated_revenue),
             owner_id=str(project.owner_id),
@@ -256,26 +216,18 @@ async def update_project(
         # Convert Pydantic model to dict, excluding None values
         updates = project_data.model_dump(exclude_none=True)
 
-        project = await ProjectService.update_project(
-            session, project_id, current_user.id, updates
-        )
+        project = await ProjectService.update_project(session, project_id, current_user.id, updates)
 
         if not project:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="Project not found"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
 
         return ProjectResponse(
             id=str(project.id),
             title=str(project.title),
             description=str(project.description) if project.description else None,
             status=str(project.status),
-            target_keywords=str(project.target_keywords)
-            if project.target_keywords
-            else None,
-            target_audience=str(project.target_audience)
-            if project.target_audience
-            else None,
+            target_keywords=str(project.target_keywords) if project.target_keywords else None,
+            target_audience=str(project.target_audience) if project.target_audience else None,
             estimated_views=int(project.estimated_views),
             estimated_revenue=float(project.estimated_revenue),
             owner_id=str(project.owner_id),
@@ -303,14 +255,10 @@ async def delete_project(
 ) -> None:
     """Delete a project."""
     try:
-        success = await ProjectService.delete_project(
-            session, project_id, current_user.id
-        )
+        success = await ProjectService.delete_project(session, project_id, current_user.id)
 
         if not success:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="Project not found"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
 
     except HTTPException:
         raise

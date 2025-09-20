@@ -1,12 +1,12 @@
 import asyncio
-from typing import Any, Optional
-from datetime import datetime
 import logging
+from datetime import datetime
+from typing import Any, Optional
 
 try:
     from fastapi import FastAPI, HTTPException
-    from fastapi.responses import JSONResponse
     from fastapi.middleware.cors import CORSMiddleware
+    from fastapi.responses import JSONResponse
 
     fastapi_available = True
 except ImportError:
@@ -96,9 +96,7 @@ class APIOrchestrator:
             methods = ["GET"]
 
         if not fastapi_available:
-            self.logger.warning(
-                "Cannot register route %s - FastAPI not available", path
-            )
+            self.logger.warning("Cannot register route %s - FastAPI not available", path)
             return False
 
         self.routes[path] = {"handler": handler, "methods": methods}
@@ -155,9 +153,7 @@ class APIOrchestrator:
             "timestamp": datetime.now().isoformat(),
         }
 
-    async def _handle_system_status(
-        self, request_data: dict[str, Any]
-    ) -> dict[str, Any]:
+    async def _handle_system_status(self, request_data: dict[str, Any]) -> dict[str, Any]:
         """Handle system status requests"""
         return {
             "status": "completed",

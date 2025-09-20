@@ -4,8 +4,8 @@ Ultimate Syntax Fixer - 100% Success Rate Target
 Fixes ALL remaining syntax errors in Python files across the entire codebase.
 """
 
-import re
 import ast
+import re
 import sys
 from pathlib import Path
 
@@ -327,9 +327,7 @@ class UltimateSyntaxFixer:
         if overall_success_rate == 100.0:
             print("\n🎉 TARGET ACHIEVED: 100% SUCCESS RATE! 🎉")
         else:
-            print(
-                f"\n⚠️  Target not met. {100.0 - overall_success_rate:.2f}% remaining."
-            )
+            print(f"\n⚠️  Target not met. {100.0 - overall_success_rate:.2f}% remaining.")
             print(f"Failed files: {self.total_count - self.fixed_count}")
 
         # Write detailed logs

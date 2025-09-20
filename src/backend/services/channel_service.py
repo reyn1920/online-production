@@ -29,9 +29,7 @@ class ChannelService:
         """Create a new channel."""
         try:
             # Verify owner exists
-            owner_result = await session.execute(
-                select(User).where(User.id == owner_id)
-            )
+            owner_result = await session.execute(select(User).where(User.id == owner_id))
             owner = owner_result.scalar_one_or_none()
             if not owner:
                 logger.error(f"Owner with ID {owner_id} not found")
@@ -40,14 +38,10 @@ class ChannelService:
             # Check if YouTube channel ID is already taken (if provided)
             if youtube_channel_id:
                 existing_channel = await session.execute(
-                    select(Channel).where(
-                        Channel.youtube_channel_id == youtube_channel_id
-                    )
+                    select(Channel).where(Channel.youtube_channel_id == youtube_channel_id)
                 )
                 if existing_channel.scalar_one_or_none():
-                    logger.error(
-                        f"YouTube channel ID {youtube_channel_id} already exists"
-                    )
+                    logger.error(f"YouTube channel ID {youtube_channel_id} already exists")
                     return None
 
             # Create new channel
@@ -87,9 +81,7 @@ class ChannelService:
             return None
 
     @staticmethod
-    async def get_channels_by_owner(
-        session: AsyncSession, owner_id: UUID
-    ) -> List[Channel]:
+    async def get_channels_by_owner(session: AsyncSession, owner_id: UUID) -> List[Channel]:
         """Get all channels for a specific owner."""
         try:
             result = await session.execute(
@@ -110,9 +102,7 @@ class ChannelService:
         """Update a channel."""
         try:
             # Get the channel
-            channel = await ChannelService.get_channel_by_id(
-                session, channel_id, owner_id
-            )
+            channel = await ChannelService.get_channel_by_id(session, channel_id, owner_id)
             if not channel:
                 return None
 
@@ -156,15 +146,11 @@ class ChannelService:
             return None
 
     @staticmethod
-    async def delete_channel(
-        session: AsyncSession, channel_id: UUID, owner_id: UUID
-    ) -> bool:
+    async def delete_channel(session: AsyncSession, channel_id: UUID, owner_id: UUID) -> bool:
         """Delete a channel."""
         try:
             # Get the channel
-            channel = await ChannelService.get_channel_by_id(
-                session, channel_id, owner_id
-            )
+            channel = await ChannelService.get_channel_by_id(session, channel_id, owner_id)
             if not channel:
                 return False
 
@@ -197,9 +183,7 @@ class ChannelService:
             )
             return result.scalar_one_or_none()
         except Exception as e:
-            logger.error(
-                f"Error fetching channel by YouTube ID {youtube_channel_id}: {e}"
-            )
+            logger.error(f"Error fetching channel by YouTube ID {youtube_channel_id}: {e}")
             return None
 
     @staticmethod
@@ -219,9 +203,7 @@ class ChannelService:
                 "view_count": view_count,
             }
 
-            return await ChannelService.update_channel(
-                session, channel_id, owner_id, updates
-            )
+            return await ChannelService.update_channel(session, channel_id, owner_id, updates)
 
         except Exception as e:
             logger.error(f"Error updating channel stats for {channel_id}: {e}")

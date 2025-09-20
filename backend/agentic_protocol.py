@@ -6,10 +6,10 @@ in the online production system.
 
 import logging
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Optional, Any, Callable
+from typing import Any, Callable, Optional
 from uuid import uuid4
 
 logger = logging.getLogger(__name__)
@@ -266,9 +266,7 @@ class AgentProtocol(ABC):
         )
         await self.send_message(heartbeat_message)
 
-    async def request_task(
-        self, task_type: str, payload: dict[str, Any], priority: int = 0
-    ) -> str:
+    async def request_task(self, task_type: str, payload: dict[str, Any], priority: int = 0) -> str:
         """Request a new task to be executed."""
         task_id = str(uuid4())
         task_request = self.create_message(
@@ -428,12 +426,8 @@ class CoordinationProtocol:
         """Get overall system status."""
         return {
             "total_agents": len(self.agents),
-            "idle_agents": len(
-                [a for a in self.agents.values() if a.status == AgentStatus.IDLE]
-            ),
-            "busy_agents": len(
-                [a for a in self.agents.values() if a.status == AgentStatus.BUSY]
-            ),
+            "idle_agents": len([a for a in self.agents.values() if a.status == AgentStatus.IDLE]),
+            "busy_agents": len([a for a in self.agents.values() if a.status == AgentStatus.BUSY]),
             "pending_tasks": len(self.pending_tasks),
             "completed_tasks": len(self.completed_tasks),
             "agents": {aid: asdict(info) for aid, info in self.agents.items()},
@@ -444,9 +438,7 @@ class CoordinationProtocol:
 coordinator = CoordinationProtocol()
 
 
-def create_agent(
-    agent_id: str, name: str, capabilities: list[AgentCapability]
-) -> AgentProtocol:
+def create_agent(agent_id: str, name: str, capabilities: list[AgentCapability]) -> AgentProtocol:
     """Factory function to create a new agent."""
     # This would be implemented by specific agent types
     raise NotImplementedError("Specific agent implementations should override this")

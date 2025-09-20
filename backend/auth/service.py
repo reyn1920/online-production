@@ -7,13 +7,13 @@ and user management operations.
 Author: TRAE.AI System
 """
 
-from datetime import datetime, timezone, timedelta
-from typing import Optional, Any
-import uuid
 import logging
+import uuid
+from datetime import datetime, timedelta, timezone
+from typing import Any, Optional
 
-from .models import UserCreate, UserInDB, UserResponse, UserUpdate, LoginRequest
-from .security import password_manager, jwt_manager
+from .models import LoginRequest, UserCreate, UserInDB, UserResponse, UserUpdate
+from .security import jwt_manager, password_manager
 
 logger = logging.getLogger(__name__)
 
@@ -131,9 +131,7 @@ class UserService:
         logger.info(f"User updated: {user.username}")
         return user
 
-    def change_password(
-        self, user_id: str, current_password: str, new_password: str
-    ) -> bool:
+    def change_password(self, user_id: str, current_password: str, new_password: str) -> bool:
         """Change user password"""
         user = self.get_user_by_id(user_id)
         if not user:
@@ -179,9 +177,7 @@ class AuthService:
 
     def login(self, login_data: LoginRequest) -> Optional[dict[str, Any]]:
         """Login user and return token data"""
-        user = self.user_service.authenticate_user(
-            login_data.username, login_data.password
-        )
+        user = self.user_service.authenticate_user(login_data.username, login_data.password)
 
         if not user:
             return None

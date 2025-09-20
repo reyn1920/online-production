@@ -1,13 +1,14 @@
 # src/services/auth.py
 from __future__ import annotations
-import asyncio
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from typing import Dict, Any
 from src.core.config import Config
 from src.services.base import BaseService
 from src.services.registry import ServiceRegistry
+
 # Assume User, UserRole, TokenType are defined in a domain models file
-# from src.domain.models import User, UserRole, TokenType 
+# from src.domain.models import User, UserRole, TokenType
+
 
 class AuthenticationService(BaseService):
     """Manages user authentication, registration, and token generation."""
@@ -19,7 +20,7 @@ class AuthenticationService(BaseService):
 
     async def initialize(self):
         self.is_initialized = True
-        
+
     def _hash_password(self, password: str) -> str:
         # Placeholder for real hashing logic
         return f"hashed_{password}"
@@ -44,5 +45,5 @@ class AuthenticationService(BaseService):
             "id": "mock_user_id_123",
             "username": kwargs.get("username"),
             "email": kwargs.get("email"),
-            "created_at": datetime.now(timezone.utc)
+            "created_at": datetime.now(timezone.utc),
         }

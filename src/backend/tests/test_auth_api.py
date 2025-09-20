@@ -124,9 +124,7 @@ class TestAuthAPI:
 
     @patch("src.backend.api.auth.AuthService.verify_token")
     @pytest.mark.asyncio
-    async def test_get_current_user_invalid_token(
-        self, mock_verify_token, mock_session
-    ):
+    async def test_get_current_user_invalid_token(self, mock_verify_token, mock_session):
         """Test get_current_user with invalid token."""
         # Arrange
         mock_verify_token.return_value = None

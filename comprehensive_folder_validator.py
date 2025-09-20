@@ -6,12 +6,12 @@ This script performs detailed validation of every folder in the production codeb
 providing specific insights and recommendations for each directory.
 """
 
-import re
 import ast
 import json
-from pathlib import Path
 import logging
+import re
 from collections import defaultdict
+from pathlib import Path
 from typing import Any
 
 # Configure logging
@@ -289,9 +289,7 @@ class ComprehensiveFolderValidator:
                             results["empty_files"] += 1
                         elif self.is_placeholder_file(content):
                             results["placeholder_files"] += 1
-                            results["issues"].append(
-                                f"{file_path.name}: Placeholder file"
-                            )
+                            results["issues"].append(f"{file_path.name}: Placeholder file")
 
                         # Check for issues
                         file_issues = self.check_file_issues(file_path)
@@ -314,9 +312,7 @@ class ComprehensiveFolderValidator:
                             )
 
                     except Exception as e:
-                        results["issues"].append(
-                            f"{file_path.name}: Read error - {str(e)}"
-                        )
+                        results["issues"].append(f"{file_path.name}: Read error - {str(e)}")
 
         except Exception as e:
             results["issues"].append(f"Folder processing error: {str(e)}")
@@ -330,32 +326,20 @@ class ComprehensiveFolderValidator:
 
         # Structure recommendations
         structure = results.get("structure", {})
-        if structure.get("purpose") == "Python Module" and not structure.get(
-            "has_init"
-        ):
-            recommendations.append(
-                "Add __init__.py to make this a proper Python package"
-            )
+        if structure.get("purpose") == "Python Module" and not structure.get("has_init"):
+            recommendations.append("Add __init__.py to make this a proper Python package")
 
         if results["placeholder_files"] > 0:
-            recommendations.append(
-                f"Implement {results['placeholder_files']} placeholder files"
-            )
+            recommendations.append(f"Implement {results['placeholder_files']} placeholder files")
 
         if results["syntax_invalid"] > 0:
-            recommendations.append(
-                f"Fix {results['syntax_invalid']} files with syntax errors"
-            )
+            recommendations.append(f"Fix {results['syntax_invalid']} files with syntax errors")
 
         if results["debug_issues"] > 0:
-            recommendations.append(
-                f"Remove debug code from {results['debug_issues']} files"
-            )
+            recommendations.append(f"Remove debug code from {results['debug_issues']} files")
 
         if results["security_issues"] > 0:
-            recommendations.append(
-                f"Address security issues in {results['security_issues']} files"
-            )
+            recommendations.append(f"Address security issues in {results['security_issues']} files")
 
         if results["empty_files"] > 0:
             recommendations.append(
@@ -421,9 +405,7 @@ class ComprehensiveFolderValidator:
                 continue  # Skip empty folders
 
             report.append(f"📁 {folder_name.upper()}")
-            report.append(
-                f"   Purpose: {results.get('structure', {}).get('purpose', 'Unknown')}"
-            )
+            report.append(f"   Purpose: {results.get('structure', {}).get('purpose', 'Unknown')}")
             report.append(f"   Files: {results['total_files']} total")
 
             if results["python_files"] > 0:
@@ -435,9 +417,7 @@ class ComprehensiveFolderValidator:
                 report.append(f"   JavaScript: {results['js_files']} files")
 
             if results["placeholder_files"] > 0:
-                report.append(
-                    f"   ⚠️  Placeholder files: {results['placeholder_files']}"
-                )
+                report.append(f"   ⚠️  Placeholder files: {results['placeholder_files']}")
 
             if results["debug_issues"] > 0:
                 report.append(f"   🐛 Debug issues: {results['debug_issues']}")
@@ -480,9 +460,7 @@ class ComprehensiveFolderValidator:
 
         # Find folders with many placeholders
         placeholder_folders = [
-            (name, results)
-            for name, results in sorted_folders
-            if results["placeholder_files"] > 2
+            (name, results) for name, results in sorted_folders if results["placeholder_files"] > 2
         ]
 
         if placeholder_folders:
@@ -494,9 +472,7 @@ class ComprehensiveFolderValidator:
 
         return "\n".join(report)
 
-    def save_detailed_report(
-        self, filename: str = "comprehensive_folder_report.json"
-    ) -> None:
+    def save_detailed_report(self, filename: str = "comprehensive_folder_report.json") -> None:
         """Save detailed JSON report"""
         with open(filename, "w") as f:
             json.dump(dict(self.folder_results), f, indent=2, default=str)

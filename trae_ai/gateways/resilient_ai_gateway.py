@@ -4,12 +4,12 @@ Resilient AI Gateway - Production-Ready Failover System
 Provides intelligent failover and circuit breaker functionality for WebAI services.
 """
 
-import time
-import logging
-from typing import List, Dict, Optional, Any
-from datetime import datetime, timedelta
-from dataclasses import dataclass
 import json
+import logging
+import time
+from dataclasses import dataclass
+from datetime import datetime, timedelta
+from typing import Any, Dict, List, Optional
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -87,16 +87,14 @@ class ResilientAIGateway:
             }
         self.last_reset = datetime.now()
 
-        logger.info(
-            f"ResilientAIGateway initialized with providers: {self.provider_priority}"
-        )
+        logger.info(f"ResilientAIGateway initialized with providers: {self.provider_priority}")
 
     def _init_client(self, config_path: Optional[str] = None):
         """Initialize the WebAI client with dynamic imports"""
         try:
             # Try different import paths
-            import sys
             import os
+            import sys
 
             # Add parent directory to path
             parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -145,9 +143,7 @@ class ResilientAIGateway:
 
         return MockWebAIClient()
 
-    def _update_circuit_breaker(
-        self, provider: str, success: bool, error_message: str = ""
-    ):
+    def _update_circuit_breaker(self, provider: str, success: bool, error_message: str = ""):
         """Update circuit breaker state based on request outcome"""
         breaker = self.circuit_breakers[provider]
 
@@ -164,10 +160,7 @@ class ResilientAIGateway:
             breaker.last_failure_time = datetime.now()
 
             # Check if we should open the circuit
-            if (
-                breaker.failure_count >= self.FAILURE_THRESHOLD
-                and breaker.state == "closed"
-            ):
+            if breaker.failure_count >= self.FAILURE_THRESHOLD and breaker.state == "closed":
                 breaker.state = "open"
                 breaker.next_attempt_time = datetime.now() + timedelta(
                     seconds=self.CIRCUIT_OPEN_SECONDS
@@ -178,9 +171,7 @@ class ResilientAIGateway:
 
                 # Check for session-specific errors
                 if "Session" in error_message and "not found" in error_message:
-                    logger.error(
-                        f"🚨 SESSION ERROR detected for {provider}: {error_message}"
-                    )
+                    logger.error(f"🚨 SESSION ERROR detected for {provider}: {error_message}")
 
     def _is_circuit_available(self, provider: str) -> bool:
         """Check if circuit breaker allows requests to this provider"""
@@ -214,9 +205,7 @@ class ResilientAIGateway:
             self.failed_requests += 1
             self.provider_stats[provider]["failures"] += 1
 
-    def chat_completion(
-        self, prompt: str, preferred_provider: Optional[str] = None
-    ) -> str:
+    def chat_completion(self, prompt: str, preferred_provider: Optional[str] = None) -> str:
         """
         Sends a chat request, automatically failing over to the next provider on error.
 
@@ -247,9 +236,7 @@ class ResilientAIGateway:
             if not self._is_circuit_available(provider):
                 breaker = self.circuit_breakers[provider]
                 if breaker.next_attempt_time:
-                    wait_time = (
-                        breaker.next_attempt_time - datetime.now()
-                    ).total_seconds()
+                    wait_time = (breaker.next_attempt_time - datetime.now()).total_seconds()
                     logger.info(
                         f"⏸️  CIRCUIT OPEN for {provider}. Skipping... (retry in {wait_time:.0f}s)"
                     )
@@ -274,9 +261,7 @@ class ResilientAIGateway:
 
             except Exception as e:
                 error_message = str(e)
-                logger.warning(
-                    f"❌ GATEWAY: FAILED with {provider}. Error: {error_message}"
-                )
+                logger.warning(f"❌ GATEWAY: FAILED with {provider}. Error: {error_message}")
 
                 # Update metrics and circuit breaker
                 self._update_metrics(provider, False)
@@ -288,7 +273,9 @@ class ResilientAIGateway:
                 time.sleep(1)
 
         # All providers failed
-        error_msg = f"All AI providers failed. Attempted: {attempted_providers}. Last error: {last_error}"
+        error_msg = (
+            f"All AI providers failed. Attempted: {attempted_providers}. Last error: {last_error}"
+        )
         logger.error(f"🚨 GATEWAY: {error_msg}")
         raise ConnectionError(error_msg) from last_error
 
@@ -338,14 +325,10 @@ class ResilientAIGateway:
                 "state": breaker.state,
                 "failure_count": breaker.failure_count,
                 "last_failure": (
-                    breaker.last_failure_time.isoformat()
-                    if breaker.last_failure_time
-                    else None
+                    breaker.last_failure_time.isoformat() if breaker.last_failure_time else None
                 ),
                 "next_attempt": (
-                    breaker.next_attempt_time.isoformat()
-                    if breaker.next_attempt_time
-                    else None
+                    breaker.next_attempt_time.isoformat() if breaker.next_attempt_time else None
                 ),
             }
 

@@ -7,9 +7,7 @@ try:
     import requests
 except ImportError:
     requests = None
-    logging.warning(
-        "requests library not available, ollama adapter will use fallback responses"
-    )
+    logging.warning("requests library not available, ollama adapter will use fallback responses")
 
 try:
     from backend.utils.timeout_utils import pick_timeout
@@ -59,9 +57,7 @@ def is_up(timeout=None):
 
     timeout = timeout or OLLAMA_CONNECT_TIMEOUT
     try:
-        r = requests.get(
-            f"{OLLAMA_URL}/api/tags", timeout=pick_timeout(timeout, ci_default=2)
-        )
+        r = requests.get(f"{OLLAMA_URL}/api/tags", timeout=pick_timeout(timeout, ci_default=2))
         if OLLAMA_DEBUG:
             log.debug(f"Ollama health check response: {r.status_code}")
         return r.status_code == 200
@@ -116,9 +112,7 @@ def gen(prompt: str, temperature=None, max_tokens=None):
             generated_text = result.get("response", "")
 
             if OLLAMA_VERBOSE:
-                log.info(
-                    f"Ollama generation successful: {len(generated_text)} characters"
-                )
+                log.info(f"Ollama generation successful: {len(generated_text)} characters")
 
             return generated_text
         else:

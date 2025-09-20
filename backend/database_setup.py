@@ -13,7 +13,7 @@ Date: 2024
 import os
 import sqlite3
 from pathlib import Path
-from typing import Optional, Any
+from typing import Any, Optional
 
 # Import utilities
 from utils.logger import get_logger
@@ -178,9 +178,7 @@ class DatabaseSetup:
         try:
             with sqlite3.connect(str(self.db_path)) as conn:
                 # Get all table names
-                cursor = conn.execute(
-                    "SELECT name FROM sqlite_master WHERE type='table'"
-                )
+                cursor = conn.execute("SELECT name FROM sqlite_master WHERE type='table'")
                 tables = [row[0] for row in cursor.fetchall()]
 
                 # Drop all tables
@@ -211,9 +209,7 @@ class DatabaseSetup:
                 conn.execute("SELECT 1")
 
                 # Check if core tables exist
-                cursor = conn.execute(
-                    "SELECT name FROM sqlite_master WHERE type='table'"
-                )
+                cursor = conn.execute("SELECT name FROM sqlite_master WHERE type='table'")
                 tables = [row[0] for row in cursor.fetchall()]
 
                 required_tables = ["task_queue", "api_registry", "system_status"]

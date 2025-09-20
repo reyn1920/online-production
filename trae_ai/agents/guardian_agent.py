@@ -7,12 +7,12 @@ It supervises the "worker" agent and validates its results against the ground tr
 of the pytest command, creating a self-healing, self-critiquing loop.
 """
 
-import subprocess
 import re
-from pathlib import Path
-from typing import Callable, Optional, Dict, Any
+import subprocess
 from dataclasses import dataclass
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Callable, Dict, Optional
 
 
 @dataclass
@@ -95,13 +95,9 @@ class GuardianAgent:
             # Create a timeout result
             output = f"TIMEOUT: Test execution exceeded {timeout} seconds\n"
             if e.stdout:
-                output += (
-                    e.stdout.decode() if isinstance(e.stdout, bytes) else str(e.stdout)
-                )
+                output += e.stdout.decode() if isinstance(e.stdout, bytes) else str(e.stdout)
             if e.stderr:
-                output += (
-                    e.stderr.decode() if isinstance(e.stderr, bytes) else str(e.stderr)
-                )
+                output += e.stderr.decode() if isinstance(e.stderr, bytes) else str(e.stderr)
 
             # Create a proper result object with returncode attribute
             class MockResult:
@@ -129,9 +125,7 @@ class GuardianAgent:
             result = MockResult(-1)
 
         # Parse pytest output for detailed results
-        test_result = self._parse_pytest_output(
-            output, result.returncode, execution_time
-        )
+        test_result = self._parse_pytest_output(output, result.returncode, execution_time)
 
         # Store in validation history
         self.validation_history.append(test_result)
@@ -240,9 +234,7 @@ class GuardianAgent:
         print("🔧 [Guardian] Executing worker task...")
         try:
             worker_result = worker_task()
-            print(
-                f"✅ [Guardian] Worker task completed. Worker reported: {worker_result}"
-            )
+            print(f"✅ [Guardian] Worker task completed. Worker reported: {worker_result}")
         except Exception as e:
             print(f"❌ [Guardian] Worker task failed with exception: {e}")
             return False
@@ -266,9 +258,7 @@ class GuardianAgent:
                 f"📈 [Guardian] Improvement: {final_result.failed - baseline.failed} fewer failures, {final_result.errors - baseline.errors} fewer errors"
             )
         else:
-            print(
-                "❌ [Guardian] FAILURE! Task did not achieve the expected improvement."
-            )
+            print("❌ [Guardian] FAILURE! Task did not achieve the expected improvement.")
             print(
                 f"📉 [Guardian] Current state: {final_result.failed} failures, {final_result.errors} errors"
             )
@@ -299,9 +289,7 @@ class GuardianAgent:
         # Improvement: fewer failures/errors than baseline
         if final.failed < baseline.failed or final.errors < baseline.errors:
             # Partial success - some improvement but not complete
-            improvement = (baseline.failed - final.failed) + (
-                baseline.errors - final.errors
-            )
+            improvement = (baseline.failed - final.failed) + (baseline.errors - final.errors)
             print(
                 f"📈 [Guardian] Partial success: {improvement} fewer issues, but {final.failed + final.errors} remain"
             )
@@ -329,9 +317,7 @@ class GuardianAgent:
         latest = self.validation_history[-1]
 
         return {
-            "status": "success"
-            if latest.failed == 0 and latest.errors == 0
-            else "issues_detected",
+            "status": "success" if latest.failed == 0 and latest.errors == 0 else "issues_detected",
             "latest_result": {
                 "passed": latest.passed,
                 "failed": latest.failed,
@@ -342,9 +328,7 @@ class GuardianAgent:
             },
             "total_validations": len(self.validation_history),
             "trend": (
-                self._analyze_trend()
-                if len(self.validation_history) > 1
-                else "insufficient_data"
+                self._analyze_trend() if len(self.validation_history) > 1 else "insufficient_data"
             ),
         }
 

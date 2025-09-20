@@ -3,17 +3,15 @@ Advanced Action System with Maximum Features
 Provides comprehensive action management with batch processing, scheduling, and optimization
 """
 
-import logging
 import asyncio
-from datetime import datetime, timedelta
-from enum import Enum
 import json
+import logging
+import time
 import uuid
 from concurrent.futures import ThreadPoolExecutor
-import time
-from typing import Optional
-from typing import Callable
-from typing import Any
+from datetime import datetime, timedelta
+from enum import Enum
+from typing import Any, Callable, Optional
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -184,9 +182,7 @@ class AdvancedAction:
             # Run sync functions in thread pool to avoid blocking
             loop = asyncio.get_event_loop()
             with ThreadPoolExecutor() as executor:
-                return await loop.run_in_executor(
-                    executor, lambda: self.handler(*args, **kwargs)
-                )
+                return await loop.run_in_executor(executor, lambda: self.handler(*args, **kwargs))
 
     def add_dependency(self, action_id: str):
         """Add a dependency to this action"""
@@ -230,9 +226,7 @@ class AdvancedAction:
                 "success_count": self.metrics.success_count,
                 "failure_count": self.metrics.failure_count,
                 "last_execution": (
-                    self.metrics.last_execution.isoformat()
-                    if self.metrics.last_execution
-                    else None
+                    self.metrics.last_execution.isoformat() if self.metrics.last_execution else None
                 ),
             },
             "dependencies": list(self.dependencies),
@@ -339,9 +333,7 @@ class ActionMaxoutSystem:
         else:
             return await self._execute_immediate(action_id, args, kwargs)
 
-    async def _execute_immediate(
-        self, action_id: str, args: tuple, kwargs: dict
-    ) -> Any:
+    async def _execute_immediate(self, action_id: str, args: tuple, kwargs: dict) -> Any:
         """Execute action immediately"""
         # Wait for available slot if at capacity
         while len(self.running_actions) >= self.max_concurrent_actions:
@@ -387,9 +379,7 @@ class ActionMaxoutSystem:
         action = self.actions[action_id]
 
         for dependent_id in action.dependents:
-            if dependent_id in self.actions and await self._check_dependencies(
-                dependent_id
-            ):
+            if dependent_id in self.actions and await self._check_dependencies(dependent_id):
                 asyncio.create_task(self._execute_immediate(dependent_id, (), {}))
 
     async def _queue_for_batch(self, action_id: str, args: tuple, kwargs: dict) -> str:
@@ -431,15 +421,11 @@ class ActionMaxoutSystem:
                         and not action.is_running
                     ):
                         # Execute scheduled action
-                        asyncio.create_task(
-                            self._execute_immediate(action.action_id, (), {})
-                        )
+                        asyncio.create_task(self._execute_immediate(action.action_id, (), {}))
 
                         # Update next run time
                         if action.schedule.interval:
-                            action.schedule.next_run = (
-                                current_time + action.schedule.interval
-                            )
+                            action.schedule.next_run = current_time + action.schedule.interval
 
                         action.schedule.current_runs += 1
 
@@ -472,9 +458,7 @@ class ActionMaxoutSystem:
                     tasks = []
                     for item in batch:
                         task = asyncio.create_task(
-                            self._execute_immediate(
-                                item["action_id"], item["args"], item["kwargs"]
-                            )
+                            self._execute_immediate(item["action_id"], item["args"], item["kwargs"])
                         )
                         tasks.append(task)
 

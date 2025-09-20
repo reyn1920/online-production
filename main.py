@@ -4,11 +4,12 @@ Optimized Main Application Entry Point
 Loads only essential components to minimize memory usage
 """
 
+import asyncio
+import logging
 import os
 import sys
-import logging
-import asyncio
 from pathlib import Path
+
 from uvicorn import Config, Server
 
 # Add project root to path
@@ -105,8 +106,8 @@ async def start_api_server():
 
 async def start_minimal_server():
     """Fallback minimal HTTP server"""
-    from http.server import HTTPServer, SimpleHTTPRequestHandler
     import threading
+    from http.server import HTTPServer, SimpleHTTPRequestHandler
 
     port = int(os.environ.get("PORT", 8000))
 

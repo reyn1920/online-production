@@ -1,10 +1,10 @@
 # src/services/data.py
 from __future__ import annotations
-import asyncio
 from typing import Dict, Any, List, Optional
 from src.core.config import Config
 from src.services.base import BaseService
 from src.services.registry import ServiceRegistry
+
 
 class DataService(BaseService):
     """Manages data operations and database interactions."""
@@ -26,7 +26,7 @@ class DataService(BaseService):
         """Create a new record."""
         if table not in self._data_store:
             self._data_store[table] = []
-        
+
         record = {"id": f"{table}_{len(self._data_store[table])}", **data}
         self._data_store[table].append(record)
         return record
@@ -35,17 +35,19 @@ class DataService(BaseService):
         """Read a record by ID."""
         if table not in self._data_store:
             return None
-        
+
         for record in self._data_store[table]:
             if record.get("id") == record_id:
                 return record
         return None
 
-    async def update(self, table: str, record_id: str, data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    async def update(
+        self, table: str, record_id: str, data: Dict[str, Any]
+    ) -> Optional[Dict[str, Any]]:
         """Update a record."""
         if table not in self._data_store:
             return None
-        
+
         for i, record in enumerate(self._data_store[table]):
             if record.get("id") == record_id:
                 self._data_store[table][i] = {**record, **data}
@@ -56,7 +58,7 @@ class DataService(BaseService):
         """Delete a record."""
         if table not in self._data_store:
             return False
-        
+
         for i, record in enumerate(self._data_store[table]):
             if record.get("id") == record_id:
                 del self._data_store[table][i]

@@ -7,11 +7,12 @@ entities in the TRAE.AI system.
 Author: TRAE.AI System
 """
 
-from datetime import datetime, timezone
-from typing import Optional, Any
-from pydantic import BaseModel, EmailStr, Field, validator
-from enum import Enum
 import uuid
+from datetime import datetime, timezone
+from enum import Enum
+from typing import Any, Optional
+
+from pydantic import BaseModel, EmailStr, Field, validator
 
 # Enums
 

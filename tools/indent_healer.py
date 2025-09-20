@@ -8,9 +8,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SKIP: {".git", ".venv", "venv", "__pycache__", "node_modules", "dist", "build"}
 
-BLOCK = re.compile(
-    r"^\s*(def|class|if|elif|else|for|while|try|except|finally|with)\b.*:\s*(#.*)?$"
-)
+BLOCK = re.compile(r"^\s*(def|class|if|elif|else|for|while|try|except|finally|with)\b.*:\s*(#.*)?$")
 
 
 def pyfiles(root: Path):

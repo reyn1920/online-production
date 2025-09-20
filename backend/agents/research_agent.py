@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Optional
 
-from .base_agents import BaseAgent, AgentCapability
+from .base_agents import AgentCapability, BaseAgent
 
 
 @dataclass
@@ -53,9 +53,7 @@ class ResearchAgent(BaseAgent):
     """
 
     def __init__(self, agent_id: Optional[str] = None, name: Optional[str] = None):
-        super().__init__(
-            agent_id=agent_id or "research_agent", name=name or "Research Agent"
-        )
+        super().__init__(agent_id=agent_id or "research_agent", name=name or "Research Agent")
         self.logger = logging.getLogger(__name__)
 
         # Research sources configuration

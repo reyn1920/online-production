@@ -3,8 +3,8 @@
 Database migration script to add reports table
 """
 
-import sqlite3
 import os
+import sqlite3
 
 
 def create_reports_table():

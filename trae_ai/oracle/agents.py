@@ -113,9 +113,7 @@ Consider implementing these improvements incrementally, starting with the most c
 """
 
 
-def query_llm_with_context(
-    prompt: str, context: dict[str, Any], model: str = "llama3.1"
-) -> str:
+def query_llm_with_context(prompt: str, context: dict[str, Any], model: str = "llama3.1") -> str:
     """
     Query LLM with additional context information.
 

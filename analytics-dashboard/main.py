@@ -3,10 +3,9 @@ Analytics Dashboard Main Module
 Provides comprehensive analytics and dashboard functionality
 """
 
-import logging
 import asyncio
-from typing import Optional
-from typing import Any
+import logging
+from typing import Any, Optional
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

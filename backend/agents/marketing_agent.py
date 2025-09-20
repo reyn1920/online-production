@@ -12,9 +12,10 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Optional
 
+from .base_agents import AgentCapability, BaseAgent
+
 # import requests
 
-from .base_agents import BaseAgent, AgentCapability
 
 
 @dataclass
@@ -40,9 +41,7 @@ class MarketingAgent(BaseAgent):
     """
 
     def __init__(self, agent_id: Optional[str] = None, name: Optional[str] = None):
-        super().__init__(
-            agent_id=agent_id or "marketing_agent", name=name or "Marketing Agent"
-        )
+        super().__init__(agent_id=agent_id or "marketing_agent", name=name or "Marketing Agent")
         self.logger = logging.getLogger(__name__)
 
     @property

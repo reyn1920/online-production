@@ -5,15 +5,15 @@ TRAE.AI CLI Main Entry Point
 This module provides the main command-line interface for TRAE.AI.
 """
 
+from typing import Annotated, Optional
+
+import requests
 import typer
 import uvicorn
-from typing import Annotated
-import requests
-from typing import Optional
 
 # Import version and author from the package
 try:
-    from trae_ai import __version__, __author__
+    from trae_ai import __author__, __version__
 except ImportError:
     __version__ = "1.0.0-alpha"
     __author__ = "The TRAE.AI Open Source Team"
@@ -21,9 +21,9 @@ except ImportError:
 # Import the core functions from the trae.ai system
 # Note: These imports assume the file structure is correct.
 try:
-    from trae_ai.scripts.solo.solo_agent import execute as execute_solo
     from trae_ai.agents.conversational_designer import ConversationalDesigner
     from trae_ai.agents.observer_agent import ObserverAgent
+    from trae_ai.scripts.solo.solo_agent import execute as execute_solo
 except ImportError:
     # Fallback for when modules are not available
     execute_solo = None
@@ -38,9 +38,7 @@ app = typer.Typer(
 
 @app.command()
 def solo(
-    goal: Annotated[
-        str, typer.Argument(help="The high-level goal for the SOLO agent to execute.")
-    ],
+    goal: Annotated[str, typer.Argument(help="The high-level goal for the SOLO agent to execute.")],
 ):
     """
     Engage the SOLO agent to autonomously execute a complex goal.
@@ -49,9 +47,7 @@ def solo(
     if execute_solo:
         execute_solo(goal)
     else:
-        typer.echo(
-            "❌ SOLO agent module not available. Please check your installation."
-        )
+        typer.echo("❌ SOLO agent module not available. Please check your installation.")
 
 
 @app.command()
@@ -67,9 +63,7 @@ def design():
         print("\n✅ Design complete! Specification generated:")
         print(spec)
     else:
-        typer.echo(
-            "❌ Genesis Engine module not available. Please check your installation."
-        )
+        typer.echo("❌ Genesis Engine module not available. Please check your installation.")
 
 
 @app.command()
@@ -81,9 +75,7 @@ def observe():
         observer = ObserverAgent()
         observer.monitor_streams()
     else:
-        typer.echo(
-            "❌ Observer agent module not available. Please check your installation."
-        )
+        typer.echo("❌ Observer agent module not available. Please check your installation.")
 
 
 @app.command()

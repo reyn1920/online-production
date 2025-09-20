@@ -5,11 +5,11 @@ Production Readiness Validator
 This script performs comprehensive validation to ensure the codebase is 100% production-ready.
 """
 
+import ast
+import logging
 import os
 import re
-import ast
 from pathlib import Path
-import logging
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
@@ -38,9 +38,7 @@ class ProductionReadinessValidator:
             ast.parse(content)
             return True
         except SyntaxError as e:
-            self.errors.append(
-                f"Syntax error in {file_path}: {e.msg} (line {e.lineno})"
-            )
+            self.errors.append(f"Syntax error in {file_path}: {e.msg} (line {e.lineno})")
             return False
         except Exception as e:
             self.errors.append(f"Parse error in {file_path}: {str(e)}")
@@ -167,9 +165,7 @@ class ProductionReadinessValidator:
             / max(1, self.results["syntax_valid"] + self.results["syntax_invalid"])
         ) * 40
         debug_score = (self.results["debug_clean"] / self.results["total_files"]) * 30
-        security_score = (
-            self.results["security_clean"] / self.results["total_files"]
-        ) * 30
+        security_score = (self.results["security_clean"] / self.results["total_files"]) * 30
 
         return syntax_score + debug_score + security_score
 
@@ -208,9 +204,7 @@ TOTAL FILES PROCESSED: {self.results["total_files"]}"""
 
         report += "\n\n=== RECOMMENDATION ===\n"
         if score >= 95.0:
-            report += (
-                "✅ Your codebase is production ready! You can proceed with deployment."
-            )
+            report += "✅ Your codebase is production ready! You can proceed with deployment."
         else:
             report += "❌ Your codebase needs attention before production deployment."
             report += "\n   Focus on fixing syntax errors and removing debug code."

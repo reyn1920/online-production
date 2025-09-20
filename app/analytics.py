@@ -3,15 +3,14 @@ Analytics Module - Comprehensive analytics and data processing system
 """
 
 import asyncio
-
+import hashlib
 # json import removed as it was unused
 import logging
-from datetime import datetime, timedelta
-from typing import Optional, Any, Union
-from enum import Enum
 import statistics
 from collections import defaultdict, deque
-import hashlib
+from datetime import datetime, timedelta
+from enum import Enum
+from typing import Any, Optional, Union
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -95,9 +94,7 @@ class MetricStore:
     """In-memory metric storage with time-based retention"""
 
     def __init__(self, retention_hours: int = 24):
-        self.data: dict[str, deque[DataPoint]] = defaultdict(
-            lambda: deque(maxlen=10000)
-        )
+        self.data: dict[str, deque[DataPoint]] = defaultdict(lambda: deque(maxlen=10000))
         self.retention_hours = retention_hours
         self.last_cleanup = datetime.now()
 
@@ -115,9 +112,7 @@ class MetricStore:
         if tags is None:
             tags = {}
 
-        point = DataPoint(
-            timestamp=timestamp, value=value, tags=tags, metric_name=metric_name
-        )
+        point = DataPoint(timestamp=timestamp, value=value, tags=tags, metric_name=metric_name)
 
         self.data[metric_name].append(point)
 
@@ -146,9 +141,7 @@ class MetricStore:
 
         # Tag filtering
         if tags:
-            points = [
-                p for p in points if all(p.tags.get(k) == v for k, v in tags.items())
-            ]
+            points = [p for p in points if all(p.tags.get(k) == v for k, v in tags.items())]
 
         return points
 
@@ -162,10 +155,7 @@ class MetricStore:
 
         for metric_name in self.data:
             # Remove old points
-            while (
-                self.data[metric_name]
-                and self.data[metric_name][0].timestamp < cutoff_time
-            ):
+            while self.data[metric_name] and self.data[metric_name][0].timestamp < cutoff_time:
                 self.data[metric_name].popleft()
 
         self.last_cleanup = datetime.now()
@@ -319,9 +309,7 @@ class ReportGenerator:
         if start_time is None:
             start_time = end_time - timedelta(hours=1)
 
-        report_id = hashlib.md5(
-            f"{title}_{start_time}_{end_time}".encode()
-        ).hexdigest()[:8]
+        report_id = hashlib.md5(f"{title}_{start_time}_{end_time}".encode()).hexdigest()[:8]
 
         # Calculate summaries for all metrics
         summaries = []
@@ -329,9 +317,7 @@ class ReportGenerator:
         recommendations = []
 
         for metric_name in metric_names:
-            summary = self.processor.calculate_summary(
-                metric_name, start_time, end_time
-            )
+            summary = self.processor.calculate_summary(metric_name, start_time, end_time)
             if summary:
                 summaries.append(summary)
 
@@ -377,9 +363,7 @@ class ReportGenerator:
 
         # Extreme values insight
         if summary.max > summary.average * 3:
-            insights.append(
-                f"{summary.name} has extreme high values (max: {summary.max:.2f})"
-            )
+            insights.append(f"{summary.name} has extreme high values (max: {summary.max:.2f})")
 
         # Data volume insight
         if summary.count < 10:
@@ -393,21 +377,15 @@ class ReportGenerator:
 
         # High variability recommendation
         if summary.std_dev > summary.average * 0.5:
-            recommendations.append(
-                f"Investigate causes of high variability in {summary.name}"
-            )
+            recommendations.append(f"Investigate causes of high variability in {summary.name}")
 
         # Data collection recommendation
         if summary.count < 50:
-            recommendations.append(
-                f"Increase data collection frequency for {summary.name}"
-            )
+            recommendations.append(f"Increase data collection frequency for {summary.name}")
 
         return recommendations
 
-    async def _generate_overall_insights(
-        self, summaries: list[MetricSummary]
-    ) -> list[str]:
+    async def _generate_overall_insights(self, summaries: list[MetricSummary]) -> list[str]:
         """Generate overall insights across all metrics"""
         insights = []
 
@@ -426,9 +404,7 @@ class ReportGenerator:
         # Metric correlation (simplified)
         high_var_metrics = [s.name for s in summaries if s.std_dev > s.average * 0.3]
         if len(high_var_metrics) > len(summaries) * 0.5:
-            insights.append(
-                "Multiple metrics show high variability - system may be unstable"
-            )
+            insights.append("Multiple metrics show high variability - system may be unstable")
 
         return insights
 
@@ -465,23 +441,17 @@ class AnalyticsEngine:
         """Increment a counter metric"""
         self.record_metric(f"{name}_count", 1, tags)
 
-    def record_timer(
-        self, name: str, duration_ms: float, tags: Optional[dict[str, str]] = None
-    ):
+    def record_timer(self, name: str, duration_ms: float, tags: Optional[dict[str, str]] = None):
         """Record a timer metric"""
         self.record_metric(f"{name}_duration", duration_ms, tags)
 
-    async def get_metric_summary(
-        self, name: str, hours_back: int = 1
-    ) -> Optional[MetricSummary]:
+    async def get_metric_summary(self, name: str, hours_back: int = 1) -> Optional[MetricSummary]:
         """Get summary for a specific metric"""
         end_time = datetime.now()
         start_time = end_time - timedelta(hours=hours_back)
         return self.processor.calculate_summary(name, start_time, end_time)
 
-    async def detect_anomalies(
-        self, name: str, window_minutes: int = 60
-    ) -> list[DataPoint]:
+    async def detect_anomalies(self, name: str, window_minutes: int = 60) -> list[DataPoint]:
         """Detect anomalies in a metric"""
         return self.processor.detect_anomalies(name, window_minutes)
 
@@ -495,9 +465,7 @@ class AnalyticsEngine:
         end_time = datetime.now()
         start_time = end_time - timedelta(hours=hours_back)
 
-        return await self.report_generator.generate_report(
-            metric_names, start_time, end_time
-        )
+        return await self.report_generator.generate_report(metric_names, start_time, end_time)
 
     async def _periodic_cleanup(self):
         """Periodic cleanup task"""

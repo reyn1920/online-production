@@ -38,6 +38,4 @@ worker_tmp_dir = WORKER_TMP_DIR
 accesslog = "-"
 errorlog = "-"
 loglevel = "info"
-access_log_format = (
-    '%%(h)s %%(l)s %%(u)s %%(t)s "%%(r)s" %%(s)s %%(b)s "%%(f)s" "%%(a)s" %%(D)s'
-)
+access_log_format = '%%(h)s %%(l)s %%(u)s %%(t)s "%%(r)s" %%(s)s %%(b)s "%%(f)s" "%%(a)s" %%(D)s'

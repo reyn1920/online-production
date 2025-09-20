@@ -31,9 +31,7 @@ class ProjectService:
         """Create a new project."""
         try:
             # Verify owner exists
-            owner_result = await session.execute(
-                select(User).where(User.id == owner_id)
-            )
+            owner_result = await session.execute(select(User).where(User.id == owner_id))
             owner = owner_result.scalar_one_or_none()
             if not owner:
                 logger.error(f"Owner with ID {owner_id} not found")
@@ -93,9 +91,7 @@ class ProjectService:
             return None
 
     @staticmethod
-    async def get_projects_by_owner(
-        session: AsyncSession, owner_id: UUID
-    ) -> List[Project]:
+    async def get_projects_by_owner(session: AsyncSession, owner_id: UUID) -> List[Project]:
         """Get all projects for a specific owner."""
         try:
             result = await session.execute(
@@ -116,9 +112,7 @@ class ProjectService:
         """Update a project."""
         try:
             # Get the project
-            project = await ProjectService.get_project_by_id(
-                session, project_id, owner_id
-            )
+            project = await ProjectService.get_project_by_id(session, project_id, owner_id)
             if not project:
                 return None
 
@@ -171,15 +165,11 @@ class ProjectService:
             return None
 
     @staticmethod
-    async def delete_project(
-        session: AsyncSession, project_id: UUID, owner_id: UUID
-    ) -> bool:
+    async def delete_project(session: AsyncSession, project_id: UUID, owner_id: UUID) -> bool:
         """Delete a project."""
         try:
             # Get the project
-            project = await ProjectService.get_project_by_id(
-                session, project_id, owner_id
-            )
+            project = await ProjectService.get_project_by_id(session, project_id, owner_id)
             if not project:
                 return False
 
@@ -203,16 +193,12 @@ class ProjectService:
             result = await session.execute(
                 select(Project)
                 .options(selectinload(Project.channel))
-                .where(
-                    and_(Project.owner_id == owner_id, Project.status == status.value)
-                )
+                .where(and_(Project.owner_id == owner_id, Project.status == status.value))
                 .order_by(Project.created_at.desc())
             )
             return list(result.scalars().all())
         except Exception as e:
-            logger.error(
-                f"Error fetching projects by status {status} for owner {owner_id}: {e}"
-            )
+            logger.error(f"Error fetching projects by status {status} for owner {owner_id}: {e}")
             return []
 
     @staticmethod
@@ -224,9 +210,7 @@ class ProjectService:
             result = await session.execute(
                 select(Project)
                 .options(selectinload(Project.channel))
-                .where(
-                    and_(Project.owner_id == owner_id, Project.channel_id == channel_id)
-                )
+                .where(and_(Project.owner_id == owner_id, Project.channel_id == channel_id))
                 .order_by(Project.created_at.desc())
             )
             return list(result.scalars().all())

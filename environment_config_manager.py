@@ -14,9 +14,9 @@ Features:
 - Configuration backup and restore
 """
 
-import os
 import json
 import logging
+import os
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -274,8 +274,7 @@ class EnvironmentConfigManager:
         # Calculate configuration score
         if validation_results["total_possible"] > 0:
             validation_results["configuration_score"] = (
-                validation_results["total_configured"]
-                / validation_results["total_possible"]
+                validation_results["total_configured"] / validation_results["total_possible"]
             ) * 100
 
         return validation_results
@@ -499,15 +498,11 @@ def main():
     )
 
     if validation["missing_required"]:
-        print(
-            f"\n❌ CRITICAL: Missing Required Variables ({len(validation['missing_required'])})"
-        )
+        print(f"\n❌ CRITICAL: Missing Required Variables ({len(validation['missing_required'])})")
         for var in validation["missing_required"]:
             print(f"  - {var}")
 
-    print(
-        f"\n✅ Optional Services Configured ({len(validation['configured_optional'])})"
-    )
+    print(f"\n✅ Optional Services Configured ({len(validation['configured_optional'])})")
     for var in validation["configured_optional"]:
         print(f"  - {var}")
 
@@ -517,9 +512,7 @@ def main():
         status = (
             "✅"
             if category_data["configured_count"] > 0
-            else "❌"
-            if category_data["required"]
-            else "⚪"
+            else "❌" if category_data["required"] else "⚪"
         )
         print(
             f"{status} {category_name.upper()}: {category_data['configured_count']}/{category_data['total_vars']}"
@@ -531,9 +524,7 @@ def main():
     setup_guide = env_manager.create_setup_guide()
 
     # Save setup guide
-    setup_filename = (
-        f"environment_setup_guide_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-    )
+    setup_filename = f"environment_setup_guide_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
     with open(setup_filename, "w") as f:
         json.dump(setup_guide, f, indent=2)
 
@@ -541,9 +532,7 @@ def main():
 
     # Generate deployment checklist
     checklist = env_manager.generate_deployment_checklist()
-    checklist_filename = (
-        f"deployment_checklist_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-    )
+    checklist_filename = f"deployment_checklist_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
     with open(checklist_filename, "w") as f:
         json.dump(checklist, f, indent=2)
 

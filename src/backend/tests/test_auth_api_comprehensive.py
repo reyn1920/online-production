@@ -159,9 +159,7 @@ class TestAuthenticationAPI:
 
     @patch("src.backend.api.auth.UserService.get_user_by_email")
     @pytest.mark.asyncio
-    async def test_login_user_not_found(
-        self, mock_get_user, mock_session, user_login_data
-    ):
+    async def test_login_user_not_found(self, mock_get_user, mock_session, user_login_data):
         """Test login with non-existent user."""
         # Arrange
         mock_get_user.return_value = None
@@ -284,9 +282,7 @@ class TestAuthenticationAPI:
 
     @patch("src.backend.api.auth.AuthService.blacklist_token")
     @pytest.mark.asyncio
-    async def test_logout_success(
-        self, mock_blacklist_token, mock_session, mock_access_token
-    ):
+    async def test_logout_success(self, mock_blacklist_token, mock_session, mock_access_token):
         """Test successful user logout."""
         # Arrange
         mock_blacklist_token.return_value = True
@@ -346,9 +342,7 @@ class TestAuthenticationAPI:
 
     @patch("src.backend.api.auth.AuthService.verify_password_reset_token")
     @pytest.mark.asyncio
-    async def test_reset_password_invalid_token(
-        self, mock_verify_reset_token, mock_session
-    ):
+    async def test_reset_password_invalid_token(self, mock_verify_reset_token, mock_session):
         """Test password reset with invalid token."""
         # Arrange
         mock_verify_reset_token.return_value = None

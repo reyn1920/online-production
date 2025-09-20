@@ -4,15 +4,15 @@ TRAE AI Production Startup System
 Comprehensive system startup with Ollama integration monitoring
 """
 
-import os
-import sys
-import time
+import argparse
 import json
 import logging
-import argparse
+import os
 import subprocess
+import sys
+import time
 from pathlib import Path
-from typing import Union, Optional, Any
+from typing import Any, Optional, Union
 
 # Configure logging
 logging.basicConfig(
@@ -43,9 +43,7 @@ class OllamaServiceMonitor:
                     ["ollama", "--version"], capture_output=True, text=True
                 )
                 version = (
-                    version_result.stdout.strip()
-                    if version_result.returncode == 0
-                    else "unknown"
+                    version_result.stdout.strip() if version_result.returncode == 0 else "unknown"
                 )
                 return {
                     "installed": True,
@@ -158,9 +156,7 @@ class ProductionStartupSystem:
         self.ollama_monitor = OllamaServiceMonitor()
         self.startup_log = []
 
-    def log_startup_event(
-        self, event: str, status: str, details: Optional[dict[str, Any]] = None
-    ):
+    def log_startup_event(self, event: str, status: str, details: Optional[dict[str, Any]] = None):
         """Log startup events for audit trail."""
         event_data: dict[str, Any] = {
             "timestamp": time.time(),
@@ -206,9 +202,7 @@ class ProductionStartupSystem:
                     return False
 
         if created_dirs:
-            self.log_startup_event(
-                "directories_created", "success", {"created": created_dirs}
-            )
+            self.log_startup_event("directories_created", "success", {"created": created_dirs})
 
         return True
 
@@ -223,9 +217,7 @@ class ProductionStartupSystem:
                 return True
             else:
                 logger.error("main.py not found")
-                self.log_startup_event(
-                    "main_application", "failed", {"error": "main.py not found"}
-                )
+                self.log_startup_event("main_application", "failed", {"error": "main.py not found"})
                 return False
         except Exception as e:
             logger.error(f"Failed to start main application: {e}")
@@ -311,9 +303,7 @@ def main():
         action="store_true",
         help="Only monitor services, do not start",
     )
-    parser.add_argument(
-        "--ollama-status", action="store_true", help="Check Ollama status only"
-    )
+    parser.add_argument("--ollama-status", action="store_true", help="Check Ollama status only")
 
     args = parser.parse_args()
 

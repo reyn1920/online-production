@@ -6,18 +6,10 @@
 # "Author": TRAE.AI System
 # "Version": 100
 
-from .base_agents import (
-    AuditorAgent,
-    ExecutorAgent,
-    PlannerAgent,
-)  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
+from .base_agents import (  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
+    AuditorAgent, ExecutorAgent, PlannerAgent)
 from .specialized_agents import (  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
-    ContentAgent,
-    MarketingAgent,
-    QAAgent,
-    ResearchAgent,
-    SystemAgent,
-)
+    ContentAgent, MarketingAgent, QAAgent, ResearchAgent, SystemAgent)
 
 __all__ = [
     "PlannerAgent",

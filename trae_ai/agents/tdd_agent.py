@@ -1,9 +1,9 @@
 # trae_ai/agents/tdd_agent.py
 import subprocess
 from pathlib import Path
-from trae_ai.agents.code_generator import (
-    CodeGenerator,
-)  # Assumes a powerful code-writing agent
+
+from trae_ai.agents.code_generator import \
+    CodeGenerator  # Assumes a powerful code-writing agent
 
 
 class TDDAgent:

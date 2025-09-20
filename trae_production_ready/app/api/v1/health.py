@@ -1,11 +1,7 @@
 # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
-from datetime import (
-    datetime,
-)
+from datetime import datetime
 
-from fastapi import (
-    APIRouter,
-)
+from fastapi import APIRouter
 
 router = APIRouter()
 

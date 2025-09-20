@@ -4,11 +4,11 @@ Git Time Machine Protocol - Advanced Codebase Reconstruction
 Implements GitAgent to find the last good commit in Git history.
 """
 
+import logging
 import shutil
 import subprocess
 from pathlib import Path
 from typing import Optional
-import logging
 
 # Setup logging
 log_file = "reconstruction.log"
@@ -43,9 +43,7 @@ class GitAgent:
             result = subprocess.run(cmd, capture_output=True, text=True, check=True)
             return result.stdout
         except subprocess.CalledProcessError as e:
-            self.logger.error(
-                f"Failed to get file version at commit {commit_hash}: {e}"
-            )
+            self.logger.error(f"Failed to get file version at commit {commit_hash}: {e}")
             return ""
 
     def get_commit_info(self, commit_hash: str) -> str:
@@ -95,9 +93,7 @@ class CodebaseReconstructor:
 
     def find_last_good_commit(self, file_path: Path) -> Optional[str]:
         """Scans Git history to find the most recent syntactically valid version of a file."""
-        self.log_step(
-            "GIT_TIME_MACHINE", f"🔍 Scanning Git history for {file_path.name}"
-        )
+        self.log_step("GIT_TIME_MACHINE", f"🔍 Scanning Git history for {file_path.name}")
 
         try:
             commit_history = self.git_agent.get_commit_history(file_path)
@@ -124,20 +120,14 @@ class CodebaseReconstructor:
             )
 
             try:
-                file_content = self.git_agent.get_file_version_at_commit(
-                    file_path, commit
-                )
+                file_content = self.git_agent.get_file_version_at_commit(file_path, commit)
                 if not file_content:
-                    self.log_step(
-                        "GIT_TIME_MACHINE", "    ❌ Could not retrieve file content"
-                    )
+                    self.log_step("GIT_TIME_MACHINE", "    ❌ Could not retrieve file content")
                     continue
 
                 # Use compile() to check syntax without writing to a file
                 if self.syntax_check_content(file_content, file_path.name):
-                    self.log_step(
-                        "GIT_TIME_MACHINE", "    ✅ Found syntactically valid version!"
-                    )
+                    self.log_step("GIT_TIME_MACHINE", "    ✅ Found syntactically valid version!")
                     return commit
                 else:
                     self.log_step("GIT_TIME_MACHINE", "    ❌ Invalid syntax")
@@ -145,36 +135,24 @@ class CodebaseReconstructor:
                 self.log_step("GIT_TIME_MACHINE", f"    ❌ Error checking commit: {e}")
                 continue
 
-        self.log_step(
-            "GIT_TIME_MACHINE", "🛑 No syntactically valid version found in Git history"
-        )
+        self.log_step("GIT_TIME_MACHINE", "🛑 No syntactically valid version found in Git history")
         return None
 
     def restore_from_git_commit(self, target_file: Path, commit_hash: str):
         """Restore target file from a specific Git commit."""
-        self.log_step(
-            "GIT_RESTORE", f"Restoring {target_file.name} from commit {commit_hash[:7]}"
-        )
+        self.log_step("GIT_RESTORE", f"Restoring {target_file.name} from commit {commit_hash[:7]}")
 
         # Get the good content from Git
-        good_content = self.git_agent.get_file_version_at_commit(
-            target_file, commit_hash
-        )
+        good_content = self.git_agent.get_file_version_at_commit(target_file, commit_hash)
 
         if not good_content:
-            raise Exception(
-                f"Could not retrieve file content from commit {commit_hash}"
-            )
+            raise Exception(f"Could not retrieve file content from commit {commit_hash}")
 
         # Create a final backup of the broken file before overwriting
-        broken_backup_path = target_file.with_suffix(
-            f"{target_file.suffix}.BROKEN_FINAL"
-        )
+        broken_backup_path = target_file.with_suffix(f"{target_file.suffix}.BROKEN_FINAL")
         if target_file.exists():
             shutil.copy2(target_file, broken_backup_path)
-            self.log_step(
-                "GIT_RESTORE", f"📦 Backed up broken file to {broken_backup_path.name}"
-            )
+            self.log_step("GIT_RESTORE", f"📦 Backed up broken file to {broken_backup_path.name}")
 
         # Write the good content
         with open(target_file, "w") as f:
@@ -203,9 +181,7 @@ class CodebaseReconstructor:
             return False
 
         commit_info = self.git_agent.get_commit_info(last_good_commit)
-        self.log_step(
-            "PROTOCOL", f"📍 Last good commit: {last_good_commit[:7]} ({commit_info})"
-        )
+        self.log_step("PROTOCOL", f"📍 Last good commit: {last_good_commit[:7]} ({commit_info})")
 
         # Restore from Git
         try:
@@ -216,15 +192,11 @@ class CodebaseReconstructor:
 
         # Verify restoration
         if not self.syntax_check_file(target_file):
-            self.log_step(
-                "PROTOCOL", "❌ Restoration failed - file still has syntax errors"
-            )
+            self.log_step("PROTOCOL", "❌ Restoration failed - file still has syntax errors")
             return False
 
         self.log_step("PROTOCOL", "✅ Git Time Machine Protocol completed successfully")
-        self.log_step(
-            "PROTOCOL", "🎯 Codebase restored to stable state from Git history"
-        )
+        self.log_step("PROTOCOL", "🎯 Codebase restored to stable state from Git history")
         return True
 
 

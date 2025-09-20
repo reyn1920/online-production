@@ -64,17 +64,13 @@ class TaskQueueManager:
     def get_queue_stats(self):
         return {"pending": 0, "in_progress": 0, "completed": 0, "failed": 0}
 
-    def add_task(
-        self, task_type=None, payload=None, priority="medium", agent_id=None, **kwargs
-    ):
+    def add_task(self, task_type=None, payload=None, priority="medium", agent_id=None, **kwargs):
         return "mock-task-id"
 
     def get_recent_tasks(self, limit=10):
         return []
 
-    def get_tasks(
-        self, status=None, task_type=None, agent_id=None, limit=100, offset=0
-    ):
+    def get_tasks(self, status=None, task_type=None, agent_id=None, limit=100, offset=0):
         return []
 
 
@@ -129,9 +125,7 @@ try:
                 # Fallback to mock if TRAE manager fails
                 self._manager = None
                 self.db_path = (
-                    db_path_or_config
-                    if isinstance(db_path_or_config, str)
-                    else "trae_ai.db"
+                    db_path_or_config if isinstance(db_path_or_config, str) else "trae_ai.db"
                 )
 
         def get_queue_stats(self):
@@ -176,9 +170,7 @@ try:
                     pass
             return []
 
-        def get_tasks(
-            self, status=None, task_type=None, agent_id=None, limit=100, offset=0
-        ):
+        def get_tasks(self, status=None, task_type=None, agent_id=None, limit=100, offset=0):
             if self._manager and hasattr(self._manager, "get_tasks"):
                 try:
                     return self._manager.get_tasks(
@@ -284,9 +276,7 @@ class DashboardApp:
         try:
             intelligence_db_path = Path(self.config.intelligence_db_path)
             if not intelligence_db_path.exists():
-                self.logger.warning(
-                    f"Intelligence database not found at {intelligence_db_path}"
-                )
+                self.logger.warning(f"Intelligence database not found at {intelligence_db_path}")
             with sqlite3.connect(self.config.intelligence_db_path) as conn:
                 conn.execute("SELECT name FROM sqlite_master WHERE type='table'")
             self.logger.info("Intelligence database connection established")
@@ -344,9 +334,7 @@ class DashboardApp:
                 if not self.task_manager:
                     return jsonify({"error": "Task manager not available"}), 503
                 status = request.args.get("status")
-                limit = min(
-                    int(request.args.get("limit", 50)), self.config.max_tasks_display
-                )
+                limit = min(int(request.args.get("limit", 50)), self.config.max_tasks_display)
                 tasks = self.task_manager.get_tasks(status=status, limit=limit)
                 task_list = [
                     {
@@ -419,9 +407,7 @@ class DashboardApp:
                     cursor = conn.cursor()
                     cursor.execute(f"SELECT COUNT(*) FROM {table_name}")
                     total_count = cursor.fetchone()[0]
-                    cursor.execute(
-                        f"SELECT * FROM {table_name} LIMIT ? OFFSET ?", (limit, offset)
-                    )
+                    cursor.execute(f"SELECT * FROM {table_name} LIMIT ? OFFSET ?", (limit, offset))
                     rows = cursor.fetchall()
                     data = [dict(row) for row in rows]
                 return jsonify(

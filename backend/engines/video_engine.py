@@ -1,12 +1,12 @@
 """Video processing and analysis engine."""
 
-from typing import Any, Optional
-from datetime import datetime
+import hashlib
 import logging
 import os
 import tempfile
-import hashlib
+from datetime import datetime
 from pathlib import Path
+from typing import Any, Optional
 
 # Logger setup
 logger = logging.getLogger(__name__)
@@ -84,9 +84,7 @@ class VideoProcessor:
                 "file_size": file_stats.st_size,
                 "format": path.suffix.lower(),
                 "created_time": datetime.fromtimestamp(file_stats.st_ctime).isoformat(),
-                "modified_time": datetime.fromtimestamp(
-                    file_stats.st_mtime
-                ).isoformat(),
+                "modified_time": datetime.fromtimestamp(file_stats.st_mtime).isoformat(),
                 "file_hash": self._calculate_file_hash(file_path),
             }
 
@@ -104,9 +102,7 @@ class VideoProcessor:
                     }
                 )
             except Exception as metadata_error:
-                logger.warning(
-                    "Could not extract detailed video metadata: %s", metadata_error
-                )
+                logger.warning("Could not extract detailed video metadata: %s", metadata_error)
 
             return {"valid": True, "info": info}
         except Exception as info_error:
@@ -195,9 +191,7 @@ class VideoAnalyzer:
     def __init__(self):
         self.processor = VideoProcessor()
 
-    def analyze_video(
-        self, file_path: str, analysis_type: str = "basic"
-    ) -> dict[str, Any]:
+    def analyze_video(self, file_path: str, analysis_type: str = "basic") -> dict[str, Any]:
         """Analyze video content."""
         try:
             # Validate file first
@@ -247,9 +241,7 @@ class VideoAnalyzer:
             analysis = {
                 "file_size_category": self._categorize_file_size(file_size_mb),
                 "format_analysis": self._analyze_format(video_info["format"]),
-                "estimated_quality": self._estimate_quality(
-                    file_size_mb, video_info["format"]
-                ),
+                "estimated_quality": self._estimate_quality(file_size_mb, video_info["format"]),
                 "recommendations": self._generate_basic_recommendations(video_info),
             }
 
@@ -293,9 +285,7 @@ class VideoAnalyzer:
             scores = [analysis["file_size_score"], analysis["format_score"]]
             valid_scores = [s for s in scores if isinstance(s, (int, float))]
             if valid_scores:
-                analysis["overall_quality_estimate"] = sum(valid_scores) / len(
-                    valid_scores
-                )
+                analysis["overall_quality_estimate"] = sum(valid_scores) / len(valid_scores)
 
             return analysis
 
@@ -401,9 +391,7 @@ class VideoAnalyzer:
         format_ext = video_info["format"]
 
         if file_size_mb < 5:
-            issues.append(
-                "File size very small - may indicate low quality or short duration"
-            )
+            issues.append("File size very small - may indicate low quality or short duration")
 
         if file_size_mb > 400:
             issues.append("File size very large - may need compression")
@@ -424,17 +412,13 @@ class VideoAnalyzer:
         format_ext = video_info["format"]
 
         if format_ext not in [".mp4", ".webm", ".mkv"]:
-            suggestions.append(
-                "Consider converting to MP4 or WebM for better compatibility"
-            )
+            suggestions.append("Consider converting to MP4 or WebM for better compatibility")
 
         if file_size_mb > 300:
             suggestions.append("Consider compressing the video to reduce file size")
 
         if file_size_mb < 10:
-            suggestions.append(
-                "Check if video quality meets requirements - file size seems small"
-            )
+            suggestions.append("Check if video quality meets requirements - file size seems small")
 
         return suggestions
 
@@ -445,9 +429,7 @@ class VideoAnalyzer:
         format_analysis = self._analyze_format(video_info["format"])
 
         if format_analysis["compatibility"] != "excellent":
-            recommendations.append(
-                "Consider converting to MP4 for maximum compatibility"
-            )
+            recommendations.append("Consider converting to MP4 for maximum compatibility")
 
         if format_analysis["compression"] == "poor":
             recommendations.append(
@@ -478,9 +460,7 @@ class VideoEngine:
                 operations = ["validate", "analyze"]
 
             # Create cache key
-            cache_key = hashlib.md5(
-                f"{file_path}_{str(operations)}".encode()
-            ).hexdigest()
+            cache_key = hashlib.md5(f"{file_path}_{str(operations)}".encode()).hexdigest()
 
             # Check cache
             if cache_key in self.cache:
@@ -498,27 +478,17 @@ class VideoEngine:
             # Execute operations
             for operation in operations:
                 if operation == "validate":
-                    result["results"]["validation"] = (
-                        self.processor.validate_video_file(file_path)
-                    )
+                    result["results"]["validation"] = self.processor.validate_video_file(file_path)
                 elif operation == "info":
                     result["results"]["info"] = self.processor.get_video_info(file_path)
                 elif operation == "analyze":
-                    result["results"]["analysis"] = self.analyzer.analyze_video(
-                        file_path
-                    )
+                    result["results"]["analysis"] = self.analyzer.analyze_video(file_path)
                 elif operation == "thumbnail":
-                    result["results"]["thumbnail"] = self.processor.create_thumbnail(
-                        file_path
-                    )
+                    result["results"]["thumbnail"] = self.processor.create_thumbnail(file_path)
                 elif operation == "frames":
-                    result["results"]["frames"] = self.processor.extract_frames(
-                        file_path
-                    )
+                    result["results"]["frames"] = self.processor.extract_frames(file_path)
                 else:
-                    result["results"][operation] = {
-                        "error": f"Unknown operation: {operation}"
-                    }
+                    result["results"][operation] = {"error": f"Unknown operation: {operation}"}
 
             # Cache result (limit cache size)
             if len(self.cache) < 50:
@@ -581,9 +551,7 @@ engine = VideoEngine()
 # Convenience functions
 
 
-def process_video(
-    file_path: str, operations: Optional[list[str]] = None
-) -> dict[str, Any]:
+def process_video(file_path: str, operations: Optional[list[str]] = None) -> dict[str, Any]:
     """Convenience function to process a video."""
     return engine.process_video(file_path, operations)
 

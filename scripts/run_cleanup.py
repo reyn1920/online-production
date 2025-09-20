@@ -95,9 +95,7 @@ def run_final_validation():
     # Test compilation
     print("🧪 Testing compilation...")
     try:
-        subprocess.run(
-            ["python3", "-m", "py_compile", str(APP_DIR / "dashboard.py")], check=True
-        )
+        subprocess.run(["python3", "-m", "py_compile", str(APP_DIR / "dashboard.py")], check=True)
         print("✅ Code compiles successfully!")
     except subprocess.CalledProcessError:
         print("❌ Compilation failed!")

@@ -321,9 +321,7 @@ class MCPServer:
         self.logger.info("MCP Server stopped")
 
     # Message handlers
-    async def _handle_initialize(
-        self, client_id: str, message: MCPMessage
-    ) -> MCPMessage:
+    async def _handle_initialize(self, client_id: str, message: MCPMessage) -> MCPMessage:
         """Handle initialization request."""
         return MCPMessage(
             id=message.id,
@@ -338,9 +336,7 @@ class MCPServer:
         """Handle ping request."""
         return MCPMessage(id=message.id, result={"pong": True})
 
-    async def _handle_list_tools(
-        self, client_id: str, message: MCPMessage
-    ) -> MCPMessage:
+    async def _handle_list_tools(self, client_id: str, message: MCPMessage) -> MCPMessage:
         """Handle list tools request."""
         tools = []
         for tool in self.tools.values():
@@ -355,9 +351,7 @@ class MCPServer:
 
         return MCPMessage(id=message.id, result={"tools": tools})
 
-    async def _handle_call_tool(
-        self, client_id: str, message: MCPMessage
-    ) -> MCPMessage:
+    async def _handle_call_tool(self, client_id: str, message: MCPMessage) -> MCPMessage:
         """Handle tool call request."""
         params = message.params or {}
         tool_name = params.get("name")
@@ -382,9 +376,7 @@ class MCPServer:
         except Exception as e:
             return MCPMessage(id=message.id, error={"code": -32603, "message": str(e)})
 
-    async def _handle_list_resources(
-        self, client_id: str, message: MCPMessage
-    ) -> MCPMessage:
+    async def _handle_list_resources(self, client_id: str, message: MCPMessage) -> MCPMessage:
         """Handle list resources request."""
         resources = []
         for resource in self.resources.values():
@@ -399,9 +391,7 @@ class MCPServer:
 
         return MCPMessage(id=message.id, result={"resources": resources})
 
-    async def _handle_read_resource(
-        self, client_id: str, message: MCPMessage
-    ) -> MCPMessage:
+    async def _handle_read_resource(self, client_id: str, message: MCPMessage) -> MCPMessage:
         """Handle read resource request."""
         params = message.params or {}
         uri = params.get("uri")
@@ -431,9 +421,7 @@ class MCPServer:
             },
         )
 
-    async def _handle_list_prompts(
-        self, client_id: str, message: MCPMessage
-    ) -> MCPMessage:
+    async def _handle_list_prompts(self, client_id: str, message: MCPMessage) -> MCPMessage:
         """Handle list prompts request."""
         prompts = []
         for prompt in self.prompts.values():
@@ -444,9 +432,7 @@ class MCPServer:
 
         return MCPMessage(id=message.id, result={"prompts": prompts})
 
-    async def _handle_get_prompt(
-        self, client_id: str, message: MCPMessage
-    ) -> MCPMessage:
+    async def _handle_get_prompt(self, client_id: str, message: MCPMessage) -> MCPMessage:
         """Handle get prompt request."""
         params = message.params or {}
         name = params.get("name")
@@ -472,9 +458,7 @@ class MCPServer:
             },
         )
 
-    async def _handle_get_context(
-        self, client_id: str, message: MCPMessage
-    ) -> MCPMessage:
+    async def _handle_get_context(self, client_id: str, message: MCPMessage) -> MCPMessage:
         """Handle get context request."""
         params = message.params or {}
         context_id = params.get("id")
@@ -494,13 +478,9 @@ class MCPServer:
                 },
             )
         else:
-            return MCPMessage(
-                id=message.id, result={"contexts": list(self.contexts.keys())}
-            )
+            return MCPMessage(id=message.id, result={"contexts": list(self.contexts.keys())})
 
-    async def _handle_set_context(
-        self, client_id: str, message: MCPMessage
-    ) -> MCPMessage:
+    async def _handle_set_context(self, client_id: str, message: MCPMessage) -> MCPMessage:
         """Handle set context request."""
         params = message.params or {}
         context_id = params.get("id", str(uuid.uuid4()))
@@ -508,19 +488,13 @@ class MCPServer:
         data = params.get("data", {})
 
         now = datetime.now()
-        context = MCPContext(
-            id=context_id, name=name, data=data, created_at=now, updated_at=now
-        )
+        context = MCPContext(id=context_id, name=name, data=data, created_at=now, updated_at=now)
 
         self.contexts[context_id] = context
 
-        return MCPMessage(
-            id=message.id, result={"success": True, "context_id": context_id}
-        )
+        return MCPMessage(id=message.id, result={"success": True, "context_id": context_id})
 
-    async def _handle_update_context(
-        self, client_id: str, message: MCPMessage
-    ) -> MCPMessage:
+    async def _handle_update_context(self, client_id: str, message: MCPMessage) -> MCPMessage:
         """Handle update context request."""
         params = message.params or {}
         context_id = params.get("id")
@@ -542,9 +516,7 @@ class MCPServer:
 
         return MCPMessage(id=message.id, result={"success": True})
 
-    async def _handle_clear_context(
-        self, client_id: str, message: MCPMessage
-    ) -> MCPMessage:
+    async def _handle_clear_context(self, client_id: str, message: MCPMessage) -> MCPMessage:
         """Handle clear context request."""
         params = message.params or {}
         context_id = params.get("id")

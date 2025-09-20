@@ -21,19 +21,14 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Optional
 
-
 try:
     import requests
 except ImportError:
     requests = None
 
 try:
-    from enhanced_web_scraping_tools import (
-        EnhancedWebScraper,
-        ExtractionRule,
-        ScrapingConfig,
-        ScrapingMethod,
-    )
+    from enhanced_web_scraping_tools import (EnhancedWebScraper, ExtractionRule,
+                                             ScrapingConfig, ScrapingMethod)
 except ImportError:
     logging.warning("Enhanced web scraping tools not available")
     EnhancedWebScraper = None
@@ -214,18 +209,14 @@ class APIDiscoveryEngine:
 
         return results
 
-    async def _discover_from_source(
-        self, source_name: str, source_config: dict
-    ) -> list[APIInfo]:
+    async def _discover_from_source(self, source_name: str, source_config: dict) -> list[APIInfo]:
         """Discover APIs from a specific source"""
         method = source_config["method"]
 
         if method == "api_endpoint":
             return await self._discover_from_api_endpoint(source_config["url"])
         elif method == "web_scraping":
-            return await self._discover_from_web_scraping(
-                source_name, source_config["url"]
-            )
+            return await self._discover_from_web_scraping(source_name, source_config["url"])
         elif method == "markdown_parsing":
             return await self._discover_from_markdown(source_config["url"])
         else:
@@ -248,9 +239,7 @@ class APIDiscoveryEngine:
             for entry in entries[: self.config.max_apis_per_source]:
                 try:
                     # Parse category
-                    category_str = (
-                        entry.get("Category", "other").lower().replace(" ", "_")
-                    )
+                    category_str = entry.get("Category", "other").lower().replace(" ", "_")
                     category = self._parse_category(category_str)
 
                     # Skip if category filter is set and doesn't match
@@ -295,9 +284,7 @@ class APIDiscoveryEngine:
             self.logger.error(f"Failed to discover APIs from endpoint {url}: {e}")
             return []
 
-    async def _discover_from_web_scraping(
-        self, source_name: str, url: str
-    ) -> list[APIInfo]:
+    async def _discover_from_web_scraping(self, source_name: str, url: str) -> list[APIInfo]:
         """Discover APIs using web scraping"""
         if not self.scraper:
             return []
@@ -418,9 +405,7 @@ class APIDiscoveryEngine:
         else:
             return AuthType.API_KEY  # Default assumption
 
-    def _parse_scraped_apis(
-        self, scraped_data: dict, source_name: str
-    ) -> list[APIInfo]:
+    def _parse_scraped_apis(self, scraped_data: dict, source_name: str) -> list[APIInfo]:
         """Parse scraped data into APIInfo objects"""
         apis = []
 
@@ -448,9 +433,7 @@ class APIDiscoveryEngine:
 
         # Regular expression to match API entries in markdown
         # Format: **API Name** - Description [Link](url)
-        api_pattern = (
-            r"\\*\\*([^*]+)\\*\\*\\s*-\\s*([^\\[]+)\\s*\\[([^\\]]+)\\]\\(([^)]+)\\)"
-        )
+        api_pattern = r"\\*\\*([^*]+)\\*\\*\\s*-\\s*([^\\[]+)\\s*\\[([^\\]]+)\\]\\(([^)]+)\\)"
 
         matches = re.findall(api_pattern, markdown_content)
 
@@ -461,10 +444,7 @@ class APIDiscoveryEngine:
             category = self._infer_category_from_description(description)
 
             # Skip if category filter is set and doesn't match
-            if (
-                self.config.categories_filter
-                and category not in self.config.categories_filter
-            ):
+            if self.config.categories_filter and category not in self.config.categories_filter:
                 continue
 
             api_info = APIInfo(
@@ -538,9 +518,7 @@ class APIDiscoveryEngine:
                 return api
 
             # Test basic connectivity
-            response = requests.get(
-                api.base_url, timeout=self.config.timeout, allow_redirects=True
-            )
+            response = requests.get(api.base_url, timeout=self.config.timeout, allow_redirects=True)
 
             score = 0.0
 
@@ -557,18 +535,12 @@ class APIDiscoveryEngine:
 
             # Check for API - like headers
             headers = response.headers
-            if any(
-                header in headers
-                for header in ["content - type", "x - ratelimit", "x - api"]
-            ):
+            if any(header in headers for header in ["content - type", "x - ratelimit", "x - api"]):
                 score += 0.2
 
             # Check for documentation indicators
             content = response.text.lower()
-            if any(
-                word in content
-                for word in ["api", "endpoint", "documentation", "swagger"]
-            ):
+            if any(word in content for word in ["api", "endpoint", "documentation", "swagger"]):
                 score += 0.3
 
             api.validation_score = score
@@ -695,12 +667,8 @@ if __name__ == "__main__":
 
         methods = []
         for api_endpoint in api.endpoints:  # Renamed from 'endpoint' to 'api_endpoint'
-            method_name = (
-                api_endpoint.path.strip("/").replace("/", "_").replace("-", "_")
-            )
-            method_name = (
-                re.sub(r"[^a-zA-Z0-9_]", "", method_name) or "root"
-            )  # Fixed regex pattern
+            method_name = api_endpoint.path.strip("/").replace("/", "_").replace("-", "_")
+            method_name = re.sub(r"[^a-zA-Z0-9_]", "", method_name) or "root"  # Fixed regex pattern
 
             method_code = f'''
     def {method_name}(self, **params) -> Dict[str, Any]:
@@ -734,9 +702,7 @@ if __name__ == "__main__":
                 "documentation_url": api.documentation_url,
                 "status": api.status.value,
                 "validation_score": api.validation_score,
-                "last_validated": (
-                    api.last_validated.isoformat() if api.last_validated else None
-                ),
+                "last_validated": (api.last_validated.isoformat() if api.last_validated else None),
                 "tags": list(api.tags),
                 "metadata": api.metadata,
             }
@@ -747,9 +713,7 @@ if __name__ == "__main__":
 
         self.logger.info(f"Saved {len(apis)} APIs to {filename}")
 
-    def load_discovered_apis(
-        self, filename: str = "discovered_apis.json"
-    ) -> list[APIInfo]:
+    def load_discovered_apis(self, filename: str = "discovered_apis.json") -> list[APIInfo]:
         """Load discovered APIs from file"""
         try:
             with open(filename, encoding="utf-8") as f:
@@ -786,9 +750,7 @@ if __name__ == "__main__":
 
     def get_apis_by_category(self, category: APICategory) -> list[APIInfo]:
         """Get APIs filtered by category"""
-        return [
-            api for api in self.discovered_apis.values() if api.category == category
-        ]
+        return [api for api in self.discovered_apis.values() if api.category == category]
 
     def get_free_apis(self) -> list[APIInfo]:
         """Get only free APIs"""
@@ -796,11 +758,7 @@ if __name__ == "__main__":
 
     def get_validated_apis(self) -> list[APIInfo]:
         """Get only validated APIs"""
-        return [
-            api
-            for api in self.discovered_apis.values()
-            if api.status == APIStatus.VALIDATED
-        ]
+        return [api for api in self.discovered_apis.values() if api.status == APIStatus.VALIDATED]
 
     def search_apis(self, query: str) -> list[APIInfo]:
         """Search APIs by name or description"""
@@ -833,10 +791,7 @@ if __name__ == "__main__":
         unique_apis = {}
         for api in all_apis:
             key = api.base_url.lower().strip("/")
-            if (
-                key not in unique_apis
-                or api.validation_score > unique_apis[key].validation_score
-            ):
+            if key not in unique_apis or api.validation_score > unique_apis[key].validation_score:
                 unique_apis[key] = api
 
         unique_apis_list = list(unique_apis.values())
@@ -851,9 +806,7 @@ if __name__ == "__main__":
         # Generate integration code for top APIs
         integration_codes = {}
         if self.config.generate_integration_code:
-            top_apis = sorted(
-                validated_apis, key=lambda x: x.validation_score, reverse=True
-            )[:10]
+            top_apis = sorted(validated_apis, key=lambda x: x.validation_score, reverse=True)[:10]
             for api in top_apis:
                 integration_codes[api.name] = self.generate_integration_code(api)
 
@@ -870,8 +823,7 @@ if __name__ == "__main__":
             "integration_codes": integration_codes,
             "execution_time": end_time - start_time,
             "categories": {
-                category.value: len(self.get_apis_by_category(category))
-                for category in APICategory
+                category.value: len(self.get_apis_by_category(category)) for category in APICategory
             },
             "free_apis": len(self.get_free_apis()),
             "validated_count": len(self.get_validated_apis()),
@@ -922,9 +874,7 @@ if __name__ == "__main__":
 
             print("\\n=== Top Validated APIs ===")
             validated_apis = engine.get_validated_apis()
-            top_apis = sorted(
-                validated_apis, key=lambda x: x.validation_score, reverse=True
-            )[:5]
+            top_apis = sorted(validated_apis, key=lambda x: x.validation_score, reverse=True)[:5]
 
             for api in top_apis:
                 print(f"\\n{api.name}")

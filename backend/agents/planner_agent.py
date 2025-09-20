@@ -7,7 +7,7 @@ import asyncio
 import uuid
 from typing import Any, Optional
 
-from .base_agents import BaseAgent, AgentCapability
+from .base_agents import AgentCapability, BaseAgent
 
 
 class PlannerAgent(BaseAgent):

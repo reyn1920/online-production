@@ -35,9 +35,7 @@ class AuthService:
         return pwd_context.hash(password)
 
     @staticmethod
-    def create_access_token(
-        data: Dict[str, Any], expires_delta: Optional[timedelta] = None
-    ) -> str:
+    def create_access_token(data: Dict[str, Any], expires_delta: Optional[timedelta] = None) -> str:
         """Create JWT access token."""
         settings = get_settings()
         to_encode = data.copy()
@@ -45,14 +43,10 @@ class AuthService:
         if expires_delta:
             expire = datetime.utcnow() + expires_delta
         else:
-            expire = datetime.utcnow() + timedelta(
-                minutes=settings.access_token_expire_minutes
-            )
+            expire = datetime.utcnow() + timedelta(minutes=settings.access_token_expire_minutes)
 
         to_encode.update({"exp": expire})
-        encoded_jwt = jwt.encode(
-            to_encode, settings.secret_key, algorithm=settings.algorithm
-        )
+        encoded_jwt = jwt.encode(to_encode, settings.secret_key, algorithm=settings.algorithm)
         return encoded_jwt
 
     @staticmethod
@@ -60,9 +54,7 @@ class AuthService:
         """Verify JWT token and return email if valid."""
         settings = get_settings()
         try:
-            payload = jwt.decode(
-                token, settings.secret_key, algorithms=[settings.algorithm]
-            )
+            payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
             email: Optional[str] = payload.get("sub")
             return email
         except JWTError:
@@ -130,9 +122,7 @@ class AuthService:
             return None
 
     @staticmethod
-    async def authenticate_user(
-        session: AsyncSession, email: str, password: str
-    ) -> Optional[User]:
+    async def authenticate_user(session: AsyncSession, email: str, password: str) -> Optional[User]:
         """Authenticate user with email and password."""
         try:
             user = await AuthService.get_user_by_email(session, email)

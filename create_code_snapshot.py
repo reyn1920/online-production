@@ -53,9 +53,7 @@ def create_code_snapshot():
 
     with open(PROJECT_ROOT / OUTPUT_FILENAME, "w", encoding="utf-8") as output_file:
         output_file.write("# Code Snapshot for TRAE.AI\n")
-        output_file.write(
-            f"Generated on: {__import__('datetime').datetime.now().isoformat()}\n\n"
-        )
+        output_file.write(f"Generated on: {__import__('datetime').datetime.now().isoformat()}\n\n")
 
         all_files = []
         for root, dirs, files in os.walk(PROJECT_ROOT):
@@ -95,9 +93,7 @@ def create_code_snapshot():
                 if lang == "js":
                     lang = "javascript"
 
-                output_file.write(
-                    f"### `File: {str(file_path).replace(os.sep, '/')}`\n\n"
-                )
+                output_file.write(f"### `File: {str(file_path).replace(os.sep, '/')}`\n\n")
                 output_file.write(f"```{lang}\n")
                 output_file.write(content)
                 output_file.write("\n```\n\n---\n\n")

@@ -119,9 +119,7 @@ class TestProjectAPI:
 
     @patch("src.backend.api.projects.ProjectService.get_projects_by_owner")
     @pytest.mark.asyncio
-    async def test_get_projects_with_filters(
-        self, mock_get_projects, mock_session, mock_user
-    ):
+    async def test_get_projects_with_filters(self, mock_get_projects, mock_session, mock_user):
         """Test project retrieval with status and channel filters."""
         # Arrange
         mock_get_projects.return_value = []
@@ -144,9 +142,7 @@ class TestProjectAPI:
 
     @patch("src.backend.api.projects.ProjectService.get_project_by_id")
     @pytest.mark.asyncio
-    async def test_get_project_by_id_not_found(
-        self, mock_get_project, mock_session, mock_user
-    ):
+    async def test_get_project_by_id_not_found(self, mock_get_project, mock_session, mock_user):
         """Test project not found scenario."""
         # Arrange
         mock_get_project.return_value = None
@@ -232,9 +228,7 @@ class TestProjectAPI:
 
     @patch("src.backend.api.projects.ProjectService.get_project_by_id")
     @pytest.mark.asyncio
-    async def test_delete_project_not_found(
-        self, mock_get_project, mock_session, mock_user
-    ):
+    async def test_delete_project_not_found(self, mock_get_project, mock_session, mock_user):
         """Test deleting non-existent project."""
         # Arrange
         mock_get_project.return_value = None

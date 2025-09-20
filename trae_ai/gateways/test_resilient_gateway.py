@@ -5,22 +5,16 @@ Tests failover scenarios, circuit breaker functionality, and error handling.
 """
 
 import unittest
-from unittest.mock import Mock
 from datetime import datetime, timedelta
+from unittest.mock import Mock
 
 # Import the gateway
 try:
-    from .resilient_ai_gateway import (
-        ResilientAIGateway,
-        WebRequestError,
-        CircuitBreakerState,
-    )
+    from .resilient_ai_gateway import (CircuitBreakerState, ResilientAIGateway,
+                                       WebRequestError)
 except ImportError:
-    from resilient_ai_gateway import (
-        ResilientAIGateway,
-        WebRequestError,
-        CircuitBreakerState,
-    )
+    from resilient_ai_gateway import (CircuitBreakerState, ResilientAIGateway,
+                                      WebRequestError)
 
 
 class TestResilientAIGateway(unittest.TestCase):
@@ -28,15 +22,11 @@ class TestResilientAIGateway(unittest.TestCase):
 
     def setUp(self):
         """Set up test fixtures"""
-        self.gateway = ResilientAIGateway(
-            provider_priority=["chatgpt", "gemini", "claude"]
-        )
+        self.gateway = ResilientAIGateway(provider_priority=["chatgpt", "gemini", "claude"])
 
     def test_gateway_initialization(self):
         """Test that gateway initializes correctly"""
-        self.assertEqual(
-            self.gateway.provider_priority, ["chatgpt", "gemini", "claude"]
-        )
+        self.assertEqual(self.gateway.provider_priority, ["chatgpt", "gemini", "claude"])
         self.assertEqual(len(self.gateway.circuit_breakers), 3)
         self.assertEqual(self.gateway.total_requests, 0)
         self.assertEqual(self.gateway.successful_requests, 0)
@@ -130,9 +120,7 @@ class TestResilientAIGateway(unittest.TestCase):
         """Test that circuit breaker opens after threshold failures"""
         # Mock the client to always fail for ChatGPT
         mock_client = Mock()
-        mock_client.chat_completion.side_effect = WebRequestError(
-            "Session not found for ChatGPT"
-        )
+        mock_client.chat_completion.side_effect = WebRequestError("Session not found for ChatGPT")
         self.gateway.client = mock_client
 
         # Make multiple requests to trigger circuit breaker
@@ -171,9 +159,7 @@ class TestResilientAIGateway(unittest.TestCase):
         # Set up an open circuit that should transition to half-open
         chatgpt_breaker = self.gateway.circuit_breakers["chatgpt"]
         chatgpt_breaker.state = "open"
-        chatgpt_breaker.next_attempt_time = datetime.now() - timedelta(
-            seconds=1
-        )  # Past time
+        chatgpt_breaker.next_attempt_time = datetime.now() - timedelta(seconds=1)  # Past time
 
         # Mock successful response
         mock_client = Mock()
@@ -194,9 +180,7 @@ class TestResilientAIGateway(unittest.TestCase):
         mock_client.chat_completion.return_value = "Test response from Claude"
         self.gateway.client = mock_client
 
-        response = self.gateway.chat_completion(
-            "Test prompt", preferred_provider="claude"
-        )
+        response = self.gateway.chat_completion("Test prompt", preferred_provider="claude")
 
         self.assertEqual(response, "Test response from Claude")
         # Verify Claude was called first (not ChatGPT)

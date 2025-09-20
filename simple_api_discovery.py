@@ -7,10 +7,11 @@ Standalone script to discover and integrate free APIs without complex dependenci
 
 import json
 import sqlite3
-import requests
 import time
 from datetime import datetime
 from typing import Any
+
+import requests
 
 
 class SimpleAPIDiscovery:
@@ -39,9 +40,7 @@ class SimpleAPIDiscovery:
                     or "free" in api.get("Description", "").lower()
                 ]
 
-                print(
-                    f"✅ Found {len(free_apis)} free APIs out of {len(all_apis)} total"
-                )
+                print(f"✅ Found {len(free_apis)} free APIs out of {len(all_apis)} total")
                 return free_apis[:50]  # Limit to first 50 for processing
             else:
                 print(f"❌ Failed to fetch APIs: HTTP {response.status_code}")
@@ -51,9 +50,7 @@ class SimpleAPIDiscovery:
             print(f"❌ Error discovering APIs: {e}")
             return []
 
-    def categorize_apis(
-        self, apis: list[dict[str, Any]]
-    ) -> dict[str, list[dict[str, Any]]]:
+    def categorize_apis(self, apis: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
         """Categorize APIs by their category"""
         categorized = {}
 

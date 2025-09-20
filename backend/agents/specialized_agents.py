@@ -4,7 +4,7 @@ import time
 import uuid
 from typing import Any, Optional
 
-from backend.agents.base_agents import BaseAgent, AgentCapability
+from backend.agents.base_agents import AgentCapability, BaseAgent
 
 
 class SystemAgent(BaseAgent):

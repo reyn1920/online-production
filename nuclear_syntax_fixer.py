@@ -4,8 +4,8 @@ Nuclear Syntax Fixer - 100% Success Rate Target
 Most aggressive syntax fixer to achieve 100% success rate.
 """
 
-import re
 import ast
+import re
 import sys
 from pathlib import Path
 

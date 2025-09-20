@@ -16,8 +16,7 @@ import sys
 import threading
 from datetime import datetime
 from pathlib import Path
-from typing import Optional, Any
-
+from typing import Any, Optional
 
 # Global logger instances
 _loggers: dict[str, logging.Logger] = {}

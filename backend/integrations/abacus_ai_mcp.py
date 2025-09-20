@@ -17,24 +17,19 @@ Author: Trae.AI Integration Team
 Version: 1.0.0
 """
 
-from backend.integrations.mcp_protocol import (
-    MCPServer,
-    MCPTool,
-    MCPResource,
-    MCPPrompt,
-    MCPCapability,
-    MCPResourceType,
-    MCPMessage,
-)
 import asyncio
+import logging
 import os
 import sys
 import uuid
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from datetime import datetime
 from enum import Enum
 from typing import Any, Optional
-import logging
+
+from backend.integrations.mcp_protocol import (MCPCapability, MCPMessage, MCPPrompt,
+                                               MCPResource, MCPResourceType, MCPServer,
+                                               MCPTool)
 
 try:
     import aiohttp
@@ -365,9 +360,7 @@ class AbacusAIMCPServer(MCPServer):
                 name="quality_assessment",
                 description="Prompt for assessing response quality across different models",
                 template="Evaluate the quality of this AI response on a scale of 1-10 considering: accuracy, relevance, completeness, clarity, and helpfulness. Response: {response}. Provide detailed feedback and suggestions for improvement.",
-                arguments=[
-                    {"name": "response", "description": "The AI response to evaluate"}
-                ],
+                arguments=[{"name": "response", "description": "The AI response to evaluate"}],
             )
         )
 
@@ -394,9 +387,7 @@ class AbacusAIMCPServer(MCPServer):
         await super().stop()
         self.logger.info("Abacus.AI MCP Server stopped")
 
-    async def _handle_chat_completion(
-        self, client_id: str, message: MCPMessage
-    ) -> MCPMessage:
+    async def _handle_chat_completion(self, client_id: str, message: MCPMessage) -> MCPMessage:
         """Handle chat completion requests."""
         try:
             params = message.params or {}
@@ -524,9 +515,7 @@ class AbacusAIMCPServer(MCPServer):
                 error={"code": -32603, "message": f"Internal error: {str(e)}"},
             )
 
-    async def _handle_select_optimal_model(
-        self, client_id: str, message: MCPMessage
-    ) -> MCPMessage:
+    async def _handle_select_optimal_model(self, client_id: str, message: MCPMessage) -> MCPMessage:
         """Handle optimal model selection requests."""
         try:
             params = message.params or {}
@@ -564,9 +553,7 @@ class AbacusAIMCPServer(MCPServer):
                 error={"code": -32603, "message": f"Internal error: {str(e)}"},
             )
 
-    async def _handle_batch_process(
-        self, client_id: str, message: MCPMessage
-    ) -> MCPMessage:
+    async def _handle_batch_process(self, client_id: str, message: MCPMessage) -> MCPMessage:
         """Handle batch processing requests."""
         try:
             params = message.params or {}
@@ -585,25 +572,17 @@ class AbacusAIMCPServer(MCPServer):
             for req in requests:
                 try:
                     # Simulate batch processing with optimal routing
-                    result = await self._process_single_request(
-                        req, routing_strategy, priority
-                    )
-                    batch_results.append(
-                        {"id": req["id"], "status": "success", "result": result}
-                    )
+                    result = await self._process_single_request(req, routing_strategy, priority)
+                    batch_results.append({"id": req["id"], "status": "success", "result": result})
                 except Exception as e:
-                    batch_results.append(
-                        {"id": req["id"], "status": "error", "error": str(e)}
-                    )
+                    batch_results.append({"id": req["id"], "status": "error", "error": str(e)})
 
             return MCPMessage(
                 id=message.id,
                 result={
                     "batch_results": batch_results,
                     "total_requests": len(requests),
-                    "successful": len(
-                        [r for r in batch_results if r["status"] == "success"]
-                    ),
+                    "successful": len([r for r in batch_results if r["status"] == "success"]),
                     "failed": len([r for r in batch_results if r["status"] == "error"]),
                 },
             )
@@ -615,9 +594,7 @@ class AbacusAIMCPServer(MCPServer):
                 error={"code": -32603, "message": f"Internal error: {str(e)}"},
             )
 
-    async def _handle_get_model_metrics(
-        self, client_id: str, message: MCPMessage
-    ) -> MCPMessage:
+    async def _handle_get_model_metrics(self, client_id: str, message: MCPMessage) -> MCPMessage:
         """Handle model metrics requests."""
         try:
             params = message.params or {}
@@ -627,9 +604,7 @@ class AbacusAIMCPServer(MCPServer):
             if model_name and model_name in self.model_metrics:
                 metrics = asdict(self.model_metrics[model_name])
             else:
-                metrics = {
-                    name: asdict(metric) for name, metric in self.model_metrics.items()
-                }
+                metrics = {name: asdict(metric) for name, metric in self.model_metrics.items()}
 
             return MCPMessage(
                 id=message.id,
@@ -671,9 +646,7 @@ class AbacusAIMCPServer(MCPServer):
         if "cost" in result:
             # Update average cost
             current_total_cost = metrics.avg_cost * (metrics.total_requests - 1)
-            metrics.avg_cost = (
-                current_total_cost + result["cost"]
-            ) / metrics.total_requests
+            metrics.avg_cost = (current_total_cost + result["cost"]) / metrics.total_requests
 
     async def _get_model_recommendations(
         self,
@@ -765,9 +738,7 @@ class AbacusAIMCPServer(MCPServer):
 
         # Filter based on constraints
         if priority == "cost":
-            recommendations.sort(
-                key=lambda x: x["score"] * 0.5
-            )  # Prioritize cost over quality
+            recommendations.sort(key=lambda x: x["score"] * 0.5)  # Prioritize cost over quality
         elif priority == "quality":
             recommendations.sort(key=lambda x: x["score"], reverse=True)
 
@@ -796,9 +767,7 @@ class AbacusAIMCPServer(MCPServer):
         }
 
     # Override parent class methods to handle our custom tools
-    async def _handle_call_tool(
-        self, client_id: str, message: MCPMessage
-    ) -> MCPMessage:
+    async def _handle_call_tool(self, client_id: str, message: MCPMessage) -> MCPMessage:
         """Handle tool calls."""
         params = message.params or {}
         tool_name = params.get("name")

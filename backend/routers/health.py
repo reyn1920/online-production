@@ -1,9 +1,10 @@
 """Health check router for monitoring application status."""
 
-import os
 import logging
-from typing import Any
+import os
 from datetime import datetime
+from typing import Any
+
 import psutil
 
 # Simple fallback classes for missing dependencies

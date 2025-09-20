@@ -9,9 +9,9 @@ import asyncio
 import json
 import logging
 import uuid
-from typing import Optional, Any, Callable
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from enum import Enum
+from typing import Any, Callable, Optional
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -97,9 +97,7 @@ class WebSocketConnection:
             return True
 
         except Exception as e:
-            logger.error(
-                f"Failed to send message to connection {self.connection_id}: {e}"
-            )
+            logger.error(f"Failed to send message to connection {self.connection_id}: {e}")
             self.status = ConnectionStatus.ERROR
             return False
 
@@ -136,9 +134,7 @@ class WebSocketManager:
         self.connections: dict[str, WebSocketConnection] = {}
         self.user_connections: dict[str, set[str]] = {}  # user_id -> connection_ids
         self.subscriptions: dict[str, set[str]] = {}  # topic -> connection_ids
-        self.message_handlers: dict[
-            MessageType, list[Callable[[str, WebSocketMessage], Any]]
-        ] = {}
+        self.message_handlers: dict[MessageType, list[Callable[[str, WebSocketMessage], Any]]] = {}
         self.heartbeat_interval = 30  # seconds
         self.heartbeat_task: Optional[asyncio.Task[None]] = None
         self.running = False
@@ -205,9 +201,7 @@ class WebSocketManager:
 
         logger.info(f"Removed WebSocket connection {connection_id}")
 
-    async def send_to_connection(
-        self, connection_id: str, message: WebSocketMessage
-    ) -> bool:
+    async def send_to_connection(self, connection_id: str, message: WebSocketMessage) -> bool:
         """Send a message to a specific connection"""
         if connection_id not in self.connections:
             logger.warning(f"Connection {connection_id} not found")
@@ -301,9 +295,7 @@ class WebSocketManager:
 
             # Update connection activity
             if connection_id in self.connections:
-                self.connections[connection_id].last_activity = datetime.now(
-                    timezone.utc
-                )
+                self.connections[connection_id].last_activity = datetime.now(timezone.utc)
 
             # Create message object
             message = WebSocketMessage(
@@ -374,13 +366,9 @@ class WebSocketManager:
                 current_time = datetime.now(timezone.utc)
 
                 for connection_id, connection in self.connections.items():
-                    time_since_activity = (
-                        current_time - connection.last_activity
-                    ).total_seconds()
+                    time_since_activity = (current_time - connection.last_activity).total_seconds()
 
-                    if (
-                        time_since_activity > self.heartbeat_interval * 3
-                    ):  # 3 missed heartbeats
+                    if time_since_activity > self.heartbeat_interval * 3:  # 3 missed heartbeats
                         stale_connections.append(connection_id)
                     else:
                         await connection.send_message(heartbeat_message)
@@ -425,9 +413,7 @@ class WebSocketManager:
 
     def get_connections_info(self) -> list[dict[str, Any]]:
         """Get information about all connections"""
-        return [
-            asdict(connection.get_info()) for connection in self.connections.values()
-        ]
+        return [asdict(connection.get_info()) for connection in self.connections.values()]
 
 
 # Global WebSocket manager instance

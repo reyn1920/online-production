@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-import sys
 import json
-import sqlite3
 import os
+import sqlite3
+import sys
 
 DB = os.getenv("DB_PATH", "data/base44.sqlite")
 

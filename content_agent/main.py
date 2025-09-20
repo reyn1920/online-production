@@ -36,9 +36,7 @@ class ContentAgent:
             logger.error(f"Failed to initialize ContentAgent: {e}")
             return False
 
-    async def generate_content(
-        self, prompt: str, content_type: str = "text"
-    ) -> dict[str, Any]:
+    async def generate_content(self, prompt: str, content_type: str = "text") -> dict[str, Any]:
         """Generate content based on prompt"""
         if not self.initialized:
             await self.initialize()
@@ -63,9 +61,7 @@ class ContentAgent:
                 "error": str(e),
             }
 
-    async def process_content(
-        self, content: str, processing_type: str = "basic"
-    ) -> dict[str, Any]:
+    async def process_content(self, content: str, processing_type: str = "basic") -> dict[str, Any]:
         """Process existing content"""
         try:
             # Basic content processing

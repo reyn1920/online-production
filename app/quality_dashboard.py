@@ -6,14 +6,12 @@ Provides comprehensive visualization and reporting of system quality metrics.
 import asyncio
 import json
 import logging
-from datetime import datetime, timedelta
-from dataclasses import dataclass, asdict
-from enum import Enum
-from collections import defaultdict
 import statistics
-from typing import Union
-from typing import Optional
-from typing import Any
+from collections import defaultdict
+from dataclasses import asdict, dataclass
+from datetime import datetime, timedelta
+from enum import Enum
+from typing import Any, Optional, Union
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -240,9 +238,7 @@ class QualityDataCollector:
                 HealthCheck(
                     name="database",
                     status=(
-                        HealthStatus.HEALTHY
-                        if db_response_time < 100
-                        else HealthStatus.WARNING
+                        HealthStatus.HEALTHY if db_response_time < 100 else HealthStatus.WARNING
                     ),
                     message=f"Database responding in {db_response_time:.1f}ms",
                     timestamp=timestamp,
@@ -568,15 +564,11 @@ class QualityDashboard:
 
         return {
             "checks": [asdict(check) for check in latest_checks.values()],
-            "overall_status": self._calculate_overall_health(
-                list(latest_checks.values())
-            ),
+            "overall_status": self._calculate_overall_health(list(latest_checks.values())),
             "total_services": len(latest_checks),
         }
 
-    async def _get_performance_metrics_data(
-        self, widget: DashboardWidget
-    ) -> dict[str, Any]:
+    async def _get_performance_metrics_data(self, widget: DashboardWidget) -> dict[str, Any]:
         """Get performance metrics data for chart widget."""
         time_range = widget.config.get("time_range", "1h")
 
@@ -592,8 +584,7 @@ class QualityDashboard:
         performance_metrics = [
             m
             for m in self.data_collector.metrics
-            if m.timestamp > start_time
-            and m.metric_type == QualityMetricType.PERFORMANCE
+            if m.timestamp > start_time and m.metric_type == QualityMetricType.PERFORMANCE
         ]
 
         # Group by metric name
@@ -620,18 +611,12 @@ class QualityDashboard:
             filtered_alerts = [a for a in filtered_alerts if not a.resolved]
 
         # Sort by timestamp (newest first) and limit
-        sorted_alerts = sorted(
-            filtered_alerts, key=lambda x: x.timestamp, reverse=True
-        )[:max_items]
+        sorted_alerts = sorted(filtered_alerts, key=lambda x: x.timestamp, reverse=True)[:max_items]
 
         return {
             "alerts": [asdict(alert) for alert in sorted_alerts],
-            "total_active": len(
-                [a for a in self.data_collector.alerts if not a.resolved]
-            ),
-            "total_resolved": len(
-                [a for a in self.data_collector.alerts if a.resolved]
-            ),
+            "total_active": len([a for a in self.data_collector.alerts if not a.resolved]),
+            "total_resolved": len([a for a in self.data_collector.alerts if a.resolved]),
         }
 
     async def _get_latest_metrics_data(self, widget: DashboardWidget) -> dict[str, Any]:
@@ -663,14 +648,10 @@ class QualityDashboard:
 
         return {
             "rows": table_data,
-            "columns": widget.config.get(
-                "columns", ["name", "value", "unit", "status"]
-            ),
+            "columns": widget.config.get("columns", ["name", "value", "unit", "status"]),
         }
 
-    async def _get_gauge_data(
-        self, widget: DashboardWidget, metric_name: str
-    ) -> dict[str, Any]:
+    async def _get_gauge_data(self, widget: DashboardWidget, metric_name: str) -> dict[str, Any]:
         """Get gauge data for a specific metric."""
         # Find the latest value for this metric
         latest_metric = None
@@ -705,9 +686,7 @@ class QualityDashboard:
             "timestamp": latest_metric.timestamp.isoformat(),
         }
 
-    async def _get_resource_metrics_data(
-        self, widget: DashboardWidget
-    ) -> dict[str, Any]:
+    async def _get_resource_metrics_data(self, widget: DashboardWidget) -> dict[str, Any]:
         """Get resource metrics data for chart."""
         metrics_to_include = widget.config.get("metrics", ["cpu_usage", "memory_usage"])
 
@@ -769,9 +748,7 @@ class QualityDashboard:
         reliability_score = self._calculate_reliability_score(
             metrics_by_type.get("reliability", [])
         )
-        security_score = self._calculate_security_score(
-            metrics_by_type.get("security", [])
-        )
+        security_score = self._calculate_security_score(metrics_by_type.get("security", []))
 
         overall_score = (performance_score + reliability_score + security_score) / 3
 
@@ -876,9 +853,7 @@ async def main():
 
         # Get dashboard data
         overview_data = await quality_dashboard.get_dashboard_data("overview")
-        print(
-            f"\nOverview Dashboard: {json.dumps(overview_data, indent=2, default=str)}"
-        )
+        print(f"\nOverview Dashboard: {json.dumps(overview_data, indent=2, default=str)}")
 
         # List available dashboards
         dashboards = quality_dashboard.get_available_dashboards()

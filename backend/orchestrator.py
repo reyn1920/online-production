@@ -5,13 +5,11 @@ Provides task orchestration, workflow management, and agent coordination.
 
 import asyncio
 import logging
-from dataclasses import dataclass, field
-from enum import Enum
 import uuid
 from concurrent.futures import ThreadPoolExecutor
-from typing import Optional
-from typing import Any
-from typing import Callable
+from dataclasses import dataclass, field
+from enum import Enum
+from typing import Any, Callable, Optional
 
 
 class TaskStatus(Enum):
@@ -203,9 +201,7 @@ class TaskOrchestrator:
         self.logger.info(f"Added task {task_id}: {name}")
         return task_id
 
-    def create_workflow(
-        self, name: str, metadata: Optional[dict[str, Any]] = None
-    ) -> str:
+    def create_workflow(self, name: str, metadata: Optional[dict[str, Any]] = None) -> str:
         """Create a new workflow."""
         workflow_id = str(uuid.uuid4())
 
@@ -342,18 +338,10 @@ class TaskOrchestrator:
     def get_statistics(self) -> dict[str, Any]:
         """Get orchestrator statistics."""
         total_tasks = len(self.tasks)
-        completed_tasks = len(
-            [t for t in self.tasks.values() if t.status == TaskStatus.COMPLETED]
-        )
-        failed_tasks = len(
-            [t for t in self.tasks.values() if t.status == TaskStatus.FAILED]
-        )
-        running_tasks = len(
-            [t for t in self.tasks.values() if t.status == TaskStatus.RUNNING]
-        )
-        pending_tasks = len(
-            [t for t in self.tasks.values() if t.status == TaskStatus.PENDING]
-        )
+        completed_tasks = len([t for t in self.tasks.values() if t.status == TaskStatus.COMPLETED])
+        failed_tasks = len([t for t in self.tasks.values() if t.status == TaskStatus.FAILED])
+        running_tasks = len([t for t in self.tasks.values() if t.status == TaskStatus.RUNNING])
+        pending_tasks = len([t for t in self.tasks.values() if t.status == TaskStatus.PENDING])
 
         total_workflows = len(self.workflows)
         completed_workflows = len(
@@ -524,10 +512,7 @@ class TaskOrchestrator:
             try:
                 # Check for tasks with satisfied dependencies
                 for task in self.tasks.values():
-                    if (
-                        task.status == TaskStatus.PENDING
-                        and self._are_dependencies_satisfied(task)
-                    ):
+                    if task.status == TaskStatus.PENDING and self._are_dependencies_satisfied(task):
                         await self._queue_task(task)
 
                 await asyncio.sleep(1.0)

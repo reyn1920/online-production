@@ -5,13 +5,13 @@ TRAE.AI Common Utilities
 Provides common utility functions and classes for the TRAE.AI system.
 """
 
-import os
 import logging
+import os
 import time
-from enum import Enum
-import urllib.request
-import urllib.parse
 import urllib.error
+import urllib.parse
+import urllib.request
+from enum import Enum
 from typing import Optional
 
 
@@ -43,9 +43,7 @@ def get_secret(key: str, default: Optional[str] = None) -> Optional[str]:
 class SimpleHTTPResponse:
     """Simple HTTP response wrapper."""
 
-    def __init__(
-        self, status_code: int, text: str, headers: Optional[dict[str, str]] = None
-    ):
+    def __init__(self, status_code: int, text: str, headers: Optional[dict[str, str]] = None):
         self.status_code = status_code
         self.text = text
         self.headers = headers or {}
@@ -95,9 +93,7 @@ def http_with_fallback(url: str, method: str = "GET", **kwargs) -> SimpleHTTPRes
 
         except (urllib.error.HTTPError, urllib.error.URLError) as e:
             if attempt == max_retries:
-                logging.error(
-                    f"HTTP request failed for {url} after {max_retries} retries: {e}"
-                )
+                logging.error(f"HTTP request failed for {url} after {max_retries} retries: {e}")
                 raise
 
             # Exponential backoff
@@ -112,6 +108,4 @@ def http_with_fallback(url: str, method: str = "GET", **kwargs) -> SimpleHTTPRes
             raise
 
     # This should never be reached due to the raise in the except block
-    raise urllib.error.URLError(
-        f"Failed to complete request to {url} after {max_retries} retries"
-    )
+    raise urllib.error.URLError(f"Failed to complete request to {url} after {max_retries} retries")

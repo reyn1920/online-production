@@ -3,13 +3,11 @@ Action Registry System
 Provides centralized action management and execution
 """
 
-import logging
 import asyncio
+import logging
 from datetime import datetime
 from enum import Enum
-from typing import Callable
-from typing import Any
-from typing import Optional
+from typing import Any, Callable, Optional
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -173,9 +171,7 @@ class ActionRegistry:
             {
                 "timestamp": datetime.now().isoformat(),
                 "action": action.to_dict(),
-                "result": (
-                    str(result)[:1000] if result else None
-                ),  # Truncate large results
+                "result": (str(result)[:1000] if result else None),  # Truncate large results
             }
         )
 
@@ -208,9 +204,7 @@ class ActionRegistry:
             "initialized": self.initialized,
             "total_actions": len(self.actions),
             "total_executions": len(self.action_history),
-            "action_types": list(
-                {action.action_type.value for action in self.actions.values()}
-            ),
+            "action_types": list({action.action_type.value for action in self.actions.values()}),
         }
 
 

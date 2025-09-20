@@ -4,8 +4,8 @@ Comprehensive bracket fixing script for dashboard.py
 This script systematically fixes bracket mismatches and syntax errors.
 """
 
-import re
 import ast
+import re
 import sys
 from pathlib import Path
 
@@ -59,9 +59,7 @@ def fix_bracket_mismatches(content):
 
                 # If we see a line with just ) or }) that doesn't balance, fix it
                 stripped = current_line.strip()
-                if stripped in [")", "}", "),", "},"] and (
-                    brace_count < 0 or paren_count < 0
-                ):
+                if stripped in [")", "}", "),", "},"] and (brace_count < 0 or paren_count < 0):
                     # This line is causing imbalance, fix it
                     if brace_count < 0 and paren_count >= 0:
                         # Need to add closing brace before parenthesis

@@ -140,12 +140,8 @@ class ConservativeResearchOrchestrator:
         signal.signal(signal.SIGINT, self._signal_handler)
         signal.signal(signal.SIGTERM, self._signal_handler)
 
-        logging.getLogger(__name__).info(
-            "🎯 Conservative Research System Orchestrator initialized"
-        )
-        logging.getLogger(__name__).info(
-            f"📊 Managing {len(self.components)} system components"
-        )
+        logging.getLogger(__name__).info("🎯 Conservative Research System Orchestrator initialized")
+        logging.getLogger(__name__).info(f"📊 Managing {len(self.components)} system components")
         logging.getLogger(__name__).info("🚀 Ready for 100% uptime operation")
 
     def _load_configuration(self) -> dict[str, Any]:
@@ -304,9 +300,7 @@ class ConservativeResearchOrchestrator:
                 with open(config_file) as f:
                     loaded_config = yaml.safe_load(f)
                     self._deep_merge(default_config, loaded_config)
-                    logging.getLogger(__name__).info(
-                        f"✅ Configuration loaded from {config_file}"
-                    )
+                    logging.getLogger(__name__).info(f"✅ Configuration loaded from {config_file}")
             except Exception as e:
                 logging.getLogger(__name__).warning(
                     f"⚠️  Failed to load config file: {e}, using defaults"
@@ -315,20 +309,14 @@ class ConservativeResearchOrchestrator:
             # Save default configuration
             with open(config_file, "w") as f:
                 yaml.dump(default_config, f, default_flow_style=False, indent=2)
-            logging.getLogger(__name__).info(
-                f"✅ Default configuration saved to {config_file}"
-            )
+            logging.getLogger(__name__).info(f"✅ Default configuration saved to {config_file}")
 
         return default_config
 
     def _deep_merge(self, base_dict: dict, update_dict: dict) -> None:
         """Deep merge two dictionaries"""
         for key, value in update_dict.items():
-            if (
-                key in base_dict
-                and isinstance(base_dict[key], dict)
-                and isinstance(value, dict)
-            ):
+            if key in base_dict and isinstance(base_dict[key], dict) and isinstance(value, dict):
                 self._deep_merge(base_dict[key], value)
             else:
                 base_dict[key] = value
@@ -351,13 +339,9 @@ class ConservativeResearchOrchestrator:
                 )
 
                 self.components[component_name] = component
-                logging.getLogger(__name__).info(
-                    f"✅ Initialized component: {component_name}"
-                )
+                logging.getLogger(__name__).info(f"✅ Initialized component: {component_name}")
 
-        logging.getLogger(__name__).info(
-            f"🎯 Initialized {len(self.components)} components"
-        )
+        logging.getLogger(__name__).info(f"🎯 Initialized {len(self.components)} components")
 
     def _signal_handler(self, signum: int, frame) -> None:
         """Handle system signals for graceful shutdown"""
@@ -397,9 +381,7 @@ class ConservativeResearchOrchestrator:
                 "🎉 Conservative Research System started successfully!"
             )
             logging.getLogger(__name__).info("💰 Revenue optimization: ACTIVE")
-            logging.getLogger(__name__).info(
-                "📝 Q&A generation: BOOSTED by 1,000,000,000%"
-            )
+            logging.getLogger(__name__).info("📝 Q&A generation: BOOSTED by 1,000,000,000%")
             logging.getLogger(__name__).info("🔧 Self - healing: ENABLED")
             logging.getLogger(__name__).info("📊 Monitoring: ACTIVE")
 
@@ -436,9 +418,7 @@ class ConservativeResearchOrchestrator:
                 return False
 
             if disk.percent > 95:
-                logging.getLogger(__name__).error(
-                    "❌ Insufficient disk space available"
-                )
+                logging.getLogger(__name__).error("❌ Insufficient disk space available")
                 return False
 
             # Check required directories
@@ -446,33 +426,23 @@ class ConservativeResearchOrchestrator:
             for directory in required_dirs:
                 if not directory.exists():
                     directory.mkdir(parents=True, exist_ok=True)
-                    logging.getLogger(__name__).info(
-                        f"📁 Created directory: {directory}"
-                    )
+                    logging.getLogger(__name__).info(f"📁 Created directory: {directory}")
 
             # Check database connectivity
             if not await self._check_database_connectivity():
-                logging.getLogger(__name__).error(
-                    "❌ Database connectivity check failed"
-                )
+                logging.getLogger(__name__).error("❌ Database connectivity check failed")
                 return False
 
             # Check external dependencies
             if not await self._check_external_dependencies():
-                logging.getLogger(__name__).error(
-                    "❌ External dependencies check failed"
-                )
+                logging.getLogger(__name__).error("❌ External dependencies check failed")
                 return False
 
-            logging.getLogger(__name__).info(
-                "✅ Pre - startup checks completed successfully"
-            )
+            logging.getLogger(__name__).info("✅ Pre - startup checks completed successfully")
             return True
 
         except Exception as e:
-            logging.getLogger(__name__).error(
-                f"❌ Pre - startup checks failed: {str(e)}"
-            )
+            logging.getLogger(__name__).error(f"❌ Pre - startup checks failed: {str(e)}")
             return False
 
     async def _check_database_connectivity(self) -> bool:
@@ -486,9 +456,7 @@ class ConservativeResearchOrchestrator:
             logging.getLogger(__name__).info("✅ Database connectivity verified")
             return True
         except Exception as e:
-            logging.getLogger(__name__).error(
-                f"❌ Database connectivity check failed: {str(e)}"
-            )
+            logging.getLogger(__name__).error(f"❌ Database connectivity check failed: {str(e)}")
             return False
 
     async def _check_external_dependencies(self) -> bool:
@@ -499,9 +467,7 @@ class ConservativeResearchOrchestrator:
             if response.status_code == 200:
                 logging.getLogger(__name__).info("✅ Internet connectivity verified")
             else:
-                logging.getLogger(__name__).warning(
-                    "⚠️  Internet connectivity issues detected"
-                )
+                logging.getLogger(__name__).warning("⚠️  Internet connectivity issues detected")
 
             # Check required Python packages
             required_packages = [
@@ -535,9 +501,7 @@ class ConservativeResearchOrchestrator:
                 return True
 
         except Exception as e:
-            logging.getLogger(__name__).error(
-                f"❌ External dependencies check failed: {str(e)}"
-            )
+            logging.getLogger(__name__).error(f"❌ External dependencies check failed: {str(e)}")
             return False
 
     def _calculate_startup_order(self) -> list[str]:
@@ -559,9 +523,7 @@ class ConservativeResearchOrchestrator:
         ]
 
         # Filter to only include enabled components
-        enabled_components = [
-            comp for comp in dependency_order if comp in self.components
-        ]
+        enabled_components = [comp for comp in dependency_order if comp in self.components]
 
         logging.getLogger(__name__).info(
             f"📋 Component startup order: {' → '.join(enabled_components)}"
@@ -601,13 +563,9 @@ class ConservativeResearchOrchestrator:
             self.components[component_name].status = SystemStatus.ERROR
             return False
 
-    async def _create_component_placeholder(
-        self, component_name: str, script_path: Path
-    ) -> None:
+    async def _create_component_placeholder(self, component_name: str, script_path: Path) -> None:
         """Create placeholder for missing component"""
-        logging.getLogger(__name__).info(
-            f"📝 Creating placeholder for {component_name}"
-        )
+        logging.getLogger(__name__).info(f"📝 Creating placeholder for {component_name}")
 
         # Ensure directory exists
         script_path.parent.mkdir(parents=True, exist_ok=True)
@@ -719,9 +677,7 @@ if __name__ == '__main__':
                 await self._perform_health_checks()
                 await asyncio.sleep(self.config["system"]["health_check_interval"])
             except Exception as e:
-                logging.getLogger(__name__).error(
-                    f"❌ Health monitoring error: {str(e)}"
-                )
+                logging.getLogger(__name__).error(f"❌ Health monitoring error: {str(e)}")
                 await asyncio.sleep(30)
 
     async def _perform_health_checks(self) -> None:
@@ -772,9 +728,7 @@ if __name__ == '__main__':
             final_health = max(0.0, min(1.0, base_health + health_variance))
 
         except Exception as e:
-            logging.getLogger(__name__).error(
-                f"❌ Component health check failed: {str(e)}"
-            )
+            logging.getLogger(__name__).error(f"❌ Component health check failed: {str(e)}")
         return 0.0
 
     async def _metrics_collection_loop(self) -> None:
@@ -790,13 +744,9 @@ if __name__ == '__main__':
                 if len(self.metrics_history) > 1000:
                     self.metrics_history = self.metrics_history[-1000:]
 
-                await asyncio.sleep(
-                    self.config["system"]["metrics_collection_interval"]
-                )
+                await asyncio.sleep(self.config["system"]["metrics_collection_interval"])
             except Exception as e:
-                logging.getLogger(__name__).error(
-                    f"❌ Metrics collection error: {str(e)}"
-                )
+                logging.getLogger(__name__).error(f"❌ Metrics collection error: {str(e)}")
                 await asyncio.sleep(60)
 
     async def _collect_system_metrics(self) -> SystemMetrics:
@@ -823,18 +773,18 @@ if __name__ == '__main__':
                     1500,  # affiliates
                     500,  # merchandise
                 ]
-            ) * (1 + (system_uptime / 86400))  # Increase over time
+            ) * (
+                1 + (system_uptime / 86400)
+            )  # Increase over time
 
-            qa_generation_rate = (
-                1000000000 if self.config["qa_generation"]["enabled"] else 1000
-            )
+            qa_generation_rate = 1000000000 if self.config["qa_generation"]["enabled"] else 1000
             content_production_rate = healthy_components * 100
             error_rate = sum(c.error_count for c in self.components.values()) / max(
                 total_components, 1
             )
-            performance_score = sum(
-                c.health_score for c in self.components.values()
-            ) / max(total_components, 1)
+            performance_score = sum(c.health_score for c in self.components.values()) / max(
+                total_components, 1
+            )
 
             return SystemMetrics(
                 total_components=total_components,
@@ -850,9 +800,7 @@ if __name__ == '__main__':
             )
 
         except Exception as e:
-            logging.getLogger(__name__).error(
-                f"❌ System metrics collection failed: {str(e)}"
-            )
+            logging.getLogger(__name__).error(f"❌ System metrics collection failed: {str(e)}")
             return SystemMetrics(0, 0, 0, 0, 0, 0, 0, 0, 1.0, 0.0)
 
     async def _self_healing_loop(self) -> None:
@@ -882,10 +830,7 @@ if __name__ == '__main__':
                     await self._restart_component(component_name)
 
                 # Clear error counts for healthy components
-                if (
-                    component.status == SystemStatus.RUNNING
-                    and component.error_count > 0
-                ):
+                if component.status == SystemStatus.RUNNING and component.error_count > 0:
                     component.error_count = max(0, component.error_count - 1)
 
             except Exception as e:
@@ -913,9 +858,7 @@ if __name__ == '__main__':
                     f"✅ Component restarted successfully: {component_name}"
                 )
             else:
-                logging.getLogger(__name__).error(
-                    f"❌ Component restart failed: {component_name}"
-                )
+                logging.getLogger(__name__).error(f"❌ Component restart failed: {component_name}")
 
         except Exception as e:
             logging.getLogger(__name__).error(f"❌ Component restart failed: {str(e)}")
@@ -931,9 +874,7 @@ if __name__ == '__main__':
                     await self._optimize_revenue_streams()
                 await asyncio.sleep(1800)  # Every 30 minutes
             except Exception as e:
-                logging.getLogger(__name__).error(
-                    f"❌ Revenue optimization error: {str(e)}"
-                )
+                logging.getLogger(__name__).error(f"❌ Revenue optimization error: {str(e)}")
                 await asyncio.sleep(3600)
 
     async def _optimize_revenue_streams(self) -> None:
@@ -953,22 +894,16 @@ if __name__ == '__main__':
                 )
 
                 # Simulate revenue optimization
-                for stream_name, stream_config in self.config["revenue"][
-                    "streams"
-                ].items():
+                for stream_name, stream_config in self.config["revenue"]["streams"].items():
                     if stream_config["enabled"]:
                         logging.getLogger(__name__).info(
                             f"📈 Optimizing {stream_name} revenue stream"
                         )
 
-            logging.getLogger(__name__).info(
-                f"💰 Current revenue: ${current_revenue:,.2f}"
-            )
+            logging.getLogger(__name__).info(f"💰 Current revenue: ${current_revenue:,.2f}")
 
         except Exception as e:
-            logging.getLogger(__name__).error(
-                f"❌ Revenue optimization failed: {str(e)}"
-            )
+            logging.getLogger(__name__).error(f"❌ Revenue optimization failed: {str(e)}")
 
     async def _qa_generation_loop(self) -> None:
         """Q&A generation boost loop"""
@@ -1016,9 +951,7 @@ if __name__ == '__main__':
                 await self._monitor_system_performance()
                 await asyncio.sleep(300)  # Every 5 minutes
             except Exception as e:
-                logging.getLogger(__name__).error(
-                    f"❌ Performance monitoring error: {str(e)}"
-                )
+                logging.getLogger(__name__).error(f"❌ Performance monitoring error: {str(e)}")
                 await asyncio.sleep(600)
 
     async def _monitor_system_performance(self) -> None:
@@ -1047,9 +980,7 @@ if __name__ == '__main__':
                 await self._send_alert(f"High disk usage: {disk.percent}%")
 
         except Exception as e:
-            logging.getLogger(__name__).error(
-                f"❌ Performance monitoring failed: {str(e)}"
-            )
+            logging.getLogger(__name__).error(f"❌ Performance monitoring failed: {str(e)}")
 
     async def _task_processing_loop(self) -> None:
         """Process queued tasks"""
@@ -1086,9 +1017,7 @@ if __name__ == '__main__':
             elif task_type == "health_check":
                 await self._perform_health_checks()
             else:
-                logging.getLogger(__name__).warning(
-                    f"⚠️  Unknown task type: {task_type}"
-                )
+                logging.getLogger(__name__).warning(f"⚠️  Unknown task type: {task_type}")
 
         except Exception as e:
             logging.getLogger(__name__).error(f"❌ Task processing failed: {str(e)}")
@@ -1121,13 +1050,10 @@ if __name__ == '__main__':
                 webhook_url = alert_config.get("webhook_url")
                 if (
                     webhook_url
-                    and webhook_url
-                    != "https://hooks.slack.com/services/YOUR/WEBHOOK/URL"
+                    and webhook_url != "https://hooks.slack.com/services/YOUR/WEBHOOK/URL"
                 ):
                     # Implement webhook logic
-                    logging.getLogger(__name__).info(
-                        f"🔗 Webhook alert sent to: {webhook_url}"
-                    )
+                    logging.getLogger(__name__).info(f"🔗 Webhook alert sent to: {webhook_url}")
 
         except Exception as e:
             logging.getLogger(__name__).error(f"❌ Alert sending failed: {str(e)}")
@@ -1152,9 +1078,7 @@ if __name__ == '__main__':
             await self._generate_shutdown_report()
 
             self.system_status = SystemStatus.STOPPED
-            logging.getLogger(__name__).info(
-                "✅ Conservative Research System stopped gracefully"
-            )
+            logging.getLogger(__name__).info("✅ Conservative Research System stopped gracefully")
 
         except Exception as e:
             logging.getLogger(__name__).error(f"❌ System shutdown error: {str(e)}")
@@ -1186,9 +1110,7 @@ if __name__ == '__main__':
                     "total_uptime": f"{uptime:.2f}s",
                     "components_managed": len(self.components),
                     "final_metrics": (
-                        self.metrics_history[-1].__dict__
-                        if self.metrics_history
-                        else {}
+                        self.metrics_history[-1].__dict__ if self.metrics_history else {}
                     ),
                 },
                 "component_status": {
@@ -1203,8 +1125,7 @@ if __name__ == '__main__':
             }
 
             report_file = (
-                self.logs_dir
-                / f"shutdown_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+                self.logs_dir / f"shutdown_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
             )
             with open(report_file, "w") as f:
                 json.dump(report, f, indent=2)
@@ -1212,9 +1133,7 @@ if __name__ == '__main__':
             logging.getLogger(__name__).info(f"📊 Shutdown report saved: {report_file}")
 
         except Exception as e:
-            logging.getLogger(__name__).error(
-                f"❌ Shutdown report generation failed: {str(e)}"
-            )
+            logging.getLogger(__name__).error(f"❌ Shutdown report generation failed: {str(e)}")
 
     def get_system_status(self) -> dict[str, Any]:
         """Get current system status"""
@@ -1241,12 +1160,8 @@ if __name__ == '__main__':
                     "total_components": len(self.components),
                     "auto_restart_enabled": self.config["system"]["auto_restart"],
                     "self_healing_enabled": self.config["system"]["self_healing"],
-                    "revenue_optimization": self.config["revenue"][
-                        "optimization_enabled"
-                    ],
-                    "qa_generation_boost": self.config["qa_generation"][
-                        "boost_multiplier"
-                    ],
+                    "revenue_optimization": self.config["revenue"]["optimization_enabled"],
+                    "qa_generation_boost": self.config["qa_generation"]["boost_multiplier"],
                 },
             }
         except Exception as e:
@@ -1262,9 +1177,7 @@ async def main():
 
     import argparse
 
-    parser = argparse.ArgumentParser(
-        description="Conservative Research System Orchestrator"
-    )
+    parser = argparse.ArgumentParser(description="Conservative Research System Orchestrator")
     parser.add_argument("--start", action="store_true", help="Start the system")
     parser.add_argument("--stop", action="store_true", help="Stop the system")
     parser.add_argument("--status", action="store_true", help="Show system status")

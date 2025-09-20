@@ -4,9 +4,8 @@ sys.path.append(
     "."
 )  # repo root if needed  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
 
-from backend.agents.system_agent import (
-    SystemAgent,
-)  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
+from backend.agents.system_agent import \
+    SystemAgent  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
 
 
 def test_system_agent_has_health_summary():

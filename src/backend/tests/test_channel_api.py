@@ -138,9 +138,7 @@ class TestChannelAPI:
 
     @patch("src.backend.api.channels.ChannelService.get_channel_by_id")
     @pytest.mark.asyncio
-    async def test_get_channel_by_id_not_found(
-        self, mock_get_channel, mock_session, mock_user
-    ):
+    async def test_get_channel_by_id_not_found(self, mock_get_channel, mock_session, mock_user):
         """Test channel not found scenario."""
         # Arrange
         mock_get_channel.return_value = None
@@ -274,9 +272,7 @@ class TestChannelAPI:
 
     @patch("src.backend.api.channels.ChannelService.get_channel_by_id")
     @pytest.mark.asyncio
-    async def test_delete_channel_not_found(
-        self, mock_get_channel, mock_session, mock_user
-    ):
+    async def test_delete_channel_not_found(self, mock_get_channel, mock_session, mock_user):
         """Test deleting non-existent channel."""
         # Arrange
         mock_get_channel.return_value = None

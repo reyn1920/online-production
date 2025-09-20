@@ -1,6 +1,7 @@
+import random
+
 from fastapi import APIRouter
 from pydantic import BaseModel, Field
-import random
 
 router = APIRouter()
 
@@ -57,9 +58,7 @@ async def enqueue(task: BrowseTask):
             headless=task.headless,
             args=["--disable-blink-features=AutomationControlled"],
         )
-        context = await browser.new_context(
-            locale="en-US", timezone_id="America/Denver"
-        )
+        context = await browser.new_context(locale="en-US", timezone_id="America/Denver")
         page = await context.new_page()
         await page.goto(task.url, wait_until="domcontentloaded", timeout=45000)
         await _humanize_page(page, task)

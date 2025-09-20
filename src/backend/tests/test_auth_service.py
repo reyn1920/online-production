@@ -81,9 +81,7 @@ class TestAuthService:
         )
 
         assert result == sample_user
-        AuthService.get_user_by_email.assert_called_once_with(
-            mock_session, "test@example.com"
-        )
+        AuthService.get_user_by_email.assert_called_once_with(mock_session, "test@example.com")
 
     @pytest.mark.asyncio
     async def test_authenticate_user_not_found(self, mock_session):

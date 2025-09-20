@@ -36,9 +36,7 @@ class Config:
     # Services
     CONTENT_AGENT_URL = os.getenv("CONTENT_AGENT_URL", "http://localhost:8001")
     MARKETING_AGENT_URL = os.getenv("MARKETING_AGENT_URL", "http://localhost:8002")
-    MONETIZATION_BUNDLE_URL = os.getenv(
-        "MONETIZATION_BUNDLE_URL", "http://localhost:8003"
-    )
+    MONETIZATION_BUNDLE_URL = os.getenv("MONETIZATION_BUNDLE_URL", "http://localhost:8003")
     REVENUE_TRACKER_URL = os.getenv("REVENUE_TRACKER_URL", "http://localhost:8004")
 
 

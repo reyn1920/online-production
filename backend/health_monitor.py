@@ -6,12 +6,13 @@ Provides comprehensive health monitoring and system status tracking.
 import asyncio
 import logging
 import time
-from datetime import datetime, timedelta
-from typing import Optional, Any
 from dataclasses import dataclass, field
+from datetime import datetime, timedelta
 from enum import Enum
-import psutil
+from typing import Any, Optional
+
 import aiohttp
+import psutil
 
 
 class HealthStatus(Enum):
@@ -171,9 +172,7 @@ class HealthMonitor:
         try:
             # Check external APIs or services
             async with aiohttp.ClientSession() as session:
-                async with session.get(
-                    "https://httpbin.org/status/200", timeout=5
-                ) as response:
+                async with session.get("https://httpbin.org/status/200", timeout=5) as response:
                     if response.status == 200:
                         status = HealthStatus.HEALTHY
                         message = "External services accessible"
@@ -295,9 +294,7 @@ class HealthMonitor:
                 for name, check in self.checks.items()
             },
             "metrics": {
-                "current": (
-                    self.metrics_history[-1].__dict__ if self.metrics_history else None
-                ),
+                "current": (self.metrics_history[-1].__dict__ if self.metrics_history else None),
                 "history_count": len(self.metrics_history),
             },
         }

@@ -7,12 +7,12 @@ Resolves ChatGPT session management failures caused by corrupted placeholder cod
 import asyncio
 import json
 import logging
+import threading
 import uuid
+from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Optional, Any
-from dataclasses import dataclass, asdict
-import threading
+from typing import Any, Dict, List, Optional
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -74,9 +74,7 @@ class WebAIClient:
                 logger.info(f"Loaded configuration from {self.config_path}")
                 return config
             else:
-                logger.warning(
-                    f"Config file not found: {self.config_path}, using defaults"
-                )
+                logger.warning(f"Config file not found: {self.config_path}, using defaults")
                 return self._get_default_config()
         except Exception as e:
             logger.error(f"Error loading config: {e}, using defaults")
@@ -134,9 +132,7 @@ class WebAIClient:
 
         with self._session_lock:
             # Check if we can reuse an existing session
-            if self.config.get("session_management", {}).get(
-                "enable_session_reuse", True
-            ):
+            if self.config.get("session_management", {}).get("enable_session_reuse", True):
                 existing_session = self._find_reusable_session(platform)
                 if existing_session:
                     existing_session.last_used = datetime.now()
@@ -155,11 +151,7 @@ class WebAIClient:
                 created_at=now,
                 last_used=now,
                 status="active",
-                metadata={
-                    "platform_config": self.config.get("platforms", {}).get(
-                        platform, {}
-                    )
-                },
+                metadata={"platform_config": self.config.get("platforms", {}).get(platform, {})},
             )
 
             self.sessions[session_id] = session
@@ -201,9 +193,7 @@ class WebAIClient:
         platform_counts = {}
 
         for session in active_sessions:
-            platform_counts[session.platform] = (
-                platform_counts.get(session.platform, 0) + 1
-            )
+            platform_counts[session.platform] = platform_counts.get(session.platform, 0) + 1
 
         return {
             "total_sessions": len(self.sessions),
@@ -221,9 +211,7 @@ class WebAIClient:
         # Update session last used time
         session.last_used = datetime.now()
 
-        logger.info(
-            f"Sending web request to {session.platform} via session {session_id}"
-        )
+        logger.info(f"Sending web request to {session.platform} via session {session_id}")
 
         # Simulate web request processing
         await asyncio.sleep(0.1)  # Simulate network delay

@@ -1,12 +1,12 @@
 """Upload API endpoints for file upload and management."""
 
-from typing import Optional
-from datetime import datetime
-import logging
 import hashlib
+import logging
 import mimetypes
-from pathlib import Path
 import uuid
+from datetime import datetime
+from pathlib import Path
+from typing import Optional
 
 # Simple fallback classes for missing dependencies
 
@@ -126,9 +126,7 @@ class UploadResponse(BaseModel):
 
 
 class FileListResponse(BaseModel):
-    def __init__(
-        self, files: Optional[list[FileInfo]] = None, total: int = 0, **kwargs
-    ):
+    def __init__(self, files: Optional[list[FileInfo]] = None, total: int = 0, **kwargs):
         self.files = files or []
         self.total = total
         super().__init__(**kwargs)
@@ -174,9 +172,7 @@ class UploadService:
     def _get_safe_filename(filename: str) -> str:
         """Generate a safe filename."""
         # Remove potentially dangerous characters
-        safe_chars = (
-            "-_.() abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-        )
+        safe_chars = "-_.() abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
         safe_filename = "".join(c for c in filename if c in safe_chars)
         return safe_filename[:255]  # Limit filename length
 
@@ -236,9 +232,7 @@ class UploadService:
                 file_hash=file_hash,
             )
 
-            logger.info(
-                f"File uploaded successfully: {file.filename} -> {stored_filename}"
-            )
+            logger.info(f"File uploaded successfully: {file.filename} -> {stored_filename}")
 
             return UploadResponse(
                 success=True, message="File uploaded successfully", file_info=file_info
@@ -248,9 +242,7 @@ class UploadService:
             raise
         except Exception as e:
             logger.error(f"Error uploading file: {e}")
-            raise HTTPException(
-                status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to upload file"
-            )
+            raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to upload file")
 
     @staticmethod
     def get_file_info(file_id: str) -> FileInfo:
@@ -261,15 +253,12 @@ class UploadService:
                 if file_path.is_file():
                     stat = file_path.stat()
                     content_type = (
-                        mimetypes.guess_type(str(file_path))[0]
-                        or "application/octet-stream"
+                        mimetypes.guess_type(str(file_path))[0] or "application/octet-stream"
                     )
 
                     # Extract original filename
                     stored_filename = file_path.name
-                    original_filename = stored_filename[
-                        len(file_id) + 1 :
-                    ]  # Remove file_id prefix
+                    original_filename = stored_filename[len(file_id) + 1 :]  # Remove file_id prefix
 
                     return FileInfo(
                         file_id=file_id,
@@ -287,9 +276,7 @@ class UploadService:
             raise
         except Exception as e:
             logger.error(f"Error getting file info: {e}")
-            raise HTTPException(
-                status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to get file info"
-            )
+            raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to get file info")
 
     @staticmethod
     def list_files(limit: int = 100, offset: int = 0) -> FileListResponse:
@@ -313,8 +300,7 @@ class UploadService:
 
                         stat = file_path.stat()
                         content_type = (
-                            mimetypes.guess_type(str(file_path))[0]
-                            or "application/octet-stream"
+                            mimetypes.guess_type(str(file_path))[0] or "application/octet-stream"
                         )
 
                         file_info = FileInfo(
@@ -334,9 +320,7 @@ class UploadService:
 
         except Exception as e:
             logger.error(f"Error listing files: {e}")
-            raise HTTPException(
-                status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to list files"
-            )
+            raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to list files")
 
     @staticmethod
     def delete_file(file_id: str) -> DeleteResponse:
@@ -360,9 +344,7 @@ class UploadService:
             raise
         except Exception as e:
             logger.error(f"Error deleting file: {e}")
-            raise HTTPException(
-                status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to delete file"
-            )
+            raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to delete file")
 
     @staticmethod
     def get_file_path(file_id: str) -> Path:
@@ -418,9 +400,7 @@ def download_file(file_id: str):
         }
     except Exception as e:
         logger.error(f"Error downloading file: {e}")
-        raise HTTPException(
-            status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to download file"
-        )
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to download file")
 
 
 @router.get("/health")

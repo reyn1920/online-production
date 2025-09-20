@@ -1,7 +1,6 @@
 import uvicorn  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
-from fastapi import (
-    FastAPI,
-)  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
+from fastapi import \
+    FastAPI  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement  # Fixed incomplete statement
 
 app = FastAPI()
 

@@ -4,11 +4,12 @@ This agent looks at how all files and classes fit together and identifies archit
 problems that lead to bugs and make the code hard to maintain.
 """
 
-from pathlib import Path
-from typing import Any, Optional
 import ast
 import json
-from collections import defaultdict, Counter
+from collections import Counter, defaultdict
+from pathlib import Path
+from typing import Any, Optional
+
 from trae_ai.oracle.agents import query_llm
 
 
@@ -36,9 +37,7 @@ class ArchitectureReviewAgent:
         Returns:
             Dictionary containing architectural analysis results
         """
-        print(
-            f"🏗️ [ArchitectureReviewer] Analyzing project architecture: {project_path.name}"
-        )
+        print(f"🏗️ [ArchitectureReviewer] Analyzing project architecture: {project_path.name}")
 
         if not project_path.exists() or not project_path.is_dir():
             error_msg = f"❌ ERROR: Project directory not found: {project_path}"
@@ -77,17 +76,13 @@ class ArchitectureReviewAgent:
             "architectural_issues": architectural_issues,
             "llm_review": llm_review,
             "recommendations": self._generate_recommendations(architectural_issues),
-            "health_score": self._calculate_architectural_health_score(
-                architectural_issues
-            ),
+            "health_score": self._calculate_architectural_health_score(architectural_issues),
         }
 
         self._print_architectural_report(results)
         return results
 
-    def _collect_python_files(
-        self, project_path: Path, exclude_patterns: list[str]
-    ) -> list[Path]:
+    def _collect_python_files(self, project_path: Path, exclude_patterns: list[str]) -> list[Path]:
         """Collect all Python files, excluding specified patterns."""
         python_files = []
 
@@ -140,9 +135,7 @@ class ArchitectureReviewAgent:
                     file_metrics["imports"].extend(import_info)
 
             # Calculate file complexity
-            file_metrics["complexity_score"] = self._calculate_file_complexity(
-                file_metrics
-            )
+            file_metrics["complexity_score"] = self._calculate_file_complexity(file_metrics)
 
             self.file_metrics[relative_path] = file_metrics
 
@@ -161,8 +154,7 @@ class ArchitectureReviewAgent:
                     "line_count": (item.end_lineno or item.lineno) - item.lineno,
                     "is_private": item.name.startswith("_"),
                     "is_property": any(
-                        isinstance(d, ast.Name) and d.id == "property"
-                        for d in item.decorator_list
+                        isinstance(d, ast.Name) and d.id == "property" for d in item.decorator_list
                     ),
                     "parameters": len(item.args.args),
                 }
@@ -179,9 +171,7 @@ class ArchitectureReviewAgent:
             "properties": properties,
             "method_count": len(methods),
             "property_count": len(properties),
-            "inheritance": [
-                base.id for base in node.bases if isinstance(base, ast.Name)
-            ],
+            "inheritance": [base.id for base in node.bases if isinstance(base, ast.Name)],
             "is_abstract": any(
                 isinstance(d, ast.Name) and d.id in ["abstractmethod", "ABC"]
                 for d in ast.walk(node)
@@ -357,9 +347,7 @@ class ArchitectureReviewAgent:
             "total_lines_of_code": total_lines,
             "total_classes": total_classes,
             "total_functions": total_functions,
-            "average_file_size": (
-                total_lines / len(self.file_metrics) if self.file_metrics else 0
-            ),
+            "average_file_size": (total_lines / len(self.file_metrics) if self.file_metrics else 0),
             "files_analyzed": len(self.file_metrics),
         }
 
@@ -370,9 +358,7 @@ class ArchitectureReviewAgent:
     ) -> str:
         """Generate LLM-based architectural review."""
         # Create a summary of the project structure
-        structure_summary = self._create_project_structure_summary(
-            python_files, project_path
-        )
+        structure_summary = self._create_project_structure_summary(python_files, project_path)
 
         # Get the largest files for detailed analysis
         largest_files = sorted(
@@ -422,11 +408,7 @@ Provide specific, actionable recommendations in markdown format.
 
         for file_path in python_files:
             relative_path = file_path.relative_to(project_root)
-            directory = (
-                str(relative_path.parent)
-                if relative_path.parent != Path(".")
-                else "root"
-            )
+            directory = str(relative_path.parent) if relative_path.parent != Path(".") else "root"
             structure[directory].append(relative_path.name)
 
         summary_lines = []
@@ -477,9 +459,7 @@ Provide specific, actionable recommendations in markdown format.
 
         return recommendations
 
-    def _calculate_architectural_health_score(
-        self, issues: list[dict[str, Any]]
-    ) -> int:
+    def _calculate_architectural_health_score(self, issues: list[dict[str, Any]]) -> int:
         """Calculate an overall architectural health score (0-100)."""
         base_score = 100
 

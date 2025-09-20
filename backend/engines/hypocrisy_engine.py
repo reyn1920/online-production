@@ -1,9 +1,9 @@
 """Hypocrisy detection and analysis engine."""
 
-from typing import Any, Optional
-from datetime import datetime
 import logging
 import re
+from datetime import datetime
+from typing import Any, Optional
 
 # Logger setup
 logger = logging.getLogger(__name__)
@@ -38,9 +38,7 @@ class HypocrisyAnalyzer:
             "historically",
         ]
 
-    def analyze_text(
-        self, text: str, context: Optional[dict[str, Any]] = None
-    ) -> dict[str, Any]:
+    def analyze_text(self, text: str, context: Optional[dict[str, Any]] = None) -> dict[str, Any]:
         """Analyze text for hypocrisy patterns."""
         try:
             if not text or not isinstance(text, str):
@@ -104,9 +102,7 @@ class HypocrisyAnalyzer:
             # Check for contradiction patterns
             for i, sentence1 in enumerate(sentences):
                 for j, sentence2 in enumerate(sentences[i + 1 :], i + 1):
-                    contradiction = self._check_sentence_contradiction(
-                        sentence1, sentence2
-                    )
+                    contradiction = self._check_sentence_contradiction(sentence1, sentence2)
                     if contradiction:
                         contradictions.append(
                             {
@@ -165,9 +161,7 @@ class HypocrisyAnalyzer:
         has_negation_2 = any(word in sentence2 for word in negation_words)
         has_affirmation_1 = any(word in sentence1 for word in affirmation_words)
 
-        return (has_negation_1 and has_affirmation_2) or (
-            has_negation_2 and has_affirmation_1
-        )
+        return (has_negation_1 and has_affirmation_2) or (has_negation_2 and has_affirmation_1)
 
     def _contains_opposite_sentiments(self, sentence1: str, sentence2: str) -> bool:
         """Check for opposite sentiment words."""
@@ -196,20 +190,14 @@ class HypocrisyAnalyzer:
         has_negative_1 = any(word in sentence1 for word in negative_words)
         has_positive_2 = any(word in sentence2 for word in positive_words)
 
-        return (has_positive_1 and has_negative_2) or (
-            has_negative_1 and has_positive_2
-        )
+        return (has_positive_1 and has_negative_2) or (has_negative_1 and has_positive_2)
 
-    def _assess_contradiction_severity(
-        self, contradictions: list[dict[str, Any]]
-    ) -> str:
+    def _assess_contradiction_severity(self, contradictions: list[dict[str, Any]]) -> str:
         """Assess the severity of contradictions found."""
         if not contradictions:
             return "none"
 
-        high_confidence_count = sum(
-            1 for c in contradictions if c.get("confidence", 0) > 0.7
-        )
+        high_confidence_count = sum(1 for c in contradictions if c.get("confidence", 0) > 0.7)
 
         if high_confidence_count >= 3:
             return "severe"
@@ -239,16 +227,12 @@ class HypocrisyAnalyzer:
                         {
                             "indicator": indicator,
                             "position": match.start(),
-                            "context": text[
-                                max(0, match.start() - 20) : match.end() + 20
-                            ],
+                            "context": text[max(0, match.start() - 20) : match.end() + 20],
                         }
                     )
 
             # Analyze for inconsistencies
-            inconsistencies = self._find_temporal_inconsistencies(
-                temporal_markers, text
-            )
+            inconsistencies = self._find_temporal_inconsistencies(temporal_markers, text)
 
             return {
                 "found": len(inconsistencies) > 0,
@@ -256,11 +240,7 @@ class HypocrisyAnalyzer:
                 "temporal_markers": len(temporal_markers),
                 "inconsistencies": inconsistencies[:3],  # Limit to top 3
                 "severity": (
-                    "high"
-                    if len(inconsistencies) > 2
-                    else "low"
-                    if inconsistencies
-                    else "none"
+                    "high" if len(inconsistencies) > 2 else "low" if inconsistencies else "none"
                 ),
             }
 
@@ -286,9 +266,7 @@ class HypocrisyAnalyzer:
         future_indicators = ["tomorrow", "next week", "going forward"]
 
         has_past = any(marker["indicator"] in past_indicators for marker in markers)
-        has_present = any(
-            marker["indicator"] in present_indicators for marker in markers
-        )
+        has_present = any(marker["indicator"] in present_indicators for marker in markers)
         has_future = any(marker["indicator"] in future_indicators for marker in markers)
 
         if has_past and has_present and has_future:
@@ -316,9 +294,9 @@ class HypocrisyAnalyzer:
             # Calculate sentiment variance
             if len(sentiment_scores) > 1:
                 mean_sentiment = sum(sentiment_scores) / len(sentiment_scores)
-                variance = sum(
-                    (score - mean_sentiment) ** 2 for score in sentiment_scores
-                ) / len(sentiment_scores)
+                variance = sum((score - mean_sentiment) ** 2 for score in sentiment_scores) / len(
+                    sentiment_scores
+                )
 
                 return {
                     "found": variance > 0.5,  # Threshold for significant shifts
@@ -326,11 +304,7 @@ class HypocrisyAnalyzer:
                     "mean_sentiment": round(mean_sentiment, 3),
                     "sentence_count": len(sentiment_scores),
                     "severity": (
-                        "high"
-                        if variance > 1.0
-                        else "moderate"
-                        if variance > 0.5
-                        else "low"
+                        "high" if variance > 1.0 else "moderate" if variance > 0.5 else "low"
                     ),
                 }
             else:
@@ -397,9 +371,7 @@ class HypocrisyAnalyzer:
                     "mild": 15,
                     "minimal": 5,
                 }
-                score += contradiction_weight.get(
-                    contradictions.get("severity", "minimal"), 0
-                )
+                score += contradiction_weight.get(contradictions.get("severity", "minimal"), 0)
 
             # Temporal inconsistency score (0-30 points)
             if temporal.get("found"):
@@ -425,16 +397,24 @@ class HypocrisyAnalyzer:
         try:
             if score < 20:
                 level = "Low"
-                description = "The text shows minimal signs of hypocrisy or contradictory statements."
+                description = (
+                    "The text shows minimal signs of hypocrisy or contradictory statements."
+                )
             elif score < 50:
                 level = "Moderate"
-                description = "The text contains some contradictory elements that may indicate inconsistency."
+                description = (
+                    "The text contains some contradictory elements that may indicate inconsistency."
+                )
             elif score < 80:
                 level = "High"
-                description = "The text shows significant contradictions and inconsistent statements."
+                description = (
+                    "The text shows significant contradictions and inconsistent statements."
+                )
             else:
                 level = "Very High"
-                description = "The text contains severe contradictions and highly inconsistent messaging."
+                description = (
+                    "The text contains severe contradictions and highly inconsistent messaging."
+                )
 
             details = []
             if contradictions.get("found"):
@@ -487,9 +467,7 @@ class HypocrisyEngine:
         self.analyzer = HypocrisyAnalyzer()
         self.cache = {}  # Simple in-memory cache
 
-    def analyze(
-        self, text: str, context: Optional[dict[str, Any]] = None
-    ) -> dict[str, Any]:
+    def analyze(self, text: str, context: Optional[dict[str, Any]] = None) -> dict[str, Any]:
         """Analyze text for hypocrisy patterns."""
         try:
             # Create cache key
@@ -554,9 +532,7 @@ engine = HypocrisyEngine()
 # Convenience functions
 
 
-def analyze_hypocrisy(
-    text: str, context: Optional[dict[str, Any]] = None
-) -> dict[str, Any]:
+def analyze_hypocrisy(text: str, context: Optional[dict[str, Any]] = None) -> dict[str, Any]:
     """Convenience function to analyze text for hypocrisy."""
     return engine.analyze(text, context)
 

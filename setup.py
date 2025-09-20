@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 # Load the README for the long description
 with open("README.md", encoding="utf-8") as fh:

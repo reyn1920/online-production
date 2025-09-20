@@ -7,10 +7,10 @@ import asyncio
 import json
 import logging
 import uuid
-from datetime import datetime, timedelta
-from typing import Dict, Optional, Any, List
 from dataclasses import dataclass
+from datetime import datetime, timedelta
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -49,9 +49,7 @@ class WebAIClient:
         self.config = self._load_config()
         self.sessions: Dict[str, SessionInfo] = {}
         self.session_timeout = timedelta(
-            minutes=self.config.get("session_management", {}).get(
-                "session_timeout_minutes", 30
-            )
+            minutes=self.config.get("session_management", {}).get("session_timeout_minutes", 30)
         )
         self.max_concurrent_sessions = self.config.get("session_management", {}).get(
             "max_concurrent_sessions", 3
@@ -68,9 +66,7 @@ class WebAIClient:
         file_handler = logging.FileHandler(log_file)
         file_handler.setLevel(getattr(logging, log_config.get("level", "INFO")))
         formatter = logging.Formatter(
-            log_config.get(
-                "format", "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-            )
+            log_config.get("format", "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
         )
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
@@ -195,9 +191,7 @@ class WebAIClient:
         if session_id in self.sessions:
             session = self.sessions[session_id]
             session.status = "closed"
-            logger.info(
-                "Closed session %s for platform %s", session_id, session.platform
-            )
+            logger.info("Closed session %s for platform %s", session_id, session.platform)
             del self.sessions[session_id]
             return True
         return False
@@ -227,9 +221,7 @@ class WebAIClient:
             logger.error("Web request failed: %s", error_msg)
             raise ValueError(error_msg)
 
-        logger.info(
-            "Sending web request to %s using session %s", session.platform, session_id
-        )
+        logger.info("Sending web request to %s using session %s", session.platform, session_id)
 
         try:
             # Simulate web request processing
@@ -266,9 +258,7 @@ class WebAIClient:
         if session_id:
             session = self.get_session(session_id)
             if not session:
-                logger.warning(
-                    "Specified session %s not found, creating new session", session_id
-                )
+                logger.warning("Specified session %s not found, creating new session", session_id)
                 session_id = self.create_session(platform)
         else:
             logger.info("Creating new session for %s", platform)
@@ -284,9 +274,7 @@ class WebAIClient:
         """Get list of all active sessions"""
         self._cleanup_expired_sessions()
         return [
-            session.to_dict()
-            for session in self.sessions.values()
-            if session.status == "active"
+            session.to_dict() for session in self.sessions.values() if session.status == "active"
         ]
 
     def get_session_stats(self) -> Dict[str, Any]:
@@ -296,9 +284,7 @@ class WebAIClient:
 
         platform_counts = {}
         for session in active_sessions:
-            platform_counts[session.platform] = (
-                platform_counts.get(session.platform, 0) + 1
-            )
+            platform_counts[session.platform] = platform_counts.get(session.platform, 0) + 1
 
         return {
             "total_active_sessions": len(active_sessions),

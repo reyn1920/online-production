@@ -3,11 +3,11 @@
 Database Manager - Handles all database operations and connections
 """
 
-import sqlite3
-from pathlib import Path
 import json
 import logging
+import sqlite3
 from datetime import datetime
+from pathlib import Path
 
 # Use sqlite3 for synchronous operations if aiosqlite is not available
 try:
@@ -108,9 +108,7 @@ class DatabaseManager:
         """
         )
 
-    async def execute_query(
-        self, query: str, params: tuple[Any, ...] = ()
-    ) -> list[dict[str, Any]]:
+    async def execute_query(self, query: str, params: tuple[Any, ...] = ()) -> list[dict[str, Any]]:
         """Execute a SELECT query and return results"""
         try:
             if async_db_available and aiosqlite:
@@ -206,16 +204,12 @@ class DatabaseManager:
 
     async def get_user_by_id(self, user_id: int) -> Optional[dict[str, Any]]:
         """Get user by ID"""
-        results = await self.execute_query(
-            "SELECT * FROM users WHERE id = ?", (user_id,)
-        )
+        results = await self.execute_query("SELECT * FROM users WHERE id = ?", (user_id,))
         return results[0] if results else None
 
     async def get_user_by_username(self, username: str) -> Optional[dict[str, Any]]:
         """Get user by username"""
-        results = await self.execute_query(
-            "SELECT * FROM users WHERE username = ?", (username,)
-        )
+        results = await self.execute_query("SELECT * FROM users WHERE username = ?", (username,))
         return results[0] if results else None
 
     async def create_user(self, username: str, email: str, password_hash: str) -> int:
@@ -224,9 +218,7 @@ class DatabaseManager:
             "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)",
             (username, email, password_hash),
         )
-        results = await self.execute_query(
-            "SELECT id FROM users WHERE username = ?", (username,)
-        )
+        results = await self.execute_query("SELECT id FROM users WHERE username = ?", (username,))
         return results[0]["id"] if results else 0
 
     async def create_session(
@@ -256,9 +248,7 @@ class DatabaseManager:
 
     async def delete_session(self, session_id: str) -> bool:
         """Delete a session"""
-        rowcount = await self.execute_update(
-            "DELETE FROM sessions WHERE id = ?", (session_id,)
-        )
+        rowcount = await self.execute_update("DELETE FROM sessions WHERE id = ?", (session_id,))
         return rowcount > 0
 
     async def create_task(
@@ -295,9 +285,7 @@ class DatabaseManager:
 
     async def get_setting(self, key: str) -> Optional[str]:
         """Get a setting value"""
-        results = await self.execute_query(
-            "SELECT value FROM settings WHERE key = ?", (key,)
-        )
+        results = await self.execute_query("SELECT value FROM settings WHERE key = ?", (key,))
         return results[0]["value"] if results else None
 
     async def set_setting(self, key: str, value: str) -> bool:
@@ -313,9 +301,7 @@ class DatabaseManager:
 
     async def cleanup_expired_sessions(self):
         """Remove expired sessions"""
-        await self.execute_update(
-            "DELETE FROM sessions WHERE expires_at <= CURRENT_TIMESTAMP"
-        )
+        await self.execute_update("DELETE FROM sessions WHERE expires_at <= CURRENT_TIMESTAMP")
 
     async def get_status(self) -> dict[str, Any]:
         """Get database status"""
@@ -324,15 +310,9 @@ class DatabaseManager:
             await self.execute_query("SELECT 1")
 
             # Get table counts
-            users_count = await self.execute_query(
-                "SELECT COUNT(*) as count FROM users"
-            )
-            sessions_count = await self.execute_query(
-                "SELECT COUNT(*) as count FROM sessions"
-            )
-            tasks_count = await self.execute_query(
-                "SELECT COUNT(*) as count FROM tasks"
-            )
+            users_count = await self.execute_query("SELECT COUNT(*) as count FROM users")
+            sessions_count = await self.execute_query("SELECT COUNT(*) as count FROM sessions")
+            tasks_count = await self.execute_query("SELECT COUNT(*) as count FROM tasks")
 
             return {
                 "status": "healthy",

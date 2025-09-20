@@ -1,8 +1,8 @@
 # trae_ai/collectors/python_collector.py (Updated)
-from functools import wraps
-import traceback
-import sys
 import os
+import sys
+import traceback
+from functools import wraps
 
 # Add parent directories to path for imports
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))

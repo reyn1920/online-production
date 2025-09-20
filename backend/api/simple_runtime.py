@@ -1,8 +1,9 @@
 """Simplified Runtime API module."""
 
-from fastapi import APIRouter
 import time
+
 import psutil
+from fastapi import APIRouter
 
 router = APIRouter(prefix="/api/runtime", tags=["runtime"])
 

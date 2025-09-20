@@ -7,12 +7,12 @@ feed parsing, caching, and content extraction across the application.
 import asyncio
 import hashlib
 import logging
-import time
-from datetime import datetime, timedelta
-from typing import Any, Optional
 import threading
-from dataclasses import dataclass, asdict
+import time
+from dataclasses import asdict, dataclass
+from datetime import datetime, timedelta
 from enum import Enum
+from typing import Any, Optional
 
 # Optional imports with fallbacks
 try:
@@ -426,9 +426,7 @@ class RSSManager:
                 return True
             return False
 
-    def get_feed_items(
-        self, url: str, force_refresh: bool = False
-    ) -> list[dict[str, Any]]:
+    def get_feed_items(self, url: str, force_refresh: bool = False) -> list[dict[str, Any]]:
         """Get items from RSS feed"""
         try:
             cache_key = self._get_cache_key(url)
@@ -494,9 +492,7 @@ class RSSManager:
 
         return results
 
-    def search_items(
-        self, query: str, feeds: Optional[list[str]] = None
-    ) -> list[dict[str, Any]]:
+    def search_items(self, query: str, feeds: Optional[list[str]] = None) -> list[dict[str, Any]]:
         """Search for items across feeds"""
         results = []
         query_lower = query.lower()
@@ -531,9 +527,7 @@ class RSSManager:
                 published = item.get("published")
                 if published and isinstance(published, str):
                     try:
-                        published = datetime.fromisoformat(
-                            published.replace("Z", "+00:00")
-                        )
+                        published = datetime.fromisoformat(published.replace("Z", "+00:00"))
                     except BaseException:
                         continue
 
@@ -618,9 +612,7 @@ def get_rss_items(url: str, force_refresh: bool = False) -> list[dict[str, Any]]
     return rss_manager.get_feed_items(url, force_refresh)
 
 
-def search_rss_items(
-    query: str, feeds: Optional[list[str]] = None
-) -> list[dict[str, Any]]:
+def search_rss_items(query: str, feeds: Optional[list[str]] = None) -> list[dict[str, Any]]:
     """Search RSS items"""
     return rss_manager.search_items(query, feeds)
 

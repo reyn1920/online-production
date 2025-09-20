@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-import sys
 import ast
 import json
 import re
+import sys
 
 try:
     import yaml  # type: ignore
@@ -88,14 +88,10 @@ def scan_py(path, ban, fix):
                     write_text(path, fixed)
                     try:
                         ast.parse(fixed, filename=path)
-                        issues.append(
-                            f"{path}:{e.lineno}: fixed artifacts; re-parse ok"
-                        )
+                        issues.append(f"{path}:{e.lineno}: fixed artifacts; re-parse ok")
                         return issues
                     except SyntaxError as e2:
-                        issues.append(
-                            f"{path}:{e2.lineno}: syntax still broken after fix"
-                        )
+                        issues.append(f"{path}:{e2.lineno}: syntax still broken after fix")
                 else:
                     issues.append(f"{path}:{e.lineno}: syntax error")
             else:

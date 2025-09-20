@@ -10,7 +10,7 @@ import logging
 from datetime import datetime
 from typing import Any, Optional
 
-from fastapi import APIRouter, HTTPException, BackgroundTasks, WebSocket
+from fastapi import APIRouter, BackgroundTasks, HTTPException, WebSocket
 from pydantic import BaseModel, Field
 
 logger = logging.getLogger(__name__)
@@ -22,9 +22,7 @@ router = APIRouter(prefix="/api/solo", tags=["SOLO Agent"])
 # Pydantic models for request/response
 class GoalExecutionRequest(BaseModel):
     goal: str = Field(..., description="High-level goal description")
-    context: Optional[dict[str, Any]] = Field(
-        None, description="Additional context for execution"
-    )
+    context: Optional[dict[str, Any]] = Field(None, description="Additional context for execution")
     agent_config: Optional[dict[str, Any]] = Field(
         None, description="Agent configuration overrides"
     )
@@ -33,9 +31,7 @@ class GoalExecutionRequest(BaseModel):
 class ToolExecutionRequest(BaseModel):
     tool_name: str = Field(..., description="Name of the tool to execute")
     args: list[str] = Field(default_factory=list, description="Tool arguments")
-    kwargs: dict[str, Any] = Field(
-        default_factory=dict, description="Tool keyword arguments"
-    )
+    kwargs: dict[str, Any] = Field(default_factory=dict, description="Tool keyword arguments")
 
 
 class PlanRequest(BaseModel):
@@ -71,7 +67,7 @@ def _import_solo_components():
         scripts_path = Path(__file__).parent.parent.parent / "scripts"
         sys.path.insert(0, str(scripts_path))
 
-        from solo import SOLOAgent, run_tool, plan_goal
+        from solo import SOLOAgent, plan_goal, run_tool
 
         return SOLOAgent, run_tool, plan_goal, True
     except ImportError as e:
@@ -144,9 +140,7 @@ async def get_agent_status():
 
 
 @router.post("/execute", response_model=ExecutionResponse)
-async def execute_goal(
-    request: GoalExecutionRequest, background_tasks: BackgroundTasks
-):
+async def execute_goal(request: GoalExecutionRequest, background_tasks: BackgroundTasks):
     """Execute a goal using the SOLO agent."""
     try:
         agent = get_solo_agent()
@@ -203,9 +197,7 @@ async def execute_tool(request: ToolExecutionRequest):
     """Execute a single tool."""
     try:
         if not solo_available or run_tool is None:
-            raise HTTPException(
-                status_code=503, detail="SOLO agent tools are not available"
-            )
+            raise HTTPException(status_code=503, detail="SOLO agent tools are not available")
 
         logger.info(f"Executing tool: {request.tool_name} with args: {request.args}")
 
@@ -234,9 +226,7 @@ async def create_execution_plan(request: PlanRequest):
     """Create an execution plan for a goal."""
     try:
         if not solo_available or plan_goal is None:
-            raise HTTPException(
-                status_code=503, detail="SOLO agent planning is not available"
-            )
+            raise HTTPException(status_code=503, detail="SOLO agent planning is not available")
 
         logger.info(f"Creating plan for goal: {request.goal}")
 
@@ -295,9 +285,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
     try:
         if not solo_available:
-            await websocket.send_json(
-                {"type": "error", "message": "SOLO agent not available"}
-            )
+            await websocket.send_json({"type": "error", "message": "SOLO agent not available"})
             return
 
         agent = get_solo_agent()

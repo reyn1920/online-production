@@ -4,16 +4,17 @@ Simple unit tests for the services layer.
 Tests basic functionality of services with minimal mocking.
 """
 
-import pytest
-import tempfile
 import os
+import tempfile
 from unittest.mock import Mock
 
-# Import services
-from src.services.registry import ServiceRegistry, get_service_registry
+import pytest
+
+from src.core.config import Config
 from src.services.auth import AuthenticationService, UserRole
 from src.services.data import DataService
-from src.core.config import Config
+# Import services
+from src.services.registry import ServiceRegistry, get_service_registry
 
 
 class TestServiceRegistry:
@@ -94,9 +95,7 @@ class TestAuthenticationService:
         password = "testpass123"
 
         # Register user
-        user = await auth_service.register_user(
-            username, email, password, [UserRole.USER.value]
-        )
+        user = await auth_service.register_user(username, email, password, [UserRole.USER.value])
 
         # Verify user was created
         assert user is not None
@@ -113,9 +112,7 @@ class TestAuthenticationService:
         password = "testpass123"
 
         # Register user first
-        user = await auth_service.register_user(
-            username, email, password, [UserRole.USER.value]
-        )
+        user = await auth_service.register_user(username, email, password, [UserRole.USER.value])
 
         # Authenticate user
         token = await auth_service.authenticate(username, password)
@@ -133,9 +130,7 @@ class TestAuthenticationService:
         password = "testpass123"
 
         # Register and authenticate user
-        user = await auth_service.register_user(
-            username, email, password, [UserRole.USER.value]
-        )
+        user = await auth_service.register_user(username, email, password, [UserRole.USER.value])
         token = await auth_service.authenticate(username, password)
 
         # Validate token

@@ -96,9 +96,7 @@ async def login(
     """Authenticate user and return access token."""
     try:
         # Authenticate user
-        user = await AuthService.authenticate_user(
-            session, user_data.email, user_data.password
-        )
+        user = await AuthService.authenticate_user(session, user_data.email, user_data.password)
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,

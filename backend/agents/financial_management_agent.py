@@ -6,7 +6,8 @@ This agent handles financial management and resource allocation.
 """
 
 from typing import Any
-from backend.agents.base_agents import BaseAgent, AgentCapability
+
+from backend.agents.base_agents import AgentCapability, BaseAgent
 
 
 class FinancialManagementAgent(BaseAgent):

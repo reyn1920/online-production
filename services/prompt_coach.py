@@ -137,13 +137,9 @@ class PromptCoach:
             return 0.0
 
         avg_sentence_length = len(words) / len(sentences)
-        max_length_val = self.optimization_rules["structure_rules"][
-            "max_sentence_length"
-        ]
+        max_length_val = self.optimization_rules["structure_rules"]["max_sentence_length"]
         ideal_length = (
-            float(max_length_val)
-            if isinstance(max_length_val, (int, float, str))
-            else 20.0
+            float(max_length_val) if isinstance(max_length_val, (int, float, str)) else 20.0
         )
 
         # Score based on how close to ideal sentence length
@@ -164,9 +160,7 @@ class PromptCoach:
 
         # Add urgency if missing
         if analysis["urgency_score"] < 50:
-            suggestions.append(
-                "Add urgency words like 'now', 'today', or 'limited time'"
-            )
+            suggestions.append("Add urgency words like 'now', 'today', or 'limited time'")
             optimized_text = self._add_urgency(optimized_text)
 
         # Improve action orientation
@@ -178,9 +172,7 @@ class PromptCoach:
 
         # Enhance emotional appeal
         if analysis["emotional_score"] < 50:
-            suggestions.append(
-                "Add power words like 'proven', 'secret', or 'breakthrough'"
-            )
+            suggestions.append("Add power words like 'proven', 'secret', or 'breakthrough'")
             optimized_text = self._add_power_words(optimized_text)
 
         # Improve readability
@@ -193,9 +185,7 @@ class PromptCoach:
             "optimized_text": optimized_text,
             "analysis": analysis,
             "suggestions": suggestions,
-            "improvement_score": self._calculate_improvement_score(
-                original_text, optimized_text
-            ),
+            "improvement_score": self._calculate_improvement_score(original_text, optimized_text),
         }
 
     def _add_urgency(self, text: str) -> str:
@@ -252,9 +242,7 @@ class PromptCoach:
         original_analysis = self.analyze_script(original)
         optimized_analysis = self.analyze_script(optimized)
 
-        improvement = (
-            optimized_analysis["ctr_potential"] - original_analysis["ctr_potential"]
-        )
+        improvement = optimized_analysis["ctr_potential"] - original_analysis["ctr_potential"]
         return max(0, improvement)
 
     def speak_text(self, text: str) -> bool:
@@ -314,17 +302,11 @@ class PromptCoach:
 
 def main():
     """Main function to run the Prompt Coach service"""
-    parser = argparse.ArgumentParser(
-        description="Prompt Coach - Script optimization for CTR"
-    )
+    parser = argparse.ArgumentParser(description="Prompt Coach - Script optimization for CTR")
     parser.add_argument("--text", required=True, help="Text to optimize for CTR")
-    parser.add_argument(
-        "--speak", action="store_true", help="Enable text-to-speech output"
-    )
+    parser.add_argument("--speak", action="store_true", help="Enable text-to-speech output")
     parser.add_argument("--save", help="Save optimization report to file")
-    parser.add_argument(
-        "--verbose", "-v", action="store_true", help="Enable verbose logging"
-    )
+    parser.add_argument("--verbose", "-v", action="store_true", help="Enable verbose logging")
 
     args = parser.parse_args()
 

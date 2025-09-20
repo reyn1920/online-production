@@ -1,5 +1,1 @@
-from . import (
-    health,
-    paste,
-    websocket,
-)
+from . import health, paste, websocket

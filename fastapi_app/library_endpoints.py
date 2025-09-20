@@ -1,13 +1,13 @@
 """Library API endpoints for managing library resources and collections."""
 
-from typing import Optional, Any
-from datetime import datetime
-import uuid
 import logging
+import uuid
+from datetime import datetime
+from typing import Any, Optional
 
 # Simple fallback classes for missing dependencies
 try:
-    from fastapi import APIRouter, HTTPException, Query, Path
+    from fastapi import APIRouter, HTTPException, Path, Query
     from pydantic import BaseModel, Field
 except ImportError:
     # Fallback classes if FastAPI is not available
@@ -75,9 +75,7 @@ class LibraryItemBase(BaseModel):
     author: Optional[str] = Field(None, description="Author of the item")
     category: str = Field(..., description="Category of the item")
     description: Optional[str] = Field(None, description="Description of the item")
-    tags: list[str] = Field(
-        default_factory=list, description="Tags associated with the item"
-    )
+    tags: list[str] = Field(default_factory=list, description="Tags associated with the item")
 
 
 class LibraryItemCreate(LibraryItemBase):
@@ -101,12 +99,8 @@ class LibraryItemResponse(LibraryItemBase):
 
 class LibraryCollectionBase(BaseModel):
     name: str = Field(..., description="Name of the collection")
-    description: Optional[str] = Field(
-        None, description="Description of the collection"
-    )
-    is_public: bool = Field(
-        default=True, description="Whether the collection is public"
-    )
+    description: Optional[str] = Field(None, description="Description of the collection")
+    is_public: bool = Field(default=True, description="Whether the collection is public")
 
 
 class LibraryCollectionCreate(LibraryCollectionBase):

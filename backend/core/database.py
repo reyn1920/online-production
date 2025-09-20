@@ -200,9 +200,7 @@ class ProductionDatabaseManager:
                 conn.executescript(schema_sql)
             else:
                 # For PostgreSQL, execute statements individually
-                statements = [
-                    stmt.strip() for stmt in schema_sql.split(";") if stmt.strip()
-                ]
+                statements = [stmt.strip() for stmt in schema_sql.split(";") if stmt.strip()]
                 for stmt in statements:
                     if stmt and not stmt.startswith("--"):
                         conn.execute(stmt)
@@ -319,9 +317,7 @@ class ProductionDatabaseManager:
         finally:
             session.close()
 
-    def execute_query(
-        self, query: str, params: Optional[tuple] = None
-    ) -> list[dict[str, Any]]:
+    def execute_query(self, query: str, params: Optional[tuple] = None) -> list[dict[str, Any]]:
         """Execute a SELECT query and return results"""
         with self.get_connection() as conn:
             if self.db_type == "postgresql":
@@ -347,9 +343,7 @@ class ProductionDatabaseManager:
         """Execute a SQL script"""
         with self.get_connection() as conn:
             if self.db_type == "postgresql":
-                statements = [
-                    stmt.strip() for stmt in script.split(";") if stmt.strip()
-                ]
+                statements = [stmt.strip() for stmt in script.split(";") if stmt.strip()]
                 cursor = conn.cursor()
                 for stmt in statements:
                     if stmt and not stmt.startswith("--"):

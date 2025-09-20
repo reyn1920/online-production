@@ -1,11 +1,12 @@
 """Production health monitoring router."""
 
-from typing import Any
-from datetime import datetime
 import logging
 import os
 import sys
 import time
+from datetime import datetime
+from typing import Any
+
 from fastapi import APIRouter, HTTPException, status
 
 # Logger setup
@@ -38,9 +39,7 @@ class ProductionHealthService:
             }
 
             # Determine overall health status
-            all_checks_healthy = all(
-                check.get("status") == "healthy" for check in checks.values()
-            )
+            all_checks_healthy = all(check.get("status") == "healthy" for check in checks.values())
 
             if not all_checks_healthy:
                 health_data["status"] = "degraded"

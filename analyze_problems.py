@@ -3,18 +3,17 @@
 Problem Analysis System - Comprehensive issue detection and analysis
 """
 
-import os
-import sys
-import json
-import re
 import ast
+import json
 import logging
+import os
+import re
+import sys
+from dataclasses import asdict, dataclass
 from datetime import datetime
-from dataclasses import dataclass, asdict
 from enum import Enum
 from pathlib import Path
-from typing import Optional
-from typing import Any
+from typing import Any, Optional
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -376,9 +375,7 @@ class ProblemAnalyzer:
 
         return problems
 
-    def _get_code_snippet(
-        self, content: str, line_number: Optional[int], context: int = 2
-    ) -> str:
+    def _get_code_snippet(self, content: str, line_number: Optional[int], context: int = 2) -> str:
         """Get code snippet around the specified line"""
         if line_number is None:
             return ""
@@ -452,9 +449,7 @@ class ProblemAnalyzer:
             file_path = problem.file_path
             file_problem_counts[file_path] = file_problem_counts.get(file_path, 0) + 1
 
-        top_files = sorted(
-            file_problem_counts.items(), key=lambda x: x[1], reverse=True
-        )[:10]
+        top_files = sorted(file_problem_counts.items(), key=lambda x: x[1], reverse=True)[:10]
 
         return {
             "summary": {
@@ -464,9 +459,7 @@ class ProblemAnalyzer:
             },
             "severity_breakdown": severity_counts,
             "category_breakdown": category_counts,
-            "top_problem_files": [
-                {"file": file, "problems": count} for file, count in top_files
-            ],
+            "top_problem_files": [{"file": file, "problems": count} for file, count in top_files],
             "problems": [asdict(problem) for problem in self.problems.values()],
         }
 

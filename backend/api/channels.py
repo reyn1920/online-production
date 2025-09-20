@@ -1,9 +1,9 @@
 """Channels API module for managing communication channels."""
 
-from typing import Optional, Any
-from datetime import datetime
-import uuid
 import logging
+import uuid
+from datetime import datetime
+from typing import Any, Optional
 
 # Proper FastAPI imports
 from fastapi import APIRouter, HTTPException, status
@@ -15,9 +15,7 @@ def get_db_connection() -> Optional[Any]:
     return None
 
 
-def execute_query(
-    query: str, params: Optional[dict[str, Any]] = None
-) -> list[dict[str, Any]]:
+def execute_query(query: str, params: Optional[dict[str, Any]] = None) -> list[dict[str, Any]]:
     """Mock query execution."""
     return []
 
@@ -160,9 +158,7 @@ async def get_channel(channel_id: str) -> ChannelResponse:
     """Get a specific channel."""
     channel = ChannelService.get_channel(channel_id)
     if not channel:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Channel not found"
-        )
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Channel not found")
     return channel
 
 

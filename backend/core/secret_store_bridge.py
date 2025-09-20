@@ -2,9 +2,9 @@
 SecretStoreBridge - Secure secret management for TRAE.AI applications
 """
 
-import os
 import logging
-from typing import Optional, List
+import os
+from typing import List, Optional
 
 logger = logging.getLogger(__name__)
 

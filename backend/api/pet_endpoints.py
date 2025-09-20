@@ -1,9 +1,9 @@
 """Pet API endpoints for managing pet-related functionality."""
 
-from typing import Optional
-from datetime import datetime
-import uuid
 import logging
+import uuid
+from datetime import datetime
+from typing import Optional
 
 # Simple fallback classes for missing dependencies
 
@@ -193,9 +193,7 @@ class PetService:
             )
         except Exception as e:
             logger.error(f"Error creating pet: {e}")
-            raise HTTPException(
-                status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to create pet"
-            )
+            raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to create pet")
 
     @staticmethod
     def get_pets(owner_id: Optional[str] = None) -> list[PetResponse]:
@@ -226,9 +224,7 @@ class PetService:
             return pets
         except Exception as e:
             logger.error(f"Error fetching pets: {e}")
-            raise HTTPException(
-                status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to fetch pets"
-            )
+            raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to fetch pets")
 
     @staticmethod
     def get_pet(pet_id: str) -> Optional[PetResponse]:
@@ -253,9 +249,7 @@ class PetService:
             )
         except Exception as e:
             logger.error(f"Error fetching pet {pet_id}: {e}")
-            raise HTTPException(
-                status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to fetch pet"
-            )
+            raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to fetch pet")
 
     @staticmethod
     def update_pet(pet_id: str, pet_data: PetUpdate) -> Optional[PetResponse]:
@@ -299,9 +293,7 @@ class PetService:
 
         except Exception as e:
             logger.error(f"Error updating pet {pet_id}: {e}")
-            raise HTTPException(
-                status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to update pet"
-            )
+            raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to update pet")
 
     @staticmethod
     def delete_pet(pet_id: str) -> bool:
@@ -318,9 +310,7 @@ class PetService:
 
         except Exception as e:
             logger.error(f"Error deleting pet {pet_id}: {e}")
-            raise HTTPException(
-                status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to delete pet"
-            )
+            raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to delete pet")
 
 
 # API Router

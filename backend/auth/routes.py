@@ -7,22 +7,16 @@ and user management operations.
 Author: TRAE.AI System
 """
 
-from fastapi import APIRouter, HTTPException, Depends, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 import logging
 
-from .models import (
-    UserCreate,
-    UserResponse,
-    LoginRequest,
-    LoginResponse,
-    RefreshTokenRequest,
-    UserUpdate,
-    ChangePasswordRequest,
-    UserRole,
-)
-from .service import user_service, auth_service
-from .security import jwt_manager, TokenData
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+
+from .models import (ChangePasswordRequest, LoginRequest, LoginResponse,
+                     RefreshTokenRequest, UserCreate, UserResponse, UserRole,
+                     UserUpdate)
+from .security import TokenData, jwt_manager
+from .service import auth_service, user_service
 
 logger = logging.getLogger(__name__)
 security = HTTPBearer()
@@ -62,18 +56,14 @@ async def get_admin_user(
     """Require admin role for access"""
     user = user_service.get_user_by_id(current_user.user_id)
     if not user or UserRole.ADMIN not in user.roles:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, detail="Admin access required"
-        )
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin access required")
     return current_user
 
 
 # Authentication routes
 
 
-@auth_router.post(
-    "/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED
-)
+@auth_router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 async def register_user(user_data: UserCreate):
     """Register a new user"""
     try:
@@ -155,9 +145,7 @@ async def get_current_user_info(current_user: TokenData = Depends(get_current_us
     """Get current user information"""
     user = user_service.get_user_by_id(current_user.user_id)
     if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
-        )
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     return user_service.to_user_response(user)
 
 
@@ -172,9 +160,7 @@ async def update_current_user(
     try:
         user = user_service.update_user(current_user.user_id, user_update)
         if not user:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
         return user_service.to_user_response(user)
     except Exception as e:
         logger.error(f"User update error: {e}")
@@ -234,9 +220,7 @@ async def get_user_by_id(user_id: str, admin_user: TokenData = Depends(get_admin
     """Get user by ID (admin only)"""
     user = user_service.get_user_by_id(user_id)
     if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
-        )
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     return user_service.to_user_response(user)
 
 
@@ -250,9 +234,7 @@ async def update_user_by_id(
     try:
         user = user_service.update_user(user_id, user_update)
         if not user:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
         return user_service.to_user_response(user)
     except Exception as e:
         logger.error(f"Admin user update error: {e}")

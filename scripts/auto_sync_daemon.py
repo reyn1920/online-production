@@ -4,11 +4,11 @@ Base44 Auto-Sync Daemon
 Runs Base44 synchronization automatically at regular intervals
 """
 
-import time
+import logging
+import os
 import signal
 import sys
-import os
-import logging
+import time
 from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent))
@@ -40,9 +40,7 @@ class AutoSyncDaemon:
 
     def run(self):
         """Main daemon loop"""
-        logger.info(
-            f"Starting Base44 Auto-Sync Daemon (interval: {self.sync_interval}s)"
-        )
+        logger.info(f"Starting Base44 Auto-Sync Daemon (interval: {self.sync_interval}s)")
 
         while self.running:
             try:

@@ -5,12 +5,12 @@ Central orchestration system for AI-powered business operations
 """
 
 import asyncio
-import logging
 import json
-from typing import Optional, Any
-from dataclasses import dataclass, asdict
-from enum import Enum
+import logging
 import uuid
+from dataclasses import asdict, dataclass
+from enum import Enum
+from typing import Any, Optional
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -261,15 +261,11 @@ class AICEOMasterController:
 
         # Analyze task completion rates
         total_tasks = len(self.tasks)
-        completed_tasks = len(
-            [t for t in self.tasks.values() if t.status == TaskStatus.COMPLETED]
-        )
+        completed_tasks = len([t for t in self.tasks.values() if t.status == TaskStatus.COMPLETED])
         completion_rate = completed_tasks / total_tasks if total_tasks > 0 else 0
 
         # Analyze priority distribution
-        high_priority_tasks = len(
-            [t for t in self.tasks.values() if t.priority == Priority.HIGH]
-        )
+        high_priority_tasks = len([t for t in self.tasks.values() if t.priority == Priority.HIGH])
 
         logger.info(
             f"Business Analysis - Tasks: {total_tasks}, Completion Rate: {completion_rate:.2%}, High Priority: {high_priority_tasks}"
@@ -284,13 +280,7 @@ class AICEOMasterController:
             "description": "Automated strategic decision based on business analysis",
             "factors": {
                 "task_completion_rate": (
-                    len(
-                        [
-                            t
-                            for t in self.tasks.values()
-                            if t.status == TaskStatus.COMPLETED
-                        ]
-                    )
+                    len([t for t in self.tasks.values() if t.status == TaskStatus.COMPLETED])
                     / len(self.tasks)
                     if self.tasks
                     else 0
@@ -310,9 +300,7 @@ class AICEOMasterController:
 
     async def _execute_pending_tasks(self):
         """Execute pending business tasks"""
-        pending_tasks = [
-            t for t in self.tasks.values() if t.status == TaskStatus.PENDING
-        ]
+        pending_tasks = [t for t in self.tasks.values() if t.status == TaskStatus.PENDING]
 
         for task in pending_tasks[:5]:  # Execute up to 5 tasks per cycle
             try:
@@ -339,9 +327,7 @@ class AICEOMasterController:
     async def _update_business_metrics(self):
         """Update business performance metrics"""
         # Simulate metric updates based on task completion and business state
-        completed_tasks = len(
-            [t for t in self.tasks.values() if t.status == TaskStatus.COMPLETED]
-        )
+        completed_tasks = len([t for t in self.tasks.values() if t.status == TaskStatus.COMPLETED])
         total_tasks = len(self.tasks)
 
         if total_tasks > 0:
@@ -447,9 +433,7 @@ def create_business_task(
 ) -> str:
     """Create a business task"""
     priority_enum = Priority(priority.lower())
-    return ai_ceo_controller.create_task(
-        title, description, priority_enum, assigned_to=assigned_to
-    )
+    return ai_ceo_controller.create_task(title, description, priority_enum, assigned_to=assigned_to)
 
 
 def get_system_status() -> dict[str, Any]:
@@ -463,15 +447,11 @@ if __name__ == "__main__":
         await start_ai_ceo()
 
         # Create some example tasks
-        task1 = create_business_task(
-            "Market Analysis", "Analyze current market trends", "high"
-        )
+        task1 = create_business_task("Market Analysis", "Analyze current market trends", "high")
         task2 = create_business_task(
             "Product Development", "Develop new product features", "medium"
         )
-        task3 = create_business_task(
-            "Customer Outreach", "Reach out to potential customers", "low"
-        )
+        task3 = create_business_task("Customer Outreach", "Reach out to potential customers", "low")
 
         # Let it run for a bit
         await asyncio.sleep(5)

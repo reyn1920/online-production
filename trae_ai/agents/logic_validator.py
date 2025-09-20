@@ -3,10 +3,11 @@ LogicValidationAgent: An agent that performs deep, semantic review of code to fi
 This agent doesn't just check if the code runs; it checks if the code makes sense.
 """
 
-from typing import Any
 import ast
 import re
 from pathlib import Path
+from typing import Any
+
 from trae_ai.oracle.agents import query_llm
 
 
@@ -56,17 +57,13 @@ class LogicValidationAgent:
             "line_count": len(code_content.splitlines()),
             "static_issues": static_issues,
             "semantic_analysis": semantic_analysis,
-            "overall_score": self._calculate_health_score(
-                static_issues, semantic_analysis
-            ),
+            "overall_score": self._calculate_health_score(static_issues, semantic_analysis),
         }
 
         self._print_audit_report(audit_results)
         return audit_results
 
-    def _perform_static_analysis(
-        self, code_content: str, file_path: Path
-    ) -> dict[str, Any]:
+    def _perform_static_analysis(self, code_content: str, file_path: Path) -> dict[str, Any]:
         """Perform basic static analysis to identify obvious issues."""
         issues: list[dict[str, Any]] = []
 
@@ -201,15 +198,11 @@ Provide your analysis as a brief, actionable report in markdown format.
         for parent in ast.walk(tree):
             for child in ast.iter_child_nodes(parent):
                 if child == node:
-                    if isinstance(
-                        parent, (ast.For, ast.While, ast.If, ast.With, ast.Try)
-                    ):
+                    if isinstance(parent, (ast.For, ast.While, ast.If, ast.With, ast.Try)):
                         level += 1
         return level
 
-    def _calculate_health_score(
-        self, static_issues: dict, semantic_analysis: str
-    ) -> int:
+    def _calculate_health_score(self, static_issues: dict, semantic_analysis: str) -> int:
         """Calculate an overall health score for the file (0-100)."""
         base_score = 100
 
@@ -260,9 +253,7 @@ Provide your analysis as a brief, actionable report in markdown format.
         print(results["semantic_analysis"])
         print("=" * 60)
 
-    def audit_directory(
-        self, directory_path: Path, pattern: str = "*.py"
-    ) -> dict[str, Any]:
+    def audit_directory(self, directory_path: Path, pattern: str = "*.py") -> dict[str, Any]:
         """
         Audit all Python files in a directory.
 
@@ -307,9 +298,7 @@ Provide your analysis as a brief, actionable report in markdown format.
                 total_score += file_result["overall_score"]
 
         if results["files_audited"]:
-            results["average_health_score"] = total_score / len(
-                results["files_audited"]
-            )
+            results["average_health_score"] = total_score / len(results["files_audited"])
 
         print("\n📋 DIRECTORY AUDIT SUMMARY:")
         print(f"   Files audited: {len(results['files_audited'])}")

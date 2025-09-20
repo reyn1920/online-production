@@ -1,9 +1,9 @@
 """Chat router for handling chat functionality."""
 
-from typing import Optional
-from datetime import datetime
-import uuid
 import logging
+import uuid
+from datetime import datetime
+from typing import Optional
 
 # Simple fallback classes for missing dependencies
 

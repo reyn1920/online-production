@@ -8,12 +8,12 @@ import hashlib
 import hmac
 import json
 import logging
+import re
 import secrets
 import time
+from collections import defaultdict
 from datetime import datetime, timedelta
 from enum import Enum
-from collections import defaultdict
-import re
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -164,9 +164,7 @@ class RateLimiter:
         max_age = 3600  # Keep entries for 1 hour max
 
         for key in list(self.requests.keys()):
-            self.requests[key] = [
-                t for t in self.requests[key] if current_time - t < max_age
-            ]
+            self.requests[key] = [t for t in self.requests[key] if current_time - t < max_age]
             if not self.requests[key]:
                 del self.requests[key]
 
@@ -187,9 +185,7 @@ class CSRFProtection:
         """Generate CSRF token for session."""
         timestamp = str(int(time.time()))
         token_data = f"{session_id}:{timestamp}"
-        signature = hmac.new(
-            self.secret_key, token_data.encode(), hashlib.sha256
-        ).hexdigest()
+        signature = hmac.new(self.secret_key, token_data.encode(), hashlib.sha256).hexdigest()
 
         token = f"{token_data}:{signature}"
         encoded_token = secrets.token_urlsafe(32)
@@ -214,9 +210,7 @@ class CSRFProtection:
     def cleanup_expired_tokens(self):
         """Remove expired tokens."""
         current_time = time.time()
-        expired_tokens = [
-            token for token, expiry in self.tokens.items() if current_time > expiry
-        ]
+        expired_tokens = [token for token, expiry in self.tokens.items() if current_time > expiry]
         for token in expired_tokens:
             del self.tokens[token]
 
@@ -329,9 +323,7 @@ class JWTManager:
         # Encode header and payload
         import base64
 
-        header_encoded = (
-            base64.urlsafe_b64encode(json.dumps(header).encode()).decode().rstrip("=")
-        )
+        header_encoded = base64.urlsafe_b64encode(json.dumps(header).encode()).decode().rstrip("=")
 
         payload_encoded = (
             base64.urlsafe_b64encode(json.dumps(payload).encode()).decode().rstrip("=")
@@ -459,12 +451,12 @@ class SecurityMiddleware:
             if origin and origin in self.config.allowed_origins:
                 response["headers"]["Access-Control-Allow-Origin"] = origin
                 response["headers"]["Access-Control-Allow-Credentials"] = "true"
-                response["headers"]["Access-Control-Allow-Methods"] = (
-                    "GET, POST, PUT, DELETE, OPTIONS"
-                )
-                response["headers"]["Access-Control-Allow-Headers"] = (
-                    "Content-Type, Authorization, X-CSRF-Token"
-                )
+                response["headers"][
+                    "Access-Control-Allow-Methods"
+                ] = "GET, POST, PUT, DELETE, OPTIONS"
+                response["headers"][
+                    "Access-Control-Allow-Headers"
+                ] = "Content-Type, Authorization, X-CSRF-Token"
 
             # Handle preflight requests
             if method == "OPTIONS":
@@ -532,9 +524,7 @@ class SecurityMiddleware:
 
         return True
 
-    async def _check_authentication(
-        self, request: dict[str, Any], path: str
-    ) -> dict[str, Any]:
+    async def _check_authentication(self, request: dict[str, Any], path: str) -> dict[str, Any]:
         """Check authentication and authorization."""
         result = {"allowed": True, "user": None}
 
@@ -591,9 +581,7 @@ class SecurityMiddleware:
         csrf_token = headers.get("x-csrf-token")
         session_id = request.get("session_id", "")
 
-        if not csrf_token or not self.csrf_protection.validate_token(
-            csrf_token, session_id
-        ):
+        if not csrf_token or not self.csrf_protection.validate_token(csrf_token, session_id):
             result["allowed"] = False
             result["status_code"] = 403
             result["errors"] = ["CSRF token validation failed"]
@@ -626,9 +614,7 @@ class SecurityMiddleware:
         regex_pattern = pattern.replace("*", ".*")
         return bool(re.match(f"^{regex_pattern}$", path))
 
-    def _check_authorization(
-        self, auth_token: AuthToken, required_level: SecurityLevel
-    ) -> bool:
+    def _check_authorization(self, auth_token: AuthToken, required_level: SecurityLevel) -> bool:
         """Check if user has required authorization level."""
         user_roles = set(auth_token.roles)
 
@@ -645,9 +631,7 @@ class SecurityMiddleware:
 
     def create_user_token(self, user_id: str, username: str, roles: list[str]) -> str:
         """Create authentication token for user."""
-        return self.jwt_manager.create_token(
-            user_id, username, roles, self.config.jwt_expiry_hours
-        )
+        return self.jwt_manager.create_token(user_id, username, roles, self.config.jwt_expiry_hours)
 
     def get_security_status(self) -> dict[str, Any]:
         """Get current security status."""

@@ -3,10 +3,10 @@
 AI Error Fixer - Automated error detection and fixing utility
 """
 
-import os
 import ast
-import sys
 import logging
+import os
+import sys
 from typing import Any
 
 # Configure logging
@@ -101,9 +101,7 @@ class AIErrorFixer:
     def _fix_indentation_error(self, file_path: str, analysis: dict) -> bool:
         """Fix indentation errors"""
         # This is a complex fix that would require more sophisticated analysis
-        logger.info(
-            f"Indentation error detected in {file_path} - manual review recommended"
-        )
+        logger.info(f"Indentation error detected in {file_path} - manual review recommended")
         return False
 
     def _fix_import_error(self, file_path: str, analysis: dict) -> bool:

@@ -2,21 +2,18 @@
 Test suite for service layer components.
 """
 
-import pytest
 import asyncio
-from unittest.mock import Mock, AsyncMock
-import tempfile
 import os
-from typing import Dict, Any
+import tempfile
+from typing import Any, Dict
+from unittest.mock import AsyncMock, Mock
 
-from src.services.registry import ServiceRegistry, BaseService
-from src.services.auth import (
-    AuthenticationService,
-    UserRole,
-    TokenType,
-)
-from src.services.data import DataService, QueryResult
+import pytest
+
 from src.core.config import Config
+from src.services.auth import AuthenticationService, TokenType, UserRole
+from src.services.data import DataService, QueryResult
+from src.services.registry import BaseService, ServiceRegistry
 
 
 # Test cases for ServiceRegistry
@@ -205,9 +202,7 @@ class TestDataService:
 
         # Query test data
         select_query = "SELECT * FROM test_table WHERE name = :name"
-        result = asyncio.run(
-            data_service.execute_query(select_query, {"name": "test_item"})
-        )
+        result = asyncio.run(data_service.execute_query(select_query, {"name": "test_item"}))
 
         assert result.row_count == 1
         assert len(result.rows) == 1
@@ -300,8 +295,8 @@ class TestServicePerformance:
     @pytest.mark.performance
     def test_auth_token_generation_performance(self):
         """Test authentication token generation performance."""
-        from src.services.auth import AuthenticationService, User
         from src.core.config import Config
+        from src.services.auth import AuthenticationService, User
 
         # Create mock config and service
         config = Mock(spec=Config)
@@ -363,9 +358,7 @@ class TestServicePerformance:
         duration = end_time - start_time
 
         # Should complete 50 inserts in less than 0.5 seconds
-        assert (
-            duration < 0.5
-        ), f"Database operations too slow: {duration}s for 50 inserts"
+        assert duration < 0.5, f"Database operations too slow: {duration}s for 50 inserts"
 
 
 if __name__ == "__main__":

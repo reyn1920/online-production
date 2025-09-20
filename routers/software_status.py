@@ -25,8 +25,8 @@ class MockAPIRouter:
 
 # Use mock class
 APIRouter = MockAPIRouter
-import shutil
 import os
+import shutil
 from datetime import datetime
 
 router = APIRouter(prefix="/api", tags=["Software Status"])
@@ -117,8 +117,6 @@ def creative_toolchain_status():
         "toolchain_status": "partial" if available_count > 0 else "unavailable",
         "available_tools": available_count,
         "total_tools": total_count,
-        "tools": {
-            name: ok(name, available, reason=None) for name, available in tools.items()
-        },
+        "tools": {name: ok(name, available, reason=None) for name, available in tools.items()},
         "timestamp": datetime.utcnow().isoformat(),
     }

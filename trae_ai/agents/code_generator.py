@@ -1,7 +1,7 @@
 # trae_ai/agents/code_generator.py
 import logging
-from typing import Optional
 import os
+from typing import Optional
 
 
 class CodeGenerator:
@@ -27,9 +27,7 @@ class CodeGenerator:
                 openai.api_key = self.api_key
                 self.openai = openai
             except ImportError:
-                self.logger.warning(
-                    "OpenAI package not installed. Using mock responses."
-                )
+                self.logger.warning("OpenAI package not installed. Using mock responses.")
                 self.mock_mode = True
 
     def implement_from_prompt(self, prompt: str) -> str:

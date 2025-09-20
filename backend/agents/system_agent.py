@@ -13,7 +13,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Optional
 
-from .base_agents import BaseAgent, AgentCapability
+from .base_agents import AgentCapability, BaseAgent
 
 
 @dataclass
@@ -52,9 +52,7 @@ class SystemAgent(BaseAgent):
     """
 
     def __init__(self, agent_id: Optional[str] = None, name: Optional[str] = None):
-        super().__init__(
-            agent_id=agent_id or "system_agent", name=name or "System Agent"
-        )
+        super().__init__(agent_id=agent_id or "system_agent", name=name or "System Agent")
         self.logger = logging.getLogger(__name__)
 
         # System monitoring configuration
@@ -78,7 +76,9 @@ class SystemAgent(BaseAgent):
     @property
     def health_summary(self) -> str:
         """Get a health summary of the system agent."""
-        return f"SystemAgent {self.agent_id} is operational with {len(self.capabilities)} capabilities"
+        return (
+            f"SystemAgent {self.agent_id} is operational with {len(self.capabilities)} capabilities"
+        )
 
     def _health_summary(self, report: dict[str, Any]) -> str:
         """Internal health summary method that accepts a report parameter."""
@@ -157,9 +157,7 @@ class SystemAgent(BaseAgent):
 
             health_status["components"]["cpu"] = {
                 "status": (
-                    "healthy"
-                    if cpu_percent < self.alert_thresholds["cpu_usage"]
-                    else "warning"
+                    "healthy" if cpu_percent < self.alert_thresholds["cpu_usage"] else "warning"
                 ),
                 "usage_percent": cpu_percent,
             }
@@ -176,9 +174,7 @@ class SystemAgent(BaseAgent):
 
             health_status["components"]["disk"] = {
                 "status": (
-                    "healthy"
-                    if disk_percent < self.alert_thresholds["disk_usage"]
-                    else "warning"
+                    "healthy" if disk_percent < self.alert_thresholds["disk_usage"] else "warning"
                 ),
                 "usage_percent": disk_percent,
                 "free_gb": 50.2,  # Simulated free disk space
@@ -313,9 +309,7 @@ class SystemAgent(BaseAgent):
         """
         Perform system updates
         """
-        update_type = task.get(
-            "update_type", "security"
-        )  # 'security', 'all', 'specific'
+        update_type = task.get("update_type", "security")  # 'security', 'all', 'specific'
         auto_restart = task.get("auto_restart", False)
 
         # Simulate update process
@@ -378,26 +372,14 @@ class SystemAgent(BaseAgent):
         # Simulate optimization process
         for area in optimization_areas:
             if area == "memory":
-                optimization_results["optimizations_applied"].append(
-                    "Memory cache optimization"
-                )
-                optimization_results["performance_improvement"]["memory"] = (
-                    "15% improvement"
-                )
+                optimization_results["optimizations_applied"].append("Memory cache optimization")
+                optimization_results["performance_improvement"]["memory"] = "15% improvement"
             elif area == "disk":
-                optimization_results["optimizations_applied"].append(
-                    "Disk defragmentation"
-                )
-                optimization_results["performance_improvement"]["disk"] = (
-                    "8% improvement"
-                )
+                optimization_results["optimizations_applied"].append("Disk defragmentation")
+                optimization_results["performance_improvement"]["disk"] = "8% improvement"
             elif area == "network":
-                optimization_results["optimizations_applied"].append(
-                    "Network buffer tuning"
-                )
-                optimization_results["performance_improvement"]["network"] = (
-                    "12% improvement"
-                )
+                optimization_results["optimizations_applied"].append("Network buffer tuning")
+                optimization_results["performance_improvement"]["network"] = "12% improvement"
 
         await asyncio.sleep(3)  # Simulate optimization time
 

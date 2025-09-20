@@ -73,9 +73,7 @@ def run_final_verification():
         print("All Python files have valid syntax.")
         success = True
     else:
-        print(
-            f"\n❌ VERIFICATION FAILED: {len(invalid_files)} files still have syntax errors"
-        )
+        print(f"\n❌ VERIFICATION FAILED: {len(invalid_files)} files still have syntax errors")
         print("\nInvalid files:")
         for filepath, error in invalid_files[:10]:  # Show first 10 errors
             print(f"  {filepath}: {error}")

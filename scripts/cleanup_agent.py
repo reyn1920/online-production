@@ -8,10 +8,10 @@ This implements the "Code Janitor" approach to clean up hundreds of small issues
 that create unstable foundations.
 """
 
+import logging
 import re
 import subprocess
 from pathlib import Path
-import logging
 
 # Setup logging
 logging.basicConfig(
@@ -110,9 +110,7 @@ class CodeJanitor:
                     # Revert if syntax is broken
                     with open(file_path, "w") as f:
                         f.write(original_content)
-                    self.logger.error(
-                        f"Reverted {file_path} - syntax broken after cleanup"
-                    )
+                    self.logger.error(f"Reverted {file_path} - syntax broken after cleanup")
                     return False
 
             return False
@@ -148,9 +146,7 @@ class CodeJanitor:
                 if old_type in content:
                     content = content.replace(old_type, new_type)
                     modified = True
-                    self.log_fix(
-                        file_path, f"Modernized type: {old_type} -> {new_type}"
-                    )
+                    self.log_fix(file_path, f"Modernized type: {old_type} -> {new_type}")
 
             # Remove now-unused typing imports if we made changes
             if modified:
@@ -163,14 +159,9 @@ class CodeJanitor:
                     if re.match(r"^from typing import.*Dict.*", line.strip()):
                         # Remove Dict from the import
                         new_line = re.sub(r",?\s*Dict\s*,?", "", line)
-                        new_line = re.sub(
-                            r"from typing import\s*,", "from typing import", new_line
-                        )
+                        new_line = re.sub(r"from typing import\s*,", "from typing import", new_line)
                         new_line = re.sub(r"from typing import\s*$", "", new_line)
-                        if (
-                            new_line.strip()
-                            and new_line.strip() != "from typing import"
-                        ):
+                        if new_line.strip() and new_line.strip() != "from typing import":
                             cleaned_lines.append(new_line)
                         else:
                             self.log_fix(
@@ -260,10 +251,7 @@ class CodeJanitor:
                 # Find the best insertion point (after other imports)
                 insert_index = 0
                 for i, line in enumerate(lines):
-                    if (
-                        line.strip().startswith(("import ", "from "))
-                        and "typing" not in line
-                    ):
+                    if line.strip().startswith(("import ", "from ")) and "typing" not in line:
                         insert_index = i + 1
 
                 # Insert the new imports
@@ -283,9 +271,7 @@ class CodeJanitor:
                     # Revert if broken
                     with open(file_path, "w") as f:
                         f.write(original_content)
-                    self.logger.error(
-                        f"Reverted {file_path} - syntax broken after adding imports"
-                    )
+                    self.logger.error(f"Reverted {file_path} - syntax broken after adding imports")
                     return False
 
             return False
@@ -388,9 +374,7 @@ class CleanupAgent:
         if result.stdout.strip():
             error_lines = result.stdout.strip().split("\n")
             error_count = len([line for line in error_lines if line.strip()])
-            self.logger.info(
-                f"✅ [CleanupAgent] Cleanup complete. Remaining issues: {error_count}"
-            )
+            self.logger.info(f"✅ [CleanupAgent] Cleanup complete. Remaining issues: {error_count}")
 
             # Show top remaining issues
             self.logger.info("Top remaining issues:")
@@ -398,23 +382,17 @@ class CleanupAgent:
                 if line.strip():
                     self.logger.info(f"  - {line}")
         else:
-            self.logger.info(
-                "✅ [CleanupAgent] Cleanup complete. No pyflakes issues remaining!"
-            )
+            self.logger.info("✅ [CleanupAgent] Cleanup complete. No pyflakes issues remaining!")
 
         self.logger.info("The codebase is now cleaner and more stable.")
 
         # Show summary of fixes
         if self.janitor.fixes_applied:
-            self.logger.info(
-                f"\n📋 Summary of {len(self.janitor.fixes_applied)} fixes applied:"
-            )
+            self.logger.info(f"\n📋 Summary of {len(self.janitor.fixes_applied)} fixes applied:")
             for fix in self.janitor.fixes_applied[:10]:  # Show first 10
                 self.logger.info(f"  ✓ {fix}")
             if len(self.janitor.fixes_applied) > 10:
-                self.logger.info(
-                    f"  ... and {len(self.janitor.fixes_applied) - 10} more fixes"
-                )
+                self.logger.info(f"  ... and {len(self.janitor.fixes_applied) - 10} more fixes")
 
 
 if __name__ == "__main__":

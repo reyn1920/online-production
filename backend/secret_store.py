@@ -1,7 +1,7 @@
-import os
-from typing import Any, Optional
-from datetime import datetime
 import logging
+import os
+from datetime import datetime
+from typing import Any, Optional
 
 
 class SecretStore:
@@ -69,9 +69,7 @@ class SecretStore:
     def get_jwt_config(self) -> dict[str, Any]:
         """Get JWT configuration"""
         return {
-            "secret": self.get_secret(
-                "jwt_secret", "default-jwt-secret-change-in-production"
-            ),
+            "secret": self.get_secret("jwt_secret", "default-jwt-secret-change-in-production"),
             "algorithm": "HS256",
             "expire_minutes": 30,
         }
@@ -96,9 +94,7 @@ class SecretStore:
     def get_encryption_key(self) -> str:
         """Get encryption key for sensitive data"""
         return (
-            self.get_secret(
-                "encryption_key", "default-encryption-key-change-in-production"
-            )
+            self.get_secret("encryption_key", "default-encryption-key-change-in-production")
             or "default-encryption-key-change-in-production"
         )
 

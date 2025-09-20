@@ -5,20 +5,16 @@ Tests the foundational components including configuration,
 logging, and exception handling.
 """
 
-import pytest
 import os
 from unittest.mock import patch
 
+import pytest
+
+from src.backend.core.logging import StructuredLogger, get_logger
 # Import core modules
 from src.core.config import Config
-from src.backend.core.logging import StructuredLogger, get_logger
-from src.core.exceptions import (
-    ApplicationError,
-    ValidationError,
-    AuthenticationError,
-    AuthorizationError,
-    ServiceError,
-)
+from src.core.exceptions import (ApplicationError, AuthenticationError,
+                                 AuthorizationError, ServiceError, ValidationError)
 
 
 class TestConfig:

@@ -1,12 +1,13 @@
-from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from starlette.staticfiles import StaticFiles
-from starlette.responses import FileResponse, JSONResponse
-from pydantic import BaseModel
 import os
 import sqlite3
 import subprocess
 import time
+
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from starlette.responses import FileResponse, JSONResponse
+from starlette.staticfiles import StaticFiles
 
 app = FastAPI(title="Base44 Runtime API", version="1.6.0")
 app.add_middleware(
@@ -74,10 +75,7 @@ def add_ch(b: ChIn):
 def ls_ch():
     con = sqlite3.connect(DB)
     con.row_factory = sqlite3.Row
-    return [
-        dict(r)
-        for r in con.execute("SELECT id,name,notes FROM channels ORDER BY id DESC")
-    ]
+    return [dict(r) for r in con.execute("SELECT id,name,notes FROM channels ORDER BY id DESC")]
 
 
 class EpIn(BaseModel):

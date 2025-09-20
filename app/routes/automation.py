@@ -1,12 +1,11 @@
-from fastapi import APIRouter
-from pydantic import BaseModel
 import os
 import sqlite3
 from typing import Optional
 
-DB_PATH = os.environ.get(
-    "TRAE_DB_PATH", os.path.join(os.getcwd(), "data", "trae_ai.db")
-)
+from fastapi import APIRouter
+from pydantic import BaseModel
+
+DB_PATH = os.environ.get("TRAE_DB_PATH", os.path.join(os.getcwd(), "data", "trae_ai.db"))
 os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
 
 router = APIRouter()

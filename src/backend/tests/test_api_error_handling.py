@@ -56,9 +56,7 @@ class TestDatabaseErrorHandling:
 
     @patch("src.backend.services.user_service.UserService.get_user_by_id")
     @pytest.mark.asyncio
-    async def test_database_connection_error_user_service(
-        self, mock_get_user, mock_session
-    ):
+    async def test_database_connection_error_user_service(self, mock_get_user, mock_session):
         """Test handling of database connection errors in user service."""
         # Arrange
         mock_get_user.side_effect = SQLAlchemyError("Database connection failed")
@@ -84,9 +82,7 @@ class TestDatabaseErrorHandling:
 
     @patch("src.backend.services.channel_service.ChannelService.update_channel")
     @pytest.mark.asyncio
-    async def test_database_timeout_error_channel_update(
-        self, mock_update_channel, mock_session
-    ):
+    async def test_database_timeout_error_channel_update(self, mock_update_channel, mock_session):
         """Test handling of database timeout errors during channel update."""
         # Arrange
         mock_update_channel.side_effect = SQLAlchemyError("Query timeout")
@@ -308,9 +304,7 @@ class TestExternalServiceErrorHandling:
 
     @patch("src.backend.services.storage_service.StorageService.upload_file")
     @pytest.mark.asyncio
-    async def test_file_storage_service_failure(
-        self, mock_storage_service, mock_session
-    ):
+    async def test_file_storage_service_failure(self, mock_storage_service, mock_session):
         """Test handling of file storage service failures."""
         # Arrange
         mock_storage_service.side_effect = Exception("Storage service unavailable")

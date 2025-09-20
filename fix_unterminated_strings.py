@@ -4,8 +4,8 @@ Fix Unterminated String Literals
 Systematically fixes unterminated string literal errors in Python files.
 """
 
-import os
 import ast
+import os
 from pathlib import Path
 from typing import Any
 
@@ -135,9 +135,7 @@ def process_file(file_path: Path) -> dict[str, Any]:
             # Check if fix worked
             result["after_valid"], after_msg = is_valid_python(fixed_content)
 
-            if result["after_valid"] or len(fixed_content.strip()) > len(
-                original_content.strip()
-            ):
+            if result["after_valid"] or len(fixed_content.strip()) > len(original_content.strip()):
                 # Write fixed content
                 with open(file_path, "w", encoding="utf-8") as f:
                     f.write(fixed_content)
@@ -169,8 +167,7 @@ def main():
         dirs[:] = [
             d
             for d in dirs
-            if not d.startswith(".")
-            and d not in ["__pycache__", "node_modules", "venv", "env"]
+            if not d.startswith(".") and d not in ["__pycache__", "node_modules", "venv", "env"]
         ]
 
         for file in files:
@@ -211,18 +208,14 @@ def main():
     with open(report_path, "w") as f:
         f.write("Unterminated String Literals Fix Report\n")
         f.write("=" * 50 + "\n\n")
-        f.write(
-            f"Total files processed: {len([r for r in results if r['processed']])}\n"
-        )
+        f.write(f"Total files processed: {len([r for r in results if r['processed']])}\n")
         f.write(f"Files fixed: {fixed_count}\n")
         f.write(f"Total issues fixed: {total_issues_fixed}\n\n")
 
         f.write("Fixed Files:\n")
         for result in results:
             if result["fixed"]:
-                f.write(
-                    f"  ✅ {result['file']} - Fixed {result['issues_fixed']} issues\n"
-                )
+                f.write(f"  ✅ {result['file']} - Fixed {result['issues_fixed']} issues\n")
 
         f.write("\nFiles Still With Issues:\n")
         for result in still_invalid:

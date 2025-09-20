@@ -5,16 +5,15 @@ Comprehensive dashboard for monitoring and managing API operations
 """
 
 import asyncio
-import logging
 import json
+import logging
 import time
-from datetime import datetime, timedelta
-from dataclasses import dataclass, asdict
-from enum import Enum
 import uuid
 from collections import defaultdict, deque
-from typing import Optional
-from typing import Any
+from dataclasses import asdict, dataclass
+from datetime import datetime, timedelta
+from enum import Enum
+from typing import Any, Optional
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -111,9 +110,7 @@ class APIMasterDashboard:
 
     def __init__(self):
         self.endpoints: dict[str, APIEndpoint] = {}
-        self.metrics: dict[str, Deque[APIMetric]] = defaultdict(
-            lambda: deque(maxlen=1000)
-        )
+        self.metrics: dict[str, Deque[APIMetric]] = defaultdict(lambda: deque(maxlen=1000))
         self.alert_rules: dict[str, AlertRule] = {}
         self.active_alerts: dict[str, Alert] = {}
         self.is_monitoring = False
@@ -207,14 +204,11 @@ class APIMasterDashboard:
             # Calculate success rate
             if endpoint.total_requests > 0:
                 endpoint.success_rate = (
-                    (endpoint.total_requests - endpoint.failed_requests)
-                    / endpoint.total_requests
+                    (endpoint.total_requests - endpoint.failed_requests) / endpoint.total_requests
                 ) * 100
 
             # Record metrics
-            await self._record_metric(
-                endpoint.id, MetricType.RESPONSE_TIME, response_time
-            )
+            await self._record_metric(endpoint.id, MetricType.RESPONSE_TIME, response_time)
             await self._record_metric(endpoint.id, MetricType.REQUEST_COUNT, 1)
 
             logger.debug(
@@ -226,9 +220,7 @@ class APIMasterDashboard:
             endpoint.status = APIStatus.OFFLINE
             endpoint.failed_requests += 1
 
-    async def _record_metric(
-        self, endpoint_id: str, metric_type: MetricType, value: float
-    ):
+    async def _record_metric(self, endpoint_id: str, metric_type: MetricType, value: float):
         """Record a metric data point"""
         metric = APIMetric(
             endpoint_id=endpoint_id,
@@ -242,12 +234,8 @@ class APIMasterDashboard:
 
     async def _update_dashboard_stats(self):
         """Update overall dashboard statistics"""
-        total_requests = sum(
-            endpoint.total_requests for endpoint in self.endpoints.values()
-        )
-        total_errors = sum(
-            endpoint.failed_requests for endpoint in self.endpoints.values()
-        )
+        total_requests = sum(endpoint.total_requests for endpoint in self.endpoints.values())
+        total_errors = sum(endpoint.failed_requests for endpoint in self.endpoints.values())
 
         # Calculate average response time
         response_times = [
@@ -255,9 +243,7 @@ class APIMasterDashboard:
             for endpoint in self.endpoints.values()
             if endpoint.response_time > 0
         ]
-        avg_response_time = (
-            sum(response_times) / len(response_times) if response_times else 0.0
-        )
+        avg_response_time = sum(response_times) / len(response_times) if response_times else 0.0
 
         # Calculate uptime percentage
         healthy_endpoints = len(
@@ -269,9 +255,7 @@ class APIMasterDashboard:
         )
         total_endpoints = len(self.endpoints)
         uptime_percentage = (
-            (healthy_endpoints / total_endpoints * 100)
-            if total_endpoints > 0
-            else 100.0
+            (healthy_endpoints / total_endpoints * 100) if total_endpoints > 0 else 100.0
         )
 
         self.dashboard_stats.update(
@@ -302,9 +286,7 @@ class APIMasterDashboard:
             return
 
         # Get current metric value
-        current_value = self._get_current_metric_value(
-            rule.endpoint_id, rule.metric_type
-        )
+        current_value = self._get_current_metric_value(rule.endpoint_id, rule.metric_type)
         if current_value is None:
             return
 
@@ -403,17 +385,13 @@ class APIMasterDashboard:
     def _cleanup_endpoint_data(self, endpoint_id: str):
         """Clean up all data related to an endpoint"""
         # Remove metrics
-        keys_to_remove = [
-            key for key in self.metrics.keys() if key.startswith(endpoint_id)
-        ]
+        keys_to_remove = [key for key in self.metrics.keys() if key.startswith(endpoint_id)]
         for key in keys_to_remove:
             del self.metrics[key]
 
         # Remove alert rules
         rules_to_remove = [
-            rule_id
-            for rule_id, rule in self.alert_rules.items()
-            if rule.endpoint_id == endpoint_id
+            rule_id for rule_id, rule in self.alert_rules.items() if rule.endpoint_id == endpoint_id
         ]
         for rule_id in rules_to_remove:
             del self.alert_rules[rule_id]
@@ -470,11 +448,7 @@ class APIMasterDashboard:
 
     def get_endpoints_by_status(self, status: APIStatus) -> list[APIEndpoint]:
         """Get endpoints by status"""
-        return [
-            endpoint
-            for endpoint in self.endpoints.values()
-            if endpoint.status == status
-        ]
+        return [endpoint for endpoint in self.endpoints.values() if endpoint.status == status]
 
     def get_dashboard_stats(self) -> dict[str, Any]:
         """Get overall dashboard statistics"""
@@ -493,11 +467,7 @@ class APIMasterDashboard:
             return []
 
         cutoff_time = datetime.now() - timedelta(hours=hours)
-        return [
-            metric
-            for metric in self.metrics[metric_key]
-            if metric.timestamp >= cutoff_time
-        ]
+        return [metric for metric in self.metrics[metric_key] if metric.timestamp >= cutoff_time]
 
     def get_system_health(self) -> dict[str, Any]:
         """Get overall system health summary"""
@@ -521,11 +491,7 @@ class APIMasterDashboard:
             "monitoring_active": self.is_monitoring,
             "last_check": (
                 max(
-                    [
-                        e.last_check
-                        for e in self.endpoints.values()
-                        if e.last_check is not None
-                    ],
+                    [e.last_check for e in self.endpoints.values() if e.last_check is not None],
                     default=None,
                 )
                 if self.endpoints
@@ -563,9 +529,7 @@ def get_system_health() -> dict[str, Any]:
 def get_dashboard_data() -> dict[str, Any]:
     """Get comprehensive dashboard data"""
     return {
-        "endpoints": [
-            asdict(endpoint) for endpoint in api_dashboard.get_all_endpoints()
-        ],
+        "endpoints": [asdict(endpoint) for endpoint in api_dashboard.get_all_endpoints()],
         "stats": api_dashboard.get_dashboard_stats(),
         "alerts": [asdict(alert) for alert in api_dashboard.get_active_alerts()],
         "health": api_dashboard.get_system_health(),

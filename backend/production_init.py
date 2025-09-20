@@ -82,12 +82,8 @@ class ProductionConfig:
 
         # Feature flags
         self.enable_caching = os.getenv("ENABLE_CACHING", "true").lower() == "true"
-        self.enable_compression = (
-            os.getenv("ENABLE_COMPRESSION", "true").lower() == "true"
-        )
-        self.enable_rate_limiting = (
-            os.getenv("ENABLE_RATE_LIMITING", "true").lower() == "true"
-        )
+        self.enable_compression = os.getenv("ENABLE_COMPRESSION", "true").lower() == "true"
+        self.enable_rate_limiting = os.getenv("ENABLE_RATE_LIMITING", "true").lower() == "true"
 
     def validate(self) -> bool:
         """Validate configuration settings."""
@@ -130,9 +126,7 @@ class ProductionInitializer:
             try:
                 from sqlalchemy import create_engine, text
             except ImportError:
-                logger.warning(
-                    "SQLAlchemy not installed, skipping database initialization"
-                )
+                logger.warning("SQLAlchemy not installed, skipping database initialization")
                 self.health_checks["database"] = False
                 return False
 
@@ -206,9 +200,7 @@ class ProductionInitializer:
 
         # Trusted host middleware
         if self.config.allowed_hosts != ["*"] and TrustedHostMiddleware:
-            app.add_middleware(
-                TrustedHostMiddleware, allowed_hosts=self.config.allowed_hosts
-            )
+            app.add_middleware(TrustedHostMiddleware, allowed_hosts=self.config.allowed_hosts)
 
         # Compression middleware
         if self.config.enable_compression and GZipMiddleware:
@@ -330,9 +322,7 @@ class ProductionInitializer:
 
             info = {
                 "startup_time": self.startup_time.isoformat(),
-                "uptime_seconds": (
-                    datetime.utcnow() - self.startup_time
-                ).total_seconds(),
+                "uptime_seconds": (datetime.utcnow() - self.startup_time).total_seconds(),
                 "platform": platform.platform(),
                 "python_version": platform.python_version(),
                 "health_checks": self.health_checks,

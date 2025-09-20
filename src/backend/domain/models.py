@@ -55,9 +55,7 @@ class User(Base):
     role = Column(String(20), default=UserRole.USER, nullable=False)
     is_active = Column(Boolean, default=True, nullable=False)
     is_verified = Column(Boolean, default=False, nullable=False)
-    created_at = Column(
-        DateTime(timezone=True), server_default=func.now(), nullable=False
-    )
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = Column(
         DateTime(timezone=True),
         server_default=func.now(),
@@ -66,12 +64,8 @@ class User(Base):
     )
 
     # Relationships
-    projects = relationship(
-        "Project", back_populates="owner", cascade="all, delete-orphan"
-    )
-    channels = relationship(
-        "Channel", back_populates="owner", cascade="all, delete-orphan"
-    )
+    projects = relationship("Project", back_populates="owner", cascade="all, delete-orphan")
+    channels = relationship("Channel", back_populates="owner", cascade="all, delete-orphan")
 
 
 class Channel(Base):
@@ -86,12 +80,8 @@ class Channel(Base):
     subscriber_count = Column(Integer, default=0, nullable=False)
     video_count = Column(Integer, default=0, nullable=False)
     view_count = Column(Integer, default=0, nullable=False)
-    owner_id = Column(
-        PostgresUUID(as_uuid=True), ForeignKey("users.id"), nullable=False
-    )
-    created_at = Column(
-        DateTime(timezone=True), server_default=func.now(), nullable=False
-    )
+    owner_id = Column(PostgresUUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = Column(
         DateTime(timezone=True),
         server_default=func.now(),
@@ -117,15 +107,9 @@ class Project(Base):
     target_audience = Column(String(255), nullable=True)
     estimated_views = Column(Integer, default=0, nullable=False)
     estimated_revenue = Column(Float, default=0.0, nullable=False)
-    owner_id = Column(
-        PostgresUUID(as_uuid=True), ForeignKey("users.id"), nullable=False
-    )
-    channel_id = Column(
-        PostgresUUID(as_uuid=True), ForeignKey("channels.id"), nullable=True
-    )
-    created_at = Column(
-        DateTime(timezone=True), server_default=func.now(), nullable=False
-    )
+    owner_id = Column(PostgresUUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    channel_id = Column(PostgresUUID(as_uuid=True), ForeignKey("channels.id"), nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = Column(
         DateTime(timezone=True),
         server_default=func.now(),
@@ -151,12 +135,8 @@ class ResearchData(Base):
     search_volume = Column(Integer, default=0, nullable=False)
     competition_score = Column(Float, default=0.0, nullable=False)
     trend_data = Column(Text, nullable=True)  # JSON string of trend data
-    project_id = Column(
-        PostgresUUID(as_uuid=True), ForeignKey("projects.id"), nullable=False
-    )
-    created_at = Column(
-        DateTime(timezone=True), server_default=func.now(), nullable=False
-    )
+    project_id = Column(PostgresUUID(as_uuid=True), ForeignKey("projects.id"), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 
     # Relationships
     project = relationship("Project", back_populates="research_data")

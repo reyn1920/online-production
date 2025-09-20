@@ -4,17 +4,18 @@ Integrated TRAE.AI + Base44 Application
 Combines the functionality of both applications into a unified system
 """
 
-from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from starlette.staticfiles import StaticFiles
-from starlette.responses import FileResponse, JSONResponse
-from pydantic import BaseModel
-from typing import Any
 import os
 import sqlite3
 import subprocess
 import time
 from pathlib import Path
+from typing import Any
+
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from starlette.responses import FileResponse, JSONResponse
+from starlette.staticfiles import StaticFiles
 
 # Initialize FastAPI app with combined title
 app = FastAPI(
@@ -214,10 +215,7 @@ def list_channels():
     """Get all channels"""
     con = sqlite3.connect(DB)
     con.row_factory = sqlite3.Row
-    channels = [
-        dict(r)
-        for r in con.execute("SELECT id,name,notes FROM channels ORDER BY id DESC")
-    ]
+    channels = [dict(r) for r in con.execute("SELECT id,name,notes FROM channels ORDER BY id DESC")]
     con.close()
     return channels
 

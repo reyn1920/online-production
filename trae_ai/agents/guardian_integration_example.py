@@ -11,7 +11,8 @@ ground truth of the test suite, preventing hallucinations and ensuring reliabili
 
 import sys
 from pathlib import Path
-from typing import Callable, Any, Dict
+from typing import Any, Callable, Dict
+
 from trae_ai.agents.guardian_agent import GuardianAgent
 
 
@@ -32,9 +33,7 @@ class WorkerAgent:
         This is a mock implementation - replace with your actual worker logic.
         """
         self.attempts += 1
-        print(
-            f"🔧 [{self.name}] Attempt {self.attempts}: Fixing authentication service..."
-        )
+        print(f"🔧 [{self.name}] Attempt {self.attempts}: Fixing authentication service...")
 
         # Simulate different outcomes based on attempt number
         if self.attempts == 1:
@@ -51,9 +50,7 @@ class WorkerAgent:
     def fix_database_connection(self) -> bool:
         """Example worker task: Fix database connection issues."""
         self.attempts += 1
-        print(
-            f"🔧 [{self.name}] Attempt {self.attempts}: Fixing database connection..."
-        )
+        print(f"🔧 [{self.name}] Attempt {self.attempts}: Fixing database connection...")
         print(f"🔧 [{self.name}] Updating connection pool settings...")
         return True
 
@@ -107,9 +104,7 @@ class GuardianSupervisor:
 
         while iteration < self.max_iterations:
             iteration += 1
-            print(
-                f"\n🔄 [Guardian Supervisor] Iteration {iteration}/{self.max_iterations}"
-            )
+            print(f"\n🔄 [Guardian Supervisor] Iteration {iteration}/{self.max_iterations}")
 
             # Worker agent attempts the fix
             try:
@@ -154,12 +149,9 @@ class GuardianSupervisor:
                         "errors": validation_result.errors,
                     },
                     "improvement": {
-                        "passed_delta": validation_result.passed
-                        - initial_result.passed,
-                        "failed_delta": initial_result.failed
-                        - validation_result.failed,
-                        "errors_delta": initial_result.errors
-                        - validation_result.errors,
+                        "passed_delta": validation_result.passed - initial_result.passed,
+                        "failed_delta": initial_result.failed - validation_result.failed,
+                        "errors_delta": initial_result.errors - validation_result.errors,
                     },
                 }
 
@@ -167,9 +159,7 @@ class GuardianSupervisor:
                 validation_result.failed < initial_result.failed
                 or validation_result.errors < initial_result.errors
             ):
-                print(
-                    "📈 [Guardian Supervisor] Partial improvement detected, continuing..."
-                )
+                print("📈 [Guardian Supervisor] Partial improvement detected, continuing...")
                 initial_result = validation_result  # Update baseline
 
             else:
@@ -183,9 +173,7 @@ class GuardianSupervisor:
 
         final_result = self.guardian.get_ground_truth(timeout=60)
         return {
-            "status": "partial"
-            if final_result.failed < initial_result.failed
-            else "failed",
+            "status": "partial" if final_result.failed < initial_result.failed else "failed",
             "iterations": self.max_iterations,
             "initial_state": {
                 "passed": initial_result.passed,
@@ -307,8 +295,7 @@ if __name__ == "__main__":
 
         # Summary
         all_successful = all(
-            result.get("status") == "success"
-            for result in [results["auth_fix"], results["db_fix"]]
+            result.get("status") == "success" for result in [results["auth_fix"], results["db_fix"]]
         )
 
         deployment_ready = results["system_validation"]["ready_for_deployment"]

@@ -186,15 +186,9 @@ class KnowledgeCore:
         }
 
         # Cross-domain analysis
-        total_facts = sum(
-            len(domain["facts"]) for domain in self.knowledge_base.values()
-        )
-        total_patterns = sum(
-            len(domain["patterns"]) for domain in self.knowledge_base.values()
-        )
-        total_insights = sum(
-            len(domain["insights"]) for domain in self.knowledge_base.values()
-        )
+        total_facts = sum(len(domain["facts"]) for domain in self.knowledge_base.values())
+        total_patterns = sum(len(domain["patterns"]) for domain in self.knowledge_base.values())
+        total_insights = sum(len(domain["insights"]) for domain in self.knowledge_base.values())
 
         synthesis["cross_domain_insights"] = [
             f"Knowledge base contains {total_facts} facts across {len(self.knowledge_base)} domains",
@@ -238,9 +232,7 @@ class KnowledgeCore:
             "patterns_count": len(domain_data["patterns"]),
             "insights_count": len(domain_data["insights"]),
             "last_updated": domain_data["last_updated"],
-            "recent_insights": (
-                domain_data["insights"][-3:] if domain_data["insights"] else []
-            ),
+            "recent_insights": (domain_data["insights"][-3:] if domain_data["insights"] else []),
         }
 
     def get_system_status(self) -> dict[str, Any]:
@@ -248,9 +240,7 @@ class KnowledgeCore:
         return {
             "status": "active",
             "domains": list(self.knowledge_base.keys()),
-            "total_facts": sum(
-                len(domain["facts"]) for domain in self.knowledge_base.values()
-            ),
+            "total_facts": sum(len(domain["facts"]) for domain in self.knowledge_base.values()),
             "total_patterns": sum(
                 len(domain["patterns"]) for domain in self.knowledge_base.values()
             ),

@@ -1,7 +1,7 @@
 # scripts/run_coverage_analysis.py
+import json
 import subprocess
 from pathlib import Path
-import json
 
 
 class TestCoverageAgent:
@@ -17,9 +17,7 @@ class TestCoverageAgent:
         Runs the test suite with coverage and generates an HTML report.
         Requires 'pytest-cov' to be installed: pip install pytest-cov
         """
-        print(
-            "📊 [TestCoverageAgent] Running test suite to generate coverage report..."
-        )
+        print("📊 [TestCoverageAgent] Running test suite to generate coverage report...")
 
         report_dir = self.root / "reports/coverage"
         report_dir.mkdir(parents=True, exist_ok=True)
@@ -37,13 +35,9 @@ class TestCoverageAgent:
         ]
 
         try:
-            result = subprocess.run(
-                cmd, check=False, cwd=self.root, capture_output=True, text=True
-            )
+            result = subprocess.run(cmd, check=False, cwd=self.root, capture_output=True, text=True)
 
-            print(
-                f"\n✅ SUCCESS: Coverage report generated at {report_dir / 'index.html'}"
-            )
+            print(f"\n✅ SUCCESS: Coverage report generated at {report_dir / 'index.html'}")
             print("Open this file in your browser to see all untested code.")
 
             # Parse and display coverage summary
@@ -66,9 +60,7 @@ class TestCoverageAgent:
                 with open(json_file, "r") as f:
                     coverage_data = json.load(f)
 
-                total_coverage = coverage_data.get("totals", {}).get(
-                    "percent_covered", 0
-                )
+                total_coverage = coverage_data.get("totals", {}).get("percent_covered", 0)
                 print(f"\n📈 Overall Coverage: {total_coverage:.1f}%")
 
                 # Find files with low coverage
@@ -76,17 +68,13 @@ class TestCoverageAgent:
                 low_coverage_files = []
 
                 for file_path, file_data in files.items():
-                    coverage_percent = file_data.get("summary", {}).get(
-                        "percent_covered", 0
-                    )
+                    coverage_percent = file_data.get("summary", {}).get("percent_covered", 0)
                     if coverage_percent < 80:  # Files with less than 80% coverage
                         low_coverage_files.append((file_path, coverage_percent))
 
                 if low_coverage_files:
                     print("\n🔍 Files needing attention (< 80% coverage):")
-                    for file_path, coverage in sorted(
-                        low_coverage_files, key=lambda x: x[1]
-                    ):
+                    for file_path, coverage in sorted(low_coverage_files, key=lambda x: x[1]):
                         print(f"  • {file_path}: {coverage:.1f}%")
 
             except (json.JSONDecodeError, KeyError) as e:

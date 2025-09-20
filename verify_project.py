@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-import py_compile
-import pathlib
 import fnmatch
+import pathlib
+import py_compile
 import sys
 
 IGNORE = [

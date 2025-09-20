@@ -5,9 +5,9 @@ Minimal memory usage with automatic startup configuration
 """
 
 import os
-import sys
-import subprocess
 import signal
+import subprocess
+import sys
 from pathlib import Path
 
 # Add project root to path
@@ -55,9 +55,7 @@ def cleanup_system():
             check=False,
         )
 
-        subprocess.run(
-            ["find", ".", "-name", "*.pyc", "-delete"], capture_output=True, check=False
-        )
+        subprocess.run(["find", ".", "-name", "*.pyc", "-delete"], capture_output=True, check=False)
 
         print("✓ Python cache cleaned")
     except Exception as e:

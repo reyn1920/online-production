@@ -11,9 +11,7 @@ for i, line in enumerate(lines, 1):
     if count > 0:
         old_balance = balance
         balance += count
-        print(
-            f"Line {i}: {count} quotes, balance: {old_balance} -> {balance} - {line.strip()}"
-        )
+        print(f"Line {i}: {count} quotes, balance: {old_balance} -> {balance} - {line.strip()}")
 
         # Track when balance first becomes odd
         if balance % 2 == 1 and first_odd_line is None:
@@ -24,8 +22,6 @@ for i, line in enumerate(lines, 1):
 
 print(f"\nFinal balance: {balance}")
 if balance % 2 == 1:
-    print(
-        f"ERROR: Unmatched opening triple quote! First odd balance at line {first_odd_line}"
-    )
+    print(f"ERROR: Unmatched opening triple quote! First odd balance at line {first_odd_line}")
 else:
     print("SUCCESS: All triple quotes are matched!")

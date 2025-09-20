@@ -5,9 +5,9 @@ Tests the gateway with real web interfaces and AI provider interactions.
 """
 
 import json
-import time
-import sys
 import os
+import sys
+import time
 from datetime import datetime
 
 # Add the parent directory to the path for imports
@@ -56,16 +56,12 @@ class PuppeteerGatewayTester:
             assert hasattr(self.gateway, "client")
 
             duration = time.time() - start_time
-            self.log_test_result(
-                test_name, True, "Gateway initialized successfully", duration
-            )
+            self.log_test_result(test_name, True, "Gateway initialized successfully", duration)
             return True
 
         except Exception as e:
             duration = time.time() - start_time
-            self.log_test_result(
-                test_name, False, f"Initialization failed: {str(e)}", duration
-            )
+            self.log_test_result(test_name, False, f"Initialization failed: {str(e)}", duration)
             return False
 
     def test_mock_client_responses(self):
@@ -102,9 +98,7 @@ class PuppeteerGatewayTester:
 
         except Exception as e:
             duration = time.time() - start_time
-            self.log_test_result(
-                test_name, False, f"Mock client test failed: {str(e)}", duration
-            )
+            self.log_test_result(test_name, False, f"Mock client test failed: {str(e)}", duration)
             return False
 
     def test_circuit_breaker_functionality(self):
@@ -169,15 +163,15 @@ class PuppeteerGatewayTester:
                     print(f"Unexpected error for '{prompt}': {e}")
 
             duration = time.time() - start_time
-            message = f"Tested {scenarios_tested} scenarios, {successful_failovers} successful responses"
+            message = (
+                f"Tested {scenarios_tested} scenarios, {successful_failovers} successful responses"
+            )
             self.log_test_result(test_name, True, message, duration)
             return True
 
         except Exception as e:
             duration = time.time() - start_time
-            self.log_test_result(
-                test_name, False, f"Failover test failed: {str(e)}", duration
-            )
+            self.log_test_result(test_name, False, f"Failover test failed: {str(e)}", duration)
             return False
 
     def test_gateway_metrics(self):
@@ -226,9 +220,7 @@ class PuppeteerGatewayTester:
 
         except Exception as e:
             duration = time.time() - start_time
-            self.log_test_result(
-                test_name, False, f"Metrics test failed: {str(e)}", duration
-            )
+            self.log_test_result(test_name, False, f"Metrics test failed: {str(e)}", duration)
             return False
 
     def test_backward_compatibility(self):
@@ -238,9 +230,7 @@ class PuppeteerGatewayTester:
 
         try:
             # Test the start_chat_completion method (backward compatibility)
-            response = self.gateway.start_chat_completion(
-                "chatgpt", "Test backward compatibility"
-            )
+            response = self.gateway.start_chat_completion("chatgpt", "Test backward compatibility")
 
             # Should get a response (either success or controlled failure)
             assert response is not None
@@ -331,9 +321,7 @@ class PuppeteerGatewayTester:
 
         # Save results to file
         try:
-            results_file = (
-                f"gateway_test_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-            )
+            results_file = f"gateway_test_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
             with open(results_file, "w") as f:
                 json.dump(
                     {
@@ -366,9 +354,7 @@ def main():
         success = tester.run_all_tests()
 
         if success:
-            print(
-                "\n🎉 All tests passed! The ResilientAIGateway is ready for production."
-            )
+            print("\n🎉 All tests passed! The ResilientAIGateway is ready for production.")
             return 0
         else:
             print("\n⚠️  Some tests failed. Please review the results above.")
