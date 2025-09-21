@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Software Integration Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .status-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .status-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .status-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+
+        .status-card h3 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #4a5568;
+        }
+
+        .status-card p {
+            font-size: 1rem;
+            color: #718096;
+        }
+
+        .software-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .category-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .category-icon {
+            width: 40px;
+            height: 40px;
+            margin-right: 15px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .creative-icon { background: linear-gradient(135deg, #ff6b6b, #ee5a24); }
+        .development-icon { background: linear-gradient(135deg, #4834d4, #686de0); }
+        .ai-icon { background: linear-gradient(135deg, #00d2d3, #54a0ff); }
+        .system-icon { background: linear-gradient(135deg, #5f27cd, #a55eea); }
+        .media-icon { background: linear-gradient(135deg, #fd79a8, #fdcb6e); }
+
+        .category-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .software-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .software-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 12px;
+            border-left: 4px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .software-item:hover {
+            background: #edf2f7;
+            border-left-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .software-item.available {
+            border-left-color: #48bb78;
+        }
+
+        .software-item.unavailable {
+            border-left-color: #f56565;
+            opacity: 0.6;
+        }
+
+        .software-info {
+            flex: 1;
+        }
+
+        .software-name {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .software-capabilities {
+            font-size: 0.85rem;
+            color: #718096;
+        }
+
+        .software-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #cbd5e0;
+        }
+
+        .status-indicator.available {
+            background: #48bb78;
+            box-shadow: 0 0 10px rgba(72, 187, 120, 0.4);
+        }
+
+        .status-indicator.unavailable {
+            background: #f56565;
+        }
+
+        .software-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .launch-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .launch-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .launch-btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .automation-panel {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .automation-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .automation-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .pipeline-card {
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .pipeline-card:hover {
+            border-color: #667eea;
+            background: #edf2f7;
+        }
+
+        .pipeline-title {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .pipeline-description {
+            font-size: 0.9rem;
+            color: #718096;
+            margin-bottom: 15px;
+        }
+
+        .pipeline-steps {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        .pipeline-step {
+            padding: 4px 8px;
+            background: #667eea;
+            color: white;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .execute-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .execute-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(72, 187, 120, 0.4);
+        }
+
+        .command-interface {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .command-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr 2fr auto;
+            gap: 15px;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .form-group select,
+        .form-group input {
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .output-panel {
+            background: #1a202c;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            color: #e2e8f0;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .output-panel.show {
+            display: block;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, #f56565, #e53e3e);
+        }
+
+        @media (max-width: 768px) {
+            .command-form {
+                grid-template-columns: 1fr;
+            }
+
+            .software-categories {
+                grid-template-columns: 1fr;
+            }
+
+            .status-overview {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 System Software Hub</h1>
+            <p>Unified control center for all installed software and automation workflows</p>
+        </div>
+
+        <div class="status-overview" id="statusOverview">
+            <div class="status-card">
+                <h3 id="totalSoftware">-</h3>
+                <p>Total Software</p>
+            </div>
+            <div class="status-card">
+                <h3 id="availableSoftware">-</h3>
+                <p>Available</p>
+            </div>
+            <div class="status-card">
+                <h3 id="creativeSoftware">-</h3>
+                <p>Creative Tools</p>
+            </div>
+            <div class="status-card">
+                <h3 id="developmentSoftware">-</h3>
+                <p>Dev Tools</p>
+            </div>
+        </div>
+
+        <div class="automation-panel">
+            <div class="automation-header">
+                <div class="category-icon system-icon">⚡</div>
+                <h2 class="category-title">Automation Pipelines</h2>
+            </div>
+            <div class="automation-controls">
+                <div class="pipeline-card" onclick="executePipeline('video_production')">
+                    <div class="pipeline-title">Video Production Pipeline</div>
+                    <div class="pipeline-description">Complete video workflow from 3D rendering to final export</div>
+                    <div class="pipeline-steps">
+                        <span class="pipeline-step">Blender</span>
+                        <span class="pipeline-step">DaVinci</span>
+                        <span class="pipeline-step">FFmpeg</span>
+                    </div>
+                    <button class="execute-btn">Execute Pipeline</button>
+                </div>
+                <div class="pipeline-card" onclick="executePipeline('image_processing')">
+                    <div class="pipeline-title">Image Processing Pipeline</div>
+                    <div class="pipeline-description">Batch image processing and optimization workflow</div>
+                    <div class="pipeline-steps">
+                        <span class="pipeline-step">GIMP</span>
+                        <span class="pipeline-step">ImageMagick</span>
+                        <span class="pipeline-step">Inkscape</span>
+                    </div>
+                    <button class="execute-btn">Execute Pipeline</button>
+                </div>
+                <div class="pipeline-card" onclick="executePipeline('development_workflow')">
+                    <div class="pipeline-title">Development Workflow</div>
+                    <div class="pipeline-description">Full development cycle with testing and deployment</div>
+                    <div class="pipeline-steps">
+                        <span class="pipeline-step">Git</span>
+                        <span class="pipeline-step">Docker</span>
+                        <span class="pipeline-step">Node.js</span>
+                    </div>
+                    <button class="execute-btn">Execute Pipeline</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="command-interface">
+            <div class="automation-header">
+                <div class="category-icon development-icon">💻</div>
+                <h2 class="category-title">Command Interface</h2>
+            </div>
+            <div class="command-form">
+                <div class="form-group">
+                    <label for="softwareSelect">Software</label>
+                    <select id="softwareSelect">
+                        <option value="">Select software...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="commandInput">Command</label>
+                    <input type="text" id="commandInput" placeholder="Enter command...">
+                </div>
+                <div class="form-group">
+                    <label for="argsInput">Arguments</label>
+                    <input type="text" id="argsInput" placeholder="Command arguments (space-separated)...">
+                </div>
+                <div class="form-group">
+                    <button class="execute-btn" onclick="executeCommand()">Execute</button>
+                </div>
+            </div>
+            <div class="output-panel" id="commandOutput"></div>
+        </div>
+
+        <div class="software-categories" id="softwareCategories">
+            <!-- Software categories will be populated here -->
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        let softwareData = {};
+        let availableSoftware = [];//Initialize the application
+        async function init() {
+            await loadSoftwareStatus();
+            populateSoftwareSelect();
+        }//Load software status from API
+        async function loadSoftwareStatus() {
+            try {
+                const response = await fetch("/api/software/status');
+                const data = await response.json();
+
+                softwareData = data.software;
+                availableSoftware = Object.keys(softwareData).filter(key => softwareData[key].available);
+
+                updateStatusOverview(data);
+                renderSoftwareCategories();
+            } catch (error) {
+                console.error('Error loading software status:', error);
+                showNotification('Failed to load software status', 'error');
+            }
+        }//Update status overview cards
+        function updateStatusOverview(data) {
+            document.getElementById('totalSoftware').textContent = data.total_software;
+            document.getElementById('availableSoftware').textContent = data.available_count;
+
+            const creativeCount = Object.values(data.software)
+                .filter(s => s.integration_type === 'creative' && s.available).length;
+            const developmentCount = Object.values(data.software)
+                .filter(s => s.integration_type === 'development' && s.available).length;
+
+            document.getElementById('creativeSoftware').textContent = creativeCount;
+            document.getElementById('developmentSoftware').textContent = developmentCount;
+        }//Render software categories
+        function renderSoftwareCategories() {
+            const categories = {
+                creative: { icon: '🎨', title: 'Creative Software', class: 'creative-icon' },
+                development: { icon: '💻', title: 'Development Tools', class: 'development-icon' },
+                ai: { icon: '🤖', title: 'AI & Machine Learning', class: 'ai-icon' },
+                system: { icon: '⚙️', title: 'System Utilities', class: 'system-icon' },
+                media: { icon: '🎬', title: 'Media Tools', class: 'media-icon' },
+                productivity: { icon: '📊', title: 'Productivity', class: 'system-icon' }
+            };
+
+            const container = document.getElementById('softwareCategories');
+            container.innerHTML = '';
+
+            Object.entries(categories).forEach(([categoryKey, category]) => {
+                const categoryData = Object.entries(softwareData)
+                    .filter(([key, software]) => software.integration_type === categoryKey);
+
+                if (categoryData.length === 0) return;
+
+                const categoryElement = document.createElement('div');
+                categoryElement.className = 'category-section';
+                categoryElement.innerHTML = `
+                    <div class="category-header">
+                        <div class="category-icon ${category.class}">${category.icon}</div>
+                        <h2 class="category-title">${category.title}</h2>
+                    </div>
+                    <div class="software-list">
+                        ${categoryData.map(([key, software]) => `
+                            <div class="software-item ${software.available ? 'available' : 'unavailable'}">
+                                <div class="software-info">
+                                    <div class="software-name">${software.name}</div>
+                                    <div class="software-capabilities">${software.capabilities.join(', ')}</div>
+                                </div>
+                                <div class="software-status">
+                                    <div class="status-indicator ${software.available ? 'available' : 'unavailable'}"></div>
+                                    <div class="software-actions">
+                                        <button class="action-btn launch-btn"
+                                                onclick="launchSoftware('${key}')"
+                                                ${!software.available ? 'disabled' : ''}>
+                                            ${software.available ? 'Launch' : 'Unavailable'}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(categoryElement);
+            });
+        }//Populate software select dropdown
+        function populateSoftwareSelect() {
+            const select = document.getElementById('softwareSelect');
+            select.innerHTML = '<option value="">Select software...</option>';
+
+            availableSoftware.forEach(key => {
+                const software = softwareData[key];
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = software.name;
+                select.appendChild(option);
+            });
+        }//Launch software
+        async function launchSoftware(softwareKey) {
+            try {
+                const response = await fetch("/api/software/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        software: softwareKey,
+                        command: 'launch',
+                        args: []
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showNotification(`${softwareData[softwareKey].name} launched successfully`, 'success');
+                } else {
+                    showNotification(`Failed to launch ${softwareData[softwareKey].name}`, 'error');
+                }
+            } catch (error) {
+                console.error('Error launching software:', error);
+                showNotification('Error launching software', 'error');
+            }
+        }//Execute custom command
+        async function executeCommand() {
+            const software = document.getElementById('softwareSelect').value;
+            const command = document.getElementById('commandInput').value;
+            const argsText = document.getElementById('argsInput').value;
+
+            if (!software || !command) {
+                showNotification('Please select software and enter a command', 'error');
+                return;
+            }
+
+            const args = argsText ? argsText.split(' ').filter(arg => arg.trim()) : [];
+
+            try {
+                const response = await fetch("/api/software/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        software: software,
+                        command: command,
+                        args: args
+                    })
+                });
+
+                const result = await response.json();//Show output panel
+                const outputPanel = document.getElementById('commandOutput');
+                outputPanel.classList.add('show');
+                outputPanel.innerHTML = `
+                    <div style="color: ${result.success ? '#48bb78' : '#f56565'}; margin-bottom: 10px;">
+                        Command ${result.success ? 'executed successfully' : 'failed'} (Exit code: ${result.returncode || 'N/A'})
+                    </div>
+                    <div style="margin-bottom: 10px;"><strong>STDOUT:</strong></div>
+                    <pre style="background: #2d3748; padding: 10px; border-radius: 4px; margin-bottom: 10px;">${result.stdout || 'No output'}</pre>
+                    ${result.stderr ? `
+                        <div style="margin-bottom: 10px;"><strong>STDERR:</strong></div>
+                        <pre style="background: #742a2a; padding: 10px; border-radius: 4px;">${result.stderr}</pre>
+                    ` : ''}
+                `;
+
+                showNotification(
+                    result.success ? 'Command executed successfully' : 'Command execution failed',
+                    result.success ? 'success' : 'error'
+                );
+            } catch (error) {
+                console.error('Error executing command:', error);
+                showNotification('Error executing command', 'error');
+            }
+        }//Execute automation pipeline
+        async function executePipeline(pipelineType) {
+            try {
+                const response = await fetch("/api/software/batch/creative-pipeline', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        input_files: ['/tmp/sample_input.blend'],//This would be dynamic in real implementation
+                        output_directory: '/tmp/pipeline_output',
+                        pipeline_type: pipelineType
+                    })
+                });
+
+                const result = await response.json();
+
+                showNotification(
+                    `${pipelineType.replace('_', ' ')} pipeline executed`,
+                    'success'
+                );
+
+                console.log('Pipeline result:', result);
+            } catch (error) {
+                console.error('Error executing pipeline:', error);
+                showNotification('Pipeline execution failed', 'error');
+            }
+        }//Show notification
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type} show`;
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }//Refresh software status
+        async function refreshStatus() {
+            await loadSoftwareStatus();
+            populateSoftwareSelect();
+            showNotification('Software status refreshed', 'success');
+        }//Initialize on page load
+        document.addEventListener('DOMContentLoaded', init);//Auto-refresh every 30 seconds
+        setInterval(refreshStatus, 30000);
+    </script>
+</body>
+</html>

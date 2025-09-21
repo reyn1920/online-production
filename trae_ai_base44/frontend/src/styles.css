@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { --ok:#22c55e; --warn:#f59e0b; --bad:#ef4444; --card:rgba(255,255,255,.06); }
+.card { @apply rounded-2xl p-5 shadow-lg; background: var(--card); }
+.btn { @apply px-4 py-2 rounded-xl font-semibold; background:#334155; }
+.btn-on { background: var(--ok); color:#051b0b; }
+.btn-off { background:#475569; color:#cbd5e1; }
+.badge { @apply px-2 py-1 text-xs rounded-lg; }

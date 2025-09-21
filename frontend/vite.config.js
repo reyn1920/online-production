@@ -1,0 +1,1 @@
+import { defineConfig } from 'vite';import react from '@vitejs/plugin-react';export default defineConfig({plugins:[react()],server:{proxy:{'/automation':'http://localhost:8000','/webhuman':'http://localhost:8000'}}})

@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brand Partnership Tracker 2025</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-right: 15px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(135deg, #f0f4ff 0%, #e6f3ff 100%);
+            border-radius: 12px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #667eea;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .partnership-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .partnership-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .partnership-item:hover {
+            background: #f0f4ff;
+            border-color: #667eea;
+        }
+
+        .partnership-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .brand-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .status-pending {
+            background: #fef5e7;
+            color: #744210;
+        }
+
+        .status-completed {
+            background: #e6fffa;
+            color: #234e52;
+        }
+
+        .partnership-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .detail-item {
+            font-size: 0.9rem;
+        }
+
+        .detail-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #333;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+        }
+
+        .roi-chart {
+            background: #1a202c;
+            color: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .chart-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .chart-bars {
+            display: flex;
+            align-items: end;
+            justify-content: space-around;
+            height: 200px;
+            margin: 20px 0;
+        }
+
+        .chart-bar {
+            background: linear-gradient(to top, #667eea, #764ba2);
+            width: 40px;
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .chart-bar:hover {
+            transform: scale(1.1);
+        }
+
+        .bar-label {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+
+        .bar-value {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .pipeline-stage {
+            background: linear-gradient(135deg, #f0f4ff 0%, #e6f3ff 100%);
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            position: relative;
+        }
+
+        .stage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .stage-title {
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .stage-count {
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .brand-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .brand-chip {
+            background: white;
+            border: 1px solid #e2e8f0;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .brand-chip:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤝 Brand Partnership Tracker</h1>
+            <p>Manage and optimize your brand collaborations with advanced ROI tracking</p>
+        </div>
+
+        <div class="dashboard">
+            <!-- Overview Stats -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <div class="card-icon">📊</div>
+                        Partnership Overview
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-value">24</span>
+                        <div class="stat-label">Active Partnerships</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">$127K</span>
+                        <div class="stat-label">Total Revenue</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">340%</span>
+                        <div class="stat-label">Avg ROI</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">8.2M</span>
+                        <div class="stat-label">Total Reach</div>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="openModal('addPartnershipModal')">Add New Partnership</button>
+                <button class="btn btn-secondary" onclick="generateReport()">Generate Report</button>
+            </div>
+
+            <!-- ROI Analytics -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <div class="card-icon">📈</div>
+                        ROI Analytics
+                    </div>
+                </div>
+
+                <div class="roi-chart">
+                    <div class="chart-header">
+                        <h3>Monthly Partnership ROI</h3>
+                    </div>
+                    <div class="chart-bars">
+                        <div class="chart-bar" style="height: 120px;">
+                            <div class="bar-value">280%</div>
+                            <div class="bar-label">Jan</div>
+                        </div>
+                        <div class="chart-bar" style="height: 150px;">
+                            <div class="bar-value">340%</div>
+                            <div class="bar-label">Feb</div>
+                        </div>
+                        <div class="chart-bar" style="height: 100px;">
+                            <div class="bar-value">220%</div>
+                            <div class="bar-label">Mar</div>
+                        </div>
+                        <div class="chart-bar" style="height: 180px;">
+                            <div class="bar-value">410%</div>
+                            <div class="bar-label">Apr</div>
+                        </div>
+                        <div class="chart-bar" style="height: 160px;">
+                            <div class="bar-value">380%</div>
+                            <div class="bar-label">May</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; margin-top: 15px;">
+                    <div>
+                        <strong>Best Performing:</strong><br>
+                        <span style="color: #667eea;">TechCorp - 410% ROI</span>
+                    </div>
+                    <div>
+                        <strong>Growth Rate:</strong><br>
+                        <span style="color: #48bb78;">+23% MoM</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Partnership Pipeline -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <div class="card-icon">🔄</div>
+                        Partnership Pipeline
+                    </div>
+                </div>
+
+                <div class="pipeline-stage">
+                    <div class="stage-header">
+                        <div class="stage-title">🎯 Prospecting</div>
+                        <div class="stage-count">12</div>
+                    </div>
+                    <div class="brand-chips">
+                        <div class="brand-chip">Apple</div>
+                        <div class="brand-chip">Microsoft</div>
+                        <div class="brand-chip">Adobe</div>
+                        <div class="brand-chip">+9 more</div>
+                    </div>
+                </div>
+
+                <div class="pipeline-stage">
+                    <div class="stage-header">
+                        <div class="stage-title">💬 Negotiating</div>
+                        <div class="stage-count">6</div>
+                    </div>
+                    <div class="brand-chips">
+                        <div class="brand-chip">Samsung</div>
+                        <div class="brand-chip">Intel</div>
+                        <div class="brand-chip">Nvidia</div>
+                        <div class="brand-chip">+3 more</div>
+                    </div>
+                </div>
+
+                <div class="pipeline-stage">
+                    <div class="stage-header">
+                        <div class="stage-title">✅ Active</div>
+                        <div class="stage-count">24</div>
+                    </div>
+                    <div class="brand-chips">
+                        <div class="brand-chip">TechCorp</div>
+                        <div class="brand-chip">GadgetPro</div>
+                        <div class="brand-chip">InnovateTech</div>
+                        <div class="brand-chip">+21 more</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Partnerships -->
+            <div class="card" style="grid-column: 1/-1;">
+                <div class="card-header">
+                    <div class="card-title">
+                        <div class="card-icon">🤝</div>
+                        Active Partnerships
+                    </div>
+                    <button class="btn btn-small" onclick="filterPartnerships()">Filter</button>
+                </div>
+
+                <div class="partnership-list" id="partnershipList">
+                    <!-- Partnership items will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Partnership Modal -->
+    <div id="addPartnershipModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('addPartnershipModal')">&times;</span>
+            <h2>Add New Partnership</h2>
+
+            <form id="partnershipForm">
+                <div class="form-group">
+                    <label class="form-label">Brand Name</label>
+                    <input type="text" class="form-input" id="brandName" placeholder="Enter brand name" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Partnership Type</label>
+                    <select class="form-select" id="partnershipType" required>
+                        <option value="">Select type</option>
+                        <option value="sponsored">Sponsored Content</option>
+                        <option value="affiliate">Affiliate Marketing</option>
+                        <option value="product">Product Review</option>
+                        <option value="ambassador">Brand Ambassador</option>
+                        <option value="event">Event Partnership</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Contract Value ($)</label>
+                    <input type="number" class="form-input" id="contractValue" placeholder="Enter contract value" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Start Date</label>
+                    <input type="date" class="form-input" id="startDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">End Date</label>
+                    <input type="date" class="form-input" id="endDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Deliverables</label>
+                    <input type="text" class="form-input" id="deliverables" placeholder="e.g., 3 YouTube videos, 5 Instagram posts">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select class="form-select" id="status" required>
+                        <option value="pending">Pending</option>
+                        <option value="active">Active</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn">Add Partnership</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('addPartnershipModal')">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Sample partnership data
+        let partnerships = [
+            {
+                id: 1,
+                brandName: 'TechCorp',
+                type: 'sponsored',
+                value: 15000,
+                startDate: '2024-01-15',
+                endDate: '2024-04-15',
+                status: 'active',
+                deliverables: '4 YouTube videos, 8 Instagram posts',
+                roi: 410,
+                reach: 2500000,
+                engagement: 8.5
+            },
+            {
+                id: 2,
+                brandName: 'GadgetPro',
+                type: 'affiliate',
+                value: 8000,
+                startDate: '2024-02-01',
+                endDate: '2024-05-01',
+                status: 'active',
+                deliverables: '2 YouTube reviews, ongoing promotion',
+                roi: 280,
+                reach: 1800000,
+                engagement: 7.2
+            },
+            {
+                id: 3,
+                brandName: 'InnovateTech',
+                type: 'product',
+                value: 5000,
+                startDate: '2024-01-01',
+                endDate: '2024-02-28',
+                status: 'completed',
+                deliverables: '1 unboxing video, 1 review video',
+                roi: 340,
+                reach: 950000,
+                engagement: 9.1
+            },
+            {
+                id: 4,
+                brandName: 'FutureBrand',
+                type: 'ambassador',
+                value: 25000,
+                startDate: '2024-03-01',
+                endDate: '2024-12-31',
+                status: 'active',
+                deliverables: 'Monthly content, event appearances',
+                roi: 380,
+                reach: 3200000,
+                engagement: 8.8
+            },
+            {
+                id: 5,
+                brandName: 'StartupXYZ',
+                type: 'sponsored',
+                value: 3000,
+                startDate: '2024-02-15',
+                endDate: '2024-03-15',
+                status: 'pending',
+                deliverables: '2 YouTube videos',
+                roi: 0,
+                reach: 0,
+                engagement: 0
+            }
+        ];
+
+        function renderPartnerships() {
+            const container = document.getElementById('partnershipList');
+            container.innerHTML = '';
+
+            partnerships.forEach(partnership => {
+                const item = document.createElement('div');
+                item.className = 'partnership-item';
+
+                const statusClass = `status-${partnership.status}`;
+                const statusText = partnership.status.charAt(0).toUpperCase() + partnership.status.slice(1);
+
+                item.innerHTML = `
+                    <div class="partnership-header">
+                        <div class="brand-name">${partnership.brandName}</div>
+                        <div class="status-badge ${statusClass}">${statusText}</div>
+                    </div>
+                    <div class="partnership-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Type:</div>
+                            <div class="detail-value">${partnership.type.charAt(0).toUpperCase() + partnership.type.slice(1)}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Value:</div>
+                            <div class="detail-value">$${partnership.value.toLocaleString()}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">ROI:</div>
+                            <div class="detail-value">${partnership.roi}%</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Reach:</div>
+                            <div class="detail-value">${partnership.reach > 0 ? (partnership.reach/1000000).toFixed(1) + 'M' : 'TBD'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Engagement:</div>
+                            <div class="detail-value">${partnership.engagement > 0 ? partnership.engagement + '%' : 'TBD'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Duration:</div>
+                            <div class="detail-value">${partnership.startDate} to ${partnership.endDate}</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <strong>Deliverables:</strong> ${partnership.deliverables}
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <button class="btn btn-small" onclick="editPartnership(${partnership.id})">Edit</button>
+                        <button class="btn btn-secondary btn-small" onclick="viewDetails(${partnership.id})">View Details</button>
+                        <button class="btn btn-secondary btn-small" onclick="trackPerformance(${partnership.id})">Track Performance</button>
+                    </div>
+                `;
+
+                container.appendChild(item);
+            });
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function generateReport() {
+            showNotification('📊 Generating comprehensive partnership report...', 'info');
+            setTimeout(() => {
+                showNotification('✅ Partnership report generated successfully!', 'success');
+            }, 2000);
+        }
+
+        function filterPartnerships() {
+            showNotification('🔍 Opening partnership filters...', 'info');
+        }
+
+        function editPartnership(id) {
+            const partnership = partnerships.find(p => p.id === id);
+            if (partnership) {
+                showNotification(`✏️ Opening editor for ${partnership.brandName}...`, 'info');
+            }
+        }
+
+        function viewDetails(id) {
+            const partnership = partnerships.find(p => p.id === id);
+            if (partnership) {
+                showNotification(`👁️ Viewing detailed analytics for ${partnership.brandName}...`, 'info');
+            }
+        }
+
+        function trackPerformance(id) {
+            const partnership = partnerships.find(p => p.id === id);
+            if (partnership) {
+                showNotification(`📈 Tracking performance metrics for ${partnership.brandName}...`, 'info');
+            }
+        }
+
+        // Form submission
+        document.getElementById('partnershipForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = {
+                id: partnerships.length + 1,
+                brandName: document.getElementById('brandName').value,
+                type: document.getElementById('partnershipType').value,
+                value: parseInt(document.getElementById('contractValue').value),
+                startDate: document.getElementById('startDate').value,
+                endDate: document.getElementById('endDate').value,
+                status: document.getElementById('status').value,
+                deliverables: document.getElementById('deliverables').value,
+                roi: 0,
+                reach: 0,
+                engagement: 0
+            };
+
+            partnerships.push(formData);
+            renderPartnerships();
+            closeModal('addPartnershipModal');
+
+            // Reset form
+            this.reset();
+
+            showNotification(`✅ Partnership with ${formData.brandName} added successfully!`, 'success');
+        });
+
+        // Form submission
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#48bb78' : type === 'warning' ? '#ed8936' : '#4299e1'};
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+                z-index: 1001;
+                animation: slideInRight 0.3s ease;
+                max-width: 300px;
+            `;
+            notification.textContent = message;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialize the app
+        renderPartnerships();
+
+        // Simulate real-time updates
+        setInterval(() => {
+            // Update some random metrics
+            const randomPartnership = partnerships[Math.floor(Math.random() * partnerships.length)];
+            if (randomPartnership.status === 'active' && randomPartnership.roi > 0) {
+                randomPartnership.roi += Math.floor(Math.random() * 10 - 5);
+                randomPartnership.engagement += (Math.random() * 0.2 - 0.1);
+                renderPartnerships();
+            }
+        }, 30000); // Update every 30 seconds
+    </script>
+</body>
+</html>

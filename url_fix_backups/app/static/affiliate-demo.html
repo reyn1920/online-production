@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Affiliate Data Processing Demo</title>
+    <link rel="stylesheet" href="css/status-indicators.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fafafa;
+        }
+        .section h3 {
+            margin-top: 0;
+            color: #555;
+        }
+        .button {
+            background-color: #007cba;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .button:hover {
+            background-color: #005a87;
+        }
+        .output {
+            background-color: #f8f8f8;
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .stats {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            flex: 1;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+        }
+        .channel-pets {
+            border-left: 4px solid #4CAF50;
+        }
+        .channel-birds {
+            border-left: 4px solid #FF9800;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐾 Affiliate Data Processing Demo</h1>
+
+        <div class="section">
+            <h3>📊 Data Source</h3>
+            <p>This demo fetches affiliate data from the backend API and processes it using the AffiliateProcessor class.</p>
+            <button class="button" onclick="fetchAndProcessData()">Fetch & Process Affiliate Data</button>
+            <button class="button" onclick="showSampleData()">Show Sample Data</button>
+            <button class="button" onclick="clearOutput()">Clear Output</button>
+        </div>
+
+        <div class="section">
+            <h3>🚦 Affiliate Program Status</h3>
+            <div class="status-legend">
+                <div class="status-legend-item">
+                    <span class="dot green"></span>
+                    <span>Working</span>
+                </div>
+                <div class="status-legend-item">
+                    <span class="dot purple"></span>
+                    <span>Needs Key/Disabled</span>
+                </div>
+                <div class="status-legend-item">
+                    <span class="dot red"></span>
+                    <span>Not Working</span>
+                </div>
+            </div>
+
+            <table class="status-table">
+                <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Program</th>
+                        <th>Channel</th>
+                        <th>Commission</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="status-cell"><span class="dot green pulse"></span>Active</td>
+                        <td>Chewy</td>
+                        <td>Pets</td>
+                        <td>5.0%</td>
+                    </tr>
+                    <tr>
+                        <td class="status-cell"><span class="dot green"></span>Active</td>
+                        <td>Petco</td>
+                        <td>Pets</td>
+                        <td>4.5%</td>
+                    </tr>
+                    <tr>
+                        <td class="status-cell"><span class="dot purple"></span>Disabled</td>
+                        <td>Tractor Supply</td>
+                        <td>Birds & Exotics</td>
+                        <td>3.0%</td>
+                    </tr>
+                    <tr>
+                        <td class="status-cell"><span class="dot purple"></span>Needs Key</td>
+                        <td>Only Natural Pet</td>
+                        <td>Birds & Exotics</td>
+                        <td>4.0%</td>
+                    </tr>
+                    <tr>
+                        <td class="status-cell"><span class="dot red"></span>Error</td>
+                        <td>BarkBox</td>
+                        <td>Pets</td>
+                        <td>$20/signup</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="stats" id="stats" style="display: none;">
+            <div class="stat-card">
+                <div class="stat-number" id="totalCount">0</div>
+                <div>Total Affiliates</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="petsCount">0</div>
+                <div>Pets Channel</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="birdsCount">0</div>
+                <div>Birds & Exotics</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>🔄 Processed Buckets</h3>
+            <div class="output" id="bucketsOutput">Click "Fetch & Process Affiliate Data" to see processed results...</div>
+        </div>
+
+        <div class="section">
+            <h3>📈 Channel Breakdown</h3>
+            <div class="output" id="channelOutput">Processing results will appear here...</div>
+        </div>
+
+        <div class="section">
+            <h3>🔍 Raw API Response</h3>
+            <div class="output" id="rawOutput">Raw API data will appear here...</div>
+        </div>
+    </div>
+
+    <script src="js/affiliate-processor.js"></script>
+    <script>
+        const processor = new AffiliateProcessor();
+
+        async function fetchAndProcessData() {
+            try {
+                // Fetch pets affiliates
+                const petsResponse = await fetch('/pets/affiliates');
+                const petsData = await petsResponse.json();
+
+                // Fetch birds & exotics affiliates (from content API)
+                const birdsResponse = await fetch('/content/birds_exotics_affiliates');
+                const birdsData = await birdsResponse.json();
+
+                // Prepare data structure for processing
+                const combinedData = {
+                    pets_affiliates: petsData.data || [],
+                    birds_exotics_affiliates: birdsData.data || birdsData.members || []
+                };
+
+                // Show raw data
+                document.getElementById('rawOutput').textContent = JSON.stringify(combinedData, null, 2);
+
+                // Process the data
+                const buckets = processor.processAffiliateData(combinedData);
+
+                // Display processed buckets
+                displayResults(buckets);
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                document.getElementById('bucketsOutput').textContent = `Error: ${error.message}`;
+            }
+        }
+
+        function showSampleData() {
+            const sampleData = {
+                pets_affiliates: [
+                    { id: 'chewy', name: 'Chewy', url: 'https://www.chewy.com/affiliates', commission: 5.0, category: 'supplies' },
+                    { id: 'petco', name: 'Petco', url: 'https://www.petco.com/shop/en/petcostore/content/affiliate-program', commission: 4.5, category: 'supplies' },
+                    { id: 'rover', name: 'Rover', url: 'https://join.rover.com/affiliates/', commission: 15.0, category: 'services' }
+                ],
+                birds_exotics_affiliates: [
+                    { id: 'tractor_supply', name: 'Tractor Supply (Feed/Farm/Poultry)', url: 'https://www.tractorsupply.com/tsc/cms/affiliate-program', enabled: false },
+                    { id: 'only_natural_pet', name: 'Only Natural Pet', url: 'https://www.onlynaturalpet.com/pages/affiliate-program', enabled: false }
+                ]
+            };
+
+            // Show raw data
+            document.getElementById('rawOutput').textContent = JSON.stringify(sampleData, null, 2);
+
+            // Process the sample data
+            const buckets = processor.processAffiliateData(sampleData);
+
+            // Display results
+            displayResults(buckets);
+        }
+
+        function displayResults(buckets) {
+            // Display processed buckets with status indicators
+            let bucketsHtml = 'Processed Affiliate Buckets:\n\n';
+
+            Object.entries(buckets).forEach(([channel, affiliates]) => {
+                bucketsHtml += `${channel}:\n`;
+                affiliates.forEach(affiliate => {
+                    const status = getRandomStatus();
+                    const statusText = getStatusText(status);
+                    bucketsHtml += `  ${statusText} ${affiliate.name || affiliate.id}\n`;
+                });
+                bucketsHtml += '\n';
+            });
+
+            document.getElementById('bucketsOutput').textContent = bucketsHtml;
+
+            // Get statistics
+            const stats = processor.getStatistics();
+
+            // Update stats display
+            document.getElementById('stats').style.display = 'flex';
+            document.getElementById('totalCount').textContent = stats.total;
+            document.getElementById('petsCount').textContent = stats.byChannel['Pets'] || 0;
+            document.getElementById('birdsCount').textContent = stats.byChannel['Birds & Exotics'] || 0;
+
+            // Display channel breakdown with status indicators
+            let channelBreakdown = 'Channel Breakdown with Status:\n\n';
+            Object.entries(stats.byChannel).forEach(([channel, count]) => {
+                channelBreakdown += `${channel}: ${count} affiliates\n`;
+
+                const channelBuckets = processor.getBucketsByChannel(channel);
+                channelBuckets.forEach(bucket => {
+                    const status = getRandomStatus();
+                    const statusText = getStatusText(status);
+                    channelBreakdown += `  ${statusText} ${bucket.name || bucket.id}\n`;
+                });
+                channelBreakdown += '\n';
+            });
+
+            document.getElementById('channelOutput').textContent = channelBreakdown;
+        }
+
+        // Helper functions for status indicators
+        function getRandomStatus() {
+            const statuses = ['active', 'active', 'active', 'disabled', 'error'];
+            return statuses[Math.floor(Math.random() * statuses.length)];
+        }
+
+        function getStatusText(status) {
+            const statusMap = {
+                active: '🟢 [ACTIVE]',
+                disabled: '🟣 [DISABLED]',
+                error: '🔴 [ERROR]'
+            };
+
+            return statusMap[status] || '🔴 [ERROR]';
+        }
+
+        function clearOutput() {
+            document.getElementById('bucketsOutput').textContent = 'Click "Fetch & Process Affiliate Data" to see processed results...';
+            document.getElementById('channelOutput').textContent = 'Processing results will appear here...';
+            document.getElementById('rawOutput').textContent = 'Raw API data will appear here...';
+            document.getElementById('stats').style.display = 'none';
+            processor.clearBuckets();
+        }
+
+        // Auto-load sample data on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('Affiliate Processing Demo loaded');
+            console.log('Available methods:', Object.getOwnPropertyNames(AffiliateProcessor.prototype));
+        });
+    </script>
+</body>
+</html>

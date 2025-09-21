@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Places Locator - Embedded Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Leaflet.markercluster -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #map {
+            width: 100%;
+            height: 100vh;
+        }
+
+        .search-control {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            max-width: 400px;
+        }
+
+        .search-control input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .search-control button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .search-control button:hover {
+            background: #2980b9;
+        }
+
+        .search-control button:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        .results-popup {
+            position: absolute;
+            top: 60px;
+            left: 10px;
+            z-index: 1000;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 400px;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .results-popup.show {
+            display: block;
+        }
+
+        .result-item {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .result-item:hover {
+            background: #f8f9fa;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+
+        .result-address {
+            color: #666;
+            font-size: 13px;
+        }
+
+        .close-results {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .search-control {
+                left: 5px;
+                right: 5px;
+                max-width: none;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-control input {
+                min-width: auto;
+            }
+
+            .results-popup {
+                left: 5px;
+                right: 5px;
+                max-width: none;
+                top: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="search-control">
+        <input type="text" id="searchQuery" placeholder="Search places...">
+        <input type="text" id="searchLocation" placeholder="Location...">
+        <button id="searchBtn">Search</button>
+    </div>
+
+    <div class="results-popup" id="resultsPopup">
+        <button class="close-results" id="closeResults">&times;</button>
+        <div id="resultsList"></div>
+    </div>
+
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <script>
+        class EmbeddedPlacesLocator {
+            constructor() {
+                this.map = null;
+                this.markers = [];
+                this.markerCluster = null;
+
+                this.initMap();
+                this.bindEvents();
+                this.parseUrlParams();
+            }
+
+            initMap() {
+                // Get initial position from URL params or default to San Francisco
+                const urlParams = new URLSearchParams(window.location.search);
+                const lat = parseFloat(urlParams.get('lat')) || 37.7749;
+                const lng = parseFloat(urlParams.get('lng')) || -122.4194;
+                const zoom = parseInt(urlParams.get('zoom')) || 12;
+
+                this.map = L.map('map').setView([lat, lng], zoom);
+
+                // Add OpenStreetMap tiles
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(this.map);
+
+                // Initialize marker cluster group
+                this.markerCluster = L.markerClusterGroup({
+                    chunkedLoading: true,
+                    maxClusterRadius: 50
+                });
+                this.map.addLayer(this.markerCluster);
+            }
+
+            parseUrlParams() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const category = urlParams.get('cat');
+
+                // If category is provided, auto-search
+                if (category) {
+                    document.getElementById('searchQuery').value = category;
+                    // Use current map center as location
+                    const center = this.map.getCenter();
+                    document.getElementById('searchLocation').value = `${center.lat.toFixed(4)},${center.lng.toFixed(4)}`;
+                    this.performSearch();
+                }
+            }
+
+            bindEvents() {
+                document.getElementById('searchBtn').addEventListener('click', () => {
+                    this.performSearch();
+                });
+
+                document.getElementById('searchQuery').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.performSearch();
+                    }
+                });
+
+                document.getElementById('searchLocation').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.performSearch();
+                    }
+                });
+
+                document.getElementById('closeResults').addEventListener('click', () => {
+                    document.getElementById('resultsPopup').classList.remove('show');
+                });
+
+                // Close results when clicking on map
+                this.map.on('click', () => {
+                    document.getElementById('resultsPopup').classList.remove('show');
+                });
+            }
+
+            async performSearch() {
+                const query = document.getElementById('searchQuery').value.trim();
+                const location = document.getElementById('searchLocation').value.trim();
+
+                if (!query) {
+                    alert('Please enter a search query');
+                    return;
+                }
+
+                // Use current map center if no location specified
+                let searchLocation = location;
+                if (!searchLocation) {
+                    const center = this.map.getCenter();
+                    searchLocation = `${center.lat.toFixed(4)},${center.lng.toFixed(4)}`;
+                }
+
+                const searchBtn = document.getElementById('searchBtn');
+                searchBtn.disabled = true;
+                searchBtn.textContent = 'Searching...';
+
+                try {
+                    const params = new URLSearchParams({
+                        q: query,
+                        location: searchLocation,
+                        radius: '5000'
+                    });
+
+                    const response = await fetch(`/api/places/search?${params}`);
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        this.displayResults(data.results || []);
+                        this.updateMapWithResults(data.results || []);
+                    } else {
+                        alert(data.error || 'Search failed');
+                    }
+                } catch (error) {
+                    console.error('Search error:', error);
+                    alert('Network error occurred');
+                } finally {
+                    searchBtn.disabled = false;
+                    searchBtn.textContent = 'Search';
+                }
+            }
+
+            displayResults(results) {
+                const resultsList = document.getElementById('resultsList');
+                const resultsPopup = document.getElementById('resultsPopup');
+
+                resultsList.innerHTML = '';
+
+                if (results.length === 0) {
+                    resultsList.innerHTML = '<div class="result-item">No results found</div>';
+                } else {
+                    results.forEach((result, index) => {
+                        const item = document.createElement('div');
+                        item.className = 'result-item';
+                        item.innerHTML = `
+                            <div class="result-name">${result.name || 'Unnamed Place'}</div>
+                            <div class="result-address">${result.address || result.display_name || 'No address available'}</div>
+                        `;
+
+                        item.addEventListener('click', () => {
+                            this.selectResult(index);
+                            resultsPopup.classList.remove('show');
+                        });
+
+                        resultsList.appendChild(item);
+                    });
+                }
+
+                resultsPopup.classList.add('show');
+            }
+
+            updateMapWithResults(results) {
+                // Clear existing markers
+                this.markerCluster.clearLayers();
+                this.markers = [];
+
+                if (results.length === 0) return;
+
+                // Add markers for each result
+                results.forEach((result, index) => {
+                    if (result.lat && result.lon) {
+                        const marker = L.marker([result.lat, result.lon])
+                            .bindPopup(`
+                                <strong>${result.name || 'Unnamed Place'}</strong><br>
+                                ${result.address || result.display_name || ''}<br>
+                                <small>Provider: ${result.provider || 'Unknown'}</small>
+                            `);
+
+                        marker.on('click', () => {
+                            this.selectResult(index);
+                        });
+
+                        this.markerCluster.addLayer(marker);
+                        this.markers.push(marker);
+                    }
+                });
+
+                // Fit map to show all markers
+                if (this.markers.length > 0) {
+                    const group = new L.featureGroup(this.markers);
+                    this.map.fitBounds(group.getBounds().pad(0.1));
+                }
+            }
+
+            selectResult(index) {
+                // Open marker popup
+                if (this.markers[index]) {
+                    this.markers[index].openPopup();
+                    this.map.setView(this.markers[index].getLatLng(), Math.max(this.map.getZoom(), 15));
+                }
+            }
+        }
+
+        // Initialize the embedded application
+        document.addEventListener('DOMContentLoaded', () => {
+            new EmbeddedPlacesLocator();
+        });
+    </script>
+</body>
+</html>

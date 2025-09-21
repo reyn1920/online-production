@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Affiliate Marketing Hub 2025</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 24px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            background: transparent;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .tab.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .tab:not(.active):hover {
+            background: #f8f9fa;
+        }
+
+        .content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-change {
+            margin-top: 8px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .positive { color: #10b981; }
+        .negative { color: #ef4444; }
+
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .link-card {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .link-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .link-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .link-title {
+            font-weight: 600;
+            color: #333;
+            flex: 1;
+        }
+
+        .link-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .link-url {
+            font-size: 0.8rem;
+            color: #667eea;
+            margin-bottom: 10px;
+            word-break: break-all;
+        }
+
+        .link-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .link-stat {
+            text-align: center;
+        }
+
+        .link-stat-value {
+            font-weight: 700;
+            color: #333;
+        }
+
+        .link-stat-label {
+            font-size: 0.7rem;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        .add-link-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .add-link-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            background: white;
+            cursor: pointer;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-top: 20px;
+        }
+
+        .programs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .program-card {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .program-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .program-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .program-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .amazon-logo { background: linear-gradient(45deg, #ff9900, #ff6600); }
+        .shopmy-logo { background: linear-gradient(45deg, #4facfe, #00f2fe); }
+        .impact-logo { background: linear-gradient(45deg, #667eea, #764ba2); }
+
+        .program-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .program-metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .program-metric {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 12px;
+        }
+
+        .program-metric-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .program-metric-label {
+            font-size: 0.7rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 1px solid #e0e0e0;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .tabs {
+                flex-direction: column;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .links-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .programs-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // Initialize with empty data - will be populated from API
+        const initialData = {
+            overview: {
+                totalEarnings: 0,
+                totalClicks: 0,
+                conversionRate: 0,
+                activeLinks: 0,
+                changes: {
+                    earnings: 0,
+                    clicks: 0,
+                    conversion: 0,
+                    links: 0
+                }
+            },
+            affiliateLinks: [
+                {
+                    id: 1,
+                    title: "Sony WH-1000XM4 Headphones",
+                    url: "https://amzn.to/3xyz123",
+                    program: "Amazon Associates",
+                    status: "active",
+                    clicks: 342,
+                    conversions: 12,
+                    earnings: 156.80
+                },
+                {
+                    id: 2,
+                    title: "MacBook Pro M3 Review Setup",
+                    url: "https://shopmy.us/abc456",
+                    program: "ShopMy",
+                    status: "active",
+                    clicks: 189,
+                    conversions: 8,
+                    earnings: 240.00
+                },
+                {
+                    id: 3,
+                    title: "Camera Gear Bundle",
+                    url: "https://impact.com/def789",
+                    program: "Impact Radius",
+                    status: "pending",
+                    clicks: 95,
+                    conversions: 3,
+                    earnings: 89.50
+                }
+            ],
+            programs: {
+                amazon: {
+                    earnings: 1650.30,
+                    clicks: 8420,
+                    conversions: 156,
+                    commission: 4.2
+                },
+                shopmy: {
+                    earnings: 890.20,
+                    clicks: 4200,
+                    conversions: 89,
+                    commission: 8.5
+                },
+                impact: {
+                    earnings: 307.00,
+                    clicks: 2800,
+                    conversions: 34,
+                    commission: 6.1
+                }
+            }
+        };
+
+        function AffiliateMarketingHub() {
+            const [activeTab, setActiveTab] = useState('overview');
+            const [data, setData] = useState(initialData);
+            const [showAddModal, setShowAddModal] = useState(false);
+            const [newLink, setNewLink] = useState({
+                title: '',
+                url: '',
+                program: 'amazon',
+                category: ''
+            });
+
+            const chartRef = useRef(null);
+            const chartInstance = useRef(null);
+
+            useEffect(() => {
+                if (activeTab === 'overview' && chartRef.current) {
+                    initializeChart();
+                }
+
+                return () => {
+                    if (chartInstance.current) {
+                        chartInstance.current.destroy();
+                    }
+                };
+            }, [activeTab]);
+
+            const initializeChart = () => {
+                if (chartInstance.current) {
+                    chartInstance.current.destroy();
+                }
+
+                const ctx = chartRef.current.getContext('2d');
+                chartInstance.current = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Amazon Associates', 'ShopMy', 'Impact Radius'],
+                        datasets: [{
+                            data: [
+                                data.programs.amazon.earnings,
+                                data.programs.shopmy.earnings,
+                                data.programs.impact.earnings
+                            ],
+                            backgroundColor: [
+                                '#ff9900',
+                                '#4facfe',
+                                '#667eea'
+                            ],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    padding: 20,
+                                    usePointStyle: true
+                                }
+                            }
+                        }
+                    }
+                });
+            };
+
+            const handleAddLink = () => {
+                const link = {
+                    id: Date.now(),
+                    ...newLink,
+                    status: 'pending',
+                    clicks: 0,
+                    conversions: 0,
+                    earnings: 0
+                };
+
+                setData(prev => ({
+                    ...prev,
+                    affiliateLinks: [...prev.affiliateLinks, link]
+                }));
+
+                setNewLink({ title: '', url: '', program: 'amazon', category: '' });
+                setShowAddModal(false);
+            };
+
+            const formatCurrency = (amount) => {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD'
+                }).format(amount);
+            };
+
+            const formatNumber = (num) => {
+                return num.toLocaleString();
+            };
+
+            const renderOverview = () => (
+                <div>
+                    <div className="stats-grid">
+                        <div className="stat-card">
+                            <div className="stat-value">{formatCurrency(data.overview.totalEarnings)}</div>
+                            <div className="stat-label">Total Earnings</div>
+                            <div className={`stat-change ${data.overview.changes.earnings > 0 ? 'positive' : 'negative'}`}>
+                                <i className={`fas fa-arrow-${data.overview.changes.earnings > 0 ? 'up' : 'down'}`}></i>
+                                {Math.abs(data.overview.changes.earnings)}% vs last month
+                            </div>
+                        </div>
+
+                        <div className="stat-card">
+                            <div className="stat-value">{formatNumber(data.overview.totalClicks)}</div>
+                            <div className="stat-label">Total Clicks</div>
+                            <div className={`stat-change ${data.overview.changes.clicks > 0 ? 'positive' : 'negative'}`}>
+                                <i className={`fas fa-arrow-${data.overview.changes.clicks > 0 ? 'up' : 'down'}`}></i>
+                                {Math.abs(data.overview.changes.clicks)}% vs last month
+                            </div>
+                        </div>
+
+                        <div className="stat-card">
+                            <div className="stat-value">{data.overview.conversionRate}%</div>
+                            <div className="stat-label">Conversion Rate</div>
+                            <div className={`stat-change ${data.overview.changes.conversion > 0 ? 'positive' : 'negative'}`}>
+                                <i className={`fas fa-arrow-${data.overview.changes.conversion > 0 ? 'up' : 'down'}`}></i>
+                                {Math.abs(data.overview.changes.conversion)}% vs last month
+                            </div>
+                        </div>
+
+                        <div className="stat-card">
+                            <div className="stat-value">{data.overview.activeLinks}</div>
+                            <div className="stat-label">Active Links</div>
+                            <div className="stat-change positive">
+                                <i className="fas fa-plus"></i>
+                                {data.overview.changes.links} new this month
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="chart-container">
+                        <canvas ref={chartRef}></canvas>
+                    </div>
+                </div>
+            );
+
+            const renderLinks = () => (
+                <div>
+                    <button className="add-link-btn" onClick={() => setShowAddModal(true)}>
+                        <i className="fas fa-plus"></i>
+                        Add New Affiliate Link
+                    </button>
+
+                    <div className="links-grid">
+                        {data.affiliateLinks.map(link => (
+                            <div key={link.id} className="link-card">
+                                <div className="link-header">
+                                    <div className="link-title">{link.title}</div>
+                                    <div className={`link-status status-${link.status}`}>
+                                        {link.status}
+                                    </div>
+                                </div>
+                                <div className="link-url">{link.url}</div>
+                                <div className="link-stats">
+                                    <div className="link-stat">
+                                        <div className="link-stat-value">{formatNumber(link.clicks)}</div>
+                                        <div className="link-stat-label">Clicks</div>
+                                    </div>
+                                    <div className="link-stat">
+                                        <div className="link-stat-value">{link.conversions}</div>
+                                        <div className="link-stat-label">Sales</div>
+                                    </div>
+                                    <div className="link-stat">
+                                        <div className="link-stat-value">{formatCurrency(link.earnings)}</div>
+                                        <div className="link-stat-label">Earnings</div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+
+            const renderPrograms = () => (
+                <div className="programs-grid">
+                    <div className="program-card">
+                        <div className="program-header">
+                            <div className="program-logo amazon-logo">
+                                <i className="fab fa-amazon"></i>
+                            </div>
+                            <div className="program-name">Amazon Associates</div>
+                        </div>
+                        <div className="program-metrics">
+                            <div className="program-metric">
+                                <div className="program-metric-value">{formatCurrency(data.programs.amazon.earnings)}</div>
+                                <div className="program-metric-label">Earnings</div>
+                            </div>
+                            <div className="program-metric">
+                                <div className="program-metric-value">{formatNumber(data.programs.amazon.clicks)}</div>
+                                <div className="program-metric-label">Clicks</div>
+                            </div>
+                            <div className="program-metric">
+                                <div className="program-metric-value">{data.programs.amazon.conversions}</div>
+                                <div className="program-metric-label">Conversions</div>
+                            </div>
+                            <div className="program-metric">
+                                <div className="program-metric-value">{data.programs.amazon.commission}%</div>
+                                <div className="program-metric-label">Avg Commission</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="program-card">
+                        <div className="program-header">
+                            <div className="program-logo shopmy-logo">
+                                <i className="fas fa-shopping-bag"></i>
+                            </div>
+                            <div className="program-name">ShopMy</div>
+                        </div>
+                        <div className="program-metrics">
+                            <div className="program-metric">
+                                <div className="program-metric-value">{formatCurrency(data.programs.shopmy.earnings)}</div>
+                                <div className="program-metric-label">Earnings</div>
+                            </div>
+                            <div className="program-metric">
+                                <div className="program-metric-value">{formatNumber(data.programs.shopmy.clicks)}</div>
+                                <div className="program-metric-label">Clicks</div>
+                            </div>
+                            <div className="program-metric">
+                                <div className="program-metric-value">{data.programs.shopmy.conversions}</div>
+                                <div className="program-metric-label">Conversions</div>
+                            </div>
+                            <div className="program-metric">
+                                <div className="program-metric-value">{data.programs.shopmy.commission}%</div>
+                                <div className="program-metric-label">Avg Commission</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="program-card">
+                        <div className="program-header">
+                            <div className="program-logo impact-logo">
+                                <i className="fas fa-chart-line"></i>
+                            </div>
+                            <div className="program-name">Impact Radius</div>
+                        </div>
+                        <div className="program-metrics">
+                            <div className="program-metric">
+                                <div className="program-metric-value">{formatCurrency(data.programs.impact.earnings)}</div>
+                                <div className="program-metric-label">Earnings</div>
+                            </div>
+                            <div className="program-metric">
+                                <div className="program-metric-value">{formatNumber(data.programs.impact.clicks)}</div>
+                                <div className="program-metric-label">Clicks</div>
+                            </div>
+                            <div className="program-metric">
+                                <div className="program-metric-value">{data.programs.impact.conversions}</div>
+                                <div className="program-metric-label">Conversions</div>
+                            </div>
+                            <div className="program-metric">
+                                <div className="program-metric-value">{data.programs.impact.commission}%</div>
+                                <div className="program-metric-label">Avg Commission</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+
+            return (
+                <div className="container">
+                    <div className="header">
+                        <h1>Affiliate Marketing Hub</h1>
+                        <p>Manage and optimize your affiliate marketing campaigns across all platforms</p>
+                    </div>
+
+                    <div className="tabs">
+                        <button
+                            className={`tab ${activeTab === 'overview' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('overview')}
+                        >
+                            <i className="fas fa-chart-pie"></i>
+                            Overview
+                        </button>
+                        <button
+                            className={`tab ${activeTab === 'links' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('links')}
+                        >
+                            <i className="fas fa-link"></i>
+                            Affiliate Links
+                        </button>
+                        <button
+                            className={`tab ${activeTab === 'programs' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('programs')}
+                        >
+                            <i className="fas fa-handshake"></i>
+                            Programs
+                        </button>
+                    </div>
+
+                    <div className="content">
+                        {activeTab === 'overview' && renderOverview()}
+                        {activeTab === 'links' && renderLinks()}
+                        {activeTab === 'programs' && renderPrograms()}
+                    </div>
+
+                    {showAddModal && (
+                        <div className="modal">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h3 className="modal-title">Add New Affiliate Link</h3>
+                                    <button className="close-btn" onClick={() => setShowAddModal(false)}>
+                                        ×
+                                    </button>
+                                </div>
+
+                                <div className="form-group">
+                                    <label className="form-label">Product Title</label>
+                                    <input
+                                        type="text"
+                                        className="form-input"
+                                        value={newLink.title}
+                                        onChange={(e) => setNewLink({...newLink, title: e.target.value})}
+                                        placeholder="Enter product title"/>
+                                </div>
+
+                                <div className="form-group">
+                                    <label className="form-label">Affiliate URL</label>
+                                    <input
+                                        type="url"
+                                        className="form-input"
+                                        value={newLink.url}
+                                        onChange={(e) => setNewLink({...newLink, url: e.target.value})}
+                                        placeholder="https://..."/>
+                                </div>
+
+                                <div className="form-group">
+                                    <label className="form-label">Affiliate Program</label>
+                                    <select
+                                        className="form-select"
+                                        value={newLink.program}
+                                        onChange={(e) => setNewLink({...newLink, program: e.target.value})}
+                                    >
+                                        <option value="amazon">Amazon Associates</option>
+                                        <option value="shopmy">ShopMy</option>
+                                        <option value="impact">Impact Radius</option>
+                                    </select>
+                                </div>
+
+                                <div className="form-group">
+                                    <label className="form-label">Category</label>
+                                    <input
+                                        type="text"
+                                        className="form-input"
+                                        value={newLink.category}
+                                        onChange={(e) => setNewLink({...newLink, category: e.target.value})}
+                                        placeholder="e.g., Tech, Fashion, Home"/>
+                                </div>
+
+                                <div style={{display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '20px'}}>
+                                    <button className="btn-secondary" onClick={() => setShowAddModal(false)}>
+                                        Cancel
+                                    </button>
+                                    <button className="btn-primary" onClick={handleAddLink}>
+                                        Add Link
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        ReactDOM.render(<AffiliateMarketingHub/>, document.getElementById('root'));
+    </script>
+</body>
+</html>

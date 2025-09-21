@@ -1,0 +1,676 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Financial Management - TRAE.AI Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='css/dashboard.css') }}" rel="stylesheet" />
+    <style>
+      .financial-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 15px;
+        color: white;
+        transition: transform 0.3s ease;
+      }
+      .financial-card:hover {
+        transform: translateY(-5px);
+      }
+      .revenue-stream {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 15px;
+        color: white;
+      }
+      .roi-metric {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        border-radius: 10px;
+        padding: 15px;
+        text-align: center;
+        color: white;
+      }
+      .allocation-card {
+        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        border-radius: 10px;
+        padding: 20px;
+        color: white;
+      }
+      .alert-card {
+        background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 10px;
+        color: #333;
+      }
+      .forecast-chart {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .profit-indicator {
+        font-size: 2rem;
+        font-weight: bold;
+      }
+      .profit-positive {
+        color: #28a745;
+      }
+      .profit-negative {
+        color: #dc3545;
+      }
+      .profit-neutral {
+        color: #ffc107;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+          <i class="fas fa-robot me-2"></i>
+          TRAE.AI Dashboard
+        </a>
+        <div class="navbar-nav ms-auto">
+          <a class="nav-link" href="/">Dashboard</a>
+          <a class="nav-link" href="/agents">Agents</a>
+          <a class="nav-link" href="/tasks">Tasks</a>
+          <a class="nav-link active" href="/financial-management">Financial Management</a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+      <div class="row">
+        <div class="col-12">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>
+              <i class="fas fa-chart-pie me-2"></i>
+              Financial Management Center
+            </h1>
+            <div>
+              <button class="btn btn-success me-2" onclick="generateForecast()">
+                <i class="fas fa-crystal-ball me-2"></i>
+                Generate Forecast
+              </button>
+              <button class="btn btn-primary" onclick="refreshDashboard()">
+                <i class="fas fa-sync-alt me-2"></i>
+                Refresh
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Financial Overview -->
+      <div class="row mb-4">
+        <div class="col-md-3">
+          <div class="roi-metric">
+            <h5>
+              <i class="fas fa-dollar-sign"></i>
+              Total Revenue
+            </h5>
+            <h2 id="totalRevenue">$0</h2>
+            <small>
+              +
+              <span id="revenueGrowth">0</span>
+              % this month
+            </small>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="roi-metric">
+            <h5>
+              <i class="fas fa-percentage"></i>
+              Overall ROI
+            </h5>
+            <h2 id="overallROI">0%</h2>
+            <small>
+              +
+              <span id="roiChange">0</span>
+              % this month
+            </small>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="roi-metric">
+            <h5>
+              <i class="fas fa-coins"></i>
+              Profit Margin
+            </h5>
+            <h2 id="profitMargin">0%</h2>
+            <small>
+              +
+              <span id="marginChange">0</span>
+              % this month
+            </small>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="roi-metric">
+            <h5>
+              <i class="fas fa-piggy-bank"></i>
+              Cost Efficiency
+            </h5>
+            <h2 id="costEfficiency">0%</h2>
+            <small>
+              +
+              <span id="efficiencyChange">0</span>
+              % this month
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Revenue Streams and Allocation -->
+      <div class="row">
+        <div class="col-md-8">
+          <div class="card">
+            <div class="card-header">
+              <h5>
+                <i class="fas fa-stream me-2"></i>
+                Revenue Streams Performance
+              </h5>
+            </div>
+            <div class="card-body">
+              <div id="revenueStreams" class="row">
+                <!-- Revenue streams will be populated here -->
+              </div>
+            </div>
+          </div>
+
+          <div class="card mt-4">
+            <div class="card-header">
+              <h5>
+                <i class="fas fa-chart-line me-2"></i>
+                Revenue Forecast
+              </h5>
+            </div>
+            <div class="card-body">
+              <div class="forecast-chart">
+                <canvas id="forecastChart" width="400" height="200"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="card mt-4">
+            <div class="card-header">
+              <h5>
+                <i class="fas fa-balance-scale me-2"></i>
+                Resource Allocation
+              </h5>
+            </div>
+            <div class="card-body">
+              <div id="resourceAllocation">
+                <!-- Resource allocation will be populated here -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-header">
+              <h5>
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Financial Alerts
+              </h5>
+            </div>
+            <div class="card-body">
+              <div id="financialAlerts">
+                <!-- Financial alerts will be populated here -->
+              </div>
+            </div>
+          </div>
+
+          <div class="card mt-4">
+            <div class="card-header">
+              <h5>
+                <i class="fas fa-cogs me-2"></i>
+                Optimization Actions
+              </h5>
+            </div>
+            <div class="card-body">
+              <div class="allocation-card mb-3">
+                <h6>
+                  <i class="fas fa-robot"></i>
+                  Auto Reallocation
+                </h6>
+                <p>Automatically optimize resource allocation based on ROI</p>
+                <button class="btn btn-light btn-sm" onclick="optimizeAllocation()">
+                  <i class="fas fa-magic"></i>
+                  Optimize Now
+                </button>
+              </div>
+
+              <div class="allocation-card mb-3">
+                <h6>
+                  <i class="fas fa-cut"></i>
+                  Cost Reduction
+                </h6>
+                <p>Identify and eliminate inefficient spending</p>
+                <button class="btn btn-light btn-sm" onclick="analyzeCosts()">
+                  <i class="fas fa-search"></i>
+                  Analyze Costs
+                </button>
+              </div>
+
+              <div class="allocation-card mb-3">
+                <h6>
+                  <i class="fas fa-rocket"></i>
+                  Growth Investment
+                </h6>
+                <p>Invest in high-performing revenue streams</p>
+                <button class="btn btn-light btn-sm" onclick="showInvestmentModal()">
+                  <i class="fas fa-plus"></i>
+                  Plan Investment
+                </button>
+              </div>
+
+              <div class="allocation-card">
+                <h6>
+                  <i class="fas fa-shield-alt"></i>
+                  Risk Management
+                </h6>
+                <p>Assess and mitigate financial risks</p>
+                <button class="btn btn-light btn-sm" onclick="assessRisks()">
+                  <i class="fas fa-chart-bar"></i>
+                  Assess Risks
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card mt-4">
+            <div class="card-header">
+              <h5>
+                <i class="fas fa-toggle-on me-2"></i>
+                Automation Settings
+              </h5>
+            </div>
+            <div class="card-body">
+              <div class="form-check form-switch mb-3">
+                <input class="form-check-input" type="checkbox" id="autoReallocation" checked />
+                <label class="form-check-label" for="autoReallocation">Auto Resource Reallocation</label>
+              </div>
+              <div class="form-check form-switch mb-3">
+                <input class="form-check-input" type="checkbox" id="costOptimization" checked />
+                <label class="form-check-label" for="costOptimization">Automatic Cost Optimization</label>
+              </div>
+              <div class="form-check form-switch mb-3">
+                <input class="form-check-input" type="checkbox" id="riskMonitoring" checked />
+                <label class="form-check-label" for="riskMonitoring">Risk Monitoring Alerts</label>
+              </div>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="performanceTracking" checked />
+                <label class="form-check-label" for="performanceTracking">Performance Tracking</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Investment Planning Modal -->
+    <div class="modal fade" id="investmentModal" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              <i class="fas fa-rocket me-2"></i>
+              Plan Growth Investment
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <form id="investmentForm">
+              <div class="mb-3">
+                <label for="investmentArea" class="form-label">Investment Area</label>
+                <select class="form-select" id="investmentArea">
+                  <option value="content_creation">Content Creation</option>
+                  <option value="marketing">Marketing & Advertising</option>
+                  <option value="technology">Technology & Tools</option>
+                  <option value="talent">Talent & Resources</option>
+                  <option value="infrastructure">Infrastructure</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="investmentAmount" class="form-label">Investment Amount ($)</label>
+                <input type="number" class="form-control" id="investmentAmount" placeholder="Enter amount" />
+              </div>
+              <div class="mb-3">
+                <label for="expectedROI" class="form-label">Expected ROI (%)</label>
+                <input type="number" class="form-control" id="expectedROI" placeholder="Enter expected ROI" />
+              </div>
+              <div class="mb-3">
+                <label for="timeframe" class="form-label">Investment Timeframe</label>
+                <select class="form-select" id="timeframe">
+                  <option value="1m">1 Month</option>
+                  <option value="3m">3 Months</option>
+                  <option value="6m">6 Months</option>
+                  <option value="12m">12 Months</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="riskLevel" class="form-label">Risk Level</label>
+                <select class="form-select" id="riskLevel">
+                  <option value="low">Low Risk</option>
+                  <option value="medium">Medium Risk</option>
+                  <option value="high">High Risk</option>
+                </select>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" onclick="submitInvestment()">Execute Investment</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      let dashboardData = {};
+      let forecastChart = null;
+
+      async function loadDashboard() {
+        try {
+          const response = await fetch('/api/financial-management/dashboard');
+          dashboardData = await response.json();
+          updateDashboard();
+          loadAlerts();
+        } catch (error) {
+          console.error('Error loading dashboard:', error);
+        }
+      }
+
+      function updateDashboard() {
+        // Update financial metrics
+        document.getElementById('totalRevenue').textContent = formatCurrency(dashboardData.total_revenue || 0);
+        document.getElementById('revenueGrowth').textContent = dashboardData.revenue_growth || 0;
+        document.getElementById('overallROI').textContent = (dashboardData.overall_roi || 0) + '%';
+        document.getElementById('roiChange').textContent = dashboardData.roi_change || 0;
+        document.getElementById('profitMargin').textContent = (dashboardData.profit_margin || 0) + '%';
+        document.getElementById('marginChange').textContent = dashboardData.margin_change || 0;
+        document.getElementById('costEfficiency').textContent = (dashboardData.cost_efficiency || 0) + '%';
+        document.getElementById('efficiencyChange').textContent = dashboardData.efficiency_change || 0;
+
+        // Update revenue streams
+        updateRevenueStreams();
+
+        // Update resource allocation
+        updateResourceAllocation();
+
+        // Update forecast chart
+        updateForecastChart();
+      }
+
+      function updateRevenueStreams() {
+        const container = document.getElementById('revenueStreams');
+        const streams = dashboardData.revenue_streams || [];
+
+        container.innerHTML = streams
+          .map(
+            stream => `
+                <div class="col-md-6 mb-3">
+                    <div class="revenue-stream">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6><i class="fas fa-${stream.icon} me-2"></i>${stream.name}</h6>
+                                <p class="mb-2">${formatCurrency(stream.revenue)}</p>
+                                <small>ROI: ${stream.roi}% | Growth: +${stream.growth}%</small>
+                            </div>
+                            <div class="text-end">
+                                <div class="profit-indicator ${getProfitClass(stream.profit_trend)}">
+                                    ${stream.profit_trend > 0 ? '↗' : stream.profit_trend < 0 ? '↘' : '→'}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="progress mt-2">
+                            <div class="progress-bar" style="width: ${stream.performance}%"></div>
+                        </div>
+                    </div>
+                </div>
+            `
+          )
+          .join('');
+      }
+
+      function updateResourceAllocation() {
+        const container = document.getElementById('resourceAllocation');
+        const allocations = dashboardData.resource_allocation || [];
+
+        container.innerHTML = allocations
+          .map(
+            allocation => `
+                <div class="allocation-card mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6>${allocation.category}</h6>
+                            <p class="mb-1">${formatCurrency(allocation.allocated)}/${formatCurrency(allocation.budget)}</p>
+                            <small>Efficiency: ${allocation.efficiency}%</small>
+                        </div>
+                        <div class="text-end">
+                            <button class="btn btn-light btn-sm" onclick="adjustAllocation('${allocation.category}')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="progress mt-2">
+                        <div class="progress-bar" style="width: ${(allocation.allocated/allocation.budget) * 100}%"></div>
+                    </div>
+                </div>
+            `
+          )
+          .join('');
+      }
+
+      function updateForecastChart() {
+        const ctx = document.getElementById('forecastChart').getContext('2d');
+
+        if (forecastChart) {
+          forecastChart.destroy();
+        }
+
+        const forecastData = dashboardData.forecast_data || {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+          revenue: [10000, 12000, 15000, 18000, 22000, 25000],
+          profit: [2000, 3000, 4500, 6000, 8000, 10000],
+        };
+
+        forecastChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: forecastData.labels,
+            datasets: [
+              {
+                label: 'Revenue Forecast',
+                data: forecastData.revenue,
+                borderColor: '#667eea',
+                backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                tension: 0.4,
+              },
+              {
+                label: 'Profit Forecast',
+                data: forecastData.profit,
+                borderColor: '#43e97b',
+                backgroundColor: 'rgba(67, 233, 123, 0.1)',
+                tension: 0.4,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  callback: function (value) {
+                    return '$' + value.toLocaleString();
+                  },
+                },
+              },
+            },
+          },
+        });
+      }
+
+      async function loadAlerts() {
+        try {
+          const response = await fetch('/api/financial-management/alerts');
+          const alerts = await response.json();
+          updateAlerts(alerts);
+        } catch (error) {
+          console.error('Error loading alerts:', error);
+        }
+      }
+
+      function updateAlerts(alerts) {
+        const container = document.getElementById('financialAlerts');
+
+        if (!alerts || alerts.length === 0) {
+          container.innerHTML = '<p class="text-muted">No active alerts</p>';
+          return;
+        }
+
+        container.innerHTML = alerts
+          .map(
+            alert => `
+                <div class="alert-card">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6><i class="fas fa-${alert.icon} me-2"></i>${alert.title}</h6>
+                            <p class="mb-1">${alert.message}</p>
+                            <small class="text-muted">${alert.timestamp}</small>
+                        </div>
+                        <span class="badge bg-${alert.severity}">${alert.severity}</span>
+                    </div>
+                </div>
+            `
+          )
+          .join('');
+      }
+
+      function formatCurrency(amount) {
+        return new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'USD',
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
+        }).format(amount);
+      }
+
+      function getProfitClass(trend) {
+        if (trend > 0) return 'profit-positive';
+        if (trend < 0) return 'profit-negative';
+        return 'profit-neutral';
+      }
+
+      function refreshDashboard() {
+        loadDashboard();
+      }
+
+      async function generateForecast() {
+        try {
+          const response = await fetch('/api/financial-management/forecast', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              forecast_period: '90d',
+              scenario: 'realistic',
+            }),
+          });
+
+          const forecast = await response.json();
+          if (response.ok) {
+            alert('Revenue forecast generated successfully!');
+            loadDashboard();
+          } else {
+            alert('Error: ' + forecast.error);
+          }
+        } catch (error) {
+          console.error('Error generating forecast:', error);
+          alert('Error generating forecast.');
+        }
+      }
+
+      function optimizeAllocation() {
+        if (
+          confirm(
+            'Are you sure you want to optimize resource allocation? This will automatically reallocate resources based on ROI analysis.'
+          )
+        ) {
+          // Implement optimization logic
+          alert('Resource allocation optimization initiated. Results will be visible shortly.');
+        }
+      }
+
+      function analyzeCosts() {
+        alert('Cost analysis initiated. Detailed report will be available in the dashboard shortly.');
+      }
+
+      function showInvestmentModal() {
+        new bootstrap.Modal(document.getElementById('investmentModal')).show();
+      }
+
+      function assessRisks() {
+        alert('Risk assessment initiated. Results will be available in the alerts section.');
+      }
+
+      function adjustAllocation(category) {
+        const newAmount = prompt(`Enter new allocation amount for ${category}:`);
+        if (newAmount && !isNaN(newAmount)) {
+          alert(`Allocation for ${category} updated to $${parseFloat(newAmount).toLocaleString()}`);
+          loadDashboard();
+        }
+      }
+
+      async function submitInvestment() {
+        const formData = {
+          allocation_strategy: 'growth_investment',
+          budget_constraints: {
+            area: document.getElementById('investmentArea').value,
+            amount: document.getElementById('investmentAmount').value,
+            expected_roi: document.getElementById('expectedROI').value,
+            timeframe: document.getElementById('timeframe').value,
+            risk_level: document.getElementById('riskLevel').value,
+          },
+        };
+
+        try {
+          const response = await fetch('/api/financial-management/allocate', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+          });
+
+          const result = await response.json();
+          if (response.ok) {
+            alert('Investment plan executed successfully!');
+            bootstrap.Modal.getInstance(document.getElementById('investmentModal')).hide();
+            loadDashboard();
+          } else {
+            alert('Error: ' + result.error);
+          }
+        } catch (error) {
+          console.error('Error submitting investment:', error);
+          alert('Error submitting investment plan.');
+        }
+      }
+
+      // Load dashboard on page load
+      document.addEventListener('DOMContentLoaded', loadDashboard);
+
+      // Auto-refresh every 30 seconds
+      setInterval(loadDashboard, 30000);
+    </script>
+  </body>
+</html>

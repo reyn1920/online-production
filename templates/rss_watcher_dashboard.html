@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>RSS Watcher Dashboard</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+
+      .header h1 {
+        color: #333;
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+      }
+
+      .header p {
+        color: #666;
+        font-size: 1.1rem;
+      }
+
+      .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-bottom: 30px;
+      }
+
+      .card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e0e0e0;
+      }
+
+      .card h3 {
+        color: #333;
+        margin-bottom: 20px;
+        font-size: 1.3rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .status-indicator {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #dc3545;
+      }
+
+      .status-indicator.running {
+        background: #28a745;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+
+      .control-group {
+        margin-bottom: 20px;
+      }
+
+      .control-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #555;
+        font-weight: 500;
+      }
+
+      .control-group input,
+      .control-group select {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: border-color 0.3s;
+      }
+
+      .control-group input:focus,
+      .control-group select:focus {
+        outline: none;
+        border-color: #667eea;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-right: 10px;
+        margin-bottom: 10px;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      .btn-danger {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+        color: white;
+      }
+
+      .btn-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+      }
+
+      .btn-secondary {
+        background: #6c757d;
+        color: white;
+      }
+
+      .btn-secondary:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
+      }
+
+      .triggers-list {
+        grid-column: 1/-1;
+      }
+
+      .trigger-item {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 15px;
+        border-left: 4px solid #667eea;
+      }
+
+      .trigger-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 10px;
+      }
+
+      .trigger-title {
+        font-weight: 600;
+        color: #333;
+        font-size: 1.1rem;
+        flex: 1;
+        margin-right: 15px;
+      }
+
+      .trigger-meta {
+        display: flex;
+        gap: 15px;
+        font-size: 0.9rem;
+        color: #666;
+      }
+
+      .urgency-badge {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+
+      .urgency-high {
+        background: #ffebee;
+        color: #c62828;
+      }
+
+      .urgency-medium {
+        background: #fff3e0;
+        color: #ef6c00;
+      }
+
+      .urgency-low {
+        background: #e8f5e8;
+        color: #2e7d32;
+      }
+
+      .status-badge {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+
+      .status-processing {
+        background: #e3f2fd;
+        color: #1565c0;
+      }
+
+      .status-completed {
+        background: #e8f5e8;
+        color: #2e7d32;
+      }
+
+      .status-failed {
+        background: #ffebee;
+        color: #c62828;
+      }
+
+      .status-pending {
+        background: #fff3e0;
+        color: #ef6c00;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 20px;
+        color: #666;
+      }
+
+      .error {
+        background: #ffebee;
+        color: #c62828;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+
+      .success {
+        background: #e8f5e8;
+        color: #2e7d32;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+
+      @media (max-width: 768px) {
+        .dashboard-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .trigger-header {
+          flex-direction: column;
+          gap: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🔍 RSS Watcher Dashboard</h1>
+        <p>Monitor RSS feeds and automatically trigger video creation</p>
+      </div>
+
+      <div id="message-area"></div>
+
+      <div class="dashboard-grid">
+        <!-- Status Card -->
+        <div class="card">
+          <h3>
+            <span class="status-indicator" id="status-indicator"></span>
+            System Status
+          </h3>
+          <div id="status-content">
+            <div class="loading">Loading status...</div>
+          </div>
+        </div>
+
+        <!-- Controls Card -->
+        <div class="card">
+          <h3>⚙️ Controls</h3>
+          <div class="control-group">
+            <label for="monitoring-interval">Monitoring Interval (seconds)</label>
+            <input type="number" id="monitoring-interval" value="300" min="60" max="3600"/>
+          </div>
+          <div class="control-group">
+            <label for="urgency-threshold">Urgency Threshold</label>
+            <input type="number" id="urgency-threshold" value="0.5" min="0" max="1" step="0.1"/>
+          </div>
+          <div class="control-group">
+            <label for="video-duration">Video Duration (seconds)</label>
+            <input type="number" id="video-duration" value="60" min="30" max="300"/>
+          </div>
+          <div class="control-group">
+            <label for="include-affiliates">Include Affiliates</label>
+            <select id="include-affiliates">
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" onclick="startMonitoring()">🚀 Start Monitoring</button>
+          <button class="btn btn-danger" onclick="stopMonitoring()">⏹️ Stop Monitoring</button>
+          <button class="btn btn-secondary" onclick="refreshStatus()">🔄 Refresh</button>
+        </div>
+
+        <!-- Recent Triggers Card -->
+        <div class="card triggers-list">
+          <h3>📺 Recent Video Triggers</h3>
+          <div id="triggers-content">
+            <div class="loading">Loading triggers...</div>
+          </div>
+          <button class="btn btn-secondary" onclick="loadTriggers()">🔄 Refresh Triggers</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const API_BASE = 'http://localhost:8080';//Show message to user
+      function showMessage(message, type = 'info') {
+        const messageArea = document.getElementById('message-area');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = type === 'error' ? 'error' : 'success';
+        messageDiv.textContent = message;
+        messageArea.innerHTML = '';
+        messageArea.appendChild(messageDiv);
+
+        setTimeout(() => {
+          messageDiv.remove();
+        }, 5000);
+      }//Load RSS watcher status
+      async function loadStatus() {
+        try {
+          const response = await fetch(`${API_BASE}/api/rss_watcher/status`);
+          const data = await response.json();
+
+          const statusIndicator = document.getElementById('status-indicator');
+          const statusContent = document.getElementById('status-content');
+
+          if (data.running) {
+            statusIndicator.classList.add('running');
+          } else {
+            statusIndicator.classList.remove('running');
+          }
+
+          statusContent.innerHTML = `
+                    <p><strong>Status:</strong> ${data.running ? '🟢 Running' : '🔴 Stopped'}</p>
+                    <p><strong>Monitoring Interval:</strong> ${data.monitoring_interval}s</p>
+                    <p><strong>Urgency Threshold:</strong> ${data.min_urgency_threshold}</p>
+                    <p><strong>Recent Triggers:</strong> ${data.recent_triggers_count}</p>
+                    ${data.last_check ? `<p><strong>Last Check:</strong> ${new Date(data.last_check).toLocaleString()}</p>` : ''}
+                `;
+        } catch (error) {
+          console.error('Error loading status:', error);
+          document.getElementById('status-content').innerHTML = '<p class="error">Error loading status</p>';
+        }
+      }//Load recent triggers
+      async function loadTriggers() {
+        try {
+          const response = await fetch(`${API_BASE}/api/rss_watcher/triggers?limit=10`);
+          const data = await response.json();
+
+          const triggersContent = document.getElementById('triggers-content');
+
+          if (data.triggers && data.triggers.length > 0) {
+            triggersContent.innerHTML = data.triggers
+              .map(trigger => {
+                const urgencyClass =
+                  trigger.urgency_score >= 0.7
+                    ? 'urgency-high'
+                    : trigger.urgency_score >= 0.5
+                      ? 'urgency-medium'
+                      : 'urgency-low';
+
+                return `
+                            <div class="trigger-item">
+                                <div class="trigger-header">
+                                    <div class="trigger-title">${trigger.title}</div>
+                                    <div>
+                                        <span class="urgency-badge ${urgencyClass}">
+                                            ${(trigger.urgency_score * 100).toFixed(0)}% urgency
+                                        </span>
+                                        <span class="status-badge status-${trigger.status}">
+                                            ${trigger.status}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="trigger-meta">
+                                    <span>📡 ${trigger.feed_name}</span>
+                                    <span>🕒 ${new Date(trigger.created_at).toLocaleString()}</span>
+                                    ${trigger.video_task_id ? `<span>🎬 Task: ${trigger.video_task_id}</span>` : ''}
+                                </div>
+                            </div>
+                        `;
+              })
+              .join('');
+          } else {
+            triggersContent.innerHTML = '<p>No recent triggers found.</p>';
+          }
+        } catch (error) {
+          console.error('Error loading triggers:', error);
+          document.getElementById('triggers-content').innerHTML = '<p class="error">Error loading triggers</p>';
+        }
+      }//Start monitoring
+      async function startMonitoring() {
+        try {
+          const config = {
+            monitoring_interval: parseInt(document.getElementById('monitoring-interval').value),
+            min_urgency_threshold: parseFloat(document.getElementById('urgency-threshold').value),
+            video_duration: parseInt(document.getElementById('video-duration').value),
+            include_affiliates: document.getElementById('include-affiliates').value === 'true',
+          };
+
+          const response = await fetch(`${API_BASE}/api/rss_watcher/start`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(config),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            showMessage('RSS monitoring started successfully!', 'success');
+            loadStatus();
+          } else {
+            showMessage(`Error: ${data.detail || 'Failed to start monitoring'}`, 'error');
+          }
+        } catch (error) {
+          console.error('Error starting monitoring:', error);
+          showMessage('Error starting monitoring', 'error');
+        }
+      }//Stop monitoring
+      async function stopMonitoring() {
+        try {
+          const response = await fetch(`${API_BASE}/api/rss_watcher/stop`, {
+            method: 'POST',
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            showMessage('RSS monitoring stopped successfully!', 'success');
+            loadStatus();
+          } else {
+            showMessage(`Error: ${data.detail || 'Failed to stop monitoring'}`, 'error');
+          }
+        } catch (error) {
+          console.error('Error stopping monitoring:', error);
+          showMessage('Error stopping monitoring', 'error');
+        }
+      }//Refresh status
+      function refreshStatus() {
+        loadStatus();
+        loadTriggers();
+      }//Initialize dashboard
+      document.addEventListener('DOMContentLoaded', function () {
+        loadStatus();
+        loadTriggers();//Auto-refresh every 30 seconds
+        setInterval(() => {
+          loadStatus();
+          loadTriggers();
+        }, 30000);
+      });
+    </script>
+  </body>
+</html>

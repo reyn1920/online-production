@@ -1,0 +1,976 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Collaboration & Partnership Outreach - TRAE AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+    <style>
+      :root {
+        --primary-color: #2563eb;
+        --secondary-color: #64748b;
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --danger-color: #ef4444;
+        --dark-color: #1e293b;
+        --light-color: #f8fafc;
+      }
+
+      body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      .dashboard-container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        margin: 20px;
+        padding: 30px;
+      }
+
+      .header-section {
+        background: linear-gradient(135deg, var(--primary-color), #3b82f6);
+        color: white;
+        padding: 30px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        text-align: center;
+      }
+
+      .metric-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
+        height: 100%;
+      }
+
+      .metric-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      .metric-value {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .metric-label {
+        color: var(--secondary-color);
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .section-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e2e8f0;
+      }
+
+      .section-title {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: var(--dark-color);
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .creator-card {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 15px;
+        transition: all 0.3s ease;
+      }
+
+      .creator-card:hover {
+        background: white;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .campaign-card {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 15px;
+        transition: all 0.3s ease;
+      }
+
+      .campaign-card:hover {
+        background: white;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .status-badge {
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .status-pending {
+        background: #fef3c7;
+        color: #92400e;
+      }
+
+      .status-sent {
+        background: #dbeafe;
+        color: #1e40af;
+      }
+
+      .status-responded {
+        background: #d1fae5;
+        color: #065f46;
+      }
+
+      .priority-high {
+        border-left: 4px solid var(--danger-color);
+      }
+
+      .priority-medium {
+        border-left: 4px solid var(--warning-color);
+      }
+
+      .priority-low {
+        border-left: 4px solid var(--secondary-color);
+      }
+
+      .btn-custom {
+        border-radius: 10px;
+        padding: 10px 20px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary-custom {
+        background: var(--primary-color);
+        border: none;
+        color: white;
+      }
+
+      .btn-primary-custom:hover {
+        background: #1d4ed8;
+        transform: translateY(-2px);
+      }
+
+      .progress-custom {
+        height: 8px;
+        border-radius: 10px;
+        background: #e2e8f0;
+      }
+
+      .progress-bar-custom {
+        border-radius: 10px;
+      }
+
+      .form-control-custom {
+        border-radius: 10px;
+        border: 2px solid #e2e8f0;
+        padding: 12px 15px;
+        transition: all 0.3s ease;
+      }
+
+      .form-control-custom:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+      }
+
+      .loading-spinner {
+        display: none;
+        text-align: center;
+        padding: 20px;
+      }
+
+      .collaboration-type {
+        background: #e0f2fe;
+        color: #0277bd;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 500;
+      }
+
+      .platform-badge {
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 500;
+      }
+
+      .platform-youtube {
+        background: #ffebee;
+        color: #c62828;
+      }
+
+      .platform-tiktok {
+        background: #f3e5f5;
+        color: #7b1fa2;
+      }
+
+      .platform-instagram {
+        background: #fce4ec;
+        color: #ad1457;
+      }
+
+      .platform-twitter {
+        background: #e3f2fd;
+        color: #1565c0;
+      }
+
+      .compatibility-score {
+        font-weight: bold;
+      }
+
+      .score-high {
+        color: var(--success-color);
+      }
+
+      .score-medium {
+        color: var(--warning-color);
+      }
+
+      .score-low {
+        color: var(--danger-color);
+      }
+
+      .tab-content {
+        padding: 20px 0;
+      }
+
+      .nav-tabs .nav-link {
+        border-radius: 10px 10px 0 0;
+        border: none;
+        color: var(--secondary-color);
+        font-weight: 600;
+      }
+
+      .nav-tabs .nav-link.active {
+        background: var(--primary-color);
+        color: white;
+      }
+
+      @media (max-width: 768px) {
+        .dashboard-container {
+          margin: 10px;
+          padding: 20px;
+        }
+
+        .metric-value {
+          font-size: 2rem;
+        }
+
+        .section-card {
+          padding: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="dashboard-container">
+        <!-- Header Section -->
+        <div class="header-section">
+          <h1>
+            <i class="fas fa-handshake me-3"></i>
+            Collaboration & Partnership Outreach
+          </h1>
+          <p class="mb-0">
+            Discover creators, build partnerships, and grow your network through strategic collaborations
+          </p>
+        </div>
+
+        <!-- Metrics Overview -->
+        <div class="row mb-4">
+          <div class="col-md-3 mb-3">
+            <div class="metric-card text-center">
+              <div class="metric-value text-primary" id="totalOutreach">0</div>
+              <div class="metric-label">Total Outreach</div>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div class="metric-card text-center">
+              <div class="metric-value text-success" id="responseRate">0%</div>
+              <div class="metric-label">Response Rate</div>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div class="metric-card text-center">
+              <div class="metric-value text-warning" id="successRate">0%</div>
+              <div class="metric-label">Success Rate</div>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div class="metric-card text-center">
+              <div class="metric-value text-info" id="activeCollaborations">0</div>
+              <div class="metric-label">Active Collaborations</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Content Tabs -->
+        <ul class="nav nav-tabs" id="mainTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link active"
+              id="overview-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#overview"
+              type="button"
+              role="tab"
+            >
+              <i class="fas fa-chart-line me-2"></i>
+              Overview
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="discovery-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#discovery"
+              type="button"
+              role="tab"
+            >
+              <i class="fas fa-search me-2"></i>
+              Creator Discovery
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="campaigns-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#campaigns"
+              type="button"
+              role="tab"
+            >
+              <i class="fas fa-paper-plane me-2"></i>
+              Outreach Campaigns
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="opportunities-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#opportunities"
+              type="button"
+              role="tab"
+            >
+              <i class="fas fa-lightbulb me-2"></i>
+              Opportunities
+            </button>
+          </li>
+        </ul>
+
+        <div class="tab-content" id="mainTabContent">
+          <!-- Overview Tab -->
+          <div class="tab-pane fade show active" id="overview" role="tabpanel">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="section-card">
+                  <h3 class="section-title">
+                    <i class="fas fa-chart-bar text-primary"></i>
+                    Performance Overview
+                  </h3>
+                  <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-2">
+                      <span>Monthly Growth</span>
+                      <span class="fw-bold text-success" id="monthlyGrowth">0%</span>
+                    </div>
+                    <div class="progress progress-custom">
+                      <div
+                        class="progress-bar progress-bar-custom bg-success"
+                        id="monthlyGrowthBar"
+                        style="width: 0%"
+                      ></div>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-2">
+                      <span>ROI Estimate</span>
+                      <span class="fw-bold text-info" id="roiEstimate">0x</span>
+                    </div>
+                    <div class="progress progress-custom">
+                      <div class="progress-bar progress-bar-custom bg-info" id="roiBar" style="width: 0%"></div>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-2">
+                      <span>Average Response Time</span>
+                      <span class="fw-bold" id="avgResponseTime">0 days</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="section-card">
+                  <h3 class="section-title">
+                    <i class="fas fa-trophy text-warning"></i>
+                    Top Performing Approaches
+                  </h3>
+                  <div id="topApproaches">
+                    <div class="d-flex align-items-center mb-3">
+                      <div class="spinner-border spinner-border-sm text-primary me-3" role="status"></div>
+                      <span>Loading performance data...</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="section-card">
+                  <h3 class="section-title">
+                    <i class="fas fa-users text-success"></i>
+                    Recent Creator Discoveries
+                  </h3>
+                  <div id="recentDiscoveries">
+                    <div class="loading-spinner">
+                      <div class="spinner-border text-primary" role="status"></div>
+                      <p class="mt-2">Loading recent discoveries...</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="section-card">
+                  <h3 class="section-title">
+                    <i class="fas fa-rocket text-info"></i>
+                    Active Campaigns
+                  </h3>
+                  <div id="activeCampaigns">
+                    <div class="loading-spinner">
+                      <div class="spinner-border text-primary" role="status"></div>
+                      <p class="mt-2">Loading active campaigns...</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Creator Discovery Tab -->
+          <div class="tab-pane fade" id="discovery" role="tabpanel">
+            <div class="section-card">
+              <h3 class="section-title">
+                <i class="fas fa-search text-primary"></i>
+                Discover New Creators
+              </h3>
+              <form id="discoveryForm">
+                <div class="row">
+                  <div class="col-md-4 mb-3">
+                    <label for="nicheInput" class="form-label">Target Niche</label>
+                    <input
+                      type="text"
+                      class="form-control form-control-custom"
+                      id="nicheInput"
+                      placeholder="e.g., technology, gaming, lifestyle"
+                      required/>
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label for="platformSelect" class="form-label">Platform (Optional)</label>
+                    <select class="form-control form-control-custom" id="platformSelect">
+                      <option value="">All Platforms</option>
+                      <option value="youtube">YouTube</option>
+                      <option value="tiktok">TikTok</option>
+                      <option value="instagram">Instagram</option>
+                      <option value="twitter">Twitter</option>
+                    </select>
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label for="minFollowersInput" class="form-label">Min Followers</label>
+                    <input
+                      type="number"
+                      class="form-control form-control-custom"
+                      id="minFollowersInput"
+                      value="1000"
+                      min="0"/>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary-custom btn-custom">
+                  <i class="fas fa-search me-2"></i>
+                  Discover Creators
+                </button>
+              </form>
+            </div>
+
+            <div class="section-card">
+              <h3 class="section-title">
+                <i class="fas fa-users text-success"></i>
+                Discovery Results
+              </h3>
+              <div id="discoveryResults">
+                <div class="text-center text-muted py-4">
+                  <i class="fas fa-search fa-3x mb-3"></i>
+                  <p>Use the form above to discover potential collaboration partners</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Outreach Campaigns Tab -->
+          <div class="tab-pane fade" id="campaigns" role="tabpanel">
+            <div class="section-card">
+              <h3 class="section-title">
+                <i class="fas fa-paper-plane text-primary"></i>
+                Outreach Campaign Management
+              </h3>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <button class="btn btn-primary-custom btn-custom" onclick="refreshCampaigns()">
+                    <i class="fas fa-sync-alt me-2"></i>
+                    Refresh Campaigns
+                  </button>
+                </div>
+                <div class="col-md-6 text-end">
+                  <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-outline-secondary btn-custom" onclick="filterCampaigns('all')">
+                      All
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-outline-secondary btn-custom"
+                      onclick="filterCampaigns('pending')"
+                    >
+                      Pending
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-outline-secondary btn-custom"
+                      onclick="filterCampaigns('sent')"
+                    >
+                      Sent
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-outline-secondary btn-custom"
+                      onclick="filterCampaigns('responded')"
+                    >
+                      Responded
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div id="campaignsList">
+                <div class="loading-spinner">
+                  <div class="spinner-border text-primary" role="status"></div>
+                  <p class="mt-2">Loading campaigns...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Opportunities Tab -->
+          <div class="tab-pane fade" id="opportunities" role="tabpanel">
+            <div class="section-card">
+              <h3 class="section-title">
+                <i class="fas fa-lightbulb text-warning"></i>
+                Collaboration Opportunities
+              </h3>
+              <div class="mb-3">
+                <button class="btn btn-primary-custom btn-custom" onclick="refreshOpportunities()">
+                  <i class="fas fa-sync-alt me-2"></i>
+                  Refresh Opportunities
+                </button>
+              </div>
+              <div id="opportunitiesList">
+                <div class="loading-spinner">
+                  <div class="spinner-border text-primary" role="status"></div>
+                  <p class="mt-2">Loading opportunities...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>//Global variables
+      let dashboardData = {};
+      let currentCampaignFilter = 'all';//Initialize dashboard
+      document.addEventListener('DOMContentLoaded', function () {
+        loadDashboardData();
+        setupEventListeners();
+      });
+
+      function setupEventListeners() {//Discovery form
+        document.getElementById('discoveryForm').addEventListener('submit', function (e) {
+          e.preventDefault();
+          discoverCreators();
+        });
+      }
+
+      async function loadDashboardData() {
+        try {
+          const response = await fetch("/api/collaboration-outreach/dashboard');
+          if (!response.ok) {
+            throw new Error('Failed to load dashboard data');
+          }
+
+          dashboardData = await response.json();
+          updateDashboard();
+        } catch (error) {
+          console.error('Error loading dashboard data:', error);
+          showError('Failed to load dashboard data');
+        }
+      }
+
+      function updateDashboard() {//Update metrics
+        const metrics = dashboardData.metrics || {};
+        document.getElementById('totalOutreach').textContent = metrics.total_outreach || 0;
+        document.getElementById('responseRate').textContent = `${(metrics.response_rate * 100).toFixed(1)}%`;
+        document.getElementById('successRate').textContent = `${(metrics.acceptance_rate * 100).toFixed(1)}%`;
+        document.getElementById('activeCollaborations').textContent = metrics.successful_collaborations || 0;//Update performance metrics
+        document.getElementById('monthlyGrowth').textContent = `${(metrics.monthly_growth * 100).toFixed(1)}%`;
+        document.getElementById('monthlyGrowthBar').style.width = `${Math.min(metrics.monthly_growth * 100, 100)}%`;
+        document.getElementById('roiEstimate').textContent = `${metrics.roi_estimate.toFixed(1)}x`;
+        document.getElementById('roiBar').style.width = `${Math.min(metrics.roi_estimate * 20, 100)}%`;
+        document.getElementById('avgResponseTime').textContent = `${metrics.average_response_time.toFixed(1)} days`;//Update top approaches
+        updateTopApproaches(metrics.top_performing_approaches || []);//Update recent discoveries
+        updateRecentDiscoveries(dashboardData.recent_discoveries || []);//Update active campaigns
+        updateActiveCampaigns(dashboardData.active_campaigns || []);
+      }
+
+      function updateTopApproaches(approaches) {
+        const container = document.getElementById('topApproaches');
+
+        if (approaches.length === 0) {
+          container.innerHTML = '<p class="text-muted">No performance data available yet</p>';
+          return;
+        }
+
+        container.innerHTML = approaches
+          .map(
+            (approach, index) => `
+                <div class="d-flex align-items-center mb-2">
+                    <span class="badge bg-primary me-3">${index + 1}</span>
+                    <span>${approach}</span>
+                </div>
+            `
+          )
+          .join('');
+      }
+
+      function updateRecentDiscoveries(discoveries) {
+        const container = document.getElementById('recentDiscoveries');
+
+        if (discoveries.length === 0) {
+          container.innerHTML = '<p class="text-muted">No recent discoveries</p>';
+          return;
+        }
+
+        container.innerHTML = discoveries
+          .slice(0, 5)
+          .map(
+            creator => `
+                <div class="creator-card">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="mb-1">${creator.name}</h6>
+                            <p class="text-muted mb-2">${creator.handle}</p>
+                            <div class="d-flex gap-2 mb-2">
+                                <span class="platform-badge platform-${creator.platform}">${creator.platform.toUpperCase()}</span>
+                                <span class="badge bg-light text-dark">${creator.niche}</span>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <div class="compatibility-score ${getScoreClass(creator.compatibility_score)}">
+                                ${(creator.compatibility_score * 100).toFixed(0)}%
+                            </div>
+                            <small class="text-muted">${formatNumber(creator.follower_count)} followers</small>
+                        </div>
+                    </div>
+                </div>
+            `
+          )
+          .join('');
+      }
+
+      function updateActiveCampaigns(campaigns) {
+        const container = document.getElementById('activeCampaigns');
+
+        if (campaigns.length === 0) {
+          container.innerHTML = '<p class="text-muted">No active campaigns</p>';
+          return;
+        }
+
+        container.innerHTML = campaigns
+          .slice(0, 5)
+          .map(
+            campaign => `
+                <div class="campaign-card priority-${campaign.priority}">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h6 class="mb-0">${campaign.subject}</h6>
+                        <span class="status-badge status-${campaign.status}">${campaign.status}</span>
+                    </div>
+                    <p class="text-muted mb-2">${campaign.collaboration_type.replace('_', ' ')}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">
+                            ${campaign.sent_date ? `Sent: ${formatDate(campaign.sent_date)}` : 'Not sent yet'}
+                        </small>
+                        <span class="badge bg-info">${(campaign.success_probability * 100).toFixed(0)}% success</span>
+                    </div>
+                </div>
+            `
+          )
+          .join('');
+      }
+
+      async function discoverCreators() {
+        const niche = document.getElementById('nicheInput').value;
+        const platform = document.getElementById('platformSelect').value;
+        const minFollowers = document.getElementById('minFollowersInput').value;
+
+        const resultsContainer = document.getElementById('discoveryResults');
+        resultsContainer.innerHTML = `
+                <div class="loading-spinner" style="display: block;">
+                    <div class="spinner-border text-primary" role="status"></div>
+                    <p class="mt-2">Discovering creators...</p>
+                </div>
+            `;
+
+        try {
+          const params = new URLSearchParams({
+            niche: niche,
+            min_followers: minFollowers,
+          });
+
+          if (platform) {
+            params.append('platform', platform);
+          }
+
+          const response = await fetch(`/api/collaboration-outreach/discover?${params}`);
+          if (!response.ok) {
+            throw new Error('Failed to discover creators');
+          }
+
+          const creators = await response.json();
+          displayDiscoveryResults(creators);
+        } catch (error) {
+          console.error('Error discovering creators:', error);
+          resultsContainer.innerHTML =
+            '<div class="alert alert-danger">Failed to discover creators. Please try again.</div>';
+        }
+      }
+
+      function displayDiscoveryResults(creators) {
+        const container = document.getElementById('discoveryResults');
+
+        if (creators.length === 0) {
+          container.innerHTML =
+            '<div class="alert alert-info">No creators found matching your criteria. Try adjusting your search parameters.</div>';
+          return;
+        }
+
+        container.innerHTML = creators
+          .map(
+            creator => `
+                <div class="creator-card">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h5 class="mb-2">${creator.name}</h5>
+                            <p class="text-muted mb-2">${creator.handle}</p>
+                            <div class="d-flex gap-2 mb-2">
+                                <span class="platform-badge platform-${creator.platform}">${creator.platform.toUpperCase()}</span>
+                                <span class="badge bg-light text-dark">${creator.niche}</span>
+                                <span class="badge bg-secondary">${creator.content_type}</span>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <small class="text-muted">Followers: ${formatNumber(creator.follower_count)}</small>
+                                </div>
+                                <div class="col-sm-6">
+                                    <small class="text-muted">Engagement: ${(creator.engagement_rate * 100).toFixed(1)}%</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <div class="compatibility-score ${getScoreClass(creator.compatibility_score)} mb-2">
+                                ${(creator.compatibility_score * 100).toFixed(0)}% Match
+                            </div>
+                            <button class="btn btn-primary-custom btn-sm" onclick="analyzeOpportunities('${creator.creator_id}')">
+                                <i class="fas fa-lightbulb me-1"></i>Analyze
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `
+          )
+          .join('');
+      }
+
+      async function analyzeOpportunities(creatorId) {
+        try {
+          const response = await fetch(`/api/collaboration-outreach/analyze?creator_id=${creatorId}`);
+          if (!response.ok) {
+            throw new Error('Failed to analyze opportunities');
+          }
+
+          const opportunities = await response.json();
+          showOpportunityModal(opportunities);
+        } catch (error) {
+          console.error('Error analyzing opportunities:', error);
+          showError('Failed to analyze opportunities');
+        }
+      }
+
+      function refreshCampaigns() {
+        loadDashboardData();
+      }
+
+      function refreshOpportunities() {
+        loadDashboardData();
+      }
+
+      function filterCampaigns(status) {
+        currentCampaignFilter = status;//Update active button
+        document.querySelectorAll('.btn-group button').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        event.target.classList.add('active');//Filter and display campaigns
+        const campaigns = dashboardData.active_campaigns || [];
+        const filtered = status === 'all' ? campaigns : campaigns.filter(c => c.status === status);
+        updateCampaignsList(filtered);
+      }
+
+      function updateCampaignsList(campaigns) {
+        const container = document.getElementById('campaignsList');
+
+        if (campaigns.length === 0) {
+          container.innerHTML = '<div class="alert alert-info">No campaigns found for the selected filter.</div>';
+          return;
+        }
+
+        container.innerHTML = campaigns
+          .map(
+            campaign => `
+                <div class="campaign-card priority-${campaign.priority}">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h5 class="mb-1">${campaign.subject}</h5>
+                            <p class="text-muted mb-2">${campaign.collaboration_type.replace('_', ' ')}</p>
+                            <div class="collaboration-type">${campaign.collaboration_type.replace('_', ' ').toUpperCase()}</div>
+                        </div>
+                        <div class="text-end">
+                            <span class="status-badge status-${campaign.status}">${campaign.status}</span>
+                            <div class="mt-2">
+                                <span class="badge bg-info">${(campaign.success_probability * 100).toFixed(0)}% success</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <small class="text-muted">
+                                Created: ${formatDate(campaign.created_at)}
+                            </small>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <small class="text-muted">
+                                ${campaign.sent_date ? `Sent: ${formatDate(campaign.sent_date)}` : 'Not sent yet'}
+                            </small>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <button class="btn btn-outline-primary btn-sm me-2" onclick="viewCampaign('${campaign.campaign_id}')">
+                            <i class="fas fa-eye me-1"></i>View
+                        </button>
+                        ${
+                          campaign.status === 'pending'
+                            ? `
+                            <button class="btn btn-primary btn-sm" onclick="sendCampaign('${campaign.campaign_id}')">
+                                <i class="fas fa-paper-plane me-1"></i>Send
+                            </button>
+                        `
+                            : ''
+                        }
+                    </div>
+                </div>
+            `
+          )
+          .join('');
+      }//Utility functions
+      function formatNumber(num) {
+        if (num >= 1000000) {
+          return (num/1000000).toFixed(1) + 'M';
+        } else if (num >= 1000) {
+          return (num/1000).toFixed(1) + 'K';
+        }
+        return num.toString();
+      }
+
+      function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString();
+      }
+
+      function getScoreClass(score) {
+        if (score >= 0.7) return 'score-high';
+        if (score >= 0.5) return 'score-medium';
+        return 'score-low';
+      }
+
+      function showError(message) {//Simple error display - could be enhanced with a modal or toast
+        console.error(message);
+        alert(message);
+      }
+
+      function showOpportunityModal(opportunities) {//Simple alert for now - could be enhanced with a proper modal
+        const summary = opportunities
+          .map(opp => `${opp.collaboration_type}: ${(opp.success_probability * 100).toFixed(0)}% success probability`)
+          .join('\n');
+
+        alert(`Collaboration Opportunities:\n\n${summary}`);
+      }
+
+      function viewCampaign(campaignId) {//Simple alert for now - could be enhanced with a detailed view
+        alert(`Viewing campaign: ${campaignId}`);
+      }
+
+      function sendCampaign(campaignId) {
+        if (confirm('Are you sure you want to send this campaign?')) {//API call to send campaign
+          fetch(`/api/collaboration-outreach/send-campaign`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ campaign_id: campaignId }),
+          })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                alert('Campaign sent successfully!');
+                refreshCampaigns();
+              } else {
+                alert('Failed to send campaign: ' + data.error);
+              }
+            })
+            .catch(error => {
+              console.error('Error sending campaign:', error);
+              alert('Failed to send campaign');
+            });
+        }
+      }
+    </script>
+  </body>
+</html>

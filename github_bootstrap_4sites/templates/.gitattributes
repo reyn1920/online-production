@@ -1,0 +1,6 @@
+* text=auto eol=lf
+*.sh text eol=lf
+*.py linguist-language=Python
+*.js linguist-language=JavaScript
+*.ts linguist-language=TypeScript
+*.md linguist-language=Markdown

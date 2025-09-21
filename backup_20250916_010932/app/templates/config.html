@@ -1,0 +1,660 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>System Configuration - TRAE.AI Dashboard</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      }
+
+      .header h1 {
+        color: #2d3748;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+      }
+
+      .header p {
+        color: #718096;
+        font-size: 1.1rem;
+      }
+
+      .nav-link {
+        display: inline-block;
+        margin-top: 15px;
+        padding: 10px 20px;
+        background: #4299e1;
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: background 0.3s;
+      }
+
+      .nav-link:hover {
+        background: #3182ce;
+      }
+
+      .config-form {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      }
+
+      .config-section {
+        margin-bottom: 30px;
+        padding-bottom: 25px;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      .config-section:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+      }
+
+      .section-title {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+      }
+
+      .section-icon {
+        width: 24px;
+        height: 24px;
+        margin-right: 10px;
+        opacity: 0.7;
+      }
+
+      .toggle-group {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 15px;
+      }
+
+      .toggle-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        background: #f7fafc;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+      }
+
+      .toggle-info {
+        flex: 1;
+      }
+
+      .toggle-label {
+        font-weight: 500;
+        color: #2d3748;
+        margin-bottom: 5px;
+      }
+
+      .toggle-description {
+        font-size: 0.9rem;
+        color: #718096;
+      }
+
+      .toggle-switch {
+        position: relative;
+        width: 50px;
+        height: 24px;
+        margin-left: 15px;
+      }
+
+      .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #cbd5e0;
+        transition: 0.3s;
+        border-radius: 24px;
+      }
+
+      .slider:before {
+        position: absolute;
+        content: '';
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: 0.3s;
+        border-radius: 50%;
+      }
+
+      input:checked + .slider {
+        background-color: #48bb78;
+      }
+
+      input:checked + .slider:before {
+        transform: translateX(26px);
+      }
+
+      .save-button {
+        width: 100%;
+        padding: 15px;
+        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-top: 30px;
+      }
+
+      .save-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(72, 187, 120, 0.3);
+      }
+
+      .save-button:disabled {
+        background: #a0aec0;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 10px;
+        color: white;
+        font-weight: 500;
+        z-index: 1000;
+        transform: translateX(400px);
+        transition: transform 0.3s;
+      }
+
+      .notification.show {
+        transform: translateX(0);
+      }
+
+      .notification.success {
+        background: #48bb78;
+      }
+
+      .notification.error {
+        background: #f56565;
+      }
+
+      .loading {
+        display: none;
+        text-align: center;
+        padding: 20px;
+      }
+
+      .spinner {
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #4299e1;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 10px;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .header h1 {
+          font-size: 2rem;
+        }
+
+        .toggle-group {
+          grid-template-columns: 1fr;
+        }
+
+        .toggle-item {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+        }
+
+        .toggle-switch {
+          margin-left: 0;
+          align-self: flex-end;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>System Configuration & Toggles</h1>
+        <p>Manage your TRAE.AI system settings and feature toggles</p>
+        <a href="/" class="nav-link">← Back to Dashboard</a>
+      </div>
+
+      <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Loading configuration...</p>
+      </div>
+
+      <form class="config-form" id="configForm" style="display: none">
+        <!-- Autonomous Mode Section -->
+        <div class="config-section">
+          <h2 class="section-title">
+            <svg class="section-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Autonomous Mode
+          </h2>
+          <div class="toggle-group">
+            <div class="toggle-item">
+              <div class="toggle-info">
+                <div class="toggle-label">Master Automation</div>
+                <div class="toggle-description">Enable global autonomous operation with minimal human intervention</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="master_automation"/>
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="toggle-item">
+              <div class="toggle-info">
+                <div class="toggle-label">Community Building</div>
+                <div class="toggle-description">Automated engagement and community management across platforms</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="community_building"/>
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="toggle-item">
+              <div class="toggle-info">
+                <div class="toggle-label">Direct Monetization Services</div>
+                <div class="toggle-description">AI-powered SEO audits and automated graphics generation services</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="direct_monetization_services"/>
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="toggle-item">
+              <div class="toggle-info">
+                <div class="toggle-label">Predictive Analytics</div>
+                <div class="toggle-description">Content success prediction and viral potential scoring</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="predictive_analytics"/>
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="toggle-item">
+              <div class="toggle-info">
+                <div class="toggle-label">Collaboration Outreach</div>
+                <div class="toggle-description">Automated creator identification and partnership outreach</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="collaboration_outreach"/>
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="toggle-item">
+              <div class="toggle-info">
+                <div class="toggle-label">Proactive Niche Domination</div>
+                <div class="toggle-description">Autonomous market analysis and competitive positioning</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="proactive_niche_domination"/>
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="toggle-item">
+              <div class="toggle-info">
+                <div class="toggle-label">Content Format Evolution</div>
+                <div class="toggle-description">Adaptive content format optimization based on performance</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="content_format_evolution"/>
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="toggle-item">
+              <div class="toggle-info">
+                <div class="toggle-label">Automated Self-Repair</div>
+                <div class="toggle-description">System self-diagnosis and automatic issue resolution</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="automated_self_repair"/>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Monetization Section -->
+        <div class="config-section">
+          <h2 class="section-title">
+            <svg class="section-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Monetization Features
+          </h2>
+          <div class="toggle-group">
+            <div class="toggle-item">
+              <div class="toggle-info">
+                <div class="toggle-label">Affiliate Marketing</div>
+                <div class="toggle-description">Enable affiliate link integration and commission tracking</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="affiliate_marketing"/>
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="toggle-item">
+              <div class="toggle-info">
+                <div class="toggle-label">Sponsored Content</div>
+                <div class="toggle-description">Allow sponsored posts and branded content creation</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="sponsored_content"/>
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="toggle-item">
+              <div class="toggle-info">
+                <div class="toggle-label">Premium Features</div>
+                <div class="toggle-description">Enable premium feature access and restrictions</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="premium_features"/>
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="toggle-item">
+              <div class="toggle-info">
+                <div class="toggle-label">Subscription Model</div>
+                <div class="toggle-description">Enable recurring subscription billing and management</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="subscription_model"/>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Content Generation Section -->
+        <div class="config-section">
+          <h2 class="section-title">
+            <svg class="section-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+            </svg>
+            Content Generation
+          </h2>
+          <div class="toggle-group">
+            <div class="toggle-item">
+              <div class="toggle-info">
+                <div class="toggle-label">Auto-Posting</div>
+                <div class="toggle-description">Automatically publish generated content to connected platforms</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="auto_posting"/>
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="toggle-item">
+              <div class="toggle-info">
+                <div class="toggle-label">Content Optimization</div>
+                <div class="toggle-description">Apply AI-powered optimization to improve content quality</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="content_optimization"/>
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="toggle-item">
+              <div class="toggle-info">
+                <div class="toggle-label">SEO Enhancement</div>
+                <div class="toggle-description">Automatically optimize content for search engines</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="seo_enhancement"/>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- System Settings Section -->
+        <div class="config-section">
+          <h2 class="section-title">
+            <svg class="section-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
+                clip-rule="evenodd"/>
+            </svg>
+            System Settings
+          </h2>
+          <div class="toggle-group">
+            <div class="toggle-item">
+              <div class="toggle-info">
+                <div class="toggle-label">Debug Mode</div>
+                <div class="toggle-description">Enable detailed logging and debugging information</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="debug_mode"/>
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="toggle-item">
+              <div class="toggle-info">
+                <div class="toggle-label">Performance Monitoring</div>
+                <div class="toggle-description">Track system performance metrics and analytics</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="performance_monitoring"/>
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="toggle-item">
+              <div class="toggle-info">
+                <div class="toggle-label">Auto-Backup</div>
+                <div class="toggle-description">Automatically backup system data and configurations</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="auto_backup"/>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="save-button" id="saveButton">Save Changes</button>
+      </form>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+      let currentConfig = {};//Load configuration on page load
+      document.addEventListener('DOMContentLoaded', function () {
+        loadConfiguration();
+      });//Load current configuration
+      async function loadConfiguration() {
+        try {
+          const response = await fetch("/api/config');
+          const data = await response.json();
+
+          if (response.ok) {
+            currentConfig = data.config;
+            populateForm(currentConfig);
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('configForm').style.display = 'block';
+          } else {
+            throw new Error(data.error || 'Failed to load configuration');
+          }
+        } catch (error) {
+          console.error('Error loading configuration:', error);
+          showNotification('Failed to load configuration: ' + error.message, 'error');
+          document.getElementById('loading').style.display = 'none';
+        }
+      }//Populate form with configuration data
+      function populateForm(config) {//Master automation
+        document.getElementById('master_automation').checked = config.master_automation || false;//Autonomous directives
+        if (config.toggles && config.toggles.autonomous_directives) {
+          const directives = config.toggles.autonomous_directives;
+          document.getElementById('community_building').checked = directives.community_building_enabled || false;
+          document.getElementById('direct_monetization_services').checked =
+            directives.direct_monetization_services_enabled || false;
+          document.getElementById('predictive_analytics').checked = directives.predictive_analytics_enabled || false;
+          document.getElementById('collaboration_outreach').checked =
+            directives.collaboration_outreach_enabled || false;
+          document.getElementById('proactive_niche_domination').checked =
+            directives.proactive_niche_domination_enabled || false;
+          document.getElementById('content_format_evolution').checked =
+            directives.content_format_evolution_enabled || false;
+          document.getElementById('automated_self_repair').checked = directives.automated_self_repair_enabled || false;
+        }//Monetization settings
+        if (config.monetization) {
+          document.getElementById('affiliate_marketing').checked = config.monetization.affiliate_marketing || false;
+          document.getElementById('sponsored_content').checked = config.monetization.sponsored_content || false;
+          document.getElementById('premium_features').checked = config.monetization.premium_features || false;
+          document.getElementById('subscription_model').checked = config.monetization.subscription_model || false;
+        }//Content generation settings
+        if (config.content_generation) {
+          document.getElementById('auto_posting').checked = config.content_generation.auto_posting || false;
+          document.getElementById('content_optimization').checked =
+            config.content_generation.content_optimization || false;
+          document.getElementById('seo_enhancement').checked = config.content_generation.seo_enhancement || false;
+        }//System settings
+        if (config.system) {
+          document.getElementById('debug_mode').checked = config.system.debug_mode || false;
+          document.getElementById('performance_monitoring').checked = config.system.performance_monitoring || false;
+          document.getElementById('auto_backup').checked = config.system.auto_backup || false;
+        }
+      }//Handle form submission
+      document.getElementById('configForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const saveButton = document.getElementById('saveButton');
+        saveButton.disabled = true;
+        saveButton.textContent = 'Saving...';
+
+        try {
+          const formData = collectFormData();
+
+          const response = await fetch("/api/config/update', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            showNotification('Configuration saved successfully!', 'success');
+            currentConfig = { ...currentConfig, ...formData };
+          } else {
+            throw new Error(data.error || 'Failed to save configuration');
+          }
+        } catch (error) {
+          console.error('Error saving configuration:', error);
+          showNotification('Failed to save configuration: ' + error.message, 'error');
+        } finally {
+          saveButton.disabled = false;
+          saveButton.textContent = 'Save Changes';
+        }
+      });//Collect form data
+      function collectFormData() {
+        return {
+          master_automation: document.getElementById('master_automation').checked,
+          toggles: {
+            autonomous_directives: {
+              community_building_enabled: document.getElementById('community_building').checked,
+              direct_monetization_services_enabled: document.getElementById('direct_monetization_services').checked,
+              predictive_analytics_enabled: document.getElementById('predictive_analytics').checked,
+              collaboration_outreach_enabled: document.getElementById('collaboration_outreach').checked,
+              proactive_niche_domination_enabled: document.getElementById('proactive_niche_domination').checked,
+              content_format_evolution_enabled: document.getElementById('content_format_evolution').checked,
+              automated_self_repair_enabled: document.getElementById('automated_self_repair').checked,
+            },
+          },
+          monetization: {
+            affiliate_marketing: document.getElementById('affiliate_marketing').checked,
+            sponsored_content: document.getElementById('sponsored_content').checked,
+            premium_features: document.getElementById('premium_features').checked,
+            subscription_model: document.getElementById('subscription_model').checked,
+          },
+          content_generation: {
+            auto_posting: document.getElementById('auto_posting').checked,
+            content_optimization: document.getElementById('content_optimization').checked,
+            seo_enhancement: document.getElementById('seo_enhancement').checked,
+          },
+          system: {
+            debug_mode: document.getElementById('debug_mode').checked,
+            performance_monitoring: document.getElementById('performance_monitoring').checked,
+            auto_backup: document.getElementById('auto_backup').checked,
+          },
+        };
+      }//Show notification
+      function showNotification(message, type) {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.className = `notification ${type}`;
+        notification.classList.add('show');
+
+        setTimeout(() => {
+          notification.classList.remove('show');
+        }, 4000);
+      }
+    </script>
+  </body>
+</html>

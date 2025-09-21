@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TDD Agent Testing Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
+        }
+
+        .panel h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .control-group input, .control-group select, .control-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .control-group input:focus, .control-group select:focus, .control-group textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .control-group textarea {
+            resize: vertical;
+            min-height: 120px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn.danger {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .btn.danger:hover {
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+
+        .btn.success {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+        }
+
+        .btn.success:hover {
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-idle { background-color: #95a5a6; }
+        .status-running { background-color: #f39c12; animation: pulse 1.5s infinite; }
+        .status-success { background-color: #27ae60; }
+        .status-error { background-color: #e74c3c; }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .output-area {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            margin-top: 15px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+        }
+
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .test-results {
+            margin-top: 20px;
+        }
+
+        .test-item {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .test-item:hover {
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .test-item.passed {
+            border-left: 4px solid #27ae60;
+        }
+
+        .test-item.failed {
+            border-left: 4px solid #e74c3c;
+        }
+
+        .test-item.warning {
+            border-left: 4px solid #f39c12;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .code-preview {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2980b9);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 TDD Agent Testing Dashboard</h1>
+            <p>Test-Driven Development Agent Validation & Testing Suite</p>
+        </div>
+
+        <div class="main-content">
+            <!-- TDD Agent Controls -->
+            <div class="panel">
+                <h2>🚀 TDD Agent Controls</h2>
+                
+                <div class="control-group">
+                    <label for="projectPath">Project Path:</label>
+                    <input type="text" id="projectPath" value="/Users/thomasbrianreynolds/online production" placeholder="Enter project root path">
+                </div>
+
+                <div class="control-group">
+                    <label for="testCommand">Test Command:</label>
+                    <select id="testCommand">
+                        <option value="python3 -m pytest tests/">pytest tests/</option>
+                        <option value="python3 -m pytest tests/ -v">pytest tests/ (verbose)</option>
+                        <option value="python3 -m pytest tests/ --tb=short">pytest tests/ (short traceback)</option>
+                        <option value="python3 -m pytest --collect-only">pytest --collect-only</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="mockMode">Code Generator Mode:</label>
+                    <select id="mockMode">
+                        <option value="mock">Mock Mode (No API)</option>
+                        <option value="openai">OpenAI API Mode</option>
+                    </select>
+                </div>
+
+                <div style="margin-top: 25px;">
+                    <button class="btn" id="runTestsBtn" onclick="runFailingTests()">
+                        <span class="status-indicator status-idle" id="testStatus"></span>
+                        Run Failing Tests
+                    </button>
+                    <button class="btn success" id="fixFailuresBtn" onclick="fixFailures()">
+                        <span class="status-indicator status-idle" id="fixStatus"></span>
+                        Fix Failures
+                    </button>
+                    <button class="btn danger" id="clearOutputBtn" onclick="clearOutput()">
+                        Clear Output
+                    </button>
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+
+                <div class="output-area" id="testOutput">
+                    🔬 TDD Agent Testing Dashboard Ready
+                    
+                    Available Commands:
+                    • Run Failing Tests - Execute pytest and capture failures
+                    • Fix Failures - Generate code fixes using AI
+                    • Clear Output - Reset the output area
+                    
+                    Status: Idle
+                </div>
+            </div>
+
+            <!-- Test Results & Metrics -->
+            <div class="panel">
+                <h2>📊 Test Results & Metrics</h2>
+                
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value" id="totalTests">0</div>
+                        <div class="metric-label">Total Tests</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="passedTests">0</div>
+                        <div class="metric-label">Passed</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="failedTests">0</div>
+                        <div class="metric-label">Failed</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="executionTime">0s</div>
+                        <div class="metric-label">Execution Time</div>
+                    </div>
+                </div>
+
+                <div class="test-results" id="testResults">
+                    <div class="test-item">
+                        <strong>🔍 Test Discovery</strong><br>
+                        <small>No tests executed yet. Click "Run Failing Tests" to begin.</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Code Generation Panel -->
+            <div class="panel full-width">
+                <h2>🤖 Code Generation & TDD Cycle</h2>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div>
+                        <div class="control-group">
+                            <label for="customPrompt">Custom TDD Prompt:</label>
+                            <textarea id="customPrompt" placeholder="Enter custom prompt for code generation...">You are an expert Test-Driven Development AI. Based on the following pytest failure log, identify the first major failure and write the specific, minimal Python code required to fix ONLY that first failure.</textarea>
+                        </div>
+                        
+                        <button class="btn" onclick="generateCode()">
+                            <span class="status-indicator status-idle" id="genStatus"></span>
+                            Generate Code Fix
+                        </button>
+                        <button class="btn success" onclick="simulateTDDCycle()">
+                            🔄 Simulate Full TDD Cycle
+                        </button>
+                    </div>
+                    
+                    <div>
+                        <label>Generated Code Preview:</label>
+                        <div class="code-preview" id="codePreview">
+                            # Generated code will appear here
+                            # Click "Generate Code Fix" to see AI-generated solutions
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state management
+        let tddState = {
+            isRunning: false,
+            currentStep: 'idle',
+            testResults: [],
+            generatedCode: '',
+            metrics: {
+                totalTests: 0,
+                passedTests: 0,
+                failedTests: 0,
+                executionTime: 0
+            }
+        };
+
+        // Utility functions
+        function updateStatus(elementId, status) {
+            const element = document.getElementById(elementId);
+            element.className = `status-indicator status-${status}`;
+        }
+
+        function updateProgress(percentage) {
+            document.getElementById('progressFill').style.width = `${percentage}%`;
+        }
+
+        function appendOutput(message, type = 'info') {
+            const output = document.getElementById('testOutput');
+            const timestamp = new Date().toLocaleTimeString();
+            const prefix = type === 'error' ? '❌' : type === 'success' ? '✅' : type === 'warning' ? '⚠️' : '🔍';
+            output.textContent += `\n[${timestamp}] ${prefix} ${message}`;
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function updateMetrics() {
+            document.getElementById('totalTests').textContent = tddState.metrics.totalTests;
+            document.getElementById('passedTests').textContent = tddState.metrics.passedTests;
+            document.getElementById('failedTests').textContent = tddState.metrics.failedTests;
+            document.getElementById('executionTime').textContent = `${tddState.metrics.executionTime}s`;
+        }
+
+        // Mock TDD Agent functions (simulating the actual Python implementation)
+        async function runFailingTests() {
+            if (tddState.isRunning) return;
+            
+            tddState.isRunning = true;
+            tddState.currentStep = 'testing';
+            updateStatus('testStatus', 'running');
+            updateProgress(25);
+            
+            appendOutput('Starting TDD Agent test execution...', 'info');
+            appendOutput(`Project Path: ${document.getElementById('projectPath').value}`, 'info');
+            appendOutput(`Command: ${document.getElementById('testCommand').value}`, 'info');
+            
+            // Simulate test execution delay
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // Mock test results
+            const mockResults = {
+                totalTests: 8,
+                passedTests: 5,
+                failedTests: 3,
+                executionTime: 1.2,
+                failures: [
+                    {
+                        test: 'test_service_registry_register',
+                        error: "AttributeError: 'ServiceRegistry' object has no attribute 'register'",
+                        file: 'tests/test_service_registry.py',
+                        line: 15
+                    },
+                    {
+                        test: 'test_content_generator_create',
+                        error: "ImportError: cannot import name 'ContentGenerator' from 'trae_ai.agents'",
+                        file: 'tests/test_content_generator.py',
+                        line: 3
+                    },
+                    {
+                        test: 'test_tdd_agent_integration',
+                        error: "ModuleNotFoundError: No module named 'pytest'",
+                        file: 'tests/test_tdd_agent.py',
+                        line: 1
+                    }
+                ]
+            };
+            
+            tddState.metrics = mockResults;
+            updateMetrics();
+            updateProgress(100);
+            
+            appendOutput(`Test execution completed in ${mockResults.executionTime}s`, 'success');
+            appendOutput(`Found ${mockResults.failedTests} failing tests:`, 'warning');
+            
+            mockResults.failures.forEach((failure, index) => {
+                appendOutput(`${index + 1}. ${failure.test}: ${failure.error}`, 'error');
+            });
+            
+            // Update test results display
+            updateTestResultsDisplay(mockResults.failures);
+            
+            updateStatus('testStatus', mockResults.failedTests > 0 ? 'error' : 'success');
+            tddState.isRunning = false;
+            tddState.currentStep = 'ready_for_fix';
+        }
+
+        function updateTestResultsDisplay(failures) {
+            const resultsContainer = document.getElementById('testResults');
+            resultsContainer.innerHTML = '';
+            
+            failures.forEach((failure, index) => {
+                const testItem = document.createElement('div');
+                testItem.className = 'test-item failed';
+                testItem.innerHTML = `
+                    <strong>❌ ${failure.test}</strong><br>
+                    <small><strong>Error:</strong> ${failure.error}</small><br>
+                    <small><strong>Location:</strong> ${failure.file}:${failure.line}</small>
+                `;
+                resultsContainer.appendChild(testItem);
+            });
+        }
+
+        async function fixFailures() {
+            if (tddState.isRunning || tddState.currentStep !== 'ready_for_fix') {
+                appendOutput('Please run failing tests first', 'warning');
+                return;
+            }
+            
+            tddState.isRunning = true;
+            updateStatus('fixStatus', 'running');
+            updateProgress(0);
+            
+            appendOutput('Starting code generation to fix failures...', 'info');
+            appendOutput(`Mode: ${document.getElementById('mockMode').value}`, 'info');
+            
+            // Simulate AI code generation
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            updateProgress(50);
+            
+            const mockGeneratedCode = `# Generated fix for ServiceRegistry.register method
+class ServiceRegistry:
+    def __init__(self):
+        self._services = {}
+    
+    def register(self, name: str, service_instance):
+        """Register a service instance with the given name."""
+        if not name:
+            raise ValueError("Service name cannot be empty")
+        
+        self._services[name] = service_instance
+        print(f"✅ Registered service: {name}")
+        return service_instance
+    
+    def get(self, name: str):
+        """Retrieve a registered service by name."""
+        if name not in self._services:
+            raise KeyError(f"Service '{name}' not found")
+        return self._services[name]`;
+            
+            tddState.generatedCode = mockGeneratedCode;
+            document.getElementById('codePreview').textContent = mockGeneratedCode;
+            
+            updateProgress(100);
+            appendOutput('Code generation completed successfully!', 'success');
+            appendOutput('Generated fix for ServiceRegistry.register method', 'success');
+            appendOutput('Review the generated code in the preview panel', 'info');
+            
+            updateStatus('fixStatus', 'success');
+            tddState.isRunning = false;
+            tddState.currentStep = 'code_generated';
+        }
+
+        async function generateCode() {
+            updateStatus('genStatus', 'running');
+            appendOutput('Generating custom code based on prompt...', 'info');
+            
+            const customPrompt = document.getElementById('customPrompt').value;
+            appendOutput(`Using prompt: ${customPrompt.substring(0, 100)}...`, 'info');
+            
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            const mockCode = `# Custom generated code based on TDD principles
+def fix_test_failure():
+    """
+    Minimal implementation to make the failing test pass.
+    This follows TDD best practices of writing just enough code.
+    """
+    pass
+
+# Additional helper functions as needed
+class TestHelper:
+    @staticmethod
+    def validate_input(data):
+        return data is not None and len(str(data)) > 0`;
+            
+            document.getElementById('codePreview').textContent = mockCode;
+            appendOutput('Custom code generation completed', 'success');
+            updateStatus('genStatus', 'success');
+        }
+
+        async function simulateTDDCycle() {
+            appendOutput('🔄 Starting full TDD cycle simulation...', 'info');
+            
+            // Step 1: Run tests
+            appendOutput('Step 1: Running tests to identify failures', 'info');
+            await runFailingTests();
+            
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Step 2: Generate fixes
+            appendOutput('Step 2: Generating code fixes', 'info');
+            await fixFailures();
+            
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Step 3: Simulate re-running tests
+            appendOutput('Step 3: Re-running tests to verify fixes', 'info');
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // Mock improved results
+            tddState.metrics.failedTests = 1;
+            tddState.metrics.passedTests = 7;
+            updateMetrics();
+            
+            appendOutput('🎉 TDD Cycle completed! Reduced failures from 3 to 1', 'success');
+            appendOutput('Next iteration would focus on remaining failure', 'info');
+        }
+
+        function clearOutput() {
+            document.getElementById('testOutput').textContent = '🔬 TDD Agent Testing Dashboard Ready\n\nOutput cleared. Ready for new test execution.';
+            document.getElementById('codePreview').textContent = '# Generated code will appear here\n# Click "Generate Code Fix" to see AI-generated solutions';
+            
+            // Reset all status indicators
+            updateStatus('testStatus', 'idle');
+            updateStatus('fixStatus', 'idle');
+            updateStatus('genStatus', 'idle');
+            updateProgress(0);
+            
+            // Reset state
+            tddState = {
+                isRunning: false,
+                currentStep: 'idle',
+                testResults: [],
+                generatedCode: '',
+                metrics: { totalTests: 0, passedTests: 0, failedTests: 0, executionTime: 0 }
+            };
+            updateMetrics();
+            
+            // Clear test results
+            document.getElementById('testResults').innerHTML = `
+                <div class="test-item">
+                    <strong>🔍 Test Discovery</strong><br>
+                    <small>No tests executed yet. Click "Run Failing Tests" to begin.</small>
+                </div>
+            `;
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            appendOutput('TDD Agent Testing Dashboard initialized', 'success');
+            appendOutput('Ready to test TDD Agent functionality', 'info');
+            updateMetrics();
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 't':
+                        e.preventDefault();
+                        runFailingTests();
+                        break;
+                    case 'f':
+                        e.preventDefault();
+                        fixFailures();
+                        break;
+                    case 'k':
+                        e.preventDefault();
+                        clearOutput();
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

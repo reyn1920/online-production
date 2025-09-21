@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Scraping Dashboard - TRAE.AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+
+        .tab {
+            padding: 15px 25px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            color: #7f8c8d;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            color: #3498db;
+            border-bottom-color: #3498db;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ecf0f1;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+
+        .results-container {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+        }
+
+        .task-item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #3498db;
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .task-id {
+            font-family: monospace;
+            background: #ecf0f1;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        .status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .status.pending {
+            background: #f39c12;
+            color: white;
+        }
+
+        .status.running {
+            background: #3498db;
+            color: white;
+        }
+
+        .status.completed {
+            background: #27ae60;
+            color: white;
+        }
+
+        .status.failed {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .json-viewer {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+
+        .alert.success {
+            background: #d4edda;
+            border-color: #27ae60;
+            color: #155724;
+        }
+
+        .alert.error {
+            background: #f8d7da;
+            border-color: #e74c3c;
+            color: #721c24;
+        }
+
+        .alert.info {
+            background: #d1ecf1;
+            border-color: #3498db;
+            color: #0c5460;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🕷️ Web Scraping Dashboard</h1>
+            <p>Advanced web scraping with proxy support, caching, and extraction rules</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('scrape')">Single URL Scrape</button>
+            <button class="tab" onclick="showTab('bulk')">Bulk Scraping</button>
+            <button class="tab" onclick="showTab('tasks')">Task Management</button>
+            <button class="tab" onclick="showTab('config')">Configuration</button>
+        </div>
+
+        <!-- Single URL Scraping Tab -->
+        <div id="scrape" class="tab-content active">
+            <h3>Single URL Scraping</h3>
+            <form id="scrapeForm">
+                <div class="form-group">
+                    <label for="url">Target URL:</label>
+                    <input type="url" id="url" name="url" placeholder="https://example.com" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="method">Scraping Method:</label>
+                        <select id="method" name="method">
+                            <option value="REQUESTS">Requests (Fast)</option>
+                            <option value="SELENIUM">Selenium (JavaScript)</option>
+                            <option value="HYBRID">Hybrid (Smart)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="timeout">Timeout (seconds):</label>
+                        <input type="number" id="timeout" name="timeout" value="30" min="5" max="300">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="useProxy" name="useProxy"> Use Proxy
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="cacheEnabled" name="cacheEnabled" checked> Enable Caching
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="extractionRules">Extraction Rules (JSON):</label>
+                    <textarea id="extractionRules" name="extractionRules" rows="4" placeholder='[{"name": "title", "selector": "h1", "attribute": "text"}]'></textarea>
+                </div>
+
+                <button type="submit" class="btn">Start Scraping</button>
+                <button type="button" class="btn btn-secondary" onclick="clearForm()">Clear Form</button>
+            </form>
+        </div>
+
+        <!-- Bulk Scraping Tab -->
+        <div id="bulk" class="tab-content">
+            <h3>Bulk URL Scraping</h3>
+            <form id="bulkScrapeForm">
+                <div class="form-group">
+                    <label for="bulkUrls">URLs (one per line):</label>
+                    <textarea id="bulkUrls" name="bulkUrls" rows="6" placeholder="https://example1.com&#10;https://example2.com&#10;https://example3.com" required></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bulkMethod">Scraping Method:</label>
+                        <select id="bulkMethod" name="bulkMethod">
+                            <option value="REQUESTS">Requests (Fast)</option>
+                            <option value="SELENIUM">Selenium (JavaScript)</option>
+                            <option value="HYBRID">Hybrid (Smart)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="concurrentLimit">Concurrent Limit:</label>
+                        <input type="number" id="concurrentLimit" name="concurrentLimit" value="5" min="1" max="20">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn">Start Bulk Scraping</button>
+                <button type="button" class="btn btn-secondary" onclick="clearBulkForm()">Clear Form</button>
+            </form>
+        </div>
+
+        <!-- Task Management Tab -->
+        <div id="tasks" class="tab-content">
+            <h3>Task Management</h3>
+            <div style="margin-bottom: 20px;">
+                <button class="btn" onclick="refreshTasks()">Refresh Tasks</button>
+                <button class="btn btn-secondary" onclick="clearCompletedTasks()">Clear Completed</button>
+                <button class="btn btn-danger" onclick="clearAllTasks()">Clear All Tasks</button>
+            </div>
+            <div id="tasksList"></div>
+        </div>
+
+        <!-- Configuration Tab -->
+        <div id="config" class="tab-content">
+            <h3>Scraping Configuration</h3>
+            <form id="configForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="configMethod">Default Method:</label>
+                        <select id="configMethod" name="configMethod">
+                            <option value="REQUESTS">Requests</option>
+                            <option value="SELENIUM">Selenium</option>
+                            <option value="HYBRID">Hybrid</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="configTimeout">Default Timeout:</label>
+                        <input type="number" id="configTimeout" name="configTimeout" value="30" min="5" max="300">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="configProxyEnabled" name="configProxyEnabled"> Enable Proxy by Default
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="configCacheEnabled" name="configCacheEnabled" checked> Enable Caching by Default
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="proxyList">Proxy List (one per line):</label>
+                    <textarea id="proxyList" name="proxyList" rows="4" placeholder="http://proxy1:8080&#10;http://proxy2:8080"></textarea>
+                </div>
+
+                <button type="submit" class="btn">Update Configuration</button>
+                <button type="button" class="btn btn-secondary" onclick="loadCurrentConfig()">Load Current Config</button>
+            </form>
+        </div>
+
+        <!-- Results Container -->
+        <div id="resultsContainer" class="results-container" style="display: none;">
+            <h3>Results</h3>
+            <div id="results"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api/scrape';
+        let currentTasks = new Map();
+
+        // Tab management
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+
+            // Load tasks if tasks tab is selected
+            if (tabName === 'tasks') {
+                refreshTasks();
+            }
+        }
+
+        // Single URL scraping
+        document.getElementById('scrapeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(e.target);
+            const extractionRules = formData.get('extractionRules');
+
+            const requestData = {
+                url: formData.get('url'),
+                method: formData.get('method'),
+                use_proxy: formData.has('useProxy'),
+                cache_enabled: formData.has('cacheEnabled'),
+                timeout: parseInt(formData.get('timeout')),
+                extraction_rules: extractionRules ? JSON.parse(extractionRules) : null
+            };
+
+            try {
+                showResults('Starting scraping task...', 'info');
+                const response = await fetch(API_BASE, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showResults(`Task started successfully! Task ID: ${result.task_id}`, 'success');
+                    monitorTask(result.task_id);
+                } else {
+                    showResults(`Error: ${result.detail}`, 'error');
+                }
+            } catch (error) {
+                showResults(`Network error: ${error.message}`, 'error');
+            }
+        });
+
+        // Bulk scraping
+        document.getElementById('bulkScrapeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(e.target);
+            const urls = formData.get('bulkUrls').split('\n').filter(url => url.trim());
+
+            const requestData = {
+                urls: urls,
+                method: formData.get('bulkMethod'),
+                concurrent_limit: parseInt(formData.get('concurrentLimit'))
+            };
+
+            try {
+                showResults('Starting bulk scraping task...', 'info');
+                const response = await fetch(`${API_BASE}/bulk`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showResults(`Bulk task started! Task ID: ${result.task_id}`, 'success');
+                    monitorTask(result.task_id);
+                } else {
+                    showResults(`Error: ${result.detail}`, 'error');
+                }
+            } catch (error) {
+                showResults(`Network error: ${error.message}`, 'error');
+            }
+        });
+
+        // Configuration management
+        document.getElementById('configForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(e.target);
+            const proxyList = formData.get('proxyList').split('\n').filter(proxy => proxy.trim());
+
+            const configData = {
+                method: formData.get('configMethod'),
+                proxy_enabled: formData.has('configProxyEnabled'),
+                cache_enabled: formData.has('configCacheEnabled'),
+                timeout: parseInt(formData.get('configTimeout')),
+                proxy_list: proxyList.length > 0 ? proxyList : null
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/config`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(configData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showResults('Configuration updated successfully!', 'success');
+                } else {
+                    showResults(`Error: ${result.detail}`, 'error');
+                }
+            } catch (error) {
+                showResults(`Network error: ${error.message}`, 'error');
+            }
+        });
+
+        // Task monitoring
+        async function monitorTask(taskId) {
+            const checkStatus = async () => {
+                try {
+                    const response = await fetch(`${API_BASE}/status/${taskId}`);
+                    const status = await response.json();
+
+                    if (status.status === 'completed') {
+                        // Get the result
+                        const resultResponse = await fetch(`${API_BASE}/result/${taskId}`);
+                        const result = await resultResponse.json();
+
+                        showResults('Task completed!', 'success');
+                        displayResult(result);
+                    } else if (status.status === 'failed') {
+                        showResults(`Task failed: ${status.error_message}`, 'error');
+                    } else {
+                        // Still running, check again
+                        setTimeout(checkStatus, 2000);
+                    }
+                } catch (error) {
+                    showResults(`Error checking task status: ${error.message}`, 'error');
+                }
+            };
+
+            checkStatus();
+        }
+
+        // Task management
+        async function refreshTasks() {
+            try {
+                const response = await fetch(`${API_BASE}/tasks`);
+                const data = await response.json();
+
+                displayTasks(data.tasks);
+            } catch (error) {
+                showResults(`Error loading tasks: ${error.message}`, 'error');
+            }
+        }
+
+        function displayTasks(tasks) {
+            const tasksList = document.getElementById('tasksList');
+
+            if (tasks.length === 0) {
+                tasksList.innerHTML = '<p>No tasks found.</p>';
+                return;
+            }
+
+            tasksList.innerHTML = tasks.map(task => `
+                <div class="task-item">
+                    <div class="task-header">
+                        <span class="task-id">${task.task_id}</span>
+                        <span class="status ${task.status}">${task.status}</span>
+                    </div>
+                    <p><strong>URL:</strong> ${task.url || task.urls?.join(', ') || 'Bulk operation'}</p>
+                    <p><strong>Created:</strong> ${new Date(task.created_at).toLocaleString()}</p>
+                    ${task.completed_at ? `<p><strong>Completed:</strong> ${new Date(task.completed_at).toLocaleString()}</p>` : ''}
+                    ${task.error_message ? `<p><strong>Error:</strong> ${task.error_message}</p>` : ''}
+                    <div style="margin-top: 10px;">
+                        ${task.result_available ? `<button class="btn" onclick="viewResult('${task.task_id}')">View Result</button>` : ''}
+                        <button class="btn btn-danger" onclick="deleteTask('${task.task_id}')">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function viewResult(taskId) {
+            try {
+                const response = await fetch(`${API_BASE}/result/${taskId}`);
+                const result = await response.json();
+
+                displayResult(result);
+            } catch (error) {
+                showResults(`Error loading result: ${error.message}`, 'error');
+            }
+        }
+
+        async function deleteTask(taskId) {
+            if (!confirm('Are you sure you want to delete this task?')) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/tasks/${taskId}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    showResults('Task deleted successfully!', 'success');
+                    refreshTasks();
+                } else {
+                    const error = await response.json();
+                    showResults(`Error: ${error.detail}`, 'error');
+                }
+            } catch (error) {
+                showResults(`Network error: ${error.message}`, 'error');
+            }
+        }
+
+        async function clearAllTasks() {
+            if (!confirm('Are you sure you want to clear ALL tasks? This cannot be undone.')) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/clear`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ confirm: true })
+                });
+
+                if (response.ok) {
+                    showResults('All tasks cleared successfully!', 'success');
+                    refreshTasks();
+                } else {
+                    const error = await response.json();
+                    showResults(`Error: ${error.detail}`, 'error');
+                }
+            } catch (error) {
+                showResults(`Network error: ${error.message}`, 'error');
+            }
+        }
+
+        // Utility functions
+        function showResults(message, type = 'info') {
+            const container = document.getElementById('resultsContainer');
+            const results = document.getElementById('results');
+
+            container.style.display = 'block';
+            results.innerHTML = `<div class="alert ${type}">${message}</div>`;
+        }
+
+        function displayResult(result) {
+            const container = document.getElementById('resultsContainer');
+            const results = document.getElementById('results');
+
+            container.style.display = 'block';
+            results.innerHTML = `
+                <div class="alert success">Scraping completed successfully!</div>
+                <div class="json-viewer">${JSON.stringify(result, null, 2)}</div>
+            `;
+        }
+
+        function clearForm() {
+            document.getElementById('scrapeForm').reset();
+        }
+
+        function clearBulkForm() {
+            document.getElementById('bulkScrapeForm').reset();
+        }
+
+        async function loadCurrentConfig() {
+            try {
+                const response = await fetch(`${API_BASE}/config`);
+                const config = await response.json();
+
+                document.getElementById('configMethod').value = config.method;
+                document.getElementById('configTimeout').value = config.timeout;
+                document.getElementById('configProxyEnabled').checked = config.use_proxy;
+                document.getElementById('configCacheEnabled').checked = config.cache_enabled;
+
+                showResults('Current configuration loaded!', 'info');
+            } catch (error) {
+                showResults(`Error loading configuration: ${error.message}`, 'error');
+            }
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCurrentConfig();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+# TRAE.AI Test Runner Dockerfile
+# Comprehensive testing environment for CI/CD pipeline
+
+FROM python:3.11-slim
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    ENVIRONMENT=test \
+    USE_MOCK=true
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    git \
+    build-essential \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create app directory
+WORKDIR /app
+
+# Copy requirements files
+COPY requirements.txt .
+COPY content-agent/requirements.txt ./content-agent-requirements.txt
+COPY marketing-agent/requirements.txt ./marketing-agent-requirements.txt
+COPY monetization-bundle/requirements.txt ./monetization-bundle-requirements.txt
+COPY analytics-dashboard/requirements.txt ./analytics-dashboard-requirements.txt
+
+# Install Python dependencies
+RUN pip install --upgrade pip && \
+    pip install -r requirements.txt && \
+    pip install -r content-agent-requirements.txt && \
+    pip install -r marketing-agent-requirements.txt && \
+    pip install -r monetization-bundle-requirements.txt && \
+    pip install -r analytics-dashboard-requirements.txt
+
+# Install additional testing dependencies
+RUN pip install \
+    pytest==7.4.3 \
+    pytest-asyncio==0.21.1 \
+    pytest-cov==4.1.0 \
+    pytest-xdist==3.3.1 \
+    pytest-mock==3.12.0 \
+    httpx==0.25.2 \
+    requests==2.31.0 \
+    selenium==4.15.2 \
+    playwright==1.40.0 \
+    beautifulsoup4==4.12.2 \
+    Pillow==10.1.0 \
+    opencv-python-headless==4.8.1.78
+
+# Install Playwright browsers
+RUN playwright install chromium
+
+# Copy application code
+COPY . .
+
+# Create necessary directories
+RUN mkdir -p /app/test_output /app/logs /app/tests
+
+# Copy test files
+COPY tests/ /app/tests/
+
+# Set permissions
+RUN chmod +x /app/tests/*.py
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD python -c "import sys; sys.exit(0)"
+
+# Default command
+CMD ["python", "-m", "pytest", "tests/", "-v", "--tb=short", "--maxfail=5"]

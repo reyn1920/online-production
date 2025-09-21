@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Stealth Automation Agent - AI Content Empire</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body class="bg-gray-900 text-white min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-gray-800 border-b border-gray-700 px-6 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+          <a href="/" class="text-blue-400 hover:text-blue-300">
+            <i class="fas fa-arrow-left mr-2"></i>
+            Back to Dashboard
+          </a>
+          <h1 class="text-2xl font-bold text-white">
+            <i class="fas fa-user-secret mr-2 text-purple-400"></i>
+            Stealth Automation Agent
+          </h1>
+        </div>
+        <div class="flex items-center space-x-4">
+          <div class="flex items-center space-x-2">
+            <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+            <span class="text-sm text-gray-300">Active</span>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container mx-auto px-6 py-8">
+      <!-- Status Overview -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-400 text-sm">Active Tasks</p>
+              <p class="text-2xl font-bold text-white" id="activeTasks">--</p>
+            </div>
+            <div class="bg-blue-500 bg-opacity-20 p-3 rounded-lg">
+              <i class="fas fa-tasks text-blue-400 text-xl"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-400 text-sm">Success Rate</p>
+              <p class="text-2xl font-bold text-green-400" id="successRate">--</p>
+            </div>
+            <div class="bg-green-500 bg-opacity-20 p-3 rounded-lg">
+              <i class="fas fa-check-circle text-green-400 text-xl"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-400 text-sm">Stealth Score</p>
+              <p class="text-2xl font-bold text-purple-400" id="stealthScore">--</p>
+            </div>
+            <div class="bg-purple-500 bg-opacity-20 p-3 rounded-lg">
+              <i class="fas fa-mask text-purple-400 text-xl"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-400 text-sm">Detection Avoidance</p>
+              <p class="text-2xl font-bold text-yellow-400" id="detectionAvoidance">--</p>
+            </div>
+            <div class="bg-yellow-500 bg-opacity-20 p-3 rounded-lg">
+              <i class="fas fa-shield-alt text-yellow-400 text-xl"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Active Tasks -->
+        <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-xl font-semibold text-white">
+              <i class="fas fa-cogs mr-2 text-blue-400"></i>
+              Active Tasks
+            </h2>
+            <button
+              class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm transition-colors"
+              onclick="refreshTasks()"
+            >
+              <i class="fas fa-sync-alt mr-2"></i>
+              Refresh
+            </button>
+          </div>
+          <div id="activeTasks" class="space-y-4">
+            <!-- Tasks will be loaded here -->
+          </div>
+        </div>
+
+        <!-- Browser Sessions -->
+        <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+          <h2 class="text-xl font-semibold text-white mb-6">
+            <i class="fas fa-browser mr-2 text-green-400"></i>
+            Browser Sessions
+          </h2>
+          <div class="space-y-4">
+            <div class="flex justify-between items-center">
+              <span class="text-gray-400">Active Sessions</span>
+              <span class="text-white font-semibold" id="activeSessions">--</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-gray-400">Total Today</span>
+              <span class="text-white font-semibold" id="totalSessions">--</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-gray-400">Avg Duration</span>
+              <span class="text-white font-semibold" id="avgDuration">--</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-gray-400">Proxy Rotations</span>
+              <span class="text-white font-semibold" id="proxyRotations">--</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Affiliate Monitoring -->
+        <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+          <h2 class="text-xl font-semibold text-white mb-6">
+            <i class="fas fa-handshake mr-2 text-yellow-400"></i>
+            Affiliate Monitoring
+          </h2>
+          <div class="space-y-4">
+            <div class="flex justify-between items-center">
+              <span class="text-gray-400">Opportunities Found</span>
+              <span class="text-yellow-400 font-semibold" id="opportunitiesFound">--</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-gray-400">Applications Submitted</span>
+              <span class="text-blue-400 font-semibold" id="applicationsSubmitted">--</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-gray-400">Approvals Pending</span>
+              <span class="text-orange-400 font-semibold" id="approvalsPending">--</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-gray-400">New Partnerships</span>
+              <span class="text-green-400 font-semibold" id="newPartnerships">--</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Anti-Detection Metrics -->
+        <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+          <h2 class="text-xl font-semibold text-white mb-6">
+            <i class="fas fa-eye-slash mr-2 text-purple-400"></i>
+            Anti-Detection Metrics
+          </h2>
+          <div class="space-y-4">
+            <div class="flex justify-between items-center">
+              <span class="text-gray-400">User Agent Rotations</span>
+              <span class="text-purple-400 font-semibold" id="userAgentRotations">--</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-gray-400">IP Changes</span>
+              <span class="text-blue-400 font-semibold" id="ipChanges">--</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-gray-400">CAPTCHAs Solved</span>
+              <span class="text-green-400 font-semibold" id="captchaSolved">--</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-gray-400">Behavioral Mimicry</span>
+              <span class="text-yellow-400 font-semibold" id="behavioralMimicry">--</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Manual Actions -->
+      <div class="bg-gray-800 rounded-lg p-6 border border-gray-700 mt-8">
+        <h2 class="text-xl font-semibold text-white mb-6">
+          <i class="fas fa-play-circle mr-2 text-green-400"></i>
+          Manual Actions
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <button
+            class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg transition-colors"
+            onclick="executeTask('affiliate_scan')"
+          >
+            <i class="fas fa-search mr-2"></i>
+            Scan for Opportunities
+          </button>
+          <button
+            class="bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg transition-colors"
+            onclick="executeTask('profile_update')"
+          >
+            <i class="fas fa-user-edit mr-2"></i>
+            Update Profiles
+          </button>
+          <button
+            class="bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-lg transition-colors"
+            onclick="executeTask('stealth_check')"
+          >
+            <i class="fas fa-shield-alt mr-2"></i>
+            Stealth Check
+          </button>
+        </div>
+      </div>
+
+      <!-- Settings Panel -->
+      <div class="bg-gray-800 rounded-lg p-6 border border-gray-700 mt-8">
+        <h2 class="text-xl font-semibold text-white mb-6">
+          <i class="fas fa-cog mr-2 text-gray-400"></i>
+          Automation Settings
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">Stealth Mode</label>
+            <select class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white" id="stealthMode">
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+              <option value="maximum">Maximum</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">Max Concurrent Sessions</label>
+            <input
+              type="number"
+              class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white"
+              id="maxSessions"
+              value="10"
+              min="1"
+              max="20"/>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">Daily Task Limit</label>
+            <input
+              type="number"
+              class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white"
+              id="dailyLimit"
+              value="100"
+              min="10"
+              max="500"/>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">Rate Limit (per hour)</label>
+            <input
+              type="number"
+              class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white"
+              id="rateLimit"
+              value="25"
+              min="5"
+              max="100"/>
+          </div>
+        </div>
+        <div class="mt-6">
+          <button
+            class="bg-green-600 hover:bg-green-700 px-6 py-2 rounded-lg transition-colors"
+            onclick="saveSettings()"
+          >
+            <i class="fas fa-save mr-2"></i>
+            Save Settings
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let dashboardData = {};
+      let tasksData = {};//Load dashboard data
+      async function loadDashboardData() {
+        try {
+          const response = await fetch("/api/stealth-automation/dashboard');
+          dashboardData = await response.json();
+          updateDashboard();
+        } catch (error) {
+          console.error('Error loading dashboard data:', error);
+        }
+      }//Load tasks data
+      async function loadTasksData() {
+        try {
+          const response = await fetch("/api/stealth-automation/tasks');
+          tasksData = await response.json();
+          updateTasks();
+        } catch (error) {
+          console.error('Error loading tasks data:', error);
+        }
+      }//Update dashboard display
+      function updateDashboard() {
+        if (!dashboardData.automation_stats) return;//Update status cards
+        document.getElementById('activeTasks').textContent = dashboardData.automation_stats.active_tasks;
+        document.getElementById('successRate').textContent = dashboardData.automation_stats.success_rate + '%';
+        document.getElementById('stealthScore').textContent = dashboardData.automation_stats.stealth_score + '/10';
+        document.getElementById('detectionAvoidance').textContent =
+          dashboardData.automation_stats.detection_avoidance + '%';//Update browser sessions
+        if (dashboardData.browser_sessions) {
+          document.getElementById('activeSessions').textContent = dashboardData.browser_sessions.active_sessions;
+          document.getElementById('totalSessions').textContent = dashboardData.browser_sessions.total_sessions_today;
+          document.getElementById('avgDuration').textContent = dashboardData.browser_sessions.average_session_duration;
+          document.getElementById('proxyRotations').textContent = dashboardData.browser_sessions.proxy_rotation_count;
+        }//Update affiliate monitoring
+        if (dashboardData.affiliate_monitoring) {
+          document.getElementById('opportunitiesFound').textContent =
+            dashboardData.affiliate_monitoring.opportunities_found;
+          document.getElementById('applicationsSubmitted').textContent =
+            dashboardData.affiliate_monitoring.applications_submitted;
+          document.getElementById('approvalsPending').textContent =
+            dashboardData.affiliate_monitoring.approvals_pending;
+          document.getElementById('newPartnerships').textContent = dashboardData.affiliate_monitoring.new_partnerships;
+        }//Update anti-detection metrics
+        if (dashboardData.anti_detection) {
+          document.getElementById('userAgentRotations').textContent = dashboardData.anti_detection.user_agent_rotations;
+          document.getElementById('ipChanges').textContent = dashboardData.anti_detection.ip_changes;
+          document.getElementById('captchaSolved').textContent = dashboardData.anti_detection.captcha_solved;
+          document.getElementById('behavioralMimicry').textContent =
+            dashboardData.anti_detection.behavioral_mimicry_score + '/10';
+        }
+      }//Update tasks display
+      function updateTasks() {
+        const tasksContainer = document.getElementById('activeTasks');
+        if (!tasksData.active_tasks) return;
+
+        tasksContainer.innerHTML = '';
+
+        tasksData.active_tasks.forEach(task => {
+          const taskElement = document.createElement('div');
+          taskElement.className = 'bg-gray-700 rounded-lg p-4 border border-gray-600';
+
+          const statusColor =
+            task.status === 'in_progress'
+              ? 'text-blue-400'
+              : task.status === 'running'
+                ? 'text-green-400'
+                : 'text-gray-400';
+
+          taskElement.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <h4 class="font-semibold text-white">${task.type.replace('_', ' ').toUpperCase()}</h4>
+                            <p class="text-sm text-gray-400">${task.target}</p>
+                        </div>
+                        <span class="${statusColor} text-sm font-medium">${task.status.replace('_', ' ').toUpperCase()}</span>
+                    </div>
+                    <div class="w-full bg-gray-600 rounded-full h-2 mb-2">
+                        <div class="bg-blue-500 h-2 rounded-full" style="width: ${task.progress}%"></div>
+                    </div>
+                    <div class="flex justify-between text-xs text-gray-400">
+                        <span>Progress: ${task.progress}%</span>
+                        <span>ETA: ${new Date(task.estimated_completion).toLocaleTimeString()}</span>
+                    </div>
+                `;
+
+          tasksContainer.appendChild(taskElement);
+        });
+      }//Execute manual task
+      async function executeTask(taskType) {
+        try {
+          const response = await fetch("/api/stealth-automation/execute', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              task_type: taskType,
+              target_url: 'https://example.com',
+              parameters: {},
+            }),
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            showNotification('Task queued successfully!', 'success');
+            setTimeout(() => {
+              loadTasksData();
+              loadDashboardData();
+            }, 1000);
+          } else {
+            showNotification('Error: ' + result.error, 'error');
+          }
+        } catch (error) {
+          console.error('Error executing task:', error);
+          showNotification('Error executing task', 'error');
+        }
+      }//Save settings
+      async function saveSettings() {
+        const settings = {
+          stealth_mode: {
+            aggressiveness: document.getElementById('stealthMode').value,
+          },
+          automation_limits: {
+            max_concurrent_sessions: parseInt(document.getElementById('maxSessions').value),
+            daily_task_limit: parseInt(document.getElementById('dailyLimit').value),
+            rate_limit_per_hour: parseInt(document.getElementById('rateLimit').value),
+          },
+        };
+
+        try {
+          const response = await fetch("/api/stealth-automation/settings', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(settings),
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            showNotification('Settings saved successfully!', 'success');
+          } else {
+            showNotification('Error saving settings', 'error');
+          }
+        } catch (error) {
+          console.error('Error saving settings:', error);
+          showNotification('Error saving settings', 'error');
+        }
+      }//Refresh tasks
+      function refreshTasks() {
+        loadTasksData();
+        loadDashboardData();
+      }//Show notification
+      function showNotification(message, type) {
+        const notification = document.createElement('div');
+        notification.className = `fixed top-4 right-4 px-6 py-3 rounded-lg text-white z-50 ${
+          type === 'success' ? 'bg-green-600' : 'bg-red-600'
+        }`;
+        notification.textContent = message;
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+          notification.remove();
+        }, 3000);
+      }//Initialize dashboard
+      document.addEventListener('DOMContentLoaded', function () {
+        loadDashboardData();
+        loadTasksData();//Auto-refresh every 30 seconds
+        setInterval(() => {
+          loadDashboardData();
+          loadTasksData();
+        }, 30000);
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Performance Analytics Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+      }
+      .dashboard-container {
+        padding: 20px;
+      }
+      .analytics-card {
+        margin-bottom: 20px;
+        border: none;
+        box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.05);
+      }
+      .card-header {
+        background-color: #ffffff;
+        border-bottom: 1px solid #e9ecef;
+        padding: 15px;
+        font-weight: bold;
+      }
+      .card-body {
+        padding: 15px;
+      }
+      .metric-value {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #007bff;
+      }
+      .metric-label {
+        font-size: 0.9rem;
+        color: #6c757d;
+      }
+      .chart-container {
+        width: 100%;
+        height: 400px;
+        margin: 20px 0;
+      }
+      .prediction-form {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 20px;
+      }
+      .prediction-result {
+        margin-top: 15px;
+        padding: 15px;
+        background-color: #e9ecef;
+        border-radius: 5px;
+        display: none;
+      }
+      .status-indicator {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-right: 8px;
+      }
+      .status-active {
+        background-color: #28a745;
+      }
+      .status-warning {
+        background-color: #ffc107;
+      }
+      .status-error {
+        background-color: #dc3545;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container dashboard-container">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Performance Analytics Dashboard</h1>
+        <div>
+          <span class="status-indicator status-active"></span>
+          <span>Analytics Active</span>
+        </div>
+      </div>
+
+      <!-- Key Metrics Row -->
+      <div class="row">
+        <div class="col-md-3">
+          <div class="card analytics-card">
+            <div class="card-body text-center">
+              <div class="metric-value" id="total-views">0</div>
+              <div class="metric-label">Total Views</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card analytics-card">
+            <div class="card-body text-center">
+              <div class="metric-value" id="engagement-rate">0%</div>
+              <div class="metric-label">Engagement Rate</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card analytics-card">
+            <div class="card-body text-center">
+              <div class="metric-value" id="avg-watch-time">0m</div>
+              <div class="metric-label">Avg Watch Time</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card analytics-card">
+            <div class="card-body text-center">
+              <div class="metric-value" id="revenue">$0</div>
+              <div class="metric-label">Revenue</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Performance Charts -->
+      <div class="row">
+        <div class="col-md-8">
+          <div class="card analytics-card">
+            <div class="card-header">Performance Trends</div>
+            <div class="card-body">
+              <div class="chart-container">
+                <canvas id="performance-chart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card analytics-card">
+            <div class="card-header">Content Distribution</div>
+            <div class="card-body">
+              <div class="chart-container">
+                <canvas id="content-distribution-chart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Predictive Analytics -->
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card analytics-card">
+            <div class="card-header">Content Performance Prediction</div>
+            <div class="card-body">
+              <div class="prediction-form">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="content-title">Content Title:</label>
+                      <input type="text" class="form-control" id="content-title" placeholder="Enter content title" />
+                    </div>
+                    <div class="form-group">
+                      <label for="content-description">Description:</label>
+                      <textarea
+                        class="form-control"
+                        id="content-description"
+                        rows="3"
+                        placeholder="Enter content description"
+                      ></textarea>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="content-duration">Duration (minutes):</label>
+                      <input type="number" class="form-control" id="content-duration" placeholder="10" min="1" />
+                    </div>
+                    <div class="form-group">
+                      <label for="content-tags">Tags (comma-separated):</label>
+                      <input type="text" class="form-control" id="content-tags" placeholder="tag1, tag2, tag3" />
+                    </div>
+                  </div>
+                </div>
+                <button class="btn btn-primary" id="predict-performance">Predict Performance</button>
+                <div class="prediction-result" id="prediction-result">
+                  <h5>Prediction Results:</h5>
+                  <div id="prediction-output"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Analytics -->
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card analytics-card">
+            <div class="card-header">Recent Performance Data</div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Content</th>
+                      <th>Views</th>
+                      <th>Engagement</th>
+                      <th>Revenue</th>
+                      <th>Performance Score</th>
+                    </tr>
+                  </thead>
+                  <tbody id="recent-analytics-table">
+                    <!-- Dynamic content will be loaded here -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        // Load dashboard data
+        loadDashboardData();
+
+        // Initialize charts
+        initializeCharts();
+
+        // Set up prediction form
+        setupPredictionForm();
+
+        // Refresh data every 30 seconds
+        setInterval(loadDashboardData, 30000);
+      });
+
+      function loadDashboardData() {
+        fetch('/api/performance-analytics/dashboard')
+          .then(response => response.json())
+          .then(data => {
+            updateMetrics(data);
+            updateRecentAnalytics(data.recent_analytics || []);
+          })
+          .catch(error => {
+            console.error('Error loading dashboard data:', error);
+            // Show mock data for demonstration
+            showMockData();
+          });
+      }
+
+      function updateMetrics(data) {
+        document.getElementById('total-views').textContent = (data.total_views || 125000).toLocaleString();
+        document.getElementById('engagement-rate').textContent = (data.engagement_rate || 7.5) + '%';
+        document.getElementById('avg-watch-time').textContent = (data.avg_watch_time || 4.2) + 'm';
+        document.getElementById('revenue').textContent = '$' + (data.revenue || 2500).toLocaleString();
+      }
+
+      function updateRecentAnalytics(analytics) {
+        const tableBody = document.getElementById('recent-analytics-table');
+        if (analytics.length === 0) {
+          // Show mock data
+          tableBody.innerHTML = `
+                    <tr>
+                        <td>How to Build a Successful YouTube Channel</td>
+                        <td>15,234</td>
+                        <td>8.2%</td>
+                        <td>$245</td>
+                        <td><span class="badge badge-success">Excellent</span></td>
+                    </tr>
+                    <tr>
+                        <td>Content Creation Tips for Beginners</td>
+                        <td>9,876</td>
+                        <td>6.7%</td>
+                        <td>$156</td>
+                        <td><span class="badge badge-primary">Good</span></td>
+                    </tr>
+                    <tr>
+                        <td>Monetization Strategies Explained</td>
+                        <td>12,543</td>
+                        <td>9.1%</td>
+                        <td>$298</td>
+                        <td><span class="badge badge-success">Excellent</span></td>
+                    </tr>
+                `;
+        } else {
+          tableBody.innerHTML = analytics
+            .map(
+              item => `
+                    <tr>
+                        <td>${item.title}</td>
+                        <td>${item.views.toLocaleString()}</td>
+                        <td>${item.engagement}%</td>
+                        <td>$${item.revenue}</td>
+                        <td><span class="badge badge-${item.performance_class}">${item.performance_label}</span></td>
+                    </tr>
+                `
+            )
+            .join('');
+        }
+      }
+
+      function initializeCharts() {
+        // Performance Trends Chart
+        const performanceCtx = document.getElementById('performance-chart').getContext('2d');
+        new Chart(performanceCtx, {
+          type: 'line',
+          data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [
+              {
+                label: 'Views',
+                data: [12000, 15000, 18000, 22000, 25000, 28000],
+                borderColor: 'rgb(75, 192, 192)',
+                backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                tension: 0.1,
+              },
+              {
+                label: 'Revenue',
+                data: [800, 1200, 1500, 1800, 2200, 2500],
+                borderColor: 'rgb(255, 99, 132)',
+                backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                tension: 0.1,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+              },
+            },
+          },
+        });
+
+        // Content Distribution Chart
+        const distributionCtx = document.getElementById('content-distribution-chart').getContext('2d');
+        new Chart(distributionCtx, {
+          type: 'doughnut',
+          data: {
+            labels: ['Tutorials', 'Reviews', 'Entertainment', 'Educational'],
+            datasets: [
+              {
+                data: [35, 25, 20, 20],
+                backgroundColor: [
+                  'rgba(75, 192, 192, 0.8)',
+                  'rgba(255, 99, 132, 0.8)',
+                  'rgba(255, 205, 86, 0.8)',
+                  'rgba(54, 162, 235, 0.8)',
+                ],
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+          },
+        });
+      }
+
+      function setupPredictionForm() {
+        document.getElementById('predict-performance').addEventListener('click', function () {
+          const title = document.getElementById('content-title').value;
+          const description = document.getElementById('content-description').value;
+          const duration = document.getElementById('content-duration').value;
+          const tags = document
+            .getElementById('content-tags')
+            .value.split(',')
+            .map(tag => tag.trim());
+
+          if (!title || !description) {
+            alert('Please fill in at least the title and description.');
+            return;
+          }
+
+          const requestData = {
+            title: title,
+            description: description,
+            duration_minutes: parseInt(duration) || 10,
+            tags: tags,
+            upload_date: new Date().toISOString(),
+          };
+
+          fetch('/api/performance-analytics/predict', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
+          })
+            .then(response => response.json())
+            .then(data => {
+              displayPredictionResults(data);
+            })
+            .catch(error => {
+              console.error('Error predicting performance:', error);
+              // Show mock prediction
+              displayPredictionResults({
+                predicted_views: Math.floor(Math.random() * 50000) + 10000,
+                predicted_engagement: (Math.random() * 10 + 2).toFixed(1),
+                predicted_revenue: Math.floor(Math.random() * 500) + 100,
+                confidence_score: (Math.random() * 0.3 + 0.7).toFixed(2),
+              });
+            });
+        });
+      }
+
+      function displayPredictionResults(data) {
+        const resultDiv = document.getElementById('prediction-result');
+        const outputDiv = document.getElementById('prediction-output');
+
+        outputDiv.innerHTML = `
+                <div class="row">
+                    <div class="col-md-3">
+                        <strong>Predicted Views:</strong><br>
+                        <span class="text-primary">${(data.predicted_views || 0).toLocaleString()}</span>
+                    </div>
+                    <div class="col-md-3">
+                        <strong>Predicted Engagement:</strong><br>
+                        <span class="text-success">${data.predicted_engagement || 0}%</span>
+                    </div>
+                    <div class="col-md-3">
+                        <strong>Predicted Revenue:</strong><br>
+                        <span class="text-info">$${(data.predicted_revenue || 0).toLocaleString()}</span>
+                    </div>
+                    <div class="col-md-3">
+                        <strong>Confidence Score:</strong><br>
+                        <span class="text-warning">${(data.confidence_score || 0) * 100}%</span>
+                    </div>
+                </div>
+            `;
+
+        resultDiv.style.display = 'block';
+      }
+
+      function showMockData() {
+        updateMetrics({
+          total_views: 125000,
+          engagement_rate: 7.5,
+          avg_watch_time: 4.2,
+          revenue: 2500,
+        });
+        updateRecentAnalytics([]);
+      }
+    </script>
+  </body>
+</html>

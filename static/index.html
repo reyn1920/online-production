@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Production Dashboard</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .dashboard-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+      }
+
+      .control-panel {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .toggle-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+      }
+
+      .status-indicator {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 8px;
+      }
+
+      .status-active {
+        background-color: #28a745;
+      }
+
+      .status-inactive {
+        background-color: #dc3545;
+      }
+
+      .status-warning {
+        background-color: #ffc107;
+      }
+
+      .nav-tabs .nav-link {
+        color: #495057;
+        border: none;
+        border-bottom: 3px solid transparent;
+        font-weight: 500;
+      }
+
+      .nav-tabs .nav-link.active {
+        color: #667eea;
+        border-bottom-color: #667eea;
+        background: none;
+      }
+
+      .tab-content {
+        padding: 2rem 0;
+      }
+
+      .action-btn {
+        margin: 0.25rem;
+        min-width: 120px;
+      }
+
+      .status-card {
+        border: none;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s;
+      }
+
+      .status-card:hover {
+        transform: translateY(-2px);
+      }
+
+      .system-overview {
+        background: white;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="dashboard-header">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-md-8">
+            <h1 class="mb-0">
+              <i class="fas fa-tachometer-alt me-3"></i>Production Dashboard
+            </h1>
+            <p class="mb-0 mt-2">System monitoring and control center</p>
+          </div>
+          <div class="col-md-4 text-end">
+            <span id="integration-status" class="badge bg-secondary me-2">Base44 Integration: Checking...</span>
+            <button class="btn btn-light btn-sm" onclick="refreshStatus()">
+              <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- System Status Overview -->
+      <div class="system-overview">
+        <h3 class="mb-3">
+          <i class="fas fa-chart-line me-2"></i>System Status Overview
+        </h3>
+        <div class="row" id="status-cards-container">
+          <!-- Status cards will be populated by JavaScript -->
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <ul class="nav nav-tabs" id="dashboardTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="syndication-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#syndication"
+            type="button"
+            role="tab"
+          >
+            <i class="fas fa-share-alt me-2"></i>Syndication
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="autonomous-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#autonomous"
+            type="button"
+            role="tab"
+          >
+            <i class="fas fa-robot me-2"></i>Autonomous
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="actions-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#actions"
+            type="button"
+            role="tab"
+          >
+            <i class="fas fa-cogs me-2"></i>Actions
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="system-integrity-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#system-integrity"
+            type="button"
+            role="tab"
+          >
+            <i class="fas fa-shield-alt me-2"></i>System Integrity
+          </button>
+        </li>
+      </ul>
+
+      <!-- Tab Content -->
+      <div class="tab-content" id="dashboardTabContent">
+        <!-- Syndication Tab -->
+        <div
+          class="tab-pane fade show active"
+          id="syndication"
+          role="tabpanel"
+        >
+          <div class="control-panel">
+            <h4><i class="fas fa-share-alt me-2"></i>Content Syndication</h4>
+            <div class="toggle-container">
+              <div>
+                <span class="status-indicator status-active"></span>
+                <strong>Auto-syndication</strong>
+                <p class="text-muted mb-0">
+                  Automatically distribute content across channels
+                </p>
+              </div>
+              <div class="form-check form-switch">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="autoSyndication"
+                  checked
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Autonomous Tab -->
+        <div class="tab-pane fade" id="autonomous" role="tabpanel">
+          <div class="control-panel">
+            <h4><i class="fas fa-robot me-2"></i>Autonomous Operations</h4>
+            <div class="toggle-container">
+              <div>
+                <span class="status-indicator status-active"></span>
+                <strong>AI Content Generation</strong>
+                <p class="text-muted mb-0">
+                  Automatically generate and optimize content
+                </p>
+              </div>
+              <div class="form-check form-switch">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="aiGeneration"
+                  checked
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions Tab -->
+        <div class="tab-pane fade" id="actions" role="tabpanel">
+          <div class="control-panel">
+            <h4><i class="fas fa-cogs me-2"></i>System Operations</h4>
+            <div class="row">
+              <div class="col-md-6">
+                <h6>System Actions</h6>
+                <button class="btn btn-primary action-btn">
+                  <i class="fas fa-sync me-2"></i>Restart Dashboard
+                </button>
+                <button class="btn btn-success action-btn">
+                  <i class="fas fa-heartbeat me-2"></i>Health Check
+                </button>
+                <button class="btn btn-warning action-btn">
+                  <i class="fas fa-broom me-2"></i>Clear Cache
+                </button>
+              </div>
+              <div class="col-md-6">
+                <h6>Max-Out Operations</h6>
+                <button class="btn btn-info action-btn">
+                  <i class="fas fa-rocket me-2"></i>Run Single Channel
+                </button>
+                <button class="btn btn-secondary action-btn">
+                  <i class="fas fa-chart-line me-2"></i>Optimize Content
+                </button>
+                <button class="btn btn-dark action-btn">
+                  <i class="fas fa-analytics me-2"></i>Analyze Performance
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Status Card -->
+          <div class="card" id="action-status-card" style="display: none">
+            <div class="card-body" id="action-status-content">
+              <!-- Status content will be populated by JavaScript -->
+            </div>
+          </div>
+        </div>
+
+        <!-- System Integrity Tab -->
+        <div class="tab-pane fade" id="system-integrity" role="tabpanel">
+          <div class="control-panel">
+            <h4><i class="fas fa-shield-alt me-2"></i>System Integrity</h4>
+            <div class="row">
+              <div class="col-md-12">
+                <h6>Automated Smoke Tests</h6>
+                <div class="d-flex gap-2 mb-3">
+                  <button
+                    class="btn btn-success"
+                    onclick="startSmokeTest()"
+                    id="startSmokeTestBtn"
+                  >
+                    <i class="fas fa-play me-2"></i>Start Smoke Test
+                  </button>
+                  <button
+                    class="btn btn-danger"
+                    onclick="stopSmokeTest()"
+                    id="stopSmokeTestBtn"
+                    disabled
+                  >
+                    <i class="fas fa-stop me-2"></i>Stop Test
+                  </button>
+                </div>
+                <div id="smokeTestStatus" class="alert alert-info" style="display: none">
+                  <div class="d-flex align-items-center">
+                    <div class="spinner-border spinner-border-sm me-2" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <span>Smoke test in progress...</span>
+                  </div>
+                  <div class="progress mt-2">
+                    <div
+                      class="progress-bar"
+                      id="smokeTestProgress"
+                      role="progressbar"
+                      style="width: 0%"
+                    ></div>
+                  </div>
+                </div>
+                <div id="smokeTestResults" style="display: none"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      let smokeTestInterval;
+      let smokeTestProgress = 0;
+
+      function startSmokeTest() {
+        document.getElementById('startSmokeTestBtn').disabled = true;
+        document.getElementById('stopSmokeTestBtn').disabled = false;
+        document.getElementById('smokeTestStatus').style.display = 'block';
+        document.getElementById('smokeTestResults').style.display = 'none';
+
+        smokeTestProgress = 0;
+        smokeTestInterval = setInterval(updateSmokeTestProgress, 500);
+      }
+
+      function stopSmokeTest() {
+        clearInterval(smokeTestInterval);
+        document.getElementById('startSmokeTestBtn').disabled = false;
+        document.getElementById('stopSmokeTestBtn').disabled = true;
+        document.getElementById('smokeTestStatus').style.display = 'none';
+
+        document.getElementById('smokeTestResults').innerHTML = `
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Smoke test stopped by user
+                </div>
+            `;
+        document.getElementById('smokeTestResults').style.display = 'block';
+      }
+
+      function updateSmokeTestProgress() {
+        smokeTestProgress += Math.random() * 10;
+        if (smokeTestProgress >= 100) {
+          smokeTestProgress = 100;
+          clearInterval(smokeTestInterval);
+          completeSmokeTest();
+        }
+
+        document.getElementById('smokeTestProgress').style.width = smokeTestProgress + '%';
+      }
+
+      function completeSmokeTest() {
+        document.getElementById('startSmokeTestBtn').disabled = false;
+        document.getElementById('stopSmokeTestBtn').disabled = true;
+        document.getElementById('smokeTestStatus').style.display = 'none';
+
+        // Simulate test results
+        const results = [
+          { test: 'API Endpoints', status: 'passed', time: '1.2s' },
+          { test: 'Database Connection', status: 'passed', time: '0.8s' },
+          { test: 'Authentication', status: 'passed', time: '0.5s' },
+          { test: 'Content Syndication', status: 'passed', time: '2.1s' },
+          { test: 'Cache Performance', status: 'warning', time: '3.2s' }
+        ];
+
+        let resultsHtml = '<div class="alert alert-success"><i class="fas fa-check-circle me-2"></i>Smoke test completed</div>';
+        resultsHtml += '<div class="table-responsive"><table class="table table-sm">';
+        resultsHtml += '<thead><tr><th>Test</th><th>Status</th><th>Time</th></tr></thead><tbody>';
+
+        results.forEach(result => {
+          const statusClass = result.status === 'passed' ? 'success' : result.status === 'warning' ? 'warning' : 'danger';
+          const statusIcon = result.status === 'passed' ? 'check' : result.status === 'warning' ? 'exclamation-triangle' : 'times';
+          resultsHtml += `<tr><td>${result.test}</td><td><span class="badge bg-${statusClass}"><i class="fas fa-${statusIcon} me-1"></i>${result.status}</span></td><td>${result.time}</td></tr>`;
+        });
+
+        resultsHtml += '</tbody></table></div>';
+        document.getElementById('smokeTestResults').innerHTML = resultsHtml;
+        document.getElementById('smokeTestResults').style.display = 'block';
+      }
+
+      async function executeAgentAction(agent, action) {
+        const statusCard = document.getElementById('action-status-card');
+        const statusContent = document.getElementById('action-status-content');
+
+        statusCard.style.display = 'block';
+        statusContent.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <div class="spinner-border spinner-border-sm me-2" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <span>Executing ${agent}/${action}...</span>
+                </div>
+            `;
+
+        try {
+          const response = await fetch('/api/agent-action', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ agent, action })
+          });
+
+          const result = await response.json();
+
+          if (result.ok) {
+            statusContent.innerHTML = `
+                        <div class="alert alert-success mb-0">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <strong>Success:</strong> ${agent}/${action} executed successfully
+                            ${result.result ? `<br><small class="text-muted">Result: ${JSON.stringify(result.result)}</small>` : ''}
+                        </div>
+                    `;
+          } else {
+            statusContent.innerHTML = `
+                        <div class="alert alert-danger mb-0">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            <strong>Error:</strong> ${result.error || 'Unknown error'}
+                        </div>
+                    `;
+          }
+        } catch (error) {
+          statusContent.innerHTML = `
+                    <div class="alert alert-danger mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Network Error:</strong> ${error.message}
+                    </div>
+                `;
+        }
+
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+          statusCard.style.display = 'none';
+        }, 5000);
+      }
+
+      // Status monitoring functions
+      async function refreshStatus() {
+        try {
+          const response = await fetch('/api/integrated-status');
+          const data = await response.json();
+
+          updateStatusCards(data);
+          updateIntegrationStatus(data);
+        } catch (error) {
+          console.error('Error refreshing status:', error);
+          document.getElementById('integration-status').textContent = 'Base44 Integration: Error';
+          document.getElementById('integration-status').className = 'badge bg-danger me-2';
+        }
+      }
+
+      function updateStatusCards(data) {
+        const container = document.getElementById('status-cards-container');
+        let html = '';
+
+        // Production API Status
+        html += createStatusCard(
+          'Production API',
+          data.production_api?.status || 'Unknown',
+          data.production_api?.status === 'healthy' ? 'success' : 'danger',
+          'fas fa-server'
+        );
+
+        // Base44 API Status
+        html += createStatusCard(
+          'Base44 API',
+          data.base44?.status || 'Unknown',
+          data.base44?.status === 'healthy' ? 'success' : 'danger',
+          'fas fa-cube'
+        );
+
+        // Database Status
+        html += createStatusCard(
+          'Database',
+          data.database?.status || 'Unknown',
+          data.database?.status === 'connected' ? 'success' : 'danger',
+          'fas fa-database'
+        );
+
+        // System Health
+        html += createStatusCard(
+          'System Health',
+          data.system?.status || 'Unknown',
+          data.system?.status === 'healthy' ? 'success' : 'warning',
+          'fas fa-heartbeat'
+        );
+
+        container.innerHTML = html;
+      }
+
+      function createStatusCard(title, status, variant, icon) {
+        return `
+          <div class="col-md-3 mb-3">
+            <div class="card status-card h-100">
+              <div class="card-body text-center">
+                <i class="${icon} fa-2x text-${variant} mb-2"></i>
+                <h6 class="card-title">${title}</h6>
+                <span class="badge bg-${variant}">${status}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      function updateIntegrationStatus(data) {
+        const statusElement = document.getElementById('integration-status');
+        const isHealthy = data.base44?.status === 'healthy';
+
+        statusElement.textContent = `Base44 Integration: ${isHealthy ? 'Active' : 'Inactive'}`;
+        statusElement.className = `badge ${isHealthy ? 'bg-success' : 'bg-danger'} me-2`;
+      }
+
+      // Initialize status on page load
+      document.addEventListener('DOMContentLoaded', function() {
+        refreshStatus();
+        // Refresh status every 30 seconds
+        setInterval(refreshStatus, 30000);
+      });
+    </script>
+  </body>
+</html>

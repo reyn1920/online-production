@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Mini Locator</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+  <!-- Clustering for mini-map too -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
+  />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
+  />
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+  <style>
+    html, body { height:100%; margin:0; background:#0f1220; }
+    #map { height:100%; width:100%; }
+    .badge {
+      position:absolute; top:8px; left:8px; z-index:1000;
+      background:#11142a; color:#e7e7ea; border:1px solid #2a2e44;
+      padding:6px 10px; border-radius:999px; font: 12px/1.2 system-ui, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div class="badge" id="badge">Loading…</div>
+  <div id="map"></div>
+
+  <script>
+    // read URL params (cat, lat, lng, zoom)
+    const qs = new URLSearchParams(location.search);
+    const category = qs.get('cat') || 'veterinary';
+    const lat = parseFloat(qs.get('lat') || '');
+    const lng = parseFloat(qs.get('lng') || '');
+    const zoom = parseInt(qs.get('zoom') || '12', 10);
+
+    const map = L.map('map').setView([40.7128, -74.0060], zoom);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    const cluster = L.markerClusterGroup({ chunkedLoading: true, maxClusterRadius: 50 });
+    map.addLayer(cluster);
+
+    const badge = document.getElementById('badge');
+
+    async function doSearch(centerLat, centerLng) {
+      const url = `/places/search?category=${encodeURIComponent(category)}&lat=${centerLat}&lng=${centerLng}&radius_m=5000&limit=50`;
+      const r = await fetch(url);
+      if (!r.ok) throw new Error('search failed');
+      const js = await r.json();
+
+      cluster.clearLayers();
+      (js.items || []).forEach(x => {
+        if (!x.lat || !x.lng) return;
+        const html = `
+          <b>${x.name || 'Unnamed'}</b><br/>
+          ${x.address ? x.address + '<br/>' : ''}
+          ${x.phone ? '📞 ' + x.phone + '<br/>' : ''}
+          ${x.website ? '<a href="' + x.website + '" target="_blank">Website</a>' : ''}
+        `;
+        cluster.addLayer(L.marker([x.lat, x.lng]).bindPopup(html));
+      });
+
+      if (js.items?.length) {
+        map.setView([js.items[0].lat, js.items[0].lng], Math.min(zoom, 13));
+      }
+
+      badge.textContent = `${js.items?.length || 0} ${category} near here`;
+    }
+
+    async function bootstrap() {
+      if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+        // try browser geolocation if embedding page allows it
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(async (pos) => {
+            const la = pos.coords.latitude, ln = pos.coords.longitude;
+            map.setView([la, ln], zoom);
+            await doSearch(la, ln);
+          }, async () => {
+            // fallback to NYC
+            await doSearch(40.7128, -74.0060);
+          });
+        } else {
+          await doSearch(40.7128, -74.0060);
+        }
+      } else {
+        map.setView([lat, lng], zoom);
+        await doSearch(lat, lng);
+      }
+    }
+    badge.textContent = `Finding ${category}…`;
+    bootstrap();
+  </script>
+</body>
+</html>

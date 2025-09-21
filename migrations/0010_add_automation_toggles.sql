@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS automation_toggles (channel_id TEXT PRIMARY KEY, live_on INTEGER DEFAULT 0, auto_on INTEGER DEFAULT 0, review_required INTEGER DEFAULT 1, humanize_web_on INTEGER DEFAULT 1, updated_at DATETIME DEFAULT CURRENT_TIMESTAMP);
