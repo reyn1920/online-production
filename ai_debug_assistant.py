@@ -159,7 +159,20 @@ class AIDebugAssistant:
         lines = content.split("\n")
 
         for i, line in enumerate(lines, 1):
-            # Check for common issues - debug print detection removed for production
+            # Check for common issues
+            if re.search(r"print\s*\(.*\)\s*$", line) and "debug" in line.lower():
+                issue = DebugIssue(
+                    id=f"debug_print_{len(self.issues)}",
+                    file_path=file_path,
+                    line_number=i,
+                    issue_type=IssueType.LOGIC_ERROR,
+                    severity=Severity.LOW,
+                    description="Debug print statement found",
+                    suggestion="Remove debug print statements before production",
+                    code_snippet=line.strip(),
+                    created_at=datetime.now(),
+                )
+                issues.append(issue)
 
             # Check for TODO comments
             if "TODO" in line or "FIXME" in line:

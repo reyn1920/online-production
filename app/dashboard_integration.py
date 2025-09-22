@@ -220,10 +220,7 @@ class Widget:
                 f"Widget {self.config.widget_id} refreshed with {len(self.data)} data points"
             )
         except Exception as e:
-            logger.error(
-                f"Widget refresh failed for {
-                    self.config.widget_id}: {e}"
-            )
+            logger.error(f"Widget refresh failed for {self.config.widget_id}: {e}")
 
     async def start_auto_refresh(self):
         """Start automatic data refresh."""
@@ -281,9 +278,7 @@ class Dashboard:
         """Add a widget to the dashboard."""
         self.widgets[widget.config.widget_id] = widget
         logger.info(
-            f"Added widget {
-                widget.config.widget_id} to dashboard {
-                self.config.dashboard_id}"
+            f"Added widget {widget.config.widget_id} to dashboard {self.config.dashboard_id}"
         )
 
     def remove_widget(self, widget_id: str) -> bool:
@@ -291,8 +286,7 @@ class Dashboard:
         if widget_id in self.widgets:
             del self.widgets[widget_id]
             logger.info(
-                f"Removed widget {widget_id} from dashboard {
-                    self.config.dashboard_id}"
+                f"Removed widget {widget_id} from dashboard {self.config.dashboard_id}"
             )
             return True
         return False
@@ -304,10 +298,7 @@ class Dashboard:
             tasks.append(widget.refresh_data())
 
         await asyncio.gather(*tasks, return_exceptions=True)
-        logger.info(
-            f"Refreshed all widgets in dashboard {
-                self.config.dashboard_id}"
-        )
+        logger.info(f"Refreshed all widgets in dashboard {self.config.dashboard_id}")
 
     async def start_auto_refresh(self):
         """Start auto-refresh for all widgets."""
@@ -366,10 +357,7 @@ class DashboardIntegration:
             logger.info(f"Registered data source: {config.source_id}")
             return True
         except Exception as e:
-            logger.error(
-                f"Failed to register data source {
-                    config.source_id}: {e}"
-            )
+            logger.error(f"Failed to register data source {config.source_id}: {e}")
             return False
 
     async def create_dashboard(self, config: DashboardConfig) -> Optional[Dashboard]:
@@ -385,18 +373,14 @@ class DashboardIntegration:
                     dashboard.add_widget(widget)
                 else:
                     logger.warning(
-                        f"Data source not found for widget: {
-                            widget_config.widget_id}"
+                        f"Data source not found for widget: {widget_config.widget_id}"
                     )
 
             self.dashboards[config.dashboard_id] = dashboard
             logger.info(f"Created dashboard: {config.dashboard_id}")
             return dashboard
         except Exception as e:
-            logger.error(
-                f"Failed to create dashboard {
-                    config.dashboard_id}: {e}"
-            )
+            logger.error(f"Failed to create dashboard {config.dashboard_id}: {e}")
             return None
 
     def get_dashboard(self, dashboard_id: str) -> Optional[Dashboard]:

@@ -39,10 +39,7 @@ class SecretStoreBridge:
                             key, value = line.split("=", 1)
                             self.secrets[key.strip()] = value.strip()
             except Exception as e:
-                logger.warning(
-                    f"Could not load secrets from {
-                        self.config_path}: {e}"
-                )
+                logger.warning(f"Could not load secrets from {self.config_path}: {e}")
 
     def get_secret(self, key: str, default: Optional[str] = None) -> Optional[str]:
         """Get a secret value by key.

@@ -8,12 +8,11 @@ from pathlib import Path
 import json
 import logging
 from datetime import datetime
-from typing import Dict, Any, Optional
+from typing import List, Dict, Any, Optional
 
 # Use sqlite3 for synchronous operations if aiosqlite is not available
 try:
     import aiosqlite
-
     async_db_available = True
 except ImportError:
     aiosqlite = None  # type: ignore
@@ -24,18 +23,17 @@ logger = logging.getLogger(__name__)
 # Database Storage Strategy Configuration
 DATABASE_STORAGE_CONFIG = {
     "local_databases": {
-        # Performance-critical databases that MUST remain local for
-        # video/avatar creation
+        # Performance-critical databases that MUST remain local for video/avatar creation
         "performance_critical": [
             "content_automation.db",
-            "quality_metrics.db",
+            "quality_metrics.db", 
             "performance_metrics.db",
             "automation_performance.db",
             "runtime.db",
             "model_generator.db",
-            "ollama_cache.db",
+            "ollama_cache.db"
         ],
-        "description": "Databases required for high-speed video creation and avatar generation",
+        "description": "Databases required for high-speed video creation and avatar generation"
     },
     "cloud_databases": {
         # Databases that can be moved to cloud storage
@@ -44,133 +42,125 @@ DATABASE_STORAGE_CONFIG = {
             "analytics.db",
             "performance_analytics.db",
             "engagement_tracking.sqlite",
-            "youtube_engagement.sqlite",
+            "youtube_engagement.sqlite"
         ],
         "business": [
             "marketing_monetization.sqlite",
             "marketing.db",
-            "monetization.db",
+            "monetization.db", 
             "revenue_streams.db",
             "cost_tracking.db",
-            "promotion_campaigns.sqlite",
+            "promotion_campaigns.sqlite"
         ],
         "content_management": [
             "rss_watcher.db",
             "youtube_automation.sqlite",
             "channels.db",
-            "collaboration_outreach.db",
+            "collaboration_outreach.db"
         ],
         "system_admin": [
             "error_tracking.db",
             "example_error_tracking.db",
             "scan_results.sqlite",
             "api_integration.db",
-            "routellm_usage.db",
+            "routellm_usage.db"
         ],
         "development": [
             "test_comprehensive.db",
             "test_fraud.db",
-            "test_fraud2.db",
+            "test_fraud2.db", 
             "test_fraud3.db",
             "test_results.db",
-            "test.db",
+            "test.db"
         ],
         "backups": [
             "right_perspective_backup_20250902_012246.db",
             "base44.sqlite",
-            "trae_production.db",
+            "trae_production.db"
         ],
-        "description": "Databases suitable for cloud storage - non-performance critical",
+        "description": "Databases suitable for cloud storage - non-performance critical"
     },
     "hybrid_databases": {
         # Databases that may need evaluation based on usage patterns
         "evaluate_case_by_case": [
             "intelligence.db",
-            "master_orchestrator.db",
+            "master_orchestrator.db", 
             "trae_ai.db",
-            "content_agent.db",
+            "content_agent.db"
         ],
-        "description": "Databases requiring evaluation based on access patterns and usage frequency",
-    },
+        "description": "Databases requiring evaluation based on access patterns and usage frequency"
+    }
 }
-
 
 class DatabaseStorageManager:
     """Manages database storage strategy for local vs cloud deployment"""
-
+    
     def __init__(self):
         self.config = DATABASE_STORAGE_CONFIG
-
+        
     def is_performance_critical(self, db_name: str) -> bool:
         """Check if database must remain local for performance"""
         return db_name in self.config["local_databases"]["performance_critical"]
-
+    
     def can_move_to_cloud(self, db_name: str) -> bool:
         """Check if database can be moved to cloud storage"""
         for category in self.config["cloud_databases"].values():
             if isinstance(category, list) and db_name in category:
                 return True
         return False
-
+    
     def requires_evaluation(self, db_name: str) -> bool:
         """Check if database requires case-by-case evaluation"""
         return db_name in self.config["hybrid_databases"]["evaluate_case_by_case"]
-
+    
     def get_storage_recommendation(self, db_name: str) -> Dict[str, str]:
         """Get storage recommendation for a database"""
         if self.is_performance_critical(db_name):
             return {
                 "recommendation": "local",
                 "reason": "Performance-critical for video/avatar creation",
-                "category": "performance_critical",
+                "category": "performance_critical"
             }
         elif self.can_move_to_cloud(db_name):
             return {
-                "recommendation": "cloud",
+                "recommendation": "cloud", 
                 "reason": "Non-performance critical, suitable for cloud storage",
-                "category": self._get_cloud_category(db_name),
+                "category": self._get_cloud_category(db_name)
             }
         elif self.requires_evaluation(db_name):
             return {
                 "recommendation": "evaluate",
-                "reason": "Requires case-by-case evaluation based on usage patterns",
-                "category": "hybrid",
+                "reason": "Requires case-by-case evaluation based on usage patterns", 
+                "category": "hybrid"
             }
         else:
             return {
                 "recommendation": "unknown",
                 "reason": "Database not found in configuration",
-                "category": "uncategorized",
+                "category": "uncategorized"
             }
-
+    
     def _get_cloud_category(self, db_name: str) -> str:
         """Get the cloud storage category for a database"""
         for category, dbs in self.config["cloud_databases"].items():
             if isinstance(dbs, list) and db_name in dbs:
                 return category
         return "unknown"
-
+    
     def generate_migration_plan(self) -> Dict[str, Any]:
         """Generate a comprehensive migration plan"""
         plan = {
             "local_count": len(self.config["local_databases"]["performance_critical"]),
-            "cloud_count": sum(
-                len(dbs)
-                for dbs in self.config["cloud_databases"].values()
-                if isinstance(dbs, list)
-            ),
-            "evaluation_count": len(
-                self.config["hybrid_databases"]["evaluate_case_by_case"]
-            ),
+            "cloud_count": sum(len(dbs) for dbs in self.config["cloud_databases"].values() if isinstance(dbs, list)),
+            "evaluation_count": len(self.config["hybrid_databases"]["evaluate_case_by_case"]),
             "migration_strategy": {
                 "phase_1": "Keep performance-critical databases local",
                 "phase_2": "Migrate analytics and business databases to cloud",
-                "phase_3": "Evaluate hybrid databases based on usage patterns",
+                "phase_3": "Evaluate hybrid databases based on usage patterns"
             },
-            "estimated_storage_savings": "~80% reduction in local storage requirements",
+            "estimated_storage_savings": "~80% reduction in local storage requirements"
         }
         return plan
-
 
 class DatabaseManager:
     """Manages database connections and operations"""

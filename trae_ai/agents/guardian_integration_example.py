@@ -11,7 +11,7 @@ ground truth of the test suite, preventing hallucinations and ensuring reliabili
 
 import sys
 from pathlib import Path
-from typing import Callable, Any, Dict
+from typing import Callable, Any, Dict, List
 from trae_ai.agents.guardian_agent import GuardianAgent
 
 
@@ -88,10 +88,10 @@ class GuardianSupervisor:
         print(f"🛡️ [Guardian Supervisor] Worker: {worker_agent.name}")
         
         # Get initial ground truth
-        print("🛡️ [Guardian Supervisor] Establishing baseline ground truth...")
+        print(f"🛡️ [Guardian Supervisor] Establishing baseline ground truth...")
         initial_result = self.guardian.get_ground_truth(timeout=60)
         
-        print("📊 Initial State:")
+        print(f"📊 Initial State:")
         print(f"   Passed: {initial_result.passed}")
         print(f"   Failed: {initial_result.failed}")
         print(f"   Errors: {initial_result.errors}")
@@ -115,17 +115,17 @@ class GuardianSupervisor:
                 continue
             
             # Guardian validates the fix
-            print("🛡️ [Guardian Supervisor] Validating worker's changes...")
+            print(f"🛡️ [Guardian Supervisor] Validating worker's changes...")
             validation_result = self.guardian.get_ground_truth(timeout=60)
             
-            print("📊 Post-Fix State:")
+            print(f"📊 Post-Fix State:")
             print(f"   Passed: {validation_result.passed}")
             print(f"   Failed: {validation_result.failed}")
             print(f"   Errors: {validation_result.errors}")
             
             # Check if the fix improved the situation
             if validation_result.failed == 0 and validation_result.errors == 0:
-                print("✅ [Guardian Supervisor] SUCCESS! All tests passing.")
+                print(f"✅ [Guardian Supervisor] SUCCESS! All tests passing.")
                 print(f"🎉 [Guardian Supervisor] Task '{task_name}' completed successfully in {iteration} iterations.")
                 
                 return {
@@ -149,12 +149,12 @@ class GuardianSupervisor:
                 }
             
             elif validation_result.failed < initial_result.failed or validation_result.errors < initial_result.errors:
-                print("📈 [Guardian Supervisor] Partial improvement detected, continuing...")
+                print(f"📈 [Guardian Supervisor] Partial improvement detected, continuing...")
                 initial_result = validation_result  # Update baseline
                 
             else:
-                print("❌ [Guardian Supervisor] No improvement or regression detected.")
-                print("🔄 [Guardian Supervisor] Instructing worker to try again...")
+                print(f"❌ [Guardian Supervisor] No improvement or regression detected.")
+                print(f"🔄 [Guardian Supervisor] Instructing worker to try again...")
         
         # Max iterations reached without success
         print(f"⚠️ [Guardian Supervisor] Maximum iterations ({self.max_iterations}) reached without full success.")
@@ -180,12 +180,12 @@ class GuardianSupervisor:
         Run a comprehensive system validation using the Guardian Agent.
         This can be used as a final check before deployment.
         """
-        print("\n🛡️ [Guardian Supervisor] Running full system validation...")
+        print(f"\n🛡️ [Guardian Supervisor] Running full system validation...")
         
         result = self.guardian.get_ground_truth(timeout=120)
         report = self.guardian.get_validation_report()
         
-        print("📊 System Validation Results:")
+        print(f"📊 System Validation Results:")
         print(f"   Status: {report['status']}")
         print(f"   Passed: {result.passed}")
         print(f"   Failed: {result.failed}")
@@ -194,9 +194,9 @@ class GuardianSupervisor:
         print(f"   Execution Time: {result.total_time:.2f}s")
         
         if result.failed == 0 and result.errors == 0:
-            print("✅ [Guardian Supervisor] System is ready for deployment!")
+            print(f"✅ [Guardian Supervisor] System is ready for deployment!")
         else:
-            print("❌ [Guardian Supervisor] System has issues that need resolution.")
+            print(f"❌ [Guardian Supervisor] System has issues that need resolution.")
         
         return {
             "ready_for_deployment": result.failed == 0 and result.errors == 0,
@@ -231,7 +231,7 @@ def example_integration_workflow():
         task_name="Fix Authentication Service"
     )
     
-    print("\n📊 Authentication Fix Results:")
+    print(f"\n📊 Authentication Fix Results:")
     print(f"   Status: {auth_result['status']}")
     print(f"   Iterations: {auth_result['iterations']}")
     
@@ -243,7 +243,7 @@ def example_integration_workflow():
         task_name="Fix Database Connection"
     )
     
-    print("\n📊 Database Fix Results:")
+    print(f"\n📊 Database Fix Results:")
     print(f"   Status: {db_result['status']}")
     print(f"   Iterations: {db_result['iterations']}")
     
@@ -251,7 +251,7 @@ def example_integration_workflow():
     print("\n📋 Example 3: Full System Validation")
     validation_result = supervisor.run_full_system_validation()
     
-    print("\n🎯 Final System Status:")
+    print(f"\n🎯 Final System Status:")
     print(f"   Ready for Deployment: {validation_result['ready_for_deployment']}")
     print(f"   Total Tests: {validation_result['test_results']['passed'] + validation_result['test_results']['failed']}")
     
@@ -276,8 +276,8 @@ if __name__ == "__main__":
     try:
         results = example_integration_workflow()
         
-        print("\n🎉 Integration Example Completed!")
-        print("=" * 50)
+        print(f"\n🎉 Integration Example Completed!")
+        print(f"=" * 50)
         
         # Summary
         all_successful = all(
@@ -287,14 +287,14 @@ if __name__ == "__main__":
         
         deployment_ready = results['system_validation']['ready_for_deployment']
         
-        print("📊 Summary:")
+        print(f"📊 Summary:")
         print(f"   All Fixes Successful: {all_successful}")
         print(f"   Deployment Ready: {deployment_ready}")
         
         if all_successful and deployment_ready:
-            print("✅ System is fully validated and ready for production!")
+            print(f"✅ System is fully validated and ready for production!")
         else:
-            print("⚠️ System requires additional work before deployment.")
+            print(f"⚠️ System requires additional work before deployment.")
             
     except Exception as e:
         print(f"❌ Integration example failed: {e}")

@@ -9,12 +9,6 @@ from fastapi.responses import FileResponse
 # Import all routers
 from routers.production_health import router as production_health_router
 
-# Import health router
-try:
-    from api.health import router as health_router
-except ImportError:
-    health_router = None
-
 # Import simplified API routers
 try:
     from api.simple_api_discovery import router as api_discovery_router
@@ -51,18 +45,10 @@ try:
 except ImportError:
     solo_agent_router = None
 
-try:
-    from api.data_routes import router as data_router
-except ImportError:
-    data_router = None
-
 app = FastAPI(title="TRAE.AI Base44 - Integrated Production Dashboard", version="1.0.0")
 
 # Include all available routers
 app.include_router(production_health_router)
-
-if health_router:
-    app.include_router(health_router, prefix="/api", tags=["health"])
 
 if api_discovery_router:
     app.include_router(api_discovery_router)
@@ -91,9 +77,6 @@ if policy_router:
 if solo_agent_router:
     app.include_router(solo_agent_router)
 
-if data_router:
-    app.include_router(data_router)
-
 # Get the project root directory
 project_root = Path(__file__).parent.parent
 
@@ -104,8 +87,13 @@ if frontend_path.exists():
 
 
 @app.get("/")
-async def read_root():
-    return {"message": "My Application is Live and I am in control!"}
+async def root():
+    """Root endpoint returning system status"""
+    return {
+        "message": "TRAE.AI Base44 System",
+        "status": "operational",
+        "version": "1.0.0",
+    }
 
 
 @app.get("/health")

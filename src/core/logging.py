@@ -41,12 +41,8 @@ class Logger:
         """Log debug message."""
         self._logger.debug(message)
     
-    def info(self, message: str, **kwargs) -> None:
+    def info(self, message: str) -> None:
         """Log info message."""
-        # Handle extra parameter for compatibility
-        if 'extra' in kwargs:
-            # For now, just log the message without the extra context
-            pass
         self._logger.info(message)
     
     def warning(self, message: str) -> None:

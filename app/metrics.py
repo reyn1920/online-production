@@ -271,19 +271,13 @@ class Metric:
             if condition_met and not self.alert_states.get(threshold.name, False):
                 self.alert_states[threshold.name] = True
                 logger.warning(
-                    f"Threshold alert: {
-                        self.config.name} {
-                        threshold.condition} {
-                        threshold.value} "
-                    f"(current: {value}, level: {
-                        threshold.alert_level.value})"
+                    f"Threshold alert: {self.config.name} {threshold.condition} {threshold.value} "
+                    f"(current: {value}, level: {threshold.alert_level.value})"
                 )
             elif not condition_met and self.alert_states.get(threshold.name, False):
                 self.alert_states[threshold.name] = False
                 logger.info(
-                    f"Threshold alert resolved: {
-                        self.config.name} {
-                        threshold.name}"
+                    f"Threshold alert resolved: {self.config.name} {threshold.name}"
                 )
 
     async def get_statistics(
@@ -326,18 +320,11 @@ class MetricsCollector:
     def register_metric(self, config: MetricConfig) -> Metric:
         """Register a new metric."""
         if config.name in self.metrics:
-            logger.warning(
-                f"Metric {
-                    config.name} already registered, replacing"
-            )
+            logger.warning(f"Metric {config.name} already registered, replacing")
 
         metric = Metric(config, self.storage)
         self.metrics[config.name] = metric
-        logger.info(
-            f"Registered metric: {
-                config.name} ({
-                config.metric_type.value})"
-        )
+        logger.info(f"Registered metric: {config.name} ({config.metric_type.value})")
         return metric
 
     def get_metric(self, name: str) -> Optional[Metric]:
@@ -474,19 +461,13 @@ class MetricsCollector:
             for name, data in summary["metrics"].items():
                 lines.append(f"\n{name} ({data['type']})")
                 lines.append(f"  Description: {data['description']}")
-                lines.append(
-                    f"  Current: {
-                        data['current_value']} {
-                        data['unit']}"
-                )
+                lines.append(f"  Current: {data['current_value']} {data['unit']}")
                 lines.append(f"  Last Updated: {data['last_updated']}")
 
                 stats = data["stats_last_hour"]
                 if stats["count"] > 0:
                     lines.append(
-                        f"  Last Hour: {
-                            stats['count']} values, avg={
-                            stats['avg']:.2f}"
+                        f"  Last Hour: {stats['count']} values, avg={stats['avg']:.2f}"
                     )
 
             return "\n".join(lines)

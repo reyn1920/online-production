@@ -175,7 +175,7 @@ const MOCK_PROVIDERS: Omit<AIProvider, 'id'>[] = [
     type: 'multimodal',
     category: 'free',
     isActive: true,
-    apiEndpoint: '/api/generative/v1/models',
+    apiEndpoint: 'https://generativelanguage.googleapis.com/v1/models',
     rateLimit: { requestsPerMinute: 15, requestsPerDay: 1500 },
     capabilities: ['text', 'image-analysis', 'code-generation'],
     quality: 'excellent',

@@ -227,11 +227,7 @@ class UserManager:
         user = self.get_user_by_id(user_id)
         if user:
             user.role = new_role
-            logger.info(
-                f"Updated role for user {
-                    user.username} to {
-                    new_role.value}"
-            )
+            logger.info(f"Updated role for user {user.username} to {new_role.value}")
             return True
         return False
 
@@ -340,8 +336,7 @@ class AuthenticationSystem:
         logger.info("Cleaned up expired authentication data")
 
 
-# Global authentication instance (would be configured with proper secret
-# in production)
+# Global authentication instance (would be configured with proper secret in production)
 auth_system = AuthenticationSystem("your-secret-key-here")
 
 

@@ -206,8 +206,7 @@ class InsightGenerator:
             if avg_performance > 0.8:
                 insight_type = "positive"
                 title = "Excellent Performance Detected"
-                description = f"System performance is exceptional with average score of {
-                    avg_performance:.2f}"
+                description = f"System performance is exceptional with average score of {avg_performance:.2f}"
                 recommendations = [
                     "Maintain current optimization strategies",
                     "Consider scaling up operations",
@@ -215,8 +214,7 @@ class InsightGenerator:
             elif avg_performance < 0.5:
                 insight_type = "warning"
                 title = "Performance Issues Detected"
-                description = f"System performance is below optimal with average score of {
-                    avg_performance:.2f}"
+                description = f"System performance is below optimal with average score of {avg_performance:.2f}"
                 recommendations = [
                     "Review system resources",
                     "Optimize critical processes",
@@ -225,8 +223,7 @@ class InsightGenerator:
             else:
                 insight_type = "neutral"
                 title = "Moderate Performance"
-                description = f"System performance is moderate with average score of {
-                    avg_performance:.2f}"
+                description = f"System performance is moderate with average score of {avg_performance:.2f}"
                 recommendations = [
                     "Monitor trends",
                     "Identify improvement opportunities",
@@ -261,8 +258,7 @@ class InsightGenerator:
             if trend > 0.1:
                 insight_type = "positive"
                 title = "Positive Trend Identified"
-                description = f"Strong upward trend detected with slope {
-                    trend:.3f}"
+                description = f"Strong upward trend detected with slope {trend:.3f}"
                 recommendations = [
                     "Capitalize on positive momentum",
                     "Prepare for scaling",
@@ -278,8 +274,7 @@ class InsightGenerator:
             else:
                 insight_type = "neutral"
                 title = "Stable Trend"
-                description = f"Trend is relatively stable with slope {
-                    trend:.3f}"
+                description = f"Trend is relatively stable with slope {trend:.3f}"
                 recommendations = [
                     "Continue monitoring",
                     "Look for optimization opportunities",
@@ -310,12 +305,10 @@ class InsightGenerator:
 
             if anomaly_score > 0.8:
                 return AIInsight(
-                    id=f"anomaly_{
-                        datetime.now().timestamp()}",
+                    id=f"anomaly_{datetime.now().timestamp()}",
                     type="warning",
                     title="Anomaly Detected",
-                    description=f"Unusual pattern detected with anomaly score {
-                        anomaly_score:.3f}",
+                    description=f"Unusual pattern detected with anomaly score {anomaly_score:.3f}",
                     confidence=anomaly_score,
                     timestamp=datetime.now(),
                     data={"anomaly_score": anomaly_score, "threshold": 0.8},

@@ -264,15 +264,12 @@ class RuntimeHQService:
             # This is a simplified implementation
             # In a real application, you would update actual configuration
             logger.info(
-                f"Config update requested: {
-                    config_update.key} = {
-                    config_update.value}"
+                f"Config update requested: {config_update.key} = {config_update.value}"
             )
 
             return {
                 "success": True,
-                "message": f"Configuration '{
-                    config_update.key}' updated successfully",
+                "message": f"Configuration '{config_update.key}' updated successfully",
                 "key": config_update.key,
                 "value": config_update.value,
             }

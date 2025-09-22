@@ -807,7 +807,7 @@ INSERT OR IGNORE INTO system_config (config_key, config_value, config_type, desc
 -- Insert default API registry entries (examples)
 INSERT OR IGNORE INTO api_registry (api_name, base_url, api_version, authentication_type, rate_limit_per_minute, rate_limit_per_hour, status) VALUES
 ('openai_api', 'https://api.openai.com', 'v1', 'bearer_token', 60, 3000, 'active'),
-('youtube_api', '/api/youtube/v3', 'v3', 'api_key', 100, 10000, 'active'),
+('youtube_api', 'https://www.googleapis.com/youtube/v3', 'v3', 'api_key', 100, 10000, 'active'),
 ('twitter_api', 'https://api.twitter.com', '2', 'bearer_token', 300, 15000, 'active');
 
 -- ============================================================================

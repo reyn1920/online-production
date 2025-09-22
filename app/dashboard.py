@@ -392,10 +392,7 @@ class DashboardApp:
                     priority=data.get("priority", "medium"),
                     agent_id=data.get("agent_id"),
                 )
-                self.logger.info(
-                    f"Created task {task_id} of type {
-                        data['type']}"
-                )
+                self.logger.info(f"Created task {task_id} of type {data['type']}")
                 return (
                     jsonify(
                         {
@@ -503,8 +500,7 @@ class DashboardApp:
         try:
             self.logger.info(f"Starting TRAE.AI Dashboard on {host}:{port}")
             self._start_background_tasks()
-            # Use Waitress for a production-ready server instead of Flask's dev
-            # server
+            # Use Waitress for a production-ready server instead of Flask's dev server
             serve(self.app, host=host, port=port, threads=8)
         except KeyboardInterrupt:
             self.logger.info("Dashboard shutdown requested")

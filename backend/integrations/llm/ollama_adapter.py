@@ -81,8 +81,7 @@ def gen(prompt: str, temperature=None, max_tokens=None):
 
     if requests is None:
         log.warning("requests library not available, using fallback response")
-        return f"Runtime showcase generated at {
-            time.strftime('%Y-%m-%d %H:%M:%S')}."
+        return f"Runtime showcase generated at {time.strftime('%Y-%m-%d %H:%M:%S')}."
 
     # Use provided parameters or fall back to environment defaults
     temp = temperature if temperature is not None else OLLAMA_TEMPERATURE
@@ -118,21 +117,16 @@ def gen(prompt: str, temperature=None, max_tokens=None):
 
             if OLLAMA_VERBOSE:
                 log.info(
-                    f"Ollama generation successful: {
-                        len(generated_text)} characters"
+                    f"Ollama generation successful: {len(generated_text)} characters"
                 )
 
             return generated_text
         else:
-            log.error(
-                f"Ollama generation failed with status {
-                    response.status_code}"
-            )
+            log.error(f"Ollama generation failed with status {response.status_code}")
             return f"Generation failed - fallback response at {
                 time.strftime('%Y-%m-%d %H:%M:%S')
             }"
 
     except Exception as e:
         log.warning(f"Ollama generation error: {e}")
-        return f"Runtime showcase generated at {
-            time.strftime('%Y-%m-%d %H:%M:%S')}."
+        return f"Runtime showcase generated at {time.strftime('%Y-%m-%d %H:%M:%S')}."

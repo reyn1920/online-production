@@ -207,10 +207,7 @@ class APIDiscoveryEngine:
                 self.logger.info(f"Discovering APIs from {source_name}")
                 apis = await self._discover_from_source(source_name, source_config)
                 results[source_name] = apis
-                self.logger.info(
-                    f"Discovered {
-                        len(apis)} APIs from {source_name}"
-                )
+                self.logger.info(f"Discovered {len(apis)} APIs from {source_name}")
             except Exception as e:
                 self.logger.error(f"Failed to discover APIs from {source_name}: {e}")
                 results[source_name] = []
@@ -338,10 +335,7 @@ class APIDiscoveryEngine:
             result = await self.scraper.scrape_url(url, extraction_rules)
 
             if not result.success:
-                self.logger.error(
-                    f"Failed to scrape {url}: {
-                        result.error_message}"
-                )
+                self.logger.error(f"Failed to scrape {url}: {result.error_message}")
                 return []
 
             # Parse scraped data into API info

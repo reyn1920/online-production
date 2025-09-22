@@ -237,8 +237,7 @@ class UploadService:
             )
 
             logger.info(
-                f"File uploaded successfully: {
-                    file.filename} -> {stored_filename}"
+                f"File uploaded successfully: {file.filename} -> {stored_filename}"
             )
 
             return UploadResponse(

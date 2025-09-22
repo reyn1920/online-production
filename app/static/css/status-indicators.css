@@ -1,8 +1,7 @@
 /**
  * Status Indicator Dots
  * Visual indicators for affiliate program status
- */
-.dot {
+ */.dot {
   width: 10px;
   height: 10px;
   border-radius: 50%;
@@ -12,19 +11,13 @@
 }
 
 .dot.green {
-  background: #16a34a; /* working */
-}
+  background: #16a34a;/* working */}
 
 .dot.purple {
-  background: #7c3aed; /* needs key/disabled */
-}
+  background: #7c3aed;/* needs key/disabled */}
 
 .dot.red {
-  background: #dc2626; /* not working */
-}
-
-/* Status indicator with text labels */
-.status-indicator {
+  background: #dc2626;/* not working */}/* Status indicator with text labels */.status-indicator {
   display: inline-flex;
   align-items: center;
   margin: 4px 0;
@@ -33,10 +26,7 @@
 
 .status-indicator .dot {
   margin-right: 6px;
-}
-
-/* Status legend */
-.status-legend {
+}/* Status legend */.status-legend {
   display: flex;
   gap: 20px;
   margin: 15px 0;
@@ -54,10 +44,7 @@
 
 .status-legend-item .dot {
   margin-right: 4px;
-}
-
-/* Animated pulse for active status */
-.dot.green.pulse {
+}/* Animated pulse for active status */.dot.green.pulse {
   animation: pulse-green 2s infinite;
 }
 

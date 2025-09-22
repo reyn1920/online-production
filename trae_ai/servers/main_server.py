@@ -69,8 +69,18 @@ websocket_connections: dict[str, WebSocket] = {}
 
 
 @app.get("/")
-async def read_root():
-    return {"message": "My Application is Live and I am in control!"}
+async def root():
+    """Health check endpoint"""
+    return {
+        "message": "Trae.ai Unified Development Environment Server",
+        "status": "running",
+        "timestamp": datetime.now().isoformat(),
+        "endpoints": {
+            "solo_execute": "/solo/execute_goal",
+            "genesis_interview": "/genesis/start_interview",
+            "orchestrator_ws": "/ws/orchestrator_events",
+        },
+    }
 
 
 @app.post("/solo/execute_goal", response_model=SOLOExecuteResponse)

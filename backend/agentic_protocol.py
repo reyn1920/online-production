@@ -207,16 +207,10 @@ class AgentProtocol(ABC):
             try:
                 return await handler.handle_message(message)
             except Exception as e:
-                logger.error(
-                    f"Error processing message {
-                        message.message_id}: {e}"
-                )
+                logger.error(f"Error processing message {message.message_id}: {e}")
                 return self.create_error_message(message, str(e))
         else:
-            logger.warning(
-                f"No handler for message type {
-                    message.message_type}"
-            )
+            logger.warning(f"No handler for message type {message.message_type}")
             return None
 
     def create_message(
@@ -375,11 +369,7 @@ class CoordinationProtocol:
     def register_agent(self, agent_info: AgentInfo):
         """Register an agent with the coordinator."""
         self.agents[agent_info.agent_id] = agent_info
-        logger.info(
-            f"Agent {
-                agent_info.name} ({
-                agent_info.agent_id}) registered"
-        )
+        logger.info(f"Agent {agent_info.name} ({agent_info.agent_id}) registered")
 
     def unregister_agent(self, agent_id: str):
         """Unregister an agent."""

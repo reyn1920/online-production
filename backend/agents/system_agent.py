@@ -78,17 +78,14 @@ class SystemAgent(BaseAgent):
     @property
     def health_summary(self) -> str:
         """Get a health summary of the system agent."""
-        return f"SystemAgent {
-            self.agent_id} is operational with {
-            len(
-                self.capabilities)} capabilities"
+        return f"SystemAgent {self.agent_id} is operational with {len(self.capabilities)} capabilities"
 
     def _health_summary(self, report: dict[str, Any]) -> str:
         """Internal health summary method that accepts a report parameter."""
         healthy = report.get("healthy", 0)
         unhealthy = report.get("unhealthy", 0)
         notes = report.get("notes", [])
-
+        
         summary = f"System Health Report: {healthy} healthy, {unhealthy} unhealthy"
         if notes:
             summary += f" - Notes: {', '.join(notes)}"

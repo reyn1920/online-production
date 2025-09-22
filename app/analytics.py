@@ -294,8 +294,7 @@ class AnalyticsProcessor:
         return {
             "slope": slope,
             "direction": direction,
-            # Simple confidence metric
-            "confidence": min(abs(slope) * 10, 1.0),
+            "confidence": min(abs(slope) * 10, 1.0),  # Simple confidence metric
             "data_points": n,
             "time_window": window_minutes,
         }
@@ -351,8 +350,7 @@ class ReportGenerator:
         report = AnalyticsReport(
             id=report_id,
             title=title,
-            description=f"Analytics report for {
-                len(metric_names)} metrics from {start_time} to {end_time}",
+            description=f"Analytics report for {len(metric_names)} metrics from {start_time} to {end_time}",
             generated_at=datetime.now(),
             time_range=(start_time, end_time),
             metrics=summaries,

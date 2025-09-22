@@ -10,7 +10,7 @@ of the pytest command, creating a self-healing, self-critiquing loop.
 import subprocess
 import re
 from pathlib import Path
-from typing import Callable, Optional, Dict, Any
+from typing import Tuple, Callable, Optional, Dict, Any
 from dataclasses import dataclass
 from datetime import datetime
 
@@ -237,7 +237,7 @@ class GuardianAgent:
             print("✅🎉 [Guardian] SUCCESS! Ground truth confirms the task was completed successfully.")
             print(f"📈 [Guardian] Improvement: {final_result.failed - baseline.failed} fewer failures, {final_result.errors - baseline.errors} fewer errors")
         else:
-            print("❌ [Guardian] FAILURE! Task did not achieve the expected improvement.")
+            print(f"❌ [Guardian] FAILURE! Task did not achieve the expected improvement.")
             print(f"📉 [Guardian] Current state: {final_result.failed} failures, {final_result.errors} errors")
             print("🚨 [Guardian] The agent may be hallucinating success. A full architectural review is required.")
         

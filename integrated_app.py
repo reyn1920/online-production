@@ -99,13 +99,28 @@ def health_check():
 
 
 @app.get("/")
-def read_root():
-    return {"message": "My Application is Live and I am in control!"}
-
-
-@app.get("/hello")
-def say_hello():
-    return {"greeting": "Hello, this is my new endpoint!"}
+async def root():
+    """Root endpoint with service information"""
+    return JSONResponse(
+        {
+            "message": "TRAE.AI + Base44 Integrated Runtime",
+            "services": {
+                "trae_runtime": {
+                    "endpoints": ["/health", "/automation/toggles", "/webhuman/enqueue"]
+                },
+                "base44_api": {
+                    "endpoints": [
+                        "/library/voices",
+                        "/library/items",
+                        "/channels",
+                        "/dashboard",
+                    ]
+                },
+            },
+            "dashboard": "/dashboard",
+            "api_docs": "/docs",
+        }
+    )
 
 
 # ============================================================================

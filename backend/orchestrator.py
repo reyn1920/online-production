@@ -495,10 +495,7 @@ class TaskOrchestrator:
                 )
 
                 await self._emit_event("task_failed", task)
-                self.logger.error(
-                    f"Task {
-                        task.id} failed permanently: {error_msg}"
-                )
+                self.logger.error(f"Task {task.id} failed permanently: {error_msg}")
 
         finally:
             # Remove from running tasks

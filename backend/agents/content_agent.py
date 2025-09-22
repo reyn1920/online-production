@@ -261,8 +261,7 @@ class ContentAgent(BaseAgent):
         duration = task.get("duration", "30_days")
 
         strategy = ContentStrategy(
-            strategy_id=f"strategy_{
-                datetime.now().strftime('%Y%m%d_%H%M%S')}",
+            strategy_id=f"strategy_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
             name=f"Conservative Content Strategy - {duration}",
             target_platforms=target_platforms,
             content_themes=self.content_themes,
@@ -367,8 +366,7 @@ What are your thoughts? Have you noticed these contradictions too?""",
         return posts.get(
             topic,
             {
-                "title": f"Conservative Perspective: {
-                    topic.title()}",
+                "title": f"Conservative Perspective: {topic.title()}",
                 "body": f"Sharing some thoughts on {topic} from a conservative viewpoint. What do you think?",
                 "tags": ["Conservative", "Discussion"],
             },
@@ -379,8 +377,7 @@ What are your thoughts? Have you noticed these contradictions too?""",
         Generate long-form article content
         """
         return {
-            "title": f"The Conservative Case for {
-                topic.title()}",
+            "title": f"The Conservative Case for {topic.title()}",
             "body": f"""In-depth analysis of {topic} from a conservative perspective.
 
 [Article content would be generated here based on the specific topic and current events]
@@ -394,8 +391,7 @@ Conclusion: Conservative principles provide the framework for understanding and 
         Generate generic post content
         """
         return {
-            "title": f"{
-                topic.title()} - Conservative Perspective",
+            "title": f"{topic.title()} - Conservative Perspective",
             "body": f"Conservative viewpoint on {topic}. Standing for traditional values and constitutional principles.",
             "tags": ["Conservative", topic.replace("_", "")],
         }

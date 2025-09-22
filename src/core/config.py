@@ -17,10 +17,8 @@ class Config:
         self.environment = os.getenv("ENVIRONMENT", "development")
         self.api_key = os.getenv("API_KEY", "test_api_key")
     
-    def get_api_key(self, key_name: Optional[str] = None) -> str:
+    def get_api_key(self) -> str:
         """Get the API key."""
-        if key_name:
-            return os.getenv(key_name, "")
         return self.api_key
     
     def get_secret_key(self) -> str:

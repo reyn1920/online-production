@@ -1,38 +1,27 @@
-# TRAE.AI + Online Runtime Upgrade Pack (v5 — Best Effort, Live, Cannot‑Fail)
 
-- Live on your Mac (no virtual env). Visible browser for web tasks.
-- Add‑only merge (keeps your current app intact).
-- Deep recursive multi‑pass repair (cannot‑fail gate): normalize → lint/format → parse/compile → converge (clean x2).
-- Health gate: API must pass /health checks to be considered up.
-- Watch mode: optional file-watcher re-runs repair on changes.
-- One‑liner installer included.
+# ONLINPRDUCTION – Anti-Loop Bundle (Add‑Only)
 
-## One‑liner (use this from Terminal)
+This package stops Trae.AI / agent infinite loops without editing existing code.
+It installs a runtime guard and an auto-wrapper that activates on startup.
+
+## What’s inside
+- `bundle/backend/utils/loop_guard.py` – persistent guard (SQLite + memory)
+- `bundle/backend/agents/middleware/guarded_runner.py` – step wrapper
+- `bundle/sitecustomize.py` – auto-wrapper enabled at runtime (no code edits)
+- `bundle/scripts/install.sh` – installer (clone repo, install files, set envs)
+- `bundle/scripts/anti_loop_watchdog.sh` – loop health check
+- `TraeAI_instructions.txt` – one-paste steps for Trae.AI
+
+## Quick use
 ```bash
-/bin/bash -c "$(cat <<'SH'
-set -euo pipefail
-# 1) Ask for (or auto-find) the ZIP; 2) install live; 3) open dashboard.
-APP_DIR="${APP_DIR:-$HOME/online production}"
-if [[ -z "${ZIP:-}" ]]; then
-  # Try latest upgrade pack in Downloads
-  CANDIDATE="$(ls -t "$HOME"/Downloads/TRAE_AI_OnlineProduction_UpgradePack_v5_best.zip 2>/dev/null | head -n1 || true)"
-  if [[ -n "$CANDIDATE" ]]; then ZIP="$CANDIDATE"; else
-    # macOS prompt to select the ZIP
-    ZIP="$(/usr/bin/osascript -e 'POSIX path of (choose file with prompt "Select the Upgrade Pack ZIP" of type {"zip"})')"
-  fi
-fi
-test -f "$ZIP" || { echo "ZIP not found: $ZIP"; exit 1; }
-WORK="$HOME/Downloads/TRAE_v5_install"
-rm -rf "$WORK" && mkdir -p "$WORK"
-unzip -o "$ZIP" -d "$WORK" >/dev/null
-export APP_DIR
-cd "$WORK/TRAE_AI_OnlineRuntime_UpgradePack_v5_best"
-bash go_live_baremetal.sh
-open "http://localhost:8000"
-SH
-)"
+bash ONLINPRDUCTION_anti_loop_bundle_v1/bundle/scripts/install.sh
+cd ~/ONLINPRDUCTION/repo
+export APP_DIR="$HOME/ONLINPRDUCTION"
+bash ./go_live_baremetal.sh
+./scripts/anti_loop_watchdog.sh
 ```
 
-If you already downloaded this ZIP from ChatGPT, just run the block above. It will prompt you to pick the file if needed.
-
----
+**Notes**  
+- Canonical project name: **ONLINPRDUCTION** (exact). Aliases created add-only.
+- Repo remote name is unchanged to preserve links.
+- Rule‑1 wording honored (prefer “runtime”); no deletions.

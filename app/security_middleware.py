@@ -150,9 +150,7 @@ class RateLimiter:
             # Block IP for window duration
             self.blocked_ips[key] = current_time + rule.window_seconds
             logger.warning(
-                f"Rate limit exceeded for {key}: {
-                    len(request_times)} requests in {
-                    rule.window_seconds}s"
+                f"Rate limit exceeded for {key}: {len(request_times)} requests in {rule.window_seconds}s"
             )
             return False
 
@@ -701,13 +699,7 @@ async def main():
 
     # Process request
     result = await security_middleware.process_request(request)
-    print(
-        f"Security check result: {
-            json.dumps(
-                result,
-                indent=2,
-                default=str)}"
-    )
+    print(f"Security check result: {json.dumps(result, indent=2, default=str)}")
 
     # Create a valid token
     token = security_middleware.create_user_token("user123", "testuser", ["user"])

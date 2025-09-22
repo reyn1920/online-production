@@ -26,7 +26,7 @@
   }
 
   .nav-tab.active {
-    @apply bg-green-600 text-white shadow-md;
+    @apply bg-blue-600 text-white shadow-md;
   }
 
   .nav-tab:not(.active) {

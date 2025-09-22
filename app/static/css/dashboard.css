@@ -1,7 +1,4 @@
-/* TRAE.AI Dashboard CSS */
-
-/* Base Styles */
-* {
+/* TRAE.AI Dashboard CSS *//* Base Styles */* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -11,9 +8,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   min-height: 100vh;
-  color: #333;
-  /* Performance optimizations */
-  -webkit-font-smoothing: antialiased;
+  color: #333;/* Performance optimizations */-webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   will-change: scroll-position;
@@ -23,10 +18,7 @@ body {
   max-width: 1400px;
   margin: 0 auto;
   padding: 20px;
-}
-
-/* Header Styles */
-.header {
+}/* Header Styles */.header {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   border-radius: 15px;
@@ -46,10 +38,7 @@ body {
 .header p {
   color: #718096;
   font-size: 1.1rem;
-}
-
-/* Navigation */
-.nav-link {
+}/* Navigation */.nav-link {
   display: inline-block;
   margin: 10px 5px;
   padding: 10px 20px;

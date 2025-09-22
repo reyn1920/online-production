@@ -158,10 +158,7 @@ class AdvancedAction:
                 except Exception as e:
                     if attempt < self.retry_count:
                         logger.warning(
-                            f"Action {
-                                self.action_id} failed (attempt {
-                                attempt +
-                                1}), retrying: {e}"
+                            f"Action {self.action_id} failed (attempt {attempt + 1}), retrying: {e}"
                         )
                         await asyncio.sleep(self.retry_delay)
                     else:
@@ -171,10 +168,7 @@ class AdvancedAction:
 
         except Exception as e:
             self.last_error = str(e)
-            logger.error(
-                f"Action {
-                    self.action_id} failed after all retries: {e}"
-            )
+            logger.error(f"Action {self.action_id} failed after all retries: {e}")
             raise
 
         finally:
