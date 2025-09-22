@@ -36,7 +36,7 @@ spacy==3.7.2
 python-dotenv==1.0.0
 click==8.1.7
 rich==13.7.0
-loguru==0.7.2
+loguru==0.7.3
 
 # YouTube Integration
 google-api-python-client==2.108.0
