@@ -88,7 +88,7 @@ jobs:
           safety check
 
       - name: Upload security reports
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: security-reports
@@ -147,7 +147,7 @@ jobs:
           category: "/language:python"
 
       - name: Upload security reports
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: security-scan-reports
@@ -197,7 +197,7 @@ jobs:
           pytest tests/ -v --cov=. --cov-report=xml --cov-report=html
 
       - name: Upload coverage reports
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage-reports
           path: |
