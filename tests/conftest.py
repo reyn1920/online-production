@@ -15,7 +15,7 @@ sys.path.insert(0, str(src_path))
 
 # Import core modules
 from src.core.config import Config
-from src.services.registry import ServiceRegistry
+from src.services.registry import ServiceRegistry, get_service_registry
 
 
 @pytest.fixture(scope="session")

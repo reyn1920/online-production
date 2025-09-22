@@ -5,6 +5,7 @@ Test suite for service layer components.
 import pytest
 import asyncio
 from unittest.mock import Mock, AsyncMock
+import sqlite3
 import tempfile
 import os
 from typing import Dict, Any
@@ -12,10 +13,13 @@ from typing import Dict, Any
 from src.services.registry import ServiceRegistry, BaseService
 from src.services.auth import (
     AuthenticationService,
+    UserRole,
+    AuthToken,
     TokenType,
 )
 from src.services.data import DataService, QueryResult
 from src.core.config import Config
+from src.core.exceptions import AuthenticationError
 
 
 # Test cases for ServiceRegistry
@@ -281,9 +285,13 @@ class TestServiceIntegration:
         assert auth_service is not None
         assert data_service is not None
 
-        # Test service functionality - use user_id string instead of dict
-        user_id = "test_user"
-        token = auth_service.generate_token(user_id, TokenType.ACCESS)
+        # Test service functionality
+        user_data = {
+            "user_id": "test",
+            "email": "test@example.com",
+            "role": UserRole.USER,
+        }
+        token = auth_service.generate_token(user_data, TokenType.ACCESS)
         assert token is not None
 
 
