@@ -66,7 +66,7 @@ neuralforecast==1.6.4
 
 # Machine Learning
 tensorflow==2.15.0
-torch==2.1.1
+torch==2.8.0
 xgboost==2.0.2
 lightgbm==4.1.0
 
