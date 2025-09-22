@@ -1,16 +1,13 @@
 """Tests for the project API endpoints."""
 
 import pytest
-from unittest.mock import Mock, AsyncMock, patch
-from fastapi.testclient import TestClient
-from fastapi import HTTPException, status
+from unittest.mock import Mock, patch
 from sqlalchemy.ext.asyncio import AsyncSession
-from uuid import UUID, uuid4
+from uuid import uuid4
 from datetime import datetime
 
-from src.backend.api.projects import router, ProjectCreate, ProjectUpdate, ProjectResponse
+from src.backend.api.projects import ProjectCreate, ProjectUpdate, ProjectResponse
 from src.backend.domain.models import User, Project, ProjectStatus
-from src.backend.services.project_service import ProjectService
 
 
 @pytest.fixture

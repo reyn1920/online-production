@@ -49,7 +49,7 @@ class ChatGPTIntegration:
 class GeminiIntegration:
     def __init__(self):
         self.api_key = os.getenv('GOOGLE_AI_API_KEY')
-        self.base_url = "https://generativelanguage.googleapis.com/v1"
+        self.base_url = "/api/generative/v1"
 
     async def multimodal_analysis(self, content_type, data):
         # Implementation for multimodal processing

@@ -133,7 +133,10 @@ class HTTPConnector(ServiceConnector):
                 timeout=aiohttp.ClientTimeout(total=self.config.timeout)
             )
             self.status = ConnectionStatus.CONNECTED
-            logger.info(f"HTTP connector established for {self.config.service_id}")
+            logger.info(
+                f"HTTP connector established for {
+                    self.config.service_id}"
+            )
             return True
         except Exception as e:
             logger.error(f"Failed to establish HTTP connector: {e}")
@@ -221,7 +224,10 @@ class WebSocketConnector(ServiceConnector):
         try:
             self.websocket = await websockets.connect(self.config.endpoint)
             self.status = ConnectionStatus.CONNECTED
-            logger.info(f"WebSocket connector established for {self.config.service_id}")
+            logger.info(
+                f"WebSocket connector established for {
+                    self.config.service_id}"
+            )
             return True
         except Exception as e:
             logger.error(f"Failed to establish WebSocket connector: {e}")
@@ -337,7 +343,10 @@ class SystemBridge:
             logger.info(f"Registered service: {config.service_id}")
             return True
         except Exception as e:
-            logger.error(f"Failed to register service {config.service_id}: {e}")
+            logger.error(
+                f"Failed to register service {
+                    config.service_id}: {e}"
+            )
             return False
 
     async def connect_all_services(self) -> dict[str, bool]:
@@ -415,7 +424,8 @@ class SystemBridge:
                     for service_id, health in health_status.items():
                         if health.status == ConnectionStatus.ERROR:
                             logger.warning(
-                                f"Service {service_id} is unhealthy: {health.status}"
+                                f"Service {service_id} is unhealthy: {
+                                    health.status}"
                             )
 
                     await asyncio.sleep(interval)
@@ -494,7 +504,9 @@ async def main():
     health_status = await system_bridge.get_all_service_health()
     for service_id, health in health_status.items():
         print(
-            f"Service {service_id}: {health.status} (Response time: {health.response_time:.3f}s)"
+            f"Service {service_id}: {
+                health.status} (Response time: {
+                health.response_time:.3f}s)"
         )
 
     # Start monitoring

@@ -1,9 +1,9 @@
-
 """
 Auto anti-loop patcher.
 Placed at repo root. Python will import sitecustomize automatically (unless -S is used).
 It scans loaded modules and safely wraps common agent step functions without editing code.
 """
+
 import os, sys, threading, time, inspect, types, traceback
 from pathlib import Path
 
@@ -32,7 +32,12 @@ else:
     _wrapped = set()
 
     def _job_id_of(ctx: dict) -> str:
-        return ctx.get("job_id") or ctx.get("trace_id") or ctx.get("request_id") or "default-job"
+        return (
+            ctx.get("job_id")
+            or ctx.get("trace_id")
+            or ctx.get("request_id")
+            or "default-job"
+        )
 
     def _tool_name_of(ctx: dict) -> str:
         a = ctx.get("planned_action") or {}
@@ -57,27 +62,50 @@ else:
                     if hasattr(obj, "step") and callable(getattr(obj, "step")):
                         meth = getattr(obj, "step")
                         if meth not in _wrapped:
+
                             def _make_wrapped(meth):
                                 def _w(self, ctx):
                                     # Build a pseudo ctx if not provided
                                     local_ctx = ctx or {}
                                     job_id = _job_id_of(local_ctx)
                                     guard = LoopGuard(job_id)
-                                    decision = guard.check(local_ctx.get("planned_action", {"type":"unknown","args":{}}),
-                                                           getattr(self, "__class__", type(self)).__name__)
+                                    decision = guard.check(
+                                        local_ctx.get(
+                                            "planned_action",
+                                            {"type": "unknown", "args": {}},
+                                        ),
+                                        getattr(self, "__class__", type(self)).__name__,
+                                    )
                                     if not decision.allow:
-                                        return {"status":"stopped","reason":decision.reason,"cool_down":decision.cool_down,"step":decision.step}
+                                        return {
+                                            "status": "stopped",
+                                            "reason": decision.reason,
+                                            "cool_down": decision.cool_down,
+                                            "step": decision.step,
+                                        }
                                     res = meth(self, ctx)
-                                    guard.check(local_ctx.get("planned_action", {"type":"unknown","args":{}}),
-                                                getattr(self, "__class__", type(self)).__name__, result=res)
+                                    guard.check(
+                                        local_ctx.get(
+                                            "planned_action",
+                                            {"type": "unknown", "args": {}},
+                                        ),
+                                        getattr(self, "__class__", type(self)).__name__,
+                                        result=res,
+                                    )
                                     return res
+
                                 return _w
+
                             try:
                                 setattr(obj, "step", _make_wrapped(meth))
                                 _wrapped.add(meth)
-                                log(f"wrapped method {mod.__name__}.{obj.__name__}.step")
+                                log(
+                                    f"wrapped method {mod.__name__}.{obj.__name__}.step"
+                                )
                             except Exception as e:
-                                log(f"wrap failed for class {mod.__name__}.{obj.__name__}.step: {e}")
+                                log(
+                                    f"wrap failed for class {mod.__name__}.{obj.__name__}.step: {e}"
+                                )
         except Exception as e:
             log(f"scan failed for {mod}: {e}")
 
@@ -85,11 +113,15 @@ else:
         # Try for a while at start-up
         for _ in range(60):
             for m in list(sys.modules.values()):
-                if not isinstance(m, types.ModuleType): 
+                if not isinstance(m, types.ModuleType):
                     continue
                 mn = getattr(m, "__name__", "")
                 # Only scan project modules (heuristic)
-                if mn and (mn.startswith("agents") or mn.startswith("orchestrator") or "agent" in mn):
+                if mn and (
+                    mn.startswith("agents")
+                    or mn.startswith("orchestrator")
+                    or "agent" in mn
+                ):
                     _maybe_wrap_module(m)
             time.sleep(1.0)
 

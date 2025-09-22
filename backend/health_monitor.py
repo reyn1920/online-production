@@ -179,7 +179,8 @@ class HealthMonitor:
                         message = "External services accessible"
                     else:
                         status = HealthStatus.WARNING
-                        message = f"External service returned {response.status}"
+                        message = f"External service returned {
+                            response.status}"
 
             check = HealthCheck(
                 name="external_services",

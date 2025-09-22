@@ -1,5 +1,5 @@
 {
-  "timestamp": 1758017672.201799,
+  "timestamp": 1758448400.648493,
   "mode": "production",
   "system_requirements": {
     "python_version": true,
@@ -8,11 +8,11 @@
     "ollama_service": true
   },
   "ollama_status": {
-    "timestamp": 1758017672.153997,
+    "timestamp": 1758448400.615113,
     "installation": {
       "installed": true,
       "path": "/usr/local/bin/ollama",
-      "version": "ollama version is 0.11.11",
+      "version": "ollama version is 0.12.0",
       "status": "available"
     },
     "service": {
@@ -41,7 +41,7 @@
   },
   "startup_log": [
     {
-      "timestamp": 1758017672.0917509,
+      "timestamp": 1758448400.555999,
       "event": "system_requirements_check",
       "status": "completed",
       "mode": "production",
@@ -53,16 +53,16 @@
       }
     },
     {
-      "timestamp": 1758017672.121005,
+      "timestamp": 1758448400.587574,
       "event": "ollama_service",
       "status": "ready",
       "mode": "production",
       "details": {
-        "timestamp": 1758017672.120821,
+        "timestamp": 1758448400.587405,
         "installation": {
           "installed": true,
           "path": "/usr/local/bin/ollama",
-          "version": "ollama version is 0.11.11",
+          "version": "ollama version is 0.12.0",
           "status": "available"
         },
         "service": {
@@ -71,9 +71,9 @@
           "endpoint": "http://localhost:11434",
           "models_count": 13,
           "models": [
+            "llama2:7b",
             "mistral:7b",
             "llama2:13b",
-            "llama2:7b",
             "codellama:latest",
             "llama3.2:latest",
             "llama3:8b",
@@ -91,7 +91,7 @@
       }
     },
     {
-      "timestamp": 1758017672.121096,
+      "timestamp": 1758448400.5876448,
       "event": "main_application",
       "status": "ready",
       "mode": "production",
@@ -100,7 +100,7 @@
       }
     },
     {
-      "timestamp": 1758017672.2013881,
+      "timestamp": 1758448400.648324,
       "event": "system_requirements_check",
       "status": "completed",
       "mode": "production",

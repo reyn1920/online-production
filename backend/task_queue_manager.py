@@ -59,7 +59,10 @@ class TaskQueueManager:
             return
 
         self.is_running = True
-        self.logger.info(f"Starting TaskQueueManager with {self.max_workers} workers")
+        self.logger.info(
+            f"Starting TaskQueueManager with {
+                self.max_workers} workers"
+        )
 
         # Start worker tasks
         for i in range(self.max_workers):
@@ -134,7 +137,10 @@ class TaskQueueManager:
                 task.status = TaskStatus.RUNNING
                 task.started_at = datetime.now()
 
-                self.logger.info(f"Worker {worker_name} processing task {task.task_id}")
+                self.logger.info(
+                    f"Worker {worker_name} processing task {
+                        task.task_id}"
+                )
 
                 try:
                     # Execute task
@@ -149,7 +155,10 @@ class TaskQueueManager:
                     self.completed_tasks.append(task)
                     del self.active_tasks[task.task_id]
 
-                    self.logger.info(f"Task {task.task_id} completed successfully")
+                    self.logger.info(
+                        f"Task {
+                            task.task_id} completed successfully"
+                    )
 
                 except Exception as e:
                     # Handle task failure

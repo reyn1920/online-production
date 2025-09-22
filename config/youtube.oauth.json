@@ -4,9 +4,9 @@
     "client_secret": "YOUR_GOOGLE_OAUTH_CLIENT_SECRET",
     "redirect_uri": "http://127.0.0.1:8000/oauth2/callback/youtube",
     "scopes": [
-      "https://www.googleapis.com/auth/youtube.upload",
-      "https://www.googleapis.com/auth/youtube.readonly",
-      "https://www.googleapis.com/auth/yt-analytics.readonly"
+      "youtube.upload",
+      "youtube.readonly",
+      "yt-analytics.readonly"
     ]
   },
   "channels": {

@@ -1,15 +1,18 @@
-
 from typing import Any, Dict, Callable
 from backend.utils.loop_guard import LoopGuard
 
-def GuardedAgentRunner(run_step_fn: Callable[[Dict[str,Any]], Dict[str,Any]],
-                       job_id_fn: Callable[[Dict[str,Any]], str],
-                       tool_name_resolver: Callable[[Dict[str,Any]], str]):
+
+def GuardedAgentRunner(
+    run_step_fn: Callable[[Dict[str, Any]], Dict[str, Any]],
+    job_id_fn: Callable[[Dict[str, Any]], str],
+    tool_name_resolver: Callable[[Dict[str, Any]], str],
+):
     """
     Wrap an agent's single-step function with anti-loop checks.
     No identifier renames required. Add-only.
     """
-    def _wrapped(ctx: Dict[str,Any]) -> Dict[str,Any]:
+
+    def _wrapped(ctx: Dict[str, Any]) -> Dict[str, Any]:
         job_id = job_id_fn(ctx)
         guard = LoopGuard(job_id)
         tool_name = tool_name_resolver(ctx)
@@ -20,10 +23,11 @@ def GuardedAgentRunner(run_step_fn: Callable[[Dict[str,Any]], Dict[str,Any]],
                 "status": "stopped",
                 "reason": decision.reason,
                 "cool_down": decision.cool_down,
-                "step": decision.step
+                "step": decision.step,
             }
         result = run_step_fn(ctx)
         # Record with result signature continuity
         guard.check(planned_action, tool_name, result=result)
         return result
+
     return _wrapped

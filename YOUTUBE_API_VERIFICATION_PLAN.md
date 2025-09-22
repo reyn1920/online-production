@@ -18,7 +18,7 @@ This document outlines the comprehensive testing and verification steps for the 
    YT_CLIENT_ID=your_youtube_client_id_here
    YT_CLIENT_SECRET=your_youtube_client_secret_here
    YT_REDIRECT_URI=http://127.0.0.1:8000/oauth2/callback/youtube
-   YT_SCOPES="https://www.googleapis.com/auth/youtube.upload https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/yt-analytics.readonly"
+   YT_SCOPES="youtube.upload youtube.readonly yt-analytics.readonly"
 
    # Feature Flags
    FEATURE_YT_UPLOADS=true

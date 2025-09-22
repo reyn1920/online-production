@@ -1,7 +1,8 @@
 /**
  * Places Status Dashboard Styles
  * Extends the existing status-indicators.css system
- */.places-status-title {
+ */
+.places-status-title {
   color: #2c3e50;
   font-size: 1.8rem;
   font-weight: 600;

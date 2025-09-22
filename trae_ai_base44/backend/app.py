@@ -17,13 +17,8 @@ if frontend_path.exists():
 
 
 @app.get("/")
-async def root():
-    """Root endpoint returning system status"""
-    return {
-        "message": "TRAE.AI Base44 System",
-        "status": "operational",
-        "version": "1.0.0",
-    }
+async def read_root():
+    return {"message": "My Application is Live and I am in control!"}
 
 
 @app.get("/health")

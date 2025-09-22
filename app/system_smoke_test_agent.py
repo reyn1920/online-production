@@ -244,7 +244,8 @@ class SystemSmokeTestAgent:
                         return SmokeTestResult(
                             test_name="network_connectivity",
                             status=TestResult.FAIL,
-                            message=f"Network test returned status {response.status}",
+                            message=f"Network test returned status {
+                                response.status}",
                             duration=time.time() - start_time,
                             timestamp=datetime.now(timezone.utc),
                         )
@@ -329,7 +330,8 @@ class SystemSmokeTestAgent:
                         return SmokeTestResult(
                             test_name="application_endpoints",
                             status=TestResult.WARNING,
-                            message=f"Application endpoint returned status {response.status}",
+                            message=f"Application endpoint returned status {
+                                response.status}",
                             duration=time.time() - start_time,
                             timestamp=datetime.now(timezone.utc),
                         )

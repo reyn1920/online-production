@@ -98,7 +98,8 @@ class WebSocketConnection:
 
         except Exception as e:
             logger.error(
-                f"Failed to send message to connection {self.connection_id}: {e}"
+                f"Failed to send message to connection {
+                    self.connection_id}: {e}"
             )
             self.status = ConnectionStatus.ERROR
             return False
@@ -110,7 +111,10 @@ class WebSocketConnection:
             self.last_activity = datetime.now(timezone.utc)
             return True
         except Exception as e:
-            logger.error(f"Failed to send JSON to connection {self.connection_id}: {e}")
+            logger.error(
+                f"Failed to send JSON to connection {
+                    self.connection_id}: {e}"
+            )
             self.status = ConnectionStatus.ERROR
             return False
 
@@ -134,7 +138,8 @@ class WebSocketManager:
 
     def __init__(self):
         self.connections: dict[str, WebSocketConnection] = {}
-        self.user_connections: dict[str, set[str]] = {}  # user_id -> connection_ids
+        # user_id -> connection_ids
+        self.user_connections: dict[str, set[str]] = {}
         self.subscriptions: dict[str, set[str]] = {}  # topic -> connection_ids
         self.message_handlers: dict[
             MessageType, list[Callable[[str, WebSocketMessage], Any]]

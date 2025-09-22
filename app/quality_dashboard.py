@@ -311,8 +311,13 @@ class QualityDataCollector:
             if metric.threshold_max and metric.value > metric.threshold_max:
                 alert = Alert(
                     id=alert_id,
-                    title=f"High {metric.name}",
-                    description=f"{metric.name} is {metric.value} {metric.unit}, exceeding threshold of {metric.threshold_max}",
+                    title=f"High {
+                        metric.name}",
+                    description=f"{
+                        metric.name} is {
+                        metric.value} {
+                        metric.unit}, exceeding threshold of {
+                        metric.threshold_max}",
                     severity=(
                         AlertSeverity.HIGH
                         if metric.value > metric.threshold_max * 1.2
@@ -328,8 +333,13 @@ class QualityDataCollector:
             elif metric.threshold_min and metric.value < metric.threshold_min:
                 alert = Alert(
                     id=alert_id,
-                    title=f"Low {metric.name}",
-                    description=f"{metric.name} is {metric.value} {metric.unit}, below threshold of {metric.threshold_min}",
+                    title=f"Low {
+                        metric.name}",
+                    description=f"{
+                        metric.name} is {
+                        metric.value} {
+                        metric.unit}, below threshold of {
+                        metric.threshold_min}",
                     severity=(
                         AlertSeverity.HIGH
                         if metric.value < metric.threshold_min * 0.8
@@ -372,7 +382,10 @@ class QualityDataCollector:
                 self.alerts = self.alerts[-200:]
 
             logger.debug(
-                f"Collected {len(all_metrics)} metrics, {len(health_results)} health checks, {len(new_alerts)} new alerts"
+                f"Collected {
+                    len(all_metrics)} metrics, {
+                    len(health_results)} health checks, {
+                    len(new_alerts)} new alerts"
             )
 
         except Exception as e:
@@ -814,7 +827,8 @@ class QualityDashboard:
         error_metrics = [m for m in metrics if "error" in m.name.lower()]
         if error_metrics:
             avg_error_rate = statistics.mean([m.value for m in error_metrics])
-            return max(0, 100 - (avg_error_rate * 20))  # Scale error rate to score
+            # Scale error rate to score
+            return max(0, 100 - (avg_error_rate * 20))
 
         return 85.0  # Default good score if no error metrics
 
@@ -877,7 +891,11 @@ async def main():
         # Get dashboard data
         overview_data = await quality_dashboard.get_dashboard_data("overview")
         print(
-            f"\nOverview Dashboard: {json.dumps(overview_data, indent=2, default=str)}"
+            f"\nOverview Dashboard: {
+                json.dumps(
+                    overview_data,
+                    indent=2,
+                    default=str)}"
         )
 
         # List available dashboards

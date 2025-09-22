@@ -161,8 +161,9 @@ async def get_system_metrics_endpoint():
     try:
         metrics = get_system_metrics()
         return JSONResponse(
-            content={"metrics": metrics, "timestamp": datetime.now().isoformat()}
-        )
+            content={
+                "metrics": metrics,
+                "timestamp": datetime.now().isoformat()})
     except Exception as e:
         logger.error(f"Error getting system metrics: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
@@ -229,22 +230,19 @@ async def get_health_status():
 async def get_active_alerts():
     """Get active system alerts and notifications"""
     try:
-        alerts = [
-            {
-                "id": "alert_001",
-                "type": "warning",
-                "message": "High memory usage detected",
-                "timestamp": datetime.now().isoformat(),
-                "severity": "medium",
-            },
-            {
-                "id": "alert_002",
-                "type": "info",
-                "message": "Scheduled maintenance in 2 hours",
-                "timestamp": (datetime.now() - timedelta(minutes=30)).isoformat(),
-                "severity": "low",
-            },
-        ]
+        alerts = [{"id": "alert_001",
+                   "type": "warning",
+                   "message": "High memory usage detected",
+                   "timestamp": datetime.now().isoformat(),
+                   "severity": "medium",
+                   },
+                  {"id": "alert_002",
+                   "type": "info",
+                   "message": "Scheduled maintenance in 2 hours",
+                   "timestamp": (datetime.now() - timedelta(minutes=30)).isoformat(),
+                   "severity": "low",
+                   },
+                  ]
         return JSONResponse(content={"alerts": alerts})
     except Exception as e:
         logger.error(f"Error getting alerts: {e}")

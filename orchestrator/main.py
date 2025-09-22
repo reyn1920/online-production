@@ -225,9 +225,8 @@ try:
         return {"status": "healthy", "timestamp": datetime.utcnow().isoformat()}
 
     @app.get("/")
-    async def root():
-        """Root endpoint"""
-        return {"message": "TRAE.AI Orchestrator is running", "version": "1.0.0"}
+    async def read_root():
+        return {"message": "My Application is Live and I am in control!"}
 
 except NameError:
     # FastAPI not available, create minimal app

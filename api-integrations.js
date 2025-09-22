@@ -7,7 +7,7 @@
         this.config = {
             youtube: {
                 apiKey: process.env.YOUTUBE_API_KEY || '',
-                baseUrl: 'https://www.googleapis.com/youtube/v3',
+                baseUrl: '/api/youtube/v3',
                 quotaLimit: 10000//Daily quota limit
             },
             tiktok: {

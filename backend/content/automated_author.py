@@ -276,7 +276,9 @@ class ContentGenerator:
         """Generate content based on request."""
         try:
             logger.info(
-                f"Generating {request.content_type.value} content about {request.topic}"
+                f"Generating {
+                    request.content_type.value} content about {
+                    request.topic}"
             )
 
             # Get template for content type
@@ -665,7 +667,8 @@ class ContentQualityChecker:
             ]
             if missing_keywords:
                 suggestions.append(
-                    f"Consider including these keywords: {', '.join(missing_keywords)}"
+                    f"Consider including these keywords: {
+                        ', '.join(missing_keywords)}"
                 )
 
         # Style suggestions
@@ -691,7 +694,9 @@ class AutomatedAuthor:
         """Create content based on request."""
         try:
             logger.info(
-                f"Creating {request.content_type.value} content: {request.topic}"
+                f"Creating {
+                    request.content_type.value} content: {
+                    request.topic}"
             )
 
             # Generate content

@@ -167,7 +167,11 @@ async def execute_goal(
                 result = {"success": True, "result": result}
         else:
             # Basic execution fallback
-            result = {"success": True, "message": f"Goal received: {request.goal}"}
+            result = {
+                "success": True,
+                "message": f"Goal received: {
+                    request.goal}",
+            }
 
         return ExecutionResponse(
             success=result.get("success", True),
@@ -207,7 +211,11 @@ async def execute_tool(request: ToolExecutionRequest):
                 status_code=503, detail="SOLO agent tools are not available"
             )
 
-        logger.info(f"Executing tool: {request.tool_name} with args: {request.args}")
+        logger.info(
+            f"Executing tool: {
+                request.tool_name} with args: {
+                request.args}"
+        )
 
         result = run_tool(request.tool_name, *request.args, **request.kwargs)
 

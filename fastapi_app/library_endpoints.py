@@ -123,7 +123,8 @@ class LibraryCollectionResponse(LibraryCollectionBase):
 # In-memory storage (replace with database in production)
 library_items: dict[str, dict[str, Any]] = {}
 library_collections: dict[str, dict[str, Any]] = {}
-collection_items: dict[str, list[str]] = {}  # collection_id -> list of item_ids
+# collection_id -> list of item_ids
+collection_items: dict[str, list[str]] = {}
 
 
 # Service Classes

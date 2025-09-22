@@ -1,0 +1,11 @@
+TRAE.AI INSTALL & RUN (VS Code Pack)
+1) Copy the contents of this archive into the repo root.
+2) Ensure Python venv exists at .venv (Python 3.11+) and Node is available.
+3) In VS Code: accept recommended extensions.
+4) Run tasks from Terminal > Run Task:
+   - "Runtime: FastAPI (reload)"
+   - "UPR: pass-1" then "UPR: pass-2"
+   - "Rule-1 guard" to flag vocabulary
+   - "Puppeteer headful check"
+5) Use "Phoenix snapshot (SQLite)" before larger edits.
+All operations are add-only and avoid deletions or renames.

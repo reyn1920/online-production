@@ -554,7 +554,7 @@ INSERT OR IGNORE INTO system_config (config_key, config_value, config_type, desc
 -- Insert default API registry entries
 INSERT OR IGNORE INTO api_registry (api_name, api_type, base_url, status, requires_key, documentation_url) VALUES
 ('OpenAI', 'ai', 'https://api.openai.com/v1', 'active', 1, 'https://platform.openai.com/docs'),
-('YouTube Data API', 'social', 'https://www.googleapis.com/youtube/v3', 'active', 1, 'https://developers.google.com/youtube/v3'),
+('YouTube Data API', 'social', '/api/youtube/v3', 'active', 1, 'https://developers.google.com/youtube/v3'),
 ('Twitter API', 'social', 'https://api.twitter.com/2', 'active', 1, 'https://developer.twitter.com/en/docs');
 
 -- ============================================================================

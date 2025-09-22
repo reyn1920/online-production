@@ -438,7 +438,8 @@ class HypocrisyAnalyzer:
             if temporal.get("found"):
                 details.append(f"{temporal['count']} temporal inconsistency(ies) found")
 
-            summary = f"{level} hypocrisy level (score: {score:.1f}/100). {description}"
+            summary = f"{level} hypocrisy level (score: {
+                score:.1f}/100). {description}"
             if details:
                 summary += f" Specific issues: {', '.join(details)}."
 

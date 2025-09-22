@@ -3,13 +3,10 @@ Data service for database operations and data management.
 """
 
 import sqlite3
-import asyncio
 import aiosqlite
 from typing import Dict, Any, List, Optional, Union
 from dataclasses import dataclass
 import logging
-import json
-from datetime import datetime
 
 from .registry import BaseService
 
@@ -67,6 +64,7 @@ class DataService(BaseService):
         self._connection: Optional[aiosqlite.Connection] = None
         self._sync_connection: Optional[sqlite3.Connection] = None
         self._initialized = False
+        self.is_initialized = False
     
     async def initialize(self):
         """Initialize the data service and database connection."""
@@ -78,6 +76,7 @@ class DataService(BaseService):
             # Create basic tables for testing
             await self._create_tables()
             self._initialized = True
+            self.is_initialized = True
             logger.info(f"DataService initialized with database: {self.database_path}")
         except Exception as e:
             logger.error(f"Failed to initialize DataService: {e}")
@@ -138,7 +137,7 @@ class DataService(BaseService):
         """Check if database is connected."""
         return self._connection is not None and self._initialized
     
-    async def execute_query(self, query: str, params: Optional[Dict[str, Any]] = None) -> QueryResult:
+    async def execute_query(self, query: str, params: Optional[Union[Dict[str, Any], tuple[Any, ...]]] = None) -> QueryResult:
         """Execute a database query asynchronously."""
         if not self._connection:
             await self.initialize()
@@ -148,6 +147,7 @@ class DataService(BaseService):
         
         try:
             if params:
+                # Handle both dict (named parameters) and tuple (positional parameters)
                 cursor = await self._connection.execute(query, params)
             else:
                 cursor = await self._connection.execute(query)
@@ -155,7 +155,18 @@ class DataService(BaseService):
             # Check if it's a SELECT query
             if query.strip().upper().startswith('SELECT'):
                 rows = await cursor.fetchall()
-                data = [dict(row) for row in rows]
+                # Convert aiosqlite rows to dictionaries properly
+                if rows:
+                    data = []
+                    for row in rows:
+                        # Convert row to dictionary using column names
+                        columns = [description[0] for description in cursor.description]
+                        row_dict = {}
+                        for i, column in enumerate(columns):
+                            row_dict[column] = row[i]
+                        data.append(row_dict)
+                else:
+                    data = []
                 return QueryResult(success=True, data=data, rows_affected=len(data))
             else:
                 await self._connection.commit()

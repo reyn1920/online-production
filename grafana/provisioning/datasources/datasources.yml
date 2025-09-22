@@ -201,7 +201,7 @@ datasources:
   - name: YouTube Analytics
     type: marcusolsson-json-datasource
     access: proxy
-    url: https://youtubeanalytics.googleapis.com/v2
+    url: /api/youtube-analytics/v2
     editable: false
     jsonData:
       cacheDurationSeconds: 3600

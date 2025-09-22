@@ -40,12 +40,19 @@ class ServiceRegistry:
     
     def get_service(self, name: str) -> Any:
         """Get a service by name."""
-        return self._services.get(name)
+        if name not in self._services:
+            raise KeyError(f"Service '{name}' not found")
+        return self._services[name]
     
     def has_service(self, name: str) -> bool:
         """Check if a service is registered."""
         return name in self._services
     
+    def register(self, service_type: Type[T], instance: T):
+        """Register a service instance by type."""
+        self._instances[service_type] = instance
+        logger.info(f"Registered instance for: {service_type.__name__}")
+
     def register_factory(self, service_type: Type[T], factory: Callable[[], T]):
         """Register a factory for a service type."""
         self._factories[service_type] = factory

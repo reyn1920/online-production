@@ -296,7 +296,7 @@
       "enabled": false,
       "requires_key": true,
       "key_env": "GOOGLE_PLACES_API_KEY",
-      "base_url": "https://maps.googleapis.com",
+      "base_url": "/api/maps",
       "docs_url": "https://developers.google.com/maps/documentation/places/web-service",
       "health": null,
       "usage": null,

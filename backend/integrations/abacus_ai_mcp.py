@@ -379,7 +379,8 @@ class AbacusAIMCPServer(MCPServer):
             self.session = aiohttp_module.ClientSession(
                 timeout=aiohttp_module.ClientTimeout(total=self.config.timeout),
                 headers={
-                    "Authorization": f"Bearer {self.config.api_key}",
+                    "Authorization": f"Bearer {
+                        self.config.api_key}",
                     "Content-Type": "application/json",
                     "User-Agent": "Trae.AI-MCP/1.0.0",
                 },
@@ -786,7 +787,8 @@ class AbacusAIMCPServer(MCPServer):
                 {
                     "message": {
                         "role": "assistant",
-                        "content": f"Processed request {request['id']} with {routing_strategy} strategy",
+                        "content": f"Processed request {
+                            request['id']} with {routing_strategy} strategy",
                     }
                 }
             ],

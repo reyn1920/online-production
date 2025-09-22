@@ -16,7 +16,13 @@ class LogHeadersMiddleware:
                 hdrs = {k.decode(): v.decode() for k, v in message["headers"]}
                 endpoint = scope.get("endpoint")
                 print(
-                    f"[HDR] {request.method} {request.url.path} -> {hdrs} via {getattr(endpoint, '__name__', endpoint)}"
+                    f"[HDR] {
+                        request.method} {
+                        request.url.path} -> {hdrs} via {
+                        getattr(
+                            endpoint,
+                            '__name__',
+                            endpoint)}"
                 )
             await send(message)
 

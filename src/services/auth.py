@@ -73,6 +73,7 @@ class AuthenticationService(BaseService):
         self._secret_key = config.get_api_key() if hasattr(config, 'get_api_key') else "default_secret"
         self._token_expiry = 3600  # 1 hour default
         self.users: Dict[str, User] = {}  # In-memory user storage for testing
+        self.is_initialized = False  # Add initialization flag
     
     def _hash_password(self, password: str) -> str:
         """Hash a password using bcrypt."""
@@ -150,8 +151,8 @@ class AuthenticationService(BaseService):
             token=token,
             token_type=token_type,
             user_id=user_id,
-            expires_at=expires_at,
-            issued_at=issued_at
+            expires_at=expires_at.timestamp(),
+            created_at=issued_at.timestamp()
         )
         
         self._tokens[token] = auth_token
@@ -177,8 +178,8 @@ class AuthenticationService(BaseService):
                 token=token,
                 token_type=token_type,
                 user_id=user_id,
-                expires_at=expires_at,
-                issued_at=issued_at
+                expires_at=expires_at.timestamp(),
+                created_at=issued_at.timestamp()
             )
             
             if not auth_token.is_expired:
@@ -203,12 +204,12 @@ class AuthenticationService(BaseService):
         password_hash = self.hash_password(password)
         
         user = User(
-            user_id=user_id,
+            id=user_id,
             username=username,
             email=email,
             password_hash=password_hash,
             role=role,
-            created_at=datetime.utcnow()
+            created_at=datetime.utcnow().timestamp()
         )
         
         self._users[user_id] = user
@@ -219,7 +220,7 @@ class AuthenticationService(BaseService):
         """Authenticate a user with username and password."""
         for user in self._users.values():
             if user.username == username and user.is_active:
-                if self.verify_password(password, user.password_hash):
+                if self._verify_password(password, user.password_hash):
                     logger.info(f"User authenticated: {username}")
                     return user
         
@@ -254,6 +255,7 @@ class AuthenticationService(BaseService):
     
     async def initialize(self):
         """Initialize the authentication service."""
+        self.is_initialized = True
         logger.info("AuthenticationService initialized")
     
     async def shutdown(self):
