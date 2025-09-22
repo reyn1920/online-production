@@ -123,7 +123,7 @@ class TestExceptions:
         # Test that error can store additional context
         if hasattr(error, "context"):
             assert error.context.get("field") == "email"
-            assert error.context.get("invalid_value") == "invalid"
+            assert error.context.get("value") == "invalid"
 
 
 class TestCoreIntegration:
