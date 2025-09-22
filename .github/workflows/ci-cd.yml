@@ -239,7 +239,7 @@ jobs:
 
       - name: Deploy to Netlify (Staging)
         id: deploy
-        uses: nwtgck/actions-netlify@v2.1
+        uses: nwtgck/actions-netlify@v3.0
         with:
           publish-dir: "./dist"
           production-branch: main
@@ -285,7 +285,7 @@ jobs:
 
       - name: Deploy to Netlify (Production)
         id: deploy
-        uses: nwtgck/actions-netlify@v2.1
+        uses: nwtgck/actions-netlify@v3.0
         with:
           publish-dir: "./dist"
           production-deploy: true
