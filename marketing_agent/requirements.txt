@@ -45,7 +45,7 @@ psycopg2-binary==2.9.9
 
 # Utilities
 python-dotenv==1.0.0
-loguru==0.7.2
+loguru==0.7.3
 schedule==1.2.0
 celery==5.3.4
 redis==5.0.1

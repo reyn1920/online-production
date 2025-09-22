@@ -25,4 +25,4 @@ pyaml==23.11.0
 schedule==1.2.0
 
 # Logging & Monitoring
-loguru==0.7.2
+loguru==0.7.3
