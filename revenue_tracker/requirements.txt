@@ -25,7 +25,7 @@ redis==5.0.1
 # API Integrations
 requests==2.31.0
 httpx==0.25.2
-aiohttp==3.9.1
+aiohttp==3.12.15
 google-api-python-client==2.108.0
 google-auth==2.23.4
 google-auth-oauthlib==1.1.0
