@@ -13,6 +13,7 @@
         "reyn1920.nocode-studio-core",
         "reyn1920.nocode-gen-react",
         "reyn1920.nocode-data",
-        "reyn1920.nocode-logic"
+        "reyn1920.nocode-logic",
+        "reyn1920.nocode-ollama"
     ]
 }

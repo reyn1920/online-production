@@ -8,6 +8,10 @@ import logging
 import os
 import sys
 from pathlib import Path
+from datetime import datetime
+
+# Ensure FastAPI is available when creating the app
+from fastapi import FastAPI
 
 # Add parent directory to path to access backend modules
 parent_dir = Path(__file__).parent.parent

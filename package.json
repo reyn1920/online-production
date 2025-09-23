@@ -36,5 +36,8 @@
     "trae-ai"
   ],
   "author": "TRAE.AI",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "puppeteer": "^24.22.0"
+  }
 }
