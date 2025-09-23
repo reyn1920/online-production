@@ -1,0 +1,739 @@
+{
+    // Combined launch configurations for the workspace (extension host + app + agents)
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run No-Code Studio (Extension Host)",
+            "type": "extensionHost",
+            "request": "launch",
+            "runtimeExecutable": "${execPath}",
+            "args": [
+                "--extensionDevelopmentPath=${workspaceFolder}/vsc-no-code/nocode-studio-core"
+            ]
+        },
+        {
+            "name": "Uvicorn: integrated_app",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "uvicorn",
+            "args": [
+                "integrated_app:app",
+                "--host",
+                "127.0.0.1",
+                "--port",
+                "8080",
+                "--reload"
+            ],
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "console": "integratedTerminal",
+            "justMyCode": false
+        },
+        // Backend agents
+        {
+            "name": "Agent: backend/agents/self_repair_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/self_repair_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: backend/agents/youtube_engagement_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/youtube_engagement_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: backend/agents/niche_domination_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/niche_domination_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: backend/agents/marketing_tools.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/marketing_tools.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: backend/agents/enhanced_web_scraping_tools.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/enhanced_web_scraping_tools.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: backend/agents/financial_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/financial_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: backend/agents/performance_analytics_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/performance_analytics_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: backend/agents/twitter_promotion_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/twitter_promotion_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: backend/agents/executor_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/executor_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: backend/agents/predictive_analytics_engine.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/predictive_analytics_engine.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: backend/agents/research_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/research_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: backend/agents/auditor_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/auditor_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: backend/agents/base44_agent_protocol.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/base44_agent_protocol.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: backend/agents/base_agents.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/base_agents.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: backend/agents/strategic_advisor_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/strategic_advisor_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: backend/agents/monetization_services_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/monetization_services_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: backend/agents/community_engagement_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/community_engagement_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: backend/agents/planner_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/planner_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: backend/agents/safe_mode_manager.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/safe_mode_manager.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: backend/agents/research_tools.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/research_tools.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: backend/agents/evolution_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/evolution_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: backend/agents/web_automation_tools.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/web_automation_tools.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: backend/agents/system_smoke_test_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/system_smoke_test_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: backend/agents/conservative_research_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/conservative_research_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: backend/agents/api_discovery_engine.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/api_discovery_engine.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: backend/agents/marketing_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/marketing_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: backend/agents/specialized_agents.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/specialized_agents.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: backend/agents/twitter_engagement_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/twitter_engagement_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: backend/agents/content_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/content_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: backend/agents/system_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/system_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: backend/agents/collaboration_outreach_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/collaboration_outreach_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: backend/agents/content_evolution_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/content_evolution_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: backend/agents/financial_management_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/financial_management_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: backend/agents/growth_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/growth_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: backend/agents/stealth_automation_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/agents/stealth_automation_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        // Top-level agents/ directory
+        {
+            "name": "Agent: agents/financial_management_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/agents/financial_management_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: agents/growth_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/agents/growth_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: agents/stealth_automation_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/agents/stealth_automation_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: agents/web_automation_tools.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/agents/web_automation_tools.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: agents/specialized_agents.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/agents/specialized_agents.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: agents/twitter_engagement_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/agents/twitter_engagement_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: agents/system_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/agents/system_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: agents/content_evolution_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/agents/content_evolution_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: agents/research_tools.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/agents/research_tools.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: agents/self_repair_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/agents/self_repair_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: agents/marketing_tools.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/agents/marketing_tools.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: agents/financial_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/agents/financial_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: agents/twitter_promotion_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/agents/twitter_promotion_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        // Trae AI specific agents
+        {
+            "name": "Agent: trae_ai/agents/tdd_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/trae_ai/agents/tdd_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: trae_ai/agents/preflight_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/trae_ai/agents/preflight_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: trae_ai/agents/guardian_agent.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/trae_ai/agents/guardian_agent.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: trae_ai/agents/code_generator.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/trae_ai/agents/code_generator.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: trae_ai/agents/type_inferrer.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/trae_ai/agents/type_inferrer.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: trae_ai/agents/architecture_reviewer.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/trae_ai/agents/architecture_reviewer.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: trae_ai/agents/logic_validator.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/trae_ai/agents/logic_validator.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: trae_ai/agents/guardian_integration_example.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/trae_ai/agents/guardian_integration_example.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "Agent: trae_ai/agents/dependency_solver.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/trae_ai/agents/dependency_solver.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Launch Full Application",
+            "configurations": [
+                "Uvicorn: integrated_app",
+                // backend agents
+                "Agent: backend/agents/self_repair_agent.py",
+                "Agent: backend/agents/youtube_engagement_agent.py",
+                "Agent: backend/agents/niche_domination_agent.py",
+                "Agent: backend/agents/marketing_tools.py",
+                "Agent: backend/agents/enhanced_web_scraping_tools.py",
+                "Agent: backend/agents/financial_agent.py",
+                "Agent: backend/agents/performance_analytics_agent.py",
+                "Agent: backend/agents/twitter_promotion_agent.py",
+                "Agent: backend/agents/executor_agent.py",
+                "Agent: backend/agents/predictive_analytics_engine.py",
+                "Agent: backend/agents/research_agent.py",
+                "Agent: backend/agents/auditor_agent.py",
+                "Agent: backend/agents/base44_agent_protocol.py",
+                "Agent: backend/agents/base_agents.py",
+                "Agent: backend/agents/strategic_advisor_agent.py",
+                "Agent: backend/agents/monetization_services_agent.py",
+                "Agent: backend/agents/community_engagement_agent.py",
+                "Agent: backend/agents/planner_agent.py",
+                "Agent: backend/agents/safe_mode_manager.py",
+                "Agent: backend/agents/research_tools.py",
+                "Agent: backend/agents/evolution_agent.py",
+                "Agent: backend/agents/web_automation_tools.py",
+                "Agent: backend/agents/system_smoke_test_agent.py",
+                "Agent: backend/agents/conservative_research_agent.py",
+                "Agent: backend/agents/api_discovery_engine.py",
+                "Agent: backend/agents/marketing_agent.py",
+                "Agent: backend/agents/specialized_agents.py",
+                "Agent: backend/agents/twitter_engagement_agent.py",
+                "Agent: backend/agents/content_agent.py",
+                "Agent: backend/agents/system_agent.py",
+                "Agent: backend/agents/collaboration_outreach_agent.py",
+                "Agent: backend/agents/content_evolution_agent.py",
+                "Agent: backend/agents/financial_management_agent.py",
+                "Agent: backend/agents/growth_agent.py",
+                "Agent: backend/agents/stealth_automation_agent.py",
+                // top-level agents
+                "Agent: agents/financial_management_agent.py",
+                "Agent: agents/growth_agent.py",
+                "Agent: agents/stealth_automation_agent.py",
+                "Agent: agents/web_automation_tools.py",
+                "Agent: agents/specialized_agents.py",
+                "Agent: agents/twitter_engagement_agent.py",
+                "Agent: agents/system_agent.py",
+                "Agent: agents/content_evolution_agent.py",
+                "Agent: agents/research_tools.py",
+                "Agent: agents/self_repair_agent.py",
+                "Agent: agents/marketing_tools.py",
+                "Agent: agents/financial_agent.py",
+                "Agent: agents/twitter_promotion_agent.py",
+                // trae_ai agents
+                "Agent: trae_ai/agents/tdd_agent.py",
+                "Agent: trae_ai/agents/preflight_agent.py",
+                "Agent: trae_ai/agents/guardian_agent.py",
+                "Agent: trae_ai/agents/code_generator.py",
+                "Agent: trae_ai/agents/type_inferrer.py",
+                "Agent: trae_ai/agents/architecture_reviewer.py",
+                "Agent: trae_ai/agents/logic_validator.py",
+                "Agent: trae_ai/agents/guardian_integration_example.py",
+                "Agent: trae_ai/agents/dependency_solver.py"
+            ]
+        },
+        {
+            "name": "Launch Core Services",
+            "configurations": [
+                "Uvicorn: integrated_app",
+                "Agent: backend/agents/planner_agent.py"
+            ]
+        }
+    ]
+}

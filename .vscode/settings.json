@@ -1,0 +1,27 @@
+{
+  // Workspace settings
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/.pytest_cache": true,
+    "**/.ruff_cache": true,
+    "**/.mypy_cache": true,
+    "**/.DS_Store": true,
+    "**/*_report.txt": true,
+    "**/.git": true
+  },
+  "security.workspace.trust.enabled": false,
+  "extensions.ignoreRecommendations": false,
+  "extensions.autoUpdate": true,
+  "extensions.autoCheckUpdates": true,
+  "extensions.autoCheckUpdatesOnlyTrusted": false,
+  "task.allowAutomaticTasks": "on",
+  "debug.allowBreakpointsEverywhere": true,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit",
+    "source.fixAll": "explicit"
+  },
+  "files.autoSave": "onWindowChange",
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true
+}

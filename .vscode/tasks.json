@@ -1,0 +1,73 @@
+{
+    // Workspace tasks for common development commands
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Runtime: FastAPI",
+            "type": "shell",
+            "command": ".venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload",
+            "group": "build",
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "UPR: pass-1",
+            "type": "shell",
+            "command": ".venv/bin/python -m ruff . || true",
+            "group": "test",
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "UPR: pass-2",
+            "type": "shell",
+            "command": ".venv/bin/python -m black . || true",
+            "group": "test",
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "Rule-1 Guard",
+            "type": "shell",
+            "command": "python tools/rule1_guard.py",
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "Syntax Normalizer",
+            "type": "shell",
+            "command": "python tools/syntax_normalizer.py",
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "No-Code: Generate React App",
+            "type": "shell",
+            "command": "npx -y code --command nocode.generateReactApp",
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "No-Code: Run Checks",
+            "type": "shell",
+            "command": "bash tools/run_checks.sh",
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "No-Code: Puppeteer Full Suite",
+            "type": "shell",
+            "command": "bash tools/puppeteer/run_full_suite.sh",
+            "presentation": {
+                "reveal": "always"
+            }
+        }
+    ]
+}
