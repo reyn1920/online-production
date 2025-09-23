@@ -1,0 +1,7 @@
+[
+  {
+    "key": "ctrl+alt+o",
+    "command": "nocode.ollama.chatSelection",
+    "when": "editorTextFocus"
+  }
+]

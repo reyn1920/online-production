@@ -1,0 +1,35 @@
+{
+    "name": "nocode-ollama",
+    "displayName": "No-Code Ollama Bridge",
+    "publisher": "reyn1920",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.70.0"
+    },
+    "activationEvents": [
+        "onCommand:nocode.ollama.chatSelection"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "nocode.ollama.chatSelection",
+                "title": "No-Code: Ollama Chat Selection"
+            }
+        ]
+    },
+    "scripts": {
+        "build": "tsc -p ./",
+        "watch": "tsc -w -p ./",
+        "prepack": "npm run build"
+    },
+    "dependencies": {
+        "node-fetch": "^2.6.7"
+    },
+    "devDependencies": {
+        "typescript": "^5.0.0",
+        "@types/vscode": "^1.70.0",
+        "@types/node": "^18.0.0",
+        "@types/node-fetch": "^2.5.12"
+    }
+}
