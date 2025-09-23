@@ -1,4 +1,18 @@
 #!/usr/bin/env python3
+"""Simple normalizer: ensure files use LF and UTF-8, minimal fixes."""
+from pathlib import Path
+
+def normalize(root: Path):
+  for p in root.rglob('*'):
+    if p.is_file() and p.suffix in ('.py', '.ts', '.tsx', '.js', '.jsx'):
+      data = p.read_bytes()
+      text = data.decode('utf-8', errors='replace')
+      text = text.replace('\r\n', '\n')
+      p.write_text(text, encoding='utf-8')
+
+if __name__ == '__main__':
+  normalize(Path('.'))
+#!/usr/bin/env python3
 """
 Syntax normalizer: gentle fixes for common Python source quirks.
 - Ensure UTF-8 LF newlines

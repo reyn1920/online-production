@@ -1,0 +1,47 @@
+/* path: vsc-no-code/nocode-studio-core/webview/src/styles.css */
+body,
+html,
+#root {
+    height: 100%;
+    margin: 0;
+    font-family: Inter, system-ui, Arial, sans-serif
+}
+
+.nocode-root {
+    display: flex;
+    flex-direction: column;
+    height: 100vh
+}
+
+.studio-header {
+    background: #0f172a;
+    color: #fff;
+    padding: 8px 12px
+}
+
+.canvas-root {
+    display: flex;
+    flex: 1
+}
+
+.canvas-left,
+.canvas-right {
+    width: 220px;
+    background: #f8fafc;
+    padding: 8px
+}
+
+.canvas-center {
+    flex: 1;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center
+}
+
+.drop-zone {
+    border: 2px dashed #cbd5e1;
+    padding: 40px;
+    border-radius: 8px;
+    color: #475569
+}

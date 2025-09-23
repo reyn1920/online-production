@@ -1,0 +1,34 @@
+{
+    "name": "nocode-studio-core",
+    "displayName": "No-Code Studio Core",
+    "publisher": "reyn1920",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.70.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "onCommand:nocode.openStudio"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "nocode.openStudio",
+                "title": "No-Code: Open Studio"
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run build",
+        "build": "tsc -p ./",
+        "watch": "tsc -w -p ./"
+    },
+    "devDependencies": {
+        "typescript": "^5.0.0",
+        "@types/node": "^18.0.0",
+        "@types/vscode": "^1.70.0"
+    }
+}

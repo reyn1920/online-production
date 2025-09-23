@@ -1,0 +1,13 @@
+/* path: templates/react-basic/src/styles.css */
+html,
+body,
+#root {
+    height: 100%;
+    margin: 0;
+    font-family: Inter, system-ui, Arial
+}
+
+body {
+    background: #fff;
+    color: #0f172a
+}

@@ -1,4 +1,39 @@
 #!/usr/bin/env python3
+"""Scan new files for banned vocabulary and write a report."""
+import sys
+from pathlib import Path
+
+BANNED = [
+  "production", "Production", "PRODUCTION", "simulation", "placeholder",
+  "theoretical", "demo", "mock", "fake", "sample", "test"
+]
+
+def scan(root: Path):
+  hits = []
+  for p in root.rglob('*'):
+    if p.suffix in ('.py', '.ts', '.tsx', '.js', '.jsx', '.json', '.md'):
+      try:
+        s = p.read_text(errors='ignore')
+      except Exception:
+        continue
+      for b in BANNED:
+        if b in s:
+          hits.append((str(p), b))
+  return hits
+
+if __name__ == '__main__':
+  root = Path('.')
+  hits = scan(root)
+  out = Path('rule1_guard_report.txt')
+  with out.open('w') as f:
+    if not hits:
+      f.write('No hits\n')
+      print('No hits')
+    else:
+      for p,b in hits:
+        f.write(f"{p}: {b}\n")
+      print(f"Found {len(hits)} hits, written to {out}")
+#!/usr/bin/env python3
 """
 Rule-1 guard: scans the tree and reports banned words. Exits 1 if --fail-on-hit.
 This script avoids renaming or deleting any file; it only reports and exits code.

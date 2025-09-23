@@ -1,4 +1,21 @@
 #!/usr/bin/env python3
+"""Basic audit: list top-level Python files and check imports."""
+from pathlib import Path
+import ast
+
+def audit(root: Path):
+  for p in root.glob('**/*.py'):
+    try:
+      tree = ast.parse(p.read_text())
+    except Exception:
+      continue
+    imports = [n.module for n in ast.walk(tree) if isinstance(n, ast.ImportFrom) and n.module]
+    if imports:
+      print(p, imports[:3])
+
+if __name__ == '__main__':
+  audit(Path('.'))
+#!/usr/bin/env python3
 """
 UPR auditor: two-pass routine aligned with your UPR rule.
 Pass 1: format & quick lint

@@ -62,6 +62,29 @@ class GenesisInterviewResponse(BaseModel):
     timestamp: str
 
 
+# Simple item model and auto-approval endpoint
+class SubmittedItem(BaseModel):
+    name: str
+    description: Optional[str] = None
+    status: str = "pending"
+
+
+@app.post("/items/")
+def create_item(item: SubmittedItem):
+    """Receive an item, auto-approve it, and return the approved item.
+
+    Note: replace the placeholder DB save with your real persistence logic.
+    """
+    # Auto-approval logic
+    item.status = "approved"
+
+    logger.info(f"Item '{item.name}' received and auto-approved.")
+
+    # TODO: persist to database, e.g. db.add(item); db.commit()
+
+    return item
+
+
 # In-memory storage for demo purposes (use proper database in production)
 active_tasks: dict[str, dict[str, Any]] = {}
 active_interviews: dict[str, dict[str, Any]] = {}
