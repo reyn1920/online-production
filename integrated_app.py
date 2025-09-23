@@ -123,6 +123,12 @@ async def root():
     )
 
 
+@app.get("/hello")
+async def say_hello():
+    """Simple hello endpoint used by tests"""
+    return JSONResponse({"greeting": "Hello, this is my new endpoint!"})
+
+
 # ============================================================================
 # TRAE.AI RUNTIME HUB ENDPOINTS
 # ============================================================================
